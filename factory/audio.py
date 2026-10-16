@@ -59,6 +59,39 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         t = np.arange(n) / SR
         strokes = 0.55 + 0.45 * np.sin(2 * np.pi * 9 * t + rnd.uniform(0, 6))
         return (out / (np.abs(out).max() + 1e-9) * strokes * _env(n, 0.03, 0.12) * 0.5).astype(np.float32)
+    if kind == "hit":  # short punchy accent
+        n = int(0.18 * SR)
+        t = np.arange(n) / SR
+        body = np.sin(2 * np.pi * (110 - 50 * t / t[-1]) * t) * np.exp(-t * 22)
+        click = rnd.standard_normal(n) * np.exp(-t * 160) * 0.4
+        return ((body + click) * 0.8).astype(np.float32)
+    if kind == "riser":  # tension before a reveal
+        n = int(1.2 * SR)
+        noise = rnd.standard_normal(n).astype(np.float32)
+        sos = butter(2, [400, 5000], btype="band", fs=SR, output="sos")
+        out = sosfilt(sos, noise)
+        t = np.linspace(0, 1, n)
+        tone = np.sin(2 * np.pi * np.cumsum(200 + 600 * t ** 2) / SR) * 0.3
+        return ((out / (np.abs(out).max() + 1e-9) * 0.5 + tone) * t ** 2 * 0.8).astype(np.float32)
+    if kind in ("ding", "cash"):  # bell; 'cash' = register ka-ching (drawer clunk + two bells)
+        n = int(1.0 * SR)
+        t = np.arange(n) / SR
+        bell = (np.sin(2 * np.pi * 1318 * t) + 0.5 * np.sin(2 * np.pi * 2637 * t)) * np.exp(-t * 5)
+        if kind == "ding":
+            return (bell * 0.5).astype(np.float32)
+        out = np.zeros(n, dtype=np.float32)
+        clunk = rnd.standard_normal(int(0.08 * SR)) * np.exp(-np.arange(int(0.08 * SR)) / SR * 50)
+        out[: len(clunk)] += clunk * 0.6
+        d = int(0.12 * SR)
+        out[d:] += (bell[: n - d] * 0.5).astype(np.float32)
+        return out
+    if kind == "scratch":  # record scratch for comic stops
+        n = int(0.35 * SR)
+        t = np.arange(n) / SR
+        noise = rnd.standard_normal(n)
+        sos = butter(2, [700, 3500], btype="band", fs=SR, output="sos")
+        out = sosfilt(sos, noise) * (0.6 + 0.4 * np.sin(2 * np.pi * 18 * t))
+        return (out / (np.abs(out).max() + 1e-9) * np.exp(-t * 4) * 0.7).astype(np.float32)
     if kind == "thud":
         n = int(0.35 * SR)
         t = np.arange(n) / SR

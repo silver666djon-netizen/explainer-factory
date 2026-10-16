@@ -15,11 +15,13 @@ video:
   min_shot_seconds: 1.4        # a shot is never shorter than this
   max_shot_seconds: 3.2        # longer shots are split so something changes every 1–3 s
   crf: 21                      # video quality (lower = better/bigger)
+  hook_seconds: 30             # the first 30 s cut faster: attention is won or lost here
+  hook_max_shot_seconds: 1.8
   x264_preset: veryfast
 
 style:
   # Look: 1950s print advertising + flat infographics + red investigator marker + 50s comics + archive photos.
-  prompt_prefix: "Single clear subject, simple stylized shapes, "
+  prompt_prefix: "Single clear subject centered in the frame, simple stylized shapes, plain unlabeled surfaces, "
   prompt_suffix: >-
     1950s American print advertisement illustration, gouache and halftone print texture,
     limited palette of cream, money green, tomato red and ink black, bold flat shapes,
@@ -42,6 +44,7 @@ style:
     red:    "#D2452F"
     accent: "#E8B53A"
   grain: 0.03                  # paper grain baked into pictures, 0 = off
+  vignette: 0.18               # soft dark edges on every frame (Vox-style texture), 0 = off
 
 fonts:
   # First existing file wins. The workflow downloads these Google Fonts; DejaVu is the local fallback.
@@ -49,6 +52,7 @@ fonts:
   body:     ["assets/fonts/ArchivoBlack-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
   comic:    ["assets/fonts/Bangers-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
   marker:   ["assets/fonts/PermanentMarker-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-BoldOblique.ttf"]
+  serif:    ["assets/fonts/PT_Serif-Web-Regular.ttf", "assets/fonts/OldStandard-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
 
 voice:
   engine: kokoro

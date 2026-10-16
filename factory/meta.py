@@ -59,7 +59,7 @@ def srt(captions) -> str:
     return "\n".join(rows)
 
 
-def thumbnail(cfg: dict, image_path: Path, text: str, out: Path) -> Path:
+def thumbnail(cfg: dict, image_path: Path, text: str, out: Path, circle: bool = True) -> Path:
     W, H = 1280, 720
     pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
     base = cover(Image.open(image_path).convert("RGB"), W, H).astype(np.float32)
@@ -70,6 +70,12 @@ def thumbnail(cfg: dict, image_path: Path, text: str, out: Path) -> Path:
     fnt, lines = fit_font(text.upper(), head, int(W * 0.55), int(H * 0.7), start=150, min_size=60)
     colors = [[pal["accent"] if j == 0 and i == 0 else (255, 255, 255) for j, _ in enumerate(l.split(" "))] for i, l in enumerate(lines)]
     blk = text_block(lines, fnt, fill=(255, 255, 255), stroke_fill=pal["ink"], stroke=8, align="left", colors=colors)
+    if circle:  # the channel's red investigator marker around the subject
+        import cv2
+        from .shots import mark_strokes
+        red = tuple(int(c) for c in pal["red"])
+        for stroke in mark_strokes({"type": "circle", "x": 0.72, "y": 0.5, "w": 0.36, "h": 0.62}, W, H, seed=5):
+            cv2.polylines(base, [stroke.astype(np.int32).reshape(-1, 1, 2)], False, red, 12, cv2.LINE_AA)
     blend(base, blk, 50, (H - blk.shape[0]) // 2)
     img = Image.fromarray(base)
     ImageDraw.Draw(img).rectangle((0, H - 18, W, H), fill=pal["red"])

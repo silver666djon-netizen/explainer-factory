@@ -3,9 +3,12 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import time
 from pathlib import Path
+
+import numpy as np
 
 from .config import ROOT, load_config
 from .images import ensure_images, ensure_photos, is_archive_photo
@@ -38,6 +41,9 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     log(f"Episode: {episode['title']}  ({len(episode['beats'])} beats, {len(episode.get('shorts') or [])} shorts)")
 
     prompts = image_prompts(episode)
+    thumb_spec = episode.get("thumbnail") or {}
+    if thumb_spec.get("prompt"):
+        prompts["thumbnail"] = {"prompt": thumb_spec["prompt"], "style": thumb_spec.get("style", "ad")}
     cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
     images = ensure_images(cfg, prompts, cache, offline, log)
     photos = photo_sources(episode)
@@ -75,10 +81,52 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
 
     thumb = episode.get("thumbnail") or {}
     first_image = next(b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo"))
-    thumbnail(cfg, images[thumb.get("beat") or first_image], thumb.get("text") or episode["title"], out / "thumbnail.jpg")
+    thumb_img = images["thumbnail"] if "thumbnail" in images else images[thumb.get("beat") or first_image]
+    thumbnail(cfg, thumb_img, thumb.get("text") or episode["title"], out / "thumbnail.jpg", circle=thumb.get("circle", True))
     write_meta(out, episode, plan_long, shorts_info)
     log(f"Done in {(time.time() - started) / 60:.1f} min -> {out}")
     return out
+
+
+def lint(ep: dict) -> list[str]:
+    """Retention + correctness warnings (not errors)."""
+    warns: list[str] = []
+    wpm = 150 / 60
+    t = 0.0
+    changes_hook = 0
+    for b in ep["beats"]:
+        dur = max(1.0, len(b["text"].split()) / wpm)
+        vt = b["visual"]["type"]
+        if t < 30:
+            if vt in ("image", "reuse", "photo") and not b["visual"].get("marks"):
+                changes_hook += max(len(b["visual"].get("prompts") or [1]), int(np.ceil(dur / 1.8)))
+            else:
+                changes_hook += 1
+            changes_hook += bool(b.get("on_screen")) + bool(b.get("bubble")) + len(b.get("punch") or [])
+        if dur > 10:
+            warns.append(f"beat {b['id']}: ~{dur:.0f}s of narration — split it (one idea per beat)")
+        if re.search(r"[0-9$%£€]", b["text"]) and not b.get("say"):
+            warns.append(f"beat {b['id']}: digits/symbols in text without 'say' — the narrator may misread them")
+        t += dur
+    if changes_hook < 14:
+        warns.append(f"first 30 s: only ~{changes_hook} visual changes — aim for 15+ (cuts, labels, punch-ins, marks)")
+    minutes = t / 60
+    marks = sum(len(b["visual"].get("marks") or []) for b in ep["beats"])
+    jokes = sum(1 for b in ep["beats"] if b.get("bubble") or b["visual"].get("ad") or b["visual"].get("style") == "comic")
+    docs = sum(1 for b in ep["beats"] if b["visual"]["type"] == "doc")
+    if marks < max(1, int(minutes)):
+        warns.append(f"only {marks} red-marker marks for ~{minutes:.1f} min — the signature look wants ~1–3 per minute")
+    if jokes < max(1, int(minutes / 1.5)):
+        warns.append(f"only {jokes} humour beats (comic/bubble/ad gag) — aim for one every 1–2 minutes")
+    if not ep.get("sources"):
+        warns.append("no sources listed")
+    elif docs == 0:
+        warns.append("no 'doc' highlighter beat — show at least one study on screen")
+    for sh in ep.get("shorts") or []:
+        st = sum(max(1.0, len(b["text"].split()) / wpm) for b in sh["beats"])
+        if st > 50:
+            warns.append(f"short {sh['id']}: ~{st:.0f}s — keep Shorts under 45 s")
+    return warns
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -98,7 +146,8 @@ def main(argv: list[str] | None = None) -> int:
             n_img = len(image_prompts(ep))
             words = sum(len(x["text"].split()) for x in ep["beats"])
             print(json.dumps({"ok": True, "beats": len(ep["beats"]), "images": n_img,
-                              "approx_minutes": round(words / 155, 1), "shorts": len(ep.get("shorts") or [])}))
+                              "approx_minutes": round(words / 150, 1), "shorts": len(ep.get("shorts") or []),
+                              "warnings": lint(ep)}, indent=2, ensure_ascii=False))
             return 0
         build(args.episode, args.out, args.offline, args.only)
         return 0

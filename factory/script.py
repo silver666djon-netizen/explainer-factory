@@ -5,11 +5,11 @@ import json
 from pathlib import Path
 
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "drift", "static"}
-VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo"}
+VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic"}
 MARK_TYPES = {"circle", "underline", "arrow", "cross", "check"}
 STYLES = {"ad", "comic"}
 CHART_KINDS = {"bar", "line"}
-SFX = {"whoosh", "pop", "tick", "thud", "none"}
+SFX = {"whoosh", "pop", "tick", "thud", "hit", "riser", "ding", "cash", "scratch", "scribble", "none"}
 
 
 class ScriptError(ValueError):
@@ -51,6 +51,12 @@ def _check_visual(where: str, visual: dict, errors: list[str]) -> None:
             errors.append(f"{where}: photo visual needs 'url' (public-domain archive photo)")
         if not str(visual.get("credit", "")).strip():
             errors.append(f"{where}: photo visual needs 'credit' (source + licence)")
+    elif vtype == "doc":
+        doc = visual.get("doc") or {}
+        if not doc.get("body") or not doc.get("source"):
+            errors.append(f"{where}: doc visual needs doc.source and doc.body")
+        elif doc.get("highlight") and doc["highlight"] not in doc["body"]:
+            errors.append(f"{where}: doc.highlight must be an exact part of doc.body")
     if visual.get("style") is not None and visual["style"] not in STYLES:
         errors.append(f"{where}: style must be one of {sorted(STYLES)}")
     for mark in visual.get("marks") or []:

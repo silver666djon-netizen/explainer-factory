@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 from . import audio as A
 from .config import hex_to_rgb, resolve_font
 from .images import is_archive_photo
-from .shots import ChartShot, ImageShot, Shot, StatShot, TitleShot
+from .shots import ChartShot, DocShot, ImageShot, KineticShot, Shot, StatShot, TitleShot
 from .text import blend, fit_font, font, text_block, wrap
 
 MOTION_CYCLE = ["zoom_in", "pan_right", "zoom_out", "pan_left", "drift", "pan_up", "zoom_in", "pan_down"]
@@ -55,6 +55,7 @@ class Plan:
     captions: list[Caption] = field(default_factory=list)
     cards: list[Card] = field(default_factory=list)
     bubbles: list[Bubble] = field(default_factory=list)
+    punches: list[float] = field(default_factory=list)
     beat_starts: dict[str, float] = field(default_factory=dict)
     timeline: A.Timeline | None = None
 
@@ -129,6 +130,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
             pil_cache[path] = Image.open(path).convert("RGB")
         return pil_cache[path]
 
+    hook_max_shot = float(vcfg.get("hook_max_shot_seconds", 1.8))
+    hook_seconds = float(vcfg.get("hook_seconds", 30))
     max_chars, max_words = (26, 5) if kind == "long" else (16, 3)
     last_section = None
     cycle_i = 0
@@ -145,10 +148,11 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
         if vtype in ("image", "reuse", "photo"):
             keys = _image_keys(visual, beat_lookup)
             marks = [dict(m, at=float(m.get("at", 0.6)) + lead_in) for m in (visual.get("marks") or [])]
+            beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
             if marks:
                 pieces = len(keys)  # marks need a steady picture: no extra cuts
             else:
-                pieces = max(len(keys), int(np.ceil(span / max_shot)))
+                pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))
                 while pieces > len(keys) and span / pieces < min_shot:
                     pieces -= 1
             seg = span / pieces
@@ -164,11 +168,22 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
                     cycle_i += 1
                 shot_marks = [dict(m, at=m["at"] - k * seg) for m in marks] if k == 0 else []
                 plan.shots.append(ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
-                                            marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k))
+                                            marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
+                                            ad=visual.get("ad") if k == 0 else None))
             for m in marks:
                 plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
         elif vtype == "title":
             plan.shots.append(TitleShot(shot_start, span, visual["text"], cfg, size))
+        elif vtype == "doc":
+            doc = visual["doc"]
+            plan.shots.append(DocShot(shot_start, span, doc, cfg, size, lead_in=lead_in, seed=i))
+            plan.timeline.add_sfx(start + float(doc.get("at", 1.0)), "scribble", seed=i)
+        elif vtype == "kinetic":
+            words_rel = [(w, s0, e0) for w, s0, e0 in v["words"]]
+            ktext = visual.get("text") or beat["text"]
+            plan.shots.append(KineticShot(shot_start, span, ktext, words_rel, cfg, size, lead_in, visual.get("bg", "paper")))
+            for _w, s0, _e in words_rel[:: max(1, len(words_rel) // 4)]:
+                plan.timeline.add_sfx(start + s0, "hit", seed=i)
         elif vtype == "stat":
             plan.shots.append(StatShot(shot_start, span, visual["stat"], cfg, size))
             plan.timeline.add_sfx(shot_start + min(1.4, span * 0.45), "pop", seed=i)
@@ -182,7 +197,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
         section = beat.get("section")
         explicit = beat.get("sfx")
         if explicit:
-            plan.timeline.add_sfx(max(0.0, start - 0.15), explicit, seed=i)
+            plan.timeline.add_sfx(max(0.0, start - (1.1 if explicit == "riser" else 0.15)), explicit, seed=i)
         elif vtype == "title":
             plan.timeline.add_sfx(max(0.0, start - 0.05), "thud", seed=i)
         elif i > 0 and section and section != last_section:
@@ -200,7 +215,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
                                        float(b.get("y", 0.3)), str(b.get("tail", "left"))))
             plan.timeline.add_sfx(appear, "pop", seed=i + 1)
 
-        if vtype not in ("title",):
+        for target in beat.get("punch") or []:
+            tl = target.lower().strip("*.,!?")
+            for w, s0, _e in v["words"]:
+                if w.lower().strip("*.,!?\"'").startswith(tl):
+                    plan.punches.append(start + s0)
+                    plan.timeline.add_sfx(start + s0 - 0.02, "hit", seed=i)
+                    break
+
+        if vtype not in ("title", "kinetic"):  # those already show the words
             plan.captions.extend(group_captions(v["words"], start, max_chars, max_words))
     return plan
 
@@ -335,6 +358,12 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
     overlay = Overlay(cfg, plan)
     xfade = int(cfg["video"].get("crossfade_frames", 8)) / fps
+    vig_strength = float(cfg["style"].get("vignette", 0.18))
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    rr = np.sqrt(((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2) / math.sqrt(2)
+    vignette = (255 * (1 - vig_strength * np.clip(rr, 0, 1) ** 2.2)).astype(np.uint16)[..., None]
+    punches = sorted(plan.punches)
+    punch_i = 0
     n_frames = int(np.ceil(plan.total * fps))
     shot_i = cap_i = card_i = bub_i = 0
     shots, caps, cards, bubs = plan.shots, plan.captions, plan.cards, plan.bubbles
@@ -360,7 +389,19 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
                 frame = cv2.addWeighted(prev.frame(t - prev.start), 1 - a, frame, a, 0)
             else:
                 frame = np.ascontiguousarray(frame)
-            if not frame.flags.writeable or frame is getattr(shot, "base", None):
+            # punch-in on emphasised words: quick 7% push, eases back over ~0.5 s
+            while punch_i < len(punches) - 1 and t >= punches[punch_i + 1]:
+                punch_i += 1
+            if punches and 0 <= t - punches[punch_i] < 0.6:
+                age = t - punches[punch_i]
+                z = 1 + 0.07 * (min(1.0, age / 0.07) if age < 0.07 else max(0.0, 1 - (age - 0.07) / 0.5))
+                if z > 1.001:
+                    cw, ch = int(W / z), int(H / z)
+                    x0, y0 = (W - cw) // 2, (H - ch) // 2
+                    frame = cv2.resize(frame[y0 : y0 + ch, x0 : x0 + cw], (W, H), interpolation=cv2.INTER_LINEAR)
+            if vig_strength > 0:
+                frame = ((frame.astype(np.uint16) * vignette) >> 8).astype(np.uint8)
+            elif not frame.flags.writeable or frame is getattr(shot, "base", None):
                 frame = frame.copy()
             overlay.apply(frame, t, cap_i, card_i, bub_i)
             proc.stdin.write(frame.tobytes())

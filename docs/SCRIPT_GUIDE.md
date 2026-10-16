@@ -16,6 +16,23 @@ python -m factory check episodes/<NNNN-slug>
 - Rhythm: something changes on screen every 1–3 s (the renderer splits long beats automatically,
   but write short beats anyway).
 
+## Retention rules (non-negotiable)
+
+- **First 30 s = three 10-second beats:** (1) prove the title with one concrete example,
+  (2) why it matters to *this* viewer, (3) a one-line roadmap / open loop ("by the end you'll see…").
+  No greetings, no channel intro. First payoff before 0:30. The renderer cuts faster here (≤1.8 s shots).
+- **Something changes every 1–3 s; a surprise every 20–30 s** (stat, chart, doc, comic, gag, kinetic).
+  Never two minutes of the same visual type.
+- **Open loop every 2–3 minutes** ("but the strangest result came from a clothing catalog…").
+- **Best moment at about two-thirds** of the runtime.
+- **Humour:** dry British wit + one gag every 1–2 minutes — comic reaction panels with bubbles,
+  the fake 1950s ad (`ad` badge/slogan), understatement ("Retailers noticed. Retailers always notice.").
+- **Punch-ins** (`punch`: words) on 1–3 key words per minute; **kinetic** beats for the 2–4 lines
+  the viewer should remember; **doc** highlighter for every cited study.
+- End with a payoff of the cold open and a tease of the next episode (end-screen space).
+- Every episode, topic, angle, heroes, scenes and Shorts are **agreed with Klot first** (options →
+  his choice → script). Don't render an episode he hasn't approved.
+
 ## Episode shape (long video, 8–12 min ≈ 1,250–1,850 spoken words)
 
 1. **Cold open (0:00–0:30)** — a concrete, surprising everyday moment + the question. No "welcome to".
@@ -60,6 +77,12 @@ Each beat = 1–3 sentences of narration, ~4–9 seconds. Fields:
   Real data only, from the cited sources, or plain arithmetic (like $2.00 / $2.99 / $3.00).
 - `stat` — big number that counts up: `{ "value", "prefix", "suffix", "label", "decimals" }`.
 - `title` — chapter card `{ "text" }`.
+- `doc` — Vox-style paper clipping with a yellow highlighter sweep:
+  `{ "source", "headline", "body" (your paraphrase, label it "Summary ·"), "highlight" (exact part of body), "at" }`.
+- `kinetic` — the narration's words slam in as they are spoken: `{ "bg": "paper|ink|red|green" }`;
+  mark accent words in `text` with `*stars*`. Keep it to 2–6 words.
+- `ad` (on image beats) — the fake 1950s ad gag: `{ "badge", "badge_x", "badge_y", "slogan", "slogan_y" }`.
+- `punch` (on any beat) — list of words that get a quick zoom punch + hit sound.
 
 ### Image prompt rules (Flux schnell)
 

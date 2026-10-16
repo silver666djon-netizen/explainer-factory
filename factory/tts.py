@@ -84,7 +84,19 @@ def make_voice(cfg: dict, offline: bool):
 
 
 def caption_words(beat: dict, timings: list[tuple[str, float, float]], duration: float):
-    """Captions show the written text; if 'say' differs, spread written words over the spoken time."""
-    if beat.get("say") and beat["say"] != beat["text"]:
-        return _proportional_words(beat["text"], duration)
-    return timings or _proportional_words(beat["text"], duration)
+    """Captions always show the *written* words (with punctuation), timed by the spoken audio.
+
+    If the spoken tokens line up one-to-one with the written words, their exact timings are used;
+    otherwise the written words are spread over the actual speech span.
+    """
+    written = beat["text"].split()
+    if not written:
+        return []
+    spoken = [t for t in timings if re.search(r"\w", t[0] or "")]
+    if spoken and not beat.get("say") and len(spoken) == len(written):
+        return [(w, s, e) for w, (_t, s, e) in zip(written, spoken)]
+    if spoken:
+        start, end = spoken[0][1], spoken[-1][2]
+    else:
+        start, end = 0.0, duration
+    return [(w, start + s, start + e) for w, s, e in _proportional_words(" ".join(written), max(0.3, end - start))]

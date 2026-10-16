@@ -194,7 +194,7 @@ class Shot:
 
 class ImageShot(Shot):
     def __init__(self, start, duration, image: Image.Image, motion: str, size, cfg: dict,
-                 marks: list[dict] | None = None, photo: bool = False, seed: int = 0):
+                 marks: list[dict] | None = None, photo: bool = False, seed: int = 0, ad: dict | None = None):
         super().__init__(start, duration)
         self.W, self.H = size
         self.BW, self.BH = int(self.W * MARGIN), int(self.H * MARGIN)
@@ -202,6 +202,8 @@ class ImageShot(Shot):
             base = np.array(archival_print(image, cfg, self.BW, self.BH, seed))
         else:
             base = cover(image, self.BW, self.BH)
+        if ad:
+            base = draw_ad_overlay(base, ad, cfg)
         self.base = add_grain(base, float(cfg["style"].get("grain", 0)), seed)
         self.motion = motion
         self.marks = [dict(m) for m in (marks or [])]
@@ -399,3 +401,211 @@ class ChartShot(Shot):
                     draw.ellipse((pt[0] - r, pt[1] - r, pt[0] + r, pt[1] + r), fill=color)
                     draw.text((pt[0], pt[1] - r - 6), self._fmt(values[i]), font=val_font, fill=self.pal["ink"], anchor="md")
         return np.array(img)
+
+
+# ---------------------------------------------------------------- Vox-style document + highlighter
+
+class DocShot(Shot):
+    """A paper clipping of a study/article; a yellow highlighter sweeps over the key phrase.
+
+    spec: source (e.g. "Journal of Consumer Research, 2005"), headline, body (2–4 sentences, paraphrased),
+          highlight (exact substring of body), at (s after narration start, default 1.0)
+    """
+
+    def __init__(self, start, duration, spec: dict, cfg: dict, size, lead_in: float = 0.0, seed: int = 0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+        self.pal = pal
+        portrait = self.H > self.W
+        BW, BH = int(self.W * MARGIN), int(self.H * MARGIN)
+        self.BW, self.BH = BW, BH
+        desk = np.full((BH, BW, 3), tuple(int(c * 0.82) for c in pal["paper"]), dtype=np.uint8)
+        self.desk = add_grain(desk, 0.05, seed)
+        pw = int(BW * (0.78 if portrait else 0.56))
+        head_f = resolve_font(cfg["fonts"]["headline"])
+        body_f = resolve_font(cfg["fonts"]["serif"])
+        small = font(resolve_font(cfg["fonts"]["body"]), max(16, int(pw * 0.028)))
+        hfnt, hlines = fit_font(spec.get("headline", "").upper(), head_f, int(pw * 0.86), int(pw * 0.30), start=int(pw * 0.085))
+        bfnt = font(body_f, max(18, int(pw * 0.045)))
+        from .text import wrap as _wrap
+        body = spec.get("body", "")
+        blines = _wrap(body, bfnt, int(pw * 0.86))
+        lh = int(bfnt.size * 1.35)
+        ph = int(pw * 0.12 + len(hlines) * hfnt.size * 1.1 + len(blines) * lh + pw * 0.16)
+        paper = Image.new("RGB", (pw, ph), (250, 246, 236))
+        d = ImageDraw.Draw(paper)
+        x0 = int(pw * 0.07)
+        y = int(pw * 0.05)
+        d.text((x0, y), spec.get("source", "").upper(), font=small, fill=pal["red"])
+        y += int(small.size * 1.8)
+        for ln in hlines:
+            d.text((x0, y), ln, font=hfnt, fill=pal["ink"])
+            y += int(hfnt.size * 1.1)
+        y += int(pw * 0.02)
+        d.line((x0, y, pw - x0, y), fill=pal["ink"], width=2)
+        y += int(pw * 0.03)
+        # find highlight span (line, start x, end x) per line
+        target = spec.get("highlight", "")
+        self.spans = []  # (y_top, x_start, x_end, height) in paper coords
+        flat, positions = "", []
+        for i, ln in enumerate(blines):
+            positions.append((len(flat), i))
+            flat += ln + " "
+        hs = flat.find(target) if target else -1
+        he = hs + len(target)
+        line_y = []
+        for i, ln in enumerate(blines):
+            line_y.append(y)
+            y += lh
+        if hs >= 0:
+            for (off, i) in positions:
+                ln = blines[i]
+                a, b = max(hs, off), min(he, off + len(ln))
+                if a < b:
+                    xa = x0 + bfnt.getlength(ln[: a - off])
+                    xb = x0 + bfnt.getlength(ln[: b - off])
+                    self.spans.append((line_y[i], xa, xb, bfnt.size))
+        self.paper_plain = paper.copy()
+        for i, ln in enumerate(blines):
+            d.text((x0, line_y[i]), ln, font=bfnt, fill=pal["ink"])
+        self.text_layer = paper  # paper with text
+        self.blines, self.line_y, self.bfnt, self.x0 = blines, line_y, bfnt, x0
+        self.angle = float(np.random.default_rng(seed).uniform(-2.5, 2.5))
+        self.at = float(spec.get("at", 1.0)) + lead_in
+        self.hl_dur = float(spec.get("dur", 0.9))
+        self.pw, self.ph = pw, ph
+        self.yellow = (255, 222, 89)
+        self._cache_p = None
+        self._cache_base = None
+
+    def _compose(self, p: float) -> np.ndarray:
+        paper = self.paper_plain.copy()
+        d = ImageDraw.Draw(paper)
+        total = sum(xb - xa for _y, xa, xb, _h in self.spans) or 1
+        budget = total * p
+        for (ly, xa, xb, h) in self.spans:
+            if budget <= 0:
+                break
+            wlen = min(xb - xa, budget)
+            budget -= wlen
+            d.rectangle((xa - 4, ly + h * 0.12, xa + wlen + 4, ly + h * 1.12), fill=self.yellow)
+        for i, ln in enumerate(self.blines):
+            d.text((self.x0, self.line_y[i]), ln, font=self.bfnt, fill=self.pal["ink"])
+        # header area from the text layer (source + headline)
+        top_h = self.line_y[0] if self.line_y else self.ph
+        paper.paste(self.text_layer.crop((0, 0, self.pw, top_h)), (0, 0))
+        rgba = paper.convert("RGBA").rotate(self.angle, resample=Image.BICUBIC, expand=True)
+        base = Image.fromarray(self.desk.copy())
+        shadow = Image.new("RGBA", rgba.size, (0, 0, 0, 0))
+        shadow.paste((0, 0, 0, 80), mask=rgba.split()[3])
+        shadow = shadow.filter(ImageFilter.GaussianBlur(14))
+        x, y = (self.BW - rgba.width) // 2, max(0, (self.BH - rgba.height) // 2 - int(self.BH * 0.06))
+        base.paste(shadow, (x + 10, y + 16), shadow)
+        base.paste(rgba, (x, y), rgba)
+        return np.array(base)
+
+    def frame(self, t: float) -> np.ndarray:
+        p = round(min(1.0, max(0.0, (t - self.at) / self.hl_dur)) * 24) / 24  # quantised: fewer recomposes
+        if p != self._cache_p:
+            self._cache_base = self._compose(p)
+            self._cache_p = p
+        z = 1.0 + 0.12 * ease(t / max(self.duration, 1e-6))
+        win_w = self.BW / z
+        s = self.W / win_w
+        cx, cy = self.BW / 2, self.BH / 2
+        M = np.float32([[s, 0, self.W / 2 - s * cx], [0, s, self.H / 2 - s * cy]])
+        return cv2.warpAffine(self._cache_base, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+
+
+# ---------------------------------------------------------------- kinetic typography
+
+class KineticShot(Shot):
+    """Words slam in exactly when they are spoken. Words wrapped in *stars* get the accent colour.
+
+    spec: text (defaults to the beat text), bg ("paper"|"ink"|"red")
+    """
+
+    def __init__(self, start, duration, text: str, words_timed, cfg: dict, size, lead_in: float, bg: str = "paper"):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+        self.pal = pal
+        bg_color = {"paper": pal["paper"], "ink": pal["ink"], "red": pal["red"], "green": pal["green"]}.get(bg, pal["paper"])
+        fg = pal["paper"] if bg in ("ink", "red", "green") else pal["ink"]
+        self.bg = add_grain(np.full((self.H, self.W, 3), bg_color, dtype=np.uint8), 0.04, 21)
+        head = resolve_font(cfg["fonts"]["headline"])
+        raw = text.split()
+        clean = [w.strip("*") for w in raw]
+        accent = [w.startswith("*") or w.endswith("*") for w in raw]
+        fnt, lines = fit_font(" ".join(clean).upper(), head, int(self.W * 0.84), int(self.H * 0.62),
+                              start=int(min(self.W, self.H) * 0.2), min_size=40)
+        # positions of each word
+        lh = int(fnt.size * 1.05)
+        total_h = lh * len(lines)
+        y = (self.H - total_h) // 2
+        self.items = []  # (word_img, x, y, appear_time)
+        wi = 0
+        times = [s for _w, s, _e in words_timed] if words_timed else []
+        for line in lines:
+            ws = line.split(" ")
+            widths = [fnt.getlength(w) for w in ws]
+            space = fnt.getlength(" ")
+            line_w = sum(widths) + space * (len(ws) - 1)
+            x = (self.W - line_w) / 2
+            for w, ww in zip(ws, widths):
+                color = pal["red"] if (wi < len(accent) and accent[wi]) else fg
+                img = text_block([w], fnt, fill=color)
+                appear = (times[wi] if wi < len(times) else wi * 0.25) + lead_in
+                self.items.append((img, int(x), int(y), appear))
+                x += ww + space
+                wi += 1
+            y += lh
+
+    def frame(self, t: float) -> np.ndarray:
+        out = self.bg.copy()
+        for img, x, y, appear in self.items:
+            age = t - appear
+            if age < 0:
+                continue
+            p = min(1.0, age / 0.12)
+            scale = 1.35 - 0.35 * ease(p)
+            im = img
+            if abs(scale - 1) > 1e-3:
+                h, w = img.shape[:2]
+                im = cv2.resize(img, (max(1, int(w * scale)), max(1, int(h * scale))))
+            dx, dy = (im.shape[1] - img.shape[1]) // 2, (im.shape[0] - img.shape[0]) // 2
+            blend(out, im, x - dx, y - dy, opacity=min(1.0, p * 2))
+        return out
+
+
+# ---------------------------------------------------------------- fake 1950s ad gag
+
+def draw_ad_overlay(base: np.ndarray, ad: dict, cfg: dict) -> np.ndarray:
+    """Starburst badge + slogan ribbon baked onto the picture: the recurring '1950s ad' gag."""
+    pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+    img = Image.fromarray(base).convert("RGBA")
+    W, H = img.size
+    d = ImageDraw.Draw(img)
+    head = resolve_font(cfg["fonts"]["headline"])
+    if ad.get("badge"):
+        r = int(min(W, H) * 0.15)
+        cx, cy = int(W * float(ad.get("badge_x", 0.76))), int(H * float(ad.get("badge_y", 0.3)))
+        pts = []
+        for k in range(32):
+            rr = r if k % 2 == 0 else r * 0.78
+            a = math.pi * 2 * k / 32
+            pts.append((cx + rr * math.cos(a), cy + rr * math.sin(a)))
+        d.polygon(pts, fill=pal["accent"] + (255,), outline=pal["ink"] + (255,), width=6)
+        fnt, lines = fit_font(str(ad["badge"]).upper(), head, int(r * 1.25), int(r * 1.1), start=int(r * 0.5), min_size=20)
+        blk = Image.fromarray(text_block(lines, fnt, fill=pal["ink"])).rotate(12, resample=Image.BICUBIC, expand=True)
+        img.alpha_composite(blk, (cx - blk.width // 2, cy - blk.height // 2))
+    if ad.get("slogan"):
+        fnt, lines = fit_font(str(ad["slogan"]).upper(), head, int(W * 0.62), int(H * 0.14), start=int(H * 0.07), min_size=24)
+        blk = text_block(lines, fnt, fill=pal["paper"], pad=int(fnt.size * 0.35))
+        bh, bw = blk.shape[:2]
+        ribbon = Image.new("RGBA", (bw, bh), pal["red"] + (255,))
+        ribbon.alpha_composite(Image.fromarray(blk))
+        ribbon = ribbon.rotate(-3, resample=Image.BICUBIC, expand=True)
+        img.alpha_composite(ribbon, ((W - ribbon.width) // 2, int(H * float(ad.get("slogan_y", 0.55)))))
+    return np.array(img.convert("RGB"))
