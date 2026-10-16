@@ -165,7 +165,8 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
             if note is None:
                 fpath = resolve_font(cfg["fonts"]["marker"])
                 fnt = font(fpath, max(24, int(min(W, H) * 0.055)))
-                note = text_block([str(mark["text"])], fnt, fill=red)
+                paper = tuple(int(c) for c in hex_to_rgb(cfg["style"]["palette"]["paper"]))
+                note = text_block([str(mark["text"])], fnt, fill=red, stroke=max(3, fnt.size // 12), stroke_fill=paper)
                 angle = float(mark.get("angle", -4))
                 pil = Image.fromarray(note).rotate(angle, resample=Image.BICUBIC, expand=True)
                 note = np.array(pil)
