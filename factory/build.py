@@ -1,0 +1,107 @@
+"""Build one episode: python -m factory build episodes/<slug> [--offline] [--out out/<slug>] [--only long|shorts]"""
+from __future__ import annotations
+
+import argparse
+import json
+import sys
+import time
+from pathlib import Path
+
+from .config import ROOT, load_config
+from .images import ensure_images, ensure_photos, is_archive_photo
+from .meta import thumbnail, write_meta
+from .render import build_plan, render
+from .script import ScriptError, image_prompts, load_episode, photo_sources
+from .tts import SAMPLE_RATE, caption_words, make_voice, spoken_text
+
+
+def log(msg: str) -> None:
+    print(msg, flush=True)
+
+
+def voice_beats(voice, beats: list[dict]) -> list[dict]:
+    out = []
+    for beat in beats:
+        audio, timings = voice.synth(spoken_text(beat))
+        duration = len(audio) / SAMPLE_RATE
+        out.append({"audio": audio, "sr": SAMPLE_RATE, "duration": duration, "words": caption_words(beat, timings, duration)})
+    return out
+
+
+def build(episode_path: str, out_dir: str | None, offline: bool, only: str | None) -> Path:
+    started = time.time()
+    episode = load_episode(episode_path)
+    cfg = load_config(episode.get("config"))
+    slug = episode["slug"]
+    out = Path(out_dir) if out_dir else ROOT / "out" / slug
+    out.mkdir(parents=True, exist_ok=True)
+    log(f"Episode: {episode['title']}  ({len(episode['beats'])} beats, {len(episode.get('shorts') or [])} shorts)")
+
+    prompts = image_prompts(episode)
+    cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
+    images = ensure_images(cfg, prompts, cache, offline, log)
+    photos = photo_sources(episode)
+    if photos:
+        got = ensure_photos(cfg, photos, cache, offline, log)
+        images.update(got)
+        credits = [f"Archive photo: {spec['credit']}" for key, spec in photos.items() if is_archive_photo(got[key])]
+        episode["sources"] = list(episode.get("sources") or []) + credits
+
+    log("Narration…")
+    voice = make_voice(cfg, offline)
+    beat_lookup = {b["id"]: b for b in episode["beats"]}
+    long_voiced = voice_beats(voice, episode["beats"])
+
+    plan_long = build_plan(episode["beats"], long_voiced, images, cfg,
+                           (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup)
+    log(f"Long video: {plan_long.total / 60:.1f} min, {len(plan_long.shots)} shots")
+    if only in (None, "long"):
+        render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
+        (out / "long.wav").unlink(missing_ok=True)
+
+    shorts_info = []
+    size_short = (cfg["video"]["short"]["width"], cfg["video"]["short"]["height"])
+    for short in episode.get("shorts") or []:
+        voiced = voice_beats(voice, short["beats"])
+        plan = build_plan(short["beats"], voiced, images, cfg, size_short, "short", beat_lookup)
+        name = f"short_{short['id']}.mp4"
+        log(f"Short {short['id']}: {plan.total:.1f}s")
+        if plan.total > 60:
+            log(f"  warning: {plan.total:.0f}s is longer than 60 s")
+        if only in (None, "shorts"):
+            render(plan, cfg, out / name, out / f"short_{short['id']}.wav", log)
+            (out / f"short_{short['id']}.wav").unlink(missing_ok=True)
+        shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1)})
+
+    thumb = episode.get("thumbnail") or {}
+    first_image = next(b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo"))
+    thumbnail(cfg, images[thumb.get("beat") or first_image], thumb.get("text") or episode["title"], out / "thumbnail.jpg")
+    write_meta(out, episode, plan_long, shorts_info)
+    log(f"Done in {(time.time() - started) / 60:.1f} min -> {out}")
+    return out
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(prog="python -m factory")
+    sub = ap.add_subparsers(dest="cmd", required=True)
+    b = sub.add_parser("build", help="render an episode")
+    b.add_argument("episode", help="episodes/<slug> folder or script.json")
+    b.add_argument("--out")
+    b.add_argument("--offline", action="store_true", help="placeholder images and voice (no APIs)")
+    b.add_argument("--only", choices=["long", "shorts"])
+    c = sub.add_parser("check", help="validate a script without rendering")
+    c.add_argument("episode")
+    args = ap.parse_args(argv)
+    try:
+        if args.cmd == "check":
+            ep = load_episode(args.episode)
+            n_img = len(image_prompts(ep))
+            words = sum(len(x["text"].split()) for x in ep["beats"])
+            print(json.dumps({"ok": True, "beats": len(ep["beats"]), "images": n_img,
+                              "approx_minutes": round(words / 155, 1), "shorts": len(ep.get("shorts") or [])}))
+            return 0
+        build(args.episode, args.out, args.offline, args.only)
+        return 0
+    except ScriptError as exc:
+        print(f"Script error:\n{exc}", file=sys.stderr)
+        return 2

@@ -1,0 +1,416 @@
+{
+  "slug": "0001-why-9-99",
+  "title": "Why $9.99 Works on Your Brain (Even When You Know the Trick)",
+  "description": "One cent should not matter. Yet prices ending in .99 change what we buy, what we notice and even what we pay for a used car. Here is the brain glitch behind it, the experiments that proved it, and how to stop falling for it.",
+  "tags": [
+    "psychology of money",
+    "pricing psychology",
+    "left digit effect",
+    "behavioral economics",
+    "charm pricing"
+  ],
+  "sources": [
+    "Thomas, M. & Morwitz, V. (2005). Penny Wise and Pound Foolish: The Left-Digit Effect in Price Cognition. Journal of Consumer Research.",
+    "Anderson, E. & Simester, D. (2003). Effects of $9 Price Endings on Retail Sales: Evidence from Field Experiments. Quantitative Marketing and Economics.",
+    "Lacetera, N., Pope, D. & Sydnor, J. (2012). Heuristic Thinking and Limited Attention in the Car Market. American Economic Review."
+  ],
+  "thumbnail": {
+    "beat": "b01",
+    "text": "$9.99 is a trick"
+  },
+  "beats": [
+    {
+      "id": "b01",
+      "section": "The one-cent mystery",
+      "text": "Look at this price. $9.99. Now be honest. Does it feel like ten dollars?",
+      "say": "Look at this price. Nine ninety-nine. Now be honest. Does it feel like ten dollars?",
+      "on_screen": "$9.99",
+      "visual": {
+        "type": "image",
+        "prompt": "a large paper price tag hanging on a string, centered in the frame, plain cream background, bold red border",
+        "motion": "zoom_in"
+      }
+    },
+    {
+      "id": "b02",
+      "text": "It doesn't. And that single missing cent is one of the most profitable tricks in the history of selling.",
+      "visual": {
+        "type": "image",
+        "prompts": [
+          "a single shiny copper penny lying on a green felt table, dramatic spotlight",
+          "an old brass cash register overflowing with paper money, glowing warm light"
+        ]
+      }
+    },
+    {
+      "id": "b03",
+      "text": "Walk into any store and you will see it everywhere. Nineteen ninety-nine. Four ninety-nine. Ninety-nine cents.",
+      "visual": {
+        "type": "image",
+        "prompts": [
+          "a 1950s supermarket aisle with neat rows of colorful cans, wide view",
+          "a row of price tags on a shop shelf edge, close view, red and cream colors"
+        ]
+      }
+    },
+    {
+      "id": "b04",
+      "text": "So why does it work? And why does it still work on you, even right now, when you already know it is a trick?",
+      "visual": {
+        "type": "image",
+        "prompt": "a thoughtful man in a 1950s suit and hat scratching his head while looking at a shop window",
+        "motion": "pan_right"
+      }
+    },
+    {
+      "id": "t01",
+      "section": "How your brain reads a price",
+      "text": "Chapter one. How your brain reads a price.",
+      "visual": {
+        "type": "title",
+        "text": "How your brain reads a price"
+      }
+    },
+    {
+      "id": "b05",
+      "section": "How your brain reads a price",
+      "text": "Your brain is lazy in a very clever way. It reads numbers from left to right, and it decides fast.",
+      "visual": {
+        "type": "image",
+        "prompt": "a stylized human brain made of gears and cogs inside a glass dome, mid-century illustration",
+        "motion": "zoom_in"
+      }
+    },
+    {
+      "id": "b06",
+      "section": "How your brain reads a price",
+      "text": "The first digit it sees becomes an anchor. Two ninety-nine starts with a two, so it gets filed as two dollars and something.",
+      "on_screen": "2.99 → \"about 2\"",
+      "visual": {
+        "type": "image",
+        "prompt": "a heavy iron ship anchor resting on a stack of coins, centered in the frame, side view",
+        "motion": "static",
+        "marks": [
+          {
+            "type": "arrow",
+            "x": 0.5,
+            "y": 0.45,
+            "from_x": 0.18,
+            "from_y": 0.2,
+            "at": 0.8,
+            "text": "first digit = anchor",
+            "text_x": 0.27,
+            "text_y": 0.08
+          }
+        ]
+      }
+    },
+    {
+      "id": "c01",
+      "section": "How your brain reads a price",
+      "text": "But look at the real gap. Two ninety-nine is not close to two. It is one cent away from three.",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "bar",
+          "title": "The real gap is one cent",
+          "labels": [
+            "$2.00",
+            "$2.99",
+            "$3.00"
+          ],
+          "values": [
+            2.0,
+            2.99,
+            3.0
+          ],
+          "unit": "$",
+          "highlight": 1
+        }
+      }
+    },
+    {
+      "id": "b07",
+      "section": "How your brain reads a price",
+      "text": "Researchers call this the left-digit effect. The digit on the left gets most of the attention, and the cents get almost none.",
+      "on_screen": "The left-digit effect",
+      "visual": {
+        "type": "image",
+        "prompt": "a magnifying glass centered over a large printed number on cream paper",
+        "motion": "static",
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.5,
+            "y": 0.5,
+            "w": 0.42,
+            "h": 0.42,
+            "at": 0.7
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.76,
+            "w": 0.36,
+            "h": 0.05,
+            "at": 1.6,
+            "text": "cents get ignored",
+            "text_y": 0.8
+          }
+        ]
+      }
+    },
+    {
+      "id": "t02",
+      "section": "The experiments",
+      "text": "Chapter two. The experiments.",
+      "visual": {
+        "type": "title",
+        "text": "The experiments"
+      }
+    },
+    {
+      "id": "b08",
+      "section": "The experiments",
+      "text": "In 2005, two marketing researchers, Manoj Thomas and Vicki Morwitz, showed that people judge a price ending in nine as noticeably cheaper, but mostly when the left digit changes.",
+      "visual": {
+        "type": "image",
+        "prompts": [
+          "a 1950s research laboratory with a scientist in a white coat holding a clipboard",
+          "two price cards on a table, one slightly lower than the other, clean studio light"
+        ]
+      }
+    },
+    {
+      "id": "b09",
+      "section": "The experiments",
+      "text": "Going from three dollars to two ninety-nine feels like a real discount. Going from three sixty to three fifty-nine barely registers.",
+      "say": "Going from three dollars to two ninety-nine feels like a real discount. Going from three sixty to three fifty-nine barely registers.",
+      "on_screen": "$3.00 → $2.99  feels big",
+      "visual": {
+        "type": "image",
+        "prompt": "a shop clerk in a 1950s uniform replacing a price card on a display stand",
+        "motion": "zoom_out"
+      }
+    },
+    {
+      "id": "b10",
+      "section": "The experiments",
+      "text": "Then came a field test with real money. Economists Eric Anderson and Duncan Simester worked with a mail-order clothing catalog.",
+      "visual": {
+        "type": "image",
+        "prompt": "a stack of vintage mail-order clothing catalogs on a wooden desk next to a pen",
+        "motion": "pan_up"
+      }
+    },
+    {
+      "id": "b11",
+      "section": "The experiments",
+      "text": "They printed different versions of the same catalog, with the same dress at different prices. Thirty-four dollars, thirty-nine, and forty-four.",
+      "on_screen": "$34   $39   $44",
+      "visual": {
+        "type": "image",
+        "prompt": "a 1950s dress on a mannequin in a boutique window, elegant lighting",
+        "motion": "drift"
+      }
+    },
+    {
+      "id": "b12",
+      "section": "The experiments",
+      "text": "The result sounds impossible. The thirty-nine dollar version sold more than the cheaper thirty-four dollar one.",
+      "on_screen": "$39 beat $34",
+      "sfx": "thud",
+      "visual": {
+        "type": "image",
+        "style": "comic",
+        "prompt": "a shocked 1950s shop owner in an apron staring at a sales ledger, mouth open, centered",
+        "motion": "zoom_in"
+      },
+      "bubble": {
+        "text": "Wait… the pricier one sold MORE?!",
+        "x": 0.72,
+        "y": 0.3,
+        "tail": "left",
+        "at": 0.3
+      }
+    },
+    {
+      "id": "b13",
+      "section": "The experiments",
+      "text": "A higher price sold more. The nine at the end did not just look cheaper. It looked like a deal.",
+      "visual": {
+        "type": "reuse",
+        "beat": "b01",
+        "motion": "zoom_out"
+      }
+    },
+    {
+      "id": "t03",
+      "section": "It is not just price tags",
+      "text": "Chapter three. It is not just price tags.",
+      "visual": {
+        "type": "title",
+        "text": "It's not just price tags"
+      }
+    },
+    {
+      "id": "b14",
+      "section": "It is not just price tags",
+      "text": "The same glitch shows up in places with much bigger money. Take used cars.",
+      "visual": {
+        "type": "image",
+        "prompt": "a shiny 1950s sedan parked on a used car lot with bunting flags",
+        "motion": "pan_right"
+      }
+    },
+    {
+      "id": "b15",
+      "section": "It is not just price tags",
+      "text": "A study of millions of wholesale car sales found that prices drop sharply when the odometer crosses a round number, like ten thousand miles.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 22,
+          "suffix": "M+",
+          "label": "wholesale used-car sales analysed"
+        }
+      }
+    },
+    {
+      "id": "b16",
+      "section": "It is not just price tags",
+      "text": "A car with seventy-nine thousand nine hundred miles is basically the same car as one with eighty thousand. But buyers pay noticeably more for it.",
+      "visual": {
+        "type": "image",
+        "prompts": [
+          "two identical vintage cars side by side in a showroom, symmetrical composition",
+          "a car salesman in a checked jacket shaking hands with a happy customer"
+        ]
+      }
+    },
+    {
+      "id": "t04",
+      "section": "How to beat the trick",
+      "text": "Chapter four. How to beat the trick.",
+      "visual": {
+        "type": "title",
+        "text": "How to beat the trick"
+      }
+    },
+    {
+      "id": "b17",
+      "section": "How to beat the trick",
+      "text": "Here is the good news. The fix is simple. Round every price up before you decide.",
+      "on_screen": "Round up. Always.",
+      "visual": {
+        "type": "image",
+        "prompt": "a hand-held pencil writing a round number on a small notepad, cream paper",
+        "motion": "static",
+        "marks": [
+          {
+            "type": "check",
+            "x": 0.72,
+            "y": 0.35,
+            "w": 0.14,
+            "h": 0.16,
+            "at": 1.2
+          }
+        ]
+      }
+    },
+    {
+      "id": "b18",
+      "section": "How to beat the trick",
+      "text": "Nine ninety-nine is ten. Forty-nine ninety-nine is fifty. Say the rounded number out loud, and the magic disappears.",
+      "visual": {
+        "type": "image",
+        "prompt": "a vintage stage magician lifting an empty top hat, surprised expression, theatrical spotlight, centered",
+        "motion": "zoom_in",
+        "style": "comic"
+      },
+      "bubble": {
+        "text": "Ta-da…?",
+        "x": 0.75,
+        "y": 0.28,
+        "tail": "left",
+        "at": 0.6
+      }
+    },
+    {
+      "id": "b19",
+      "section": "How to beat the trick",
+      "text": "And when a price ends in nine, ask one question. Is this actually cheap, or does it just look cheap?",
+      "visual": {
+        "type": "reuse",
+        "beat": "b04",
+        "motion": "zoom_out"
+      }
+    },
+    {
+      "id": "b20",
+      "section": "How to beat the trick",
+      "text": "Because the people who set that price already know how your brain reads it. Now you do too.",
+      "on_screen": "Now you know.",
+      "visual": {
+        "type": "reuse",
+        "beat": "b05",
+        "motion": "drift"
+      }
+    }
+  ],
+  "shorts": [
+    {
+      "id": "s1",
+      "title": "Why every price ends in 99 #shorts",
+      "beats": [
+        {
+          "text": "Why does every price end in ninety-nine?",
+          "on_screen": "$9.99",
+          "visual": {
+            "type": "reuse",
+            "beat": "b01",
+            "motion": "zoom_in"
+          }
+        },
+        {
+          "text": "Because your brain reads prices from left to right, and the first digit wins.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b05"
+          }
+        },
+        {
+          "text": "Two ninety-nine gets filed as two dollars. It is one cent from three.",
+          "on_screen": "2.99 ≈ 3",
+          "visual": {
+            "type": "reuse",
+            "beat": "b06"
+          }
+        },
+        {
+          "text": "In one real catalog test, a dress at thirty-nine dollars outsold the same dress at thirty-four.",
+          "on_screen": "$39 beat $34",
+          "visual": {
+            "type": "reuse",
+            "beat": "b11"
+          }
+        },
+        {
+          "text": "A higher price sold more, just because it ended in nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b12"
+          }
+        },
+        {
+          "text": "So next time, round up. And remember exactly why every price ends in…",
+          "visual": {
+            "type": "reuse",
+            "beat": "b01",
+            "motion": "zoom_out"
+          }
+        }
+      ]
+    }
+  ]
+}

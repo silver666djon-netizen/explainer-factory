@@ -1,0 +1,9 @@
+# torch is installed separately (CPU build) in the workflow to keep downloads small
+kokoro>=0.9.4
+soundfile>=0.12
+numpy>=1.26
+scipy>=1.11
+opencv-python-headless>=4.8
+pillow>=10.0
+pyyaml>=6.0
+requests>=2.31

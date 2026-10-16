@@ -1,0 +1,117 @@
+name: Render episode
+
+on:
+  push:
+    branches: [main]
+    paths: ["episodes/*/script.json"]
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode folder name, e.g. 0001-why-9-99"
+        required: true
+      only:
+        description: "long / shorts / empty = everything"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render
+  cancel-in-progress: false
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pick episodes
+        id: pick
+        run: |
+          if [ -n "${{ github.event.inputs.episode }}" ]; then
+            list="${{ github.event.inputs.episode }}"
+          else
+            before="${{ github.event.before }}"
+            if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then before="HEAD~1"; fi
+            list=$(git diff --name-only "$before" HEAD -- 'episodes/*/script.json' | cut -d/ -f2 | sort -u | tr '\n' ' ')
+          fi
+          echo "Episodes: $list"
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: System packages
+        run: |
+          sudo apt-get update -q
+          sudo apt-get install -y -q ffmpeg espeak-ng fonts-dejavu-core
+
+      - name: Fonts
+        run: |
+          mkdir -p assets/fonts
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf \
+                   ofl/bangers/Bangers-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf; do
+            curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f (fallback font will be used)"
+          done
+          ls -la assets/fonts
+
+      - name: Cache voice model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-v1
+
+      - name: Cache generated images
+        uses: actions/cache@v4
+        with:
+          path: .cache/images
+          key: images-${{ github.run_id }}
+          restore-keys: images-
+
+      - name: Python packages
+        run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt
+
+      - name: Render
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          only="${{ github.event.inputs.only }}"
+          for ep in ${{ steps.pick.outputs.list }}; do
+            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only}
+          done
+
+      - name: Publish release + Telegram
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          for ep in ${{ steps.pick.outputs.list }}; do
+            tag="$ep-r${{ github.run_number }}"
+            title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
+            gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt"
+            url=$(gh release view "$tag" --json url -q .url)
+            python -m factory.notify "out/$ep" "$url"
+          done
+
+      - name: Telegram on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=⚠️ Explainer Factory: рендер не удался. Лог: ${run_url}" > /dev/null || true
