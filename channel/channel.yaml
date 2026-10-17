@@ -75,8 +75,8 @@ images:
   gemini_size: 1K
   aspect_ratio: "16:9"
   gemini_quality_suffix: >-
-    Crisp professional illustration, clean confident linework, anatomically correct hands with five fingers,
-    natural warm skin tones on every hand and face, unsigned artwork,
+    Crisp professional illustration, clean confident linework, only the subjects described,
+    people (when present) with natural anatomy and warm skin tones, unsigned artwork,
     precise round geometric objects, unlettered surfaces, cinematic composition with depth and a clear foreground.
   model: "@cf/black-forest-labs/flux-1-schnell"   # Cloudflare fallback
   width: 1280

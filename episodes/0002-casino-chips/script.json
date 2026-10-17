@@ -251,7 +251,7 @@
       "sfx": "tick",
       "visual": {
         "type": "image",
-        "prompt": "a single red and cream casino chip tumbling in mid-air above green felt, warm light catching its ridged edge, playful motion lines",
+        "prompt": "one round red and cream casino chip with a ridged edge, standing on its edge and spinning on green felt, small curved motion lines around it",
         "motion": "zoom_in"
       }
     },
@@ -373,7 +373,7 @@
       ],
       "visual": {
         "type": "image",
-        "prompt": "{larry} in a mid shot at a casino table, one eyebrow raised, peering suspiciously at a single casino chip resting on his open palm",
+        "prompt": "{larry} alone in a mid shot at a casino table, holding one round casino chip up at eye level and squinting at it suspiciously",
         "motion": "zoom_in",
         "style": "comic"
       }
