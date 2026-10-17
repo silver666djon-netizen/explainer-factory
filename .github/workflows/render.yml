@@ -70,8 +70,8 @@ jobs:
           path: ~/.cache/huggingface
           key: kokoro-v1
 
-      - name: Cache generated images
-        uses: actions/cache@v4
+      - name: Restore generated images
+        uses: actions/cache/restore@v4
         with:
           path: .cache/images
           key: images-${{ github.run_id }}
@@ -87,10 +87,23 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          set -o pipefail
           only="${{ github.event.inputs.only }}"
           for ep in ${{ steps.pick.outputs.list }}; do
-            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only}
+            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} 2>&1 | tee -a build.log
           done
+
+      - name: Save generated images (even if the render failed)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/images
+          key: images-${{ github.run_id }}
+
+      - name: Report error details
+        if: failure()
+        run: |
+          tail -n 60 build.log 2>/dev/null | grep -v "%  (" | python3 -c 'import sys; t=sys.stdin.read()[-6000:]; print("::error title=Render failed::" + t.replace("%","%25").replace("\r","").replace("\n","%0A"))'
 
       - name: Publish release + Telegram
         env:
