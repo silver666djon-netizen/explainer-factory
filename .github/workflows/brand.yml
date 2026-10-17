@@ -1,0 +1,42 @@
+name: Brand art
+
+# Logo / banner ideas from brand/<name>.json -> Telegram album + release "brand".
+on:
+  workflow_dispatch:
+    inputs:
+      spec:
+        description: "brand/logos.json"
+        required: true
+        default: "brand/logos.json"
+      only:
+        description: "comma-separated keys (empty = all)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  brand:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q pillow numpy opencv-python-headless pyyaml requests
+      - name: Generate
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m factory.brand "${{ github.event.inputs.spec }}" --send ${{ github.event.inputs.only && format('--only {0}', github.event.inputs.only) || '' }}
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view brand >/dev/null 2>&1 || gh release create brand --title "Brand art" --notes "Logo and banner drafts"
+          gh release upload brand out/brand/*.png --clobber
