@@ -25,25 +25,36 @@ def _proportional_words(text: str, duration: float) -> list[tuple[str, float, fl
 class OfflineVoice:
     """Silent-ish stand-in: correct pacing (~155 words/min), soft tick per word."""
 
+    def __init__(self, pitch: float = 440.0):
+        self.pitch = pitch
+
     def synth(self, text: str):
         words = text.split()
         duration = max(1.0, len(words) / 2.6)
         audio = np.zeros(int(duration * SAMPLE_RATE), dtype=np.float32)
         timings = _proportional_words(text, duration)
         t = np.arange(int(0.05 * SAMPLE_RATE)) / SAMPLE_RATE
-        tick = (0.08 * np.sin(2 * np.pi * 440 * t) * np.exp(-t * 60)).astype(np.float32)
+        tick = (0.08 * np.sin(2 * np.pi * self.pitch * t) * np.exp(-t * 60)).astype(np.float32)
         for _w, start, _end in timings:
             i = int(start * SAMPLE_RATE)
             audio[i : i + len(tick)] += tick[: len(audio) - i]
         return audio, timings
 
 
-class KokoroVoice:
-    def __init__(self, cfg: dict):
+_PIPELINES: dict = {}
+
+
+def _pipeline(lang_code: str):
+    if lang_code not in _PIPELINES:
         from kokoro import KPipeline  # imported lazily: heavy dependency
 
-        vcfg = cfg["voice"]
-        self.pipe = KPipeline(lang_code=vcfg.get("lang_code", "a"), repo_id="hexgrad/Kokoro-82M")
+        _PIPELINES[lang_code] = KPipeline(lang_code=lang_code, repo_id="hexgrad/Kokoro-82M")
+    return _PIPELINES[lang_code]
+
+
+class KokoroVoice:
+    def __init__(self, vcfg: dict):
+        self.pipe = _pipeline(vcfg.get("lang_code", "a"))
         self.voice = vcfg.get("voice", "am_michael")
         self.speed = float(vcfg.get("speed", 1.0))
 
@@ -79,8 +90,32 @@ class KokoroVoice:
         return np.concatenate(chunks), timings
 
 
-def make_voice(cfg: dict, offline: bool):
-    return OfflineVoice() if offline else KokoroVoice(cfg)
+class VoiceBank:
+    """Narrator + any extra character voices ('voices' in the channel config or the episode)."""
+
+    def __init__(self, cfg: dict, extra: dict | None, offline: bool):
+        self.specs = {"narrator": cfg["voice"]}
+        self.specs.update(cfg.get("voices") or {})
+        self.specs.update(extra or {})
+        self.offline = offline
+        self.cache: dict = {}
+
+    def get(self, key: str | None):
+        key = key or "narrator"
+        if key not in self.cache:
+            spec = self.specs[key]
+            if self.offline:
+                self.cache[key] = OfflineVoice(440.0 if key == "narrator" else 260.0)
+            else:
+                self.cache[key] = KokoroVoice(spec)
+        return self.cache[key]
+
+    def synth(self, text: str, key: str | None = None):
+        return self.get(key).synth(text)
+
+
+def make_voice(cfg: dict, offline: bool, extra: dict | None = None) -> VoiceBank:
+    return VoiceBank(cfg, extra, offline)
 
 
 def caption_words(beat: dict, timings: list[tuple[str, float, float]], duration: float):

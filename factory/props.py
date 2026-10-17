@@ -1,0 +1,619 @@
+"""Channel 'props' drawn by code (identical in every episode): case file, mugshot, roulette wheel,
+casino maze under a magnifier, and the newsreel film look."""
+from __future__ import annotations
+
+import math
+from collections import deque
+
+import cv2
+import numpy as np
+from PIL import Image, ImageDraw, ImageFilter
+
+from .config import hex_to_rgb, resolve_font
+from .shots import MARGIN, Shot, add_grain, cover, ease, mark_strokes
+from .text import blend, fit_font, font, text_block
+
+
+def _pal(cfg):
+    return {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+
+
+def _darker(c, f):
+    return tuple(int(x * f) for x in c)
+
+
+def _push(base: np.ndarray, size, z: float) -> np.ndarray:
+    """Centre crop-zoom of a (MARGIN-sized) canvas down to the frame size."""
+    W, H = size
+    BH, BW = base.shape[:2]
+    win_w = BW / z
+    s = W / win_w
+    M = np.float32([[s, 0, W / 2 - s * BW / 2], [0, s, H / 2 - s * BH / 2]])
+    return cv2.warpAffine(base, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+
+
+def _draw_marker(frame: np.ndarray, strokes, p: float, color, thick: int) -> None:
+    total = sum(len(s) for s in strokes)
+    budget = int(total * min(1.0, max(0.0, p)))
+    for s in strokes:
+        if budget <= 1:
+            break
+        seg = s[: min(len(s), budget)]
+        budget -= len(seg)
+        cv2.polylines(frame, [seg.astype(np.int32).reshape(-1, 1, 2)], False, color, thick, cv2.LINE_AA)
+
+
+# ------------------------------------------------------------------ newsreel look
+
+def newsreel(frame: np.ndarray, t: float, seed: int, label: str | None, cfg: dict) -> np.ndarray:
+    """1950s newsreel: sepia, flicker, scratches, dust, heavy vignette, small 'reconstruction' label."""
+    H, W = frame.shape[:2]
+    pal = _pal(cfg)
+    k = int(t * 12)  # film flickers at 12 fps
+    rnd = np.random.default_rng(seed * 1000 + k)
+    gray = cv2.cvtColor(frame, cv2.COLOR_RGB2GRAY).astype(np.float32) / 255.0
+    gray = np.clip((gray - 0.5) * 1.25 + 0.5, 0, 1)
+    flicker = 0.93 + 0.07 * rnd.random()
+    gray *= flicker
+    dark = np.array(pal["ink"], np.float32) / 255.0
+    light = np.array([0.95, 0.88, 0.72], np.float32)
+    out = (dark[None, None, :] * (1 - gray[..., None]) + light[None, None, :] * gray[..., None]) * 255
+    out = out.astype(np.uint8)
+    for _ in range(rnd.integers(0, 3)):  # vertical scratches
+        x = int(rnd.uniform(0.05, 0.95) * W)
+        cv2.line(out, (x, 0), (x + int(rnd.uniform(-8, 8)), H), (235, 225, 200), 1 + int(rnd.random() * 2), cv2.LINE_AA)
+    for _ in range(rnd.integers(4, 12)):  # dust
+        cx, cy = int(rnd.random() * W), int(rnd.random() * H)
+        r = int(1 + rnd.random() * 3)
+        cv2.circle(out, (cx, cy), r, (25, 20, 15) if rnd.random() < 0.5 else (240, 232, 210), -1, cv2.LINE_AA)
+    yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+    rr = np.sqrt(((xx - W / 2) / (W / 2)) ** 2 + ((yy - H / 2) / (H / 2)) ** 2)
+    vig = np.clip(1.15 - 0.55 * rr ** 2.5, 0, 1)[..., None]
+    out = (out.astype(np.float32) * vig).astype(np.uint8)
+    if label:
+        fnt = font(resolve_font(cfg["fonts"]["body"]), max(14, int(H * 0.026)))
+        blk = text_block([label.upper()], fnt, fill=pal["paper"], box_fill=pal["ink"] + (210,), pad=int(fnt.size * 0.4))
+        blend(out, blk, W - blk.shape[1] - int(W * 0.03), H - blk.shape[0] - int(H * 0.04))
+    return out
+
+
+def projector_sfx_times(start: float, duration: float) -> list[float]:
+    return [start + i * 2.9 for i in range(max(1, int(duration // 2.9) + 1))]
+
+
+# ------------------------------------------------------------------ case file
+
+class CaseFileShot(Shot):
+    """mode 'open': manila folder opens on a desk. mode 'closed': folder + a stamp slams down + verdict lines.
+
+    spec: number, title, stamp, lines[], stamp_at (s after narration start)
+    """
+
+    def __init__(self, start, duration, spec: dict, cfg: dict, size, lead_in: float = 0.0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        self.cfg, self.spec = cfg, spec
+        self.pal = pal = _pal(cfg)
+        self.mode = spec.get("mode", "open")
+        self.lead_in = lead_in
+        BW, BH = int(self.W * MARGIN), int(self.H * MARGIN)
+        self.BW, self.BH = BW, BH
+        desk = np.full((BH, BW, 3), _darker(pal["green"], 0.55), np.uint8)
+        # simple wood-ish desk stripes
+        rnd = np.random.default_rng(4)
+        for y in range(0, BH, 6):
+            desk[y : y + 3] = np.clip(desk[y : y + 3].astype(int) + int(rnd.integers(-6, 6)), 0, 255)
+        self.desk = add_grain(desk, 0.05, 2)
+        portrait = self.H > self.W
+        fh = int(BH * (0.62 if portrait else 0.74))
+        fw = int(fh / 1.28)
+        self.fw, self.fh = fw, fh
+        self.fx, self.fy = (BW - fw) // 2, (BH - fh) // 2 + int(fh * 0.03)
+        manila = (222, 186, 120)
+        self.manila = manila
+        head = resolve_font(cfg["fonts"]["headline"])
+        typew = resolve_font(cfg["fonts"]["serif"])
+        marker = resolve_font(cfg["fonts"]["marker"])
+        # cover
+        cover_img = Image.new("RGBA", (fw, fh), manila + (255,))
+        d = ImageDraw.Draw(cover_img)
+        d.rectangle((0, 0, fw - 1, fh - 1), outline=_darker(manila, 0.7) + (255,), width=4)
+        lab_w, lab_h = int(fw * 0.7), int(fh * 0.2)
+        lx, ly = (fw - lab_w) // 2, int(fh * 0.12)
+        d.rectangle((lx, ly, lx + lab_w, ly + lab_h), fill=(250, 246, 236, 255), outline=pal["ink"] + (255,), width=3)
+        f1 = font(typew, int(lab_h * 0.2))
+        d.text((lx + lab_w / 2, ly + lab_h * 0.28), f"CASE FILE #{spec.get('number', '001')}", font=f1, fill=pal["ink"], anchor="mm")
+        f2, l2 = fit_font(str(spec.get("title", "")).upper(), head, int(lab_w * 0.9), int(lab_h * 0.5), start=int(lab_h * 0.42))
+        d.text((lx + lab_w / 2, ly + lab_h * 0.68), " ".join(l2), font=f2, fill=pal["ink"], anchor="mm")
+        d.text((int(fw * 0.08), int(fh * 0.9)), "CONFIDENTIAL", font=font(typew, int(fh * 0.03)), fill=_darker(manila, 0.55), anchor="lm")
+        self.cover = cover_img
+        # inside page
+        page = Image.new("RGBA", (fw, fh), (250, 246, 236, 255))
+        d = ImageDraw.Draw(page)
+        fs = int(fh * 0.05)
+        ft = font(typew, fs)
+        y = int(fh * 0.1)
+        lines = spec.get("inside") or [f"CASE: {spec.get('title', '')}", "SUSPECTS: see attached", "STATUS: under investigation"]
+        self.inside_lines = []
+        for ln in lines:
+            self.inside_lines.append((int(fw * 0.1), y, str(ln)))
+            y += int(fs * 1.9)
+        self.page = page
+        self.ft = ft
+        # stamp
+        self.stamp = None
+        if spec.get("stamp"):
+            sf, sl = fit_font(str(spec["stamp"]).upper(), head, int(fw * 0.8), int(fh * 0.2), start=int(fh * 0.12))
+            red = pal["red"] if self.mode == "closed" else pal["green"]
+            blk = text_block(sl, sf, fill=red, pad=int(sf.size * 0.25))
+            img = Image.fromarray(blk)
+            frame = Image.new("RGBA", img.size, (0, 0, 0, 0))
+            ImageDraw.Draw(frame).rectangle((2, 2, img.width - 3, img.height - 3), outline=red + (255,), width=max(6, sf.size // 10))
+            frame.alpha_composite(img)
+            # worn ink: punch random holes
+            arr = np.array(frame)
+            holes = np.random.default_rng(9).random(arr.shape[:2]) < 0.07
+            arr[..., 3] = np.where(holes, (arr[..., 3] * 0.35).astype(np.uint8), arr[..., 3])
+            self.stamp = np.array(Image.fromarray(arr).rotate(-12, resample=Image.BICUBIC, expand=True))
+        self.verdict = None
+        if spec.get("lines"):
+            vf = font(marker, int(fh * 0.055))
+            self.verdict = [text_block([str(l)], vf, fill=pal["red"], stroke=3, stroke_fill=(250, 246, 236)) for l in spec["lines"]]
+        self.stamp_at = float(spec.get("stamp_at", 0.6)) + lead_in
+        self._cache = {}
+
+    def _scene(self, open_p: float, type_chars: int) -> np.ndarray:
+        key = (round(open_p, 2), type_chars)
+        if key in self._cache:
+            return self._cache[key]
+        base = Image.fromarray(self.desk.copy()).convert("RGBA")
+        fx, fy, fw, fh = self.fx, self.fy, self.fw, self.fh
+        shadow = Image.new("RGBA", (fw + 40, fh + 40), (0, 0, 0, 0))
+        ImageDraw.Draw(shadow).rectangle((20, 20, fw + 20, fh + 20), fill=(0, 0, 0, 110))
+        base.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(16)), (fx - 4, fy + 10))
+        # back of folder + tab
+        back = Image.new("RGBA", (fw, fh), _darker(self.manila, 0.9) + (255,))
+        ImageDraw.Draw(back).rectangle((int(fw * 0.62), 0, int(fw * 0.95), int(fh * 0.05)), fill=_darker(self.manila, 0.9) + (255,))
+        base.alpha_composite(back, (fx, fy - int(fh * 0.04)))
+        if open_p > 0:
+            page = self.page.copy()
+            d = ImageDraw.Draw(page)
+            remaining = type_chars
+            for x, y, txt in self.inside_lines:
+                if remaining <= 0:
+                    break
+                d.text((x, y), txt[:remaining], font=self.ft, fill=self.pal["ink"])
+                remaining -= len(txt)
+            base.alpha_composite(page, (fx, fy))
+        if open_p < 1:
+            w = max(1, int(fw * (1 - open_p)))
+            cov = self.cover.resize((w, fh))
+            # darken as it turns away
+            arr = np.array(cov)
+            arr[..., :3] = (arr[..., :3] * (1 - 0.35 * open_p)).astype(np.uint8)
+            base.alpha_composite(Image.fromarray(arr), (fx, fy))
+        out = np.array(base.convert("RGB"))
+        if len(self._cache) > 64:
+            self._cache.clear()
+        self._cache[key] = out
+        return out
+
+    def frame(self, t: float) -> np.ndarray:
+        if self.mode == "open":
+            op = ease((t - self.lead_in - 1.0) / 0.7)
+            total_chars = sum(len(x[2]) for x in self.inside_lines)
+            chars = int(total_chars * min(1.0, max(0.0, (t - self.lead_in - 1.7) / 1.6)))
+        else:
+            op, chars = 0.0, 0
+        canvas = self._scene(op, chars).copy()
+        if self.mode == "closed" and self.stamp is not None and t >= self.stamp_at:
+            age = t - self.stamp_at
+            p = min(1.0, age / 0.14)
+            scale = 2.6 - 1.6 * p
+            st = cv2.resize(self.stamp, (max(1, int(self.stamp.shape[1] * scale)), max(1, int(self.stamp.shape[0] * scale))))
+            cx, cy = self.fx + self.fw // 2, self.fy + int(self.fh * 0.5)
+            blend(canvas, st, cx - st.shape[1] // 2, cy - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
+            if self.verdict:
+                y = cy + self.stamp.shape[0] // 2 + int(self.fh * 0.03)
+                for i, v in enumerate(self.verdict):
+                    op2 = min(1.0, max(0.0, (age - 0.6 - i * 0.7) / 0.25))
+                    if op2 > 0:
+                        blend(canvas, v, cx - v.shape[1] // 2, y, opacity=op2)
+                    y += v.shape[0] + int(self.fh * 0.01)
+        z = 1.0 + 0.1 * ease(t / max(self.duration, 1e-6))
+        if self.mode == "closed" and t >= self.stamp_at and t - self.stamp_at < 0.25:  # impact shake
+            z += 0.015 * math.sin((t - self.stamp_at) * 90)
+        return _push(canvas, (self.W, self.H), z)
+
+    def sfx(self, start_abs: float) -> list[tuple[float, str]]:
+        if self.mode == "open":
+            return [(start_abs + self.lead_in + 0.95, "whoosh"), (start_abs + self.lead_in + 1.7, "type")]
+        return [(start_abs + self.stamp_at, "thud"), (start_abs + self.stamp_at + 0.01, "hit")]
+
+
+# ------------------------------------------------------------------ mugshot
+
+class MugshotShot(Shot):
+    """Police mugshot for a 'suspect' (any object or idea): height chart, booking photo, index card.
+
+    spec: number, name, alias, last_seen, notes(optional)
+    """
+
+    def __init__(self, start, duration, image: Image.Image, spec: dict, cfg: dict, size, lead_in: float = 0.0, seed: int = 0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        self.spec, self.cfg, self.lead_in = spec, cfg, lead_in
+        pal = self.pal = _pal(cfg)
+        BW, BH = int(self.W * MARGIN), int(self.H * MARGIN)
+        portrait = self.H > self.W
+        wall = Image.new("RGB", (BW, BH), (214, 210, 196))
+        d = ImageDraw.Draw(wall)
+        body = resolve_font(cfg["fonts"]["body"])
+        head = resolve_font(cfg["fonts"]["headline"])
+        typew = resolve_font(cfg["fonts"]["serif"])
+        marker = resolve_font(cfg["fonts"]["marker"])
+        step = BH / 14
+        nf = font(body, int(step * 0.32))
+        for i in range(15):  # height chart
+            y = int(BH - i * step)
+            d.line((0, y, BW, y), fill=_darker((214, 210, 196), 0.7), width=3 if i % 2 == 0 else 1)
+            if i % 2 == 0:
+                d.text((int(BW * 0.02), y - 4), f"{3 + i // 2}'0\"", font=nf, fill=pal["ink"], anchor="lb")
+        # photo
+        ph = int(BH * (0.36 if portrait else 0.5))
+        pw = int(ph * 0.8)
+        px = int(BW * (0.5 if portrait else 0.31)) - pw // 2
+        py = int(BH * (0.16 if portrait else 0.17))
+        photo = Image.fromarray(cover(image, pw, ph))
+        border = max(8, pw // 40)
+        framed = Image.new("RGB", (pw + 2 * border, ph + 2 * border), (250, 246, 236))
+        framed.paste(photo, (border, border))
+        wall.paste(framed, (px - border, py - border))
+        # booking plate under the photo
+        plate_w, plate_h = pw, int(ph * 0.16)
+        pyp = py + ph + border * 2
+        d.rectangle((px, pyp, px + plate_w, pyp + plate_h), fill=pal["ink"])
+        pf, pl = fit_font(f"SUSPECT No. {spec.get('number', 1)}", head, int(plate_w * 0.9), int(plate_h * 0.8), start=int(plate_h * 0.7))
+        d.text((px + plate_w / 2, pyp + plate_h / 2), " ".join(pl), font=pf, fill=pal["paper"], anchor="mm")
+        self.base = add_grain(np.array(wall), 0.035, seed)
+        # index card (typed lines appear one by one)
+        cw = int(BW * (0.78 if portrait else 0.38))
+        cx = int(BW * (0.5 if portrait else 0.73)) - cw // 2
+        cy = int(BH * (0.62 if portrait else 0.2))
+        rows = [("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")), ("LAST SEEN", spec.get("last_seen", ""))]
+        if spec.get("notes"):
+            rows.append(("NOTES", spec["notes"]))
+        lf = font(typew, int(BH * (0.022 if portrait else 0.03)))
+        vf_path = head
+        self.rows = []
+        y = 0
+        row_imgs = []
+        for label, value in rows:
+            lab = text_block([label + ":"], lf, fill=pal["red"], align="left")
+            vfnt, vlines = fit_font(str(value).upper(), vf_path, int(cw * 0.86), int(BH * 0.16), start=int(BH * (0.045 if portrait else 0.055)))
+            val = text_block(vlines, vfnt, fill=pal["ink"], align="left")
+            row_imgs.append((lab, val))
+            y += lab.shape[0] + val.shape[0] + int(BH * 0.015)
+        card_h = y + int(BH * 0.06)
+        card = Image.new("RGBA", (cw, card_h), (250, 246, 236, 255))
+        cd = ImageDraw.Draw(card)
+        for ly in range(int(BH * 0.05), card_h, int(BH * 0.045)):
+            cd.line((0, ly, cw, ly), fill=(170, 200, 220, 255), width=1)
+        cd.line((int(cw * 0.06), 0, int(cw * 0.06), card_h), fill=pal["red"] + (160,), width=2)
+        self.card = np.array(card.rotate(1.5, resample=Image.BICUBIC, expand=True))
+        self.card_xy = (cx, cy)
+        self.row_imgs = row_imgs
+        self.BW, self.BH = BW, BH
+        # marker word 'GUILTY?' scribble near the photo
+        self.tag = text_block([spec.get("tag", "WANTED")], font(marker, int(BH * 0.06)), fill=pal["red"], stroke=3, stroke_fill=(250, 246, 236))
+        self.tag_xy = (px + pw - int(pw * 0.15), py - int(BH * 0.05))
+        self._static = None
+
+    def frame(self, t: float) -> np.ndarray:
+        canvas = self.base.copy()
+        tl = t - self.lead_in
+        cx, cy = self.card_xy
+        blend(canvas, self.card, cx, cy, opacity=min(1.0, max(0.0, tl / 0.25)))
+        y = cy + int(self.BH * 0.03)
+        for i, (lab, val) in enumerate(self.row_imgs):
+            appear = 0.35 + i * 0.9
+            if tl >= appear:
+                op = min(1.0, (tl - appear) / 0.12)
+                blend(canvas, lab, cx + int(self.BW * 0.03), y, opacity=op)
+                blend(canvas, val, cx + int(self.BW * 0.03), y + lab.shape[0], opacity=op)
+            y += lab.shape[0] + val.shape[0] + int(self.BH * 0.015)
+        tag_at = 0.35 + len(self.row_imgs) * 0.9
+        if tl >= tag_at:
+            blend(canvas, self.tag, *self.tag_xy, opacity=min(1.0, (tl - tag_at) / 0.15))
+        out = _push(canvas, (self.W, self.H), 1.02 + 0.08 * ease(t / max(self.duration, 1e-6)))
+        if 0 <= tl < 0.18:  # camera flash
+            a = 1 - tl / 0.18
+            out = (out.astype(np.float32) * (1 - a) + 255 * a).astype(np.uint8)
+        return out
+
+    def sfx(self, start_abs: float) -> list[tuple[float, str]]:
+        ev = [(start_abs + self.lead_in, "shutter")]
+        for i in range(len(self.row_imgs)):
+            ev.append((start_abs + self.lead_in + 0.35 + i * 0.9, "type"))
+        return ev
+
+
+# ------------------------------------------------------------------ roulette wheel
+
+AMERICAN_WHEEL = ["0", "28", "9", "26", "30", "11", "7", "20", "32", "17", "5", "22", "34", "15", "3", "24", "36", "13", "1",
+                  "00", "27", "10", "25", "29", "12", "8", "19", "31", "18", "6", "21", "33", "16", "4", "23", "35", "14", "2"]
+REDS = {1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36}
+
+
+class RouletteShot(Shot):
+    """American roulette wheel spins, stops with 0 at the top and 00 at the bottom, red marker circles both greens.
+
+    spec: spin (s), mark_at (s after narration start), note
+    """
+
+    def __init__(self, start, duration, spec: dict, cfg: dict, size, lead_in: float = 0.0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        self.cfg, self.spec, self.lead_in = cfg, spec, lead_in
+        pal = self.pal = _pal(cfg)
+        D = int(min(self.W, self.H) * (0.8 if self.H > self.W else 0.7))
+        self.D = D
+        img = Image.new("RGBA", (D, D), (0, 0, 0, 0))
+        d = ImageDraw.Draw(img)
+        c = D / 2
+        n = len(AMERICAN_WHEEL)
+        r_out, r_in = D * 0.49, D * 0.34
+        d.ellipse((c - r_out - 6, c - r_out - 6, c + r_out + 6, c + r_out + 6), fill=(120, 72, 38, 255))
+        num_font = font(resolve_font(cfg["fonts"]["headline"]), int(D * 0.032))
+        self.pocket_angles = {}
+        for i, num in enumerate(AMERICAN_WHEEL):
+            a0 = -90 - 360 / n / 2 + i * 360 / n
+            a1 = a0 + 360 / n
+            if num in ("0", "00"):
+                col = pal["green"]
+            elif int(num) in REDS:
+                col = pal["red"]
+            else:
+                col = pal["ink"]
+            d.pieslice((c - r_out, c - r_out, c + r_out, c + r_out), a0, a1, fill=col + (255,), outline=(220, 190, 120, 255), width=2)
+            self.pocket_angles[num] = math.radians((a0 + a1) / 2)
+        d.ellipse((c - r_in, c - r_in, c + r_in, c + r_in), fill=(150, 92, 48, 255), outline=(220, 190, 120, 255), width=4)
+        for k in range(8):  # turret spokes
+            a = k * math.pi / 4
+            d.line((c, c, c + r_in * 0.85 * math.cos(a), c + r_in * 0.85 * math.sin(a)), fill=(220, 190, 120, 255), width=max(4, D // 120))
+        d.ellipse((c - D * 0.05, c - D * 0.05, c + D * 0.05, c + D * 0.05), fill=(220, 190, 120, 255))
+        for i, num in enumerate(AMERICAN_WHEEL):  # numbers, rotated to face outwards
+            ang = self.pocket_angles[num]
+            tb = text_block([num], num_font, fill=(250, 246, 236))
+            rot = Image.fromarray(tb).rotate(-math.degrees(ang) - 90, resample=Image.BICUBIC, expand=True)
+            rr = (r_out + r_in * 1.25) / 2.25 + D * 0.05
+            x = c + rr * math.cos(ang) - rot.width / 2
+            y = c + rr * math.sin(ang) - rot.height / 2
+            img.alpha_composite(rot, (int(x), int(y)))
+        self.wheel = np.array(img)
+        self.r_mid = (r_out + r_in) / 2 + D * 0.03
+        bg = np.full((self.H, self.W, 3), pal["paper"], np.uint8)
+        self.bg = add_grain(bg, float(cfg["style"].get("grain", 0.03)), 31)
+        self.spin = float(spec.get("spin", 2.6))
+        self.turns = float(spec.get("turns", 2.5))
+        self.mark_at = float(spec.get("mark_at", 3.0)) + lead_in
+        self.red = tuple(int(x) for x in pal["red"])
+        self.note = None
+        if spec.get("note"):
+            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.05))
+            self.note = text_block([spec["note"]], mf, fill=pal["red"], stroke=3, stroke_fill=pal["paper"])
+        self.strokes = None
+
+    def _angle(self, t: float) -> float:
+        p = min(1.0, max(0.0, t / self.spin))
+        eased = 1 - (1 - p) ** 3
+        return self.turns * 360 * (1 - eased)  # ends at 0 deg -> '0' on top
+
+    def frame(self, t: float) -> np.ndarray:
+        out = self.bg.copy()
+        ang = self._angle(t)
+        M = cv2.getRotationMatrix2D((self.D / 2, self.D / 2), ang, 1.0)
+        wheel = cv2.warpAffine(self.wheel, M, (self.D, self.D), flags=cv2.INTER_LINEAR, borderValue=(0, 0, 0, 0))
+        x0, y0 = (self.W - self.D) // 2, int(self.H * 0.44) - self.D // 2
+        blend(out, wheel, x0, y0)
+        if t >= self.mark_at:
+            if self.strokes is None:
+                self.strokes = []
+                for k, num in enumerate(("0", "00")):
+                    a = self.pocket_angles[num]
+                    px = x0 + self.D / 2 + self.r_mid * math.cos(a)
+                    py = y0 + self.D / 2 + self.r_mid * math.sin(a)
+                    self.strokes.append(mark_strokes({"type": "circle", "x": px / self.W, "y": py / self.H,
+                                                      "w": self.D * 0.16 / self.W, "h": self.D * 0.2 / self.H}, self.W, self.H, seed=40 + k))
+            for k, st in enumerate(self.strokes):
+                _draw_marker(out, st, (t - self.mark_at - k * 0.5) / 0.45, self.red, max(5, self.H // 140))
+            if self.note is not None and t >= self.mark_at + 1.1:
+                op = min(1.0, (t - self.mark_at - 1.1) / 0.25)
+                blend(out, self.note, int(self.W * 0.72) - self.note.shape[1] // 2 if self.W > self.H else (self.W - self.note.shape[1]) // 2,
+                      int(self.H * 0.12) if self.W > self.H else int(self.H * 0.08), opacity=op)
+        return out
+
+    def sfx(self, start_abs: float) -> list[tuple[float, str]]:
+        ev = [(start_abs + 0.05, "whirr")]
+        ev += [(start_abs + self.mark_at, "scribble"), (start_abs + self.mark_at + 0.5, "scribble")]
+        return ev
+
+
+# ------------------------------------------------------------------ casino maze
+
+class MazeShot(Shot):
+    """Blueprint of a maze-like casino floor; a red marker traces the long way from YOU to the EXIT,
+    a magnifier follows the pen. Little gold squares are slot-machine nooks in the dead ends.
+
+    spec: note, seed
+    """
+
+    def __init__(self, start, duration, spec: dict, cfg: dict, size, lead_in: float = 0.0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        self.cfg, self.spec, self.lead_in = cfg, spec, lead_in
+        pal = self.pal = _pal(cfg)
+        portrait = self.H > self.W
+        cols, rows = (9, 15) if portrait else (17, 9)
+        rnd = np.random.default_rng(int(spec.get("seed", 7)))
+        # maze via randomized DFS
+        walls_v = np.ones((rows, cols + 1), bool)  # vertical walls
+        walls_h = np.ones((rows + 1, cols), bool)  # horizontal walls
+        seen = np.zeros((rows, cols), bool)
+        stack = [(rows // 2, cols // 2)]
+        seen[rows // 2, cols // 2] = True
+        while stack:
+            r, c = stack[-1]
+            nbrs = [(r + dr, c + dc, dr, dc) for dr, dc in ((1, 0), (-1, 0), (0, 1), (0, -1))
+                    if 0 <= r + dr < rows and 0 <= c + dc < cols and not seen[r + dr, c + dc]]
+            if not nbrs:
+                stack.pop()
+                continue
+            nr, nc, dr, dc = nbrs[rnd.integers(len(nbrs))]
+            if dr == 1:
+                walls_h[r + 1, c] = False
+            elif dr == -1:
+                walls_h[r, c] = False
+            elif dc == 1:
+                walls_v[r, c + 1] = False
+            else:
+                walls_v[r, c] = False
+            seen[nr, nc] = True
+            stack.append((nr, nc))
+        start_cell = (rows // 2, cols // 2)
+        exit_cell = (rows - 1, 0) if not portrait else (rows - 1, cols - 1)
+        walls_h[rows, exit_cell[1]] = False  # door in the outer wall
+
+        def open_moves(r, c):
+            if r > 0 and not walls_h[r, c]:
+                yield r - 1, c
+            if r < rows - 1 and not walls_h[r + 1, c]:
+                yield r + 1, c
+            if c > 0 and not walls_v[r, c]:
+                yield r, c - 1
+            if c < cols - 1 and not walls_v[r, c + 1]:
+                yield r, c + 1
+
+        prev = {start_cell: None}
+        q = deque([start_cell])
+        while q:
+            cell = q.popleft()
+            for nb in open_moves(*cell):
+                if nb not in prev:
+                    prev[nb] = cell
+                    q.append(nb)
+        path = []
+        cell = exit_cell
+        while cell is not None:
+            path.append(cell)
+            cell = prev[cell]
+        path.reverse()
+        # geometry
+        mx, my = self.W * 0.08, self.H * (0.12 if portrait else 0.14)
+        gw, gh = self.W - 2 * mx, self.H - my - self.H * (0.12 if portrait else 0.1)
+        cs = min(gw / cols, gh / rows)
+        ox, oy = (self.W - cs * cols) / 2, my
+        self.cs, self.ox, self.oy = cs, ox, oy
+        blue = _darker(pal["green"], 0.85)
+        line = (236, 230, 210)
+        img = Image.new("RGB", (self.W, self.H), blue)
+        d = ImageDraw.Draw(img)
+        for gx in np.arange(0, self.W, cs / 2):  # blueprint grid
+            d.line((gx, 0, gx, self.H), fill=_darker(blue, 1.12) if False else tuple(min(255, int(v * 1.12)) for v in blue), width=1)
+        for gy in np.arange(0, self.H, cs / 2):
+            d.line((0, gy, self.W, gy), fill=tuple(min(255, int(v * 1.12)) for v in blue), width=1)
+        lw = max(4, int(cs * 0.09))
+        for r in range(rows + 1):
+            for c in range(cols):
+                if walls_h[r, c]:
+                    d.line((ox + c * cs, oy + r * cs, ox + (c + 1) * cs, oy + r * cs), fill=line, width=lw)
+        for r in range(rows):
+            for c in range(cols + 1):
+                if walls_v[r, c]:
+                    d.line((ox + c * cs, oy + r * cs, ox + c * cs, oy + (r + 1) * cs), fill=line, width=lw)
+        # slot nooks in dead ends
+        for r in range(rows):
+            for c in range(cols):
+                if (r, c) in (start_cell, exit_cell):
+                    continue
+                if len(list(open_moves(r, c))) == 1:
+                    s = cs * 0.34
+                    x, y = ox + c * cs + cs / 2, oy + r * cs + cs / 2
+                    d.rectangle((x - s / 2, y - s / 2, x + s / 2, y + s / 2), fill=pal["accent"], outline=pal["ink"], width=2)
+        head = resolve_font(cfg["fonts"]["headline"])
+        lf = font(head, int(cs * 0.5))
+        sx, sy = ox + start_cell[1] * cs + cs / 2, oy + start_cell[0] * cs + cs / 2
+        d.ellipse((sx - cs * 0.22, sy - cs * 0.22, sx + cs * 0.22, sy + cs * 0.22), fill=pal["red"])
+        d.text((sx, sy - cs * 0.45), "YOU", font=lf, fill=line, anchor="md")
+        ex, ey = ox + exit_cell[1] * cs + cs / 2, oy + rows * cs
+        d.text((ex, ey + cs * 0.1), "EXIT", font=lf, fill=pal["accent"], anchor="ma")
+        title = spec.get("title", "CASINO FLOOR PLAN")
+        tf = font(head, int(self.H * 0.045))
+        d.text((self.W / 2, my * 0.5), title.upper(), font=tf, fill=line, anchor="mm")
+        self.base = add_grain(np.array(img), 0.03, 12)
+        pts = np.array([(ox + c * cs + cs / 2, oy + r * cs + cs / 2) for r, c in path] + [(ex, ey)], np.float32)
+        # densify for smooth drawing
+        dense = [pts[0]]
+        for a, b in zip(pts[:-1], pts[1:]):
+            for f in np.linspace(0, 1, 8)[1:]:
+                dense.append(a + (b - a) * f)
+        self.path = np.array(dense, np.float32)
+        self.red = tuple(int(x) for x in pal["red"])
+        self.trace_start = 0.5 + lead_in
+        self.trace_dur = max(1.5, duration - lead_in - 1.6)
+        self.note = None
+        if spec.get("note"):
+            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.05))
+            self.note = text_block([spec["note"]], mf, fill=pal["accent"], stroke=3, stroke_fill=_darker(pal["green"], 0.5))
+        self.mag_r = int(min(self.W, self.H) * 0.13)
+
+    def frame(self, t: float) -> np.ndarray:
+        out = self.base.copy()
+        p = ease((t - self.trace_start) / self.trace_dur) if t > self.trace_start else 0.0
+        n = max(2, int(len(self.path) * p))
+        if p > 0:
+            cv2.polylines(out, [self.path[:n].astype(np.int32).reshape(-1, 1, 2)], False, self.red, max(5, int(self.cs * 0.12)), cv2.LINE_AA)
+            tip = self.path[n - 1]
+            # magnifier: 1.9x of the region around the pen tip
+            r, z = self.mag_r, 1.9
+            src_r = int(r / z)
+            x, y = int(tip[0]), int(tip[1])
+            H, W = out.shape[:2]
+            x0, y0 = max(0, x - src_r), max(0, y - src_r)
+            x1, y1 = min(W, x + src_r), min(H, y + src_r)
+            crop = out[y0:y1, x0:x1]
+            if crop.size:
+                big = cv2.resize(crop, (int(crop.shape[1] * z), int(crop.shape[0] * z)), interpolation=cv2.INTER_LINEAR)
+                mag_x = int(min(max(x + r * 0.9, r * 1.1), W - r * 2.0))
+                mag_y = int(min(max(y - r * 0.9, r * 1.1), H - r * 2.0))
+                mask = np.zeros(big.shape[:2], np.uint8)
+                cv2.circle(mask, (big.shape[1] // 2, big.shape[0] // 2), min(big.shape[:2]) // 2 - 2, 255, -1, cv2.LINE_AA)
+                rgba = np.dstack([big, mask])
+                blend(out, rgba, mag_x - big.shape[1] // 2, mag_y - big.shape[0] // 2)
+                cv2.circle(out, (mag_x, mag_y), min(big.shape[:2]) // 2, (40, 30, 25), max(6, r // 12), cv2.LINE_AA)
+                hx = int(mag_x + r * 0.75)
+                hy = int(mag_y + r * 0.75)
+                cv2.line(out, (hx, hy), (hx + int(r * 0.6), hy + int(r * 0.6)), (90, 55, 30), max(10, r // 6), cv2.LINE_AA)
+        if self.note is not None and t > self.trace_start + self.trace_dur:
+            op = min(1.0, (t - self.trace_start - self.trace_dur) / 0.25)
+            blend(out, self.note, (self.W - self.note.shape[1]) // 2, int(self.H * 0.86), opacity=op)
+        z = 1.0 + 0.06 * ease(t / max(self.duration, 1e-6))
+        if z > 1.001:
+            cw, ch = int(self.W / z), int(self.H / z)
+            out = cv2.resize(out[(self.H - ch) // 2 : (self.H - ch) // 2 + ch, (self.W - cw) // 2 : (self.W - cw) // 2 + cw], (self.W, self.H))
+        return out
+
+    def sfx(self, start_abs: float) -> list[tuple[float, str]]:
+        return [(start_abs + self.trace_start + k * 0.9, "scribble") for k in range(int(self.trace_dur / 0.9))]
+
+
+class NewsreelShot(Shot):
+    """Wraps any shot with the newsreel film look (and 12 fps judder)."""
+
+    def __init__(self, inner: Shot, cfg: dict, label: str | None, seed: int):
+        super().__init__(inner.start, inner.duration)
+        self.inner, self.cfg, self.label, self.seed = inner, cfg, label, seed
+
+    def frame(self, t: float) -> np.ndarray:
+        tq = math.floor(t * 12) / 12
+        return newsreel(self.inner.frame(tq), t, self.seed, self.label, self.cfg)

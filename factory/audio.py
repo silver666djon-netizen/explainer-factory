@@ -59,6 +59,43 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         t = np.arange(n) / SR
         strokes = 0.55 + 0.45 * np.sin(2 * np.pi * 9 * t + rnd.uniform(0, 6))
         return (out / (np.abs(out).max() + 1e-9) * strokes * _env(n, 0.03, 0.12) * 0.5).astype(np.float32)
+    if kind == "shutter":  # camera flash: click + whine
+        n = int(0.35 * SR)
+        t = np.arange(n) / SR
+        click = rnd.standard_normal(n) * np.exp(-t * 90) * 0.7
+        click[int(0.06 * SR):] += rnd.standard_normal(n - int(0.06 * SR)) * np.exp(-t[: n - int(0.06 * SR)] * 120) * 0.6
+        whine = np.sin(2 * np.pi * (2500 + 3000 * t) * t) * np.exp(-t * 8) * 0.08
+        return (click + whine).astype(np.float32)
+    if kind == "type":  # three typewriter strikes
+        n = int(0.45 * SR)
+        out = np.zeros(n, dtype=np.float32)
+        for k in range(3):
+            i = int((0.02 + k * 0.13 + rnd.uniform(0, 0.03)) * SR)
+            m = int(0.04 * SR)
+            tt = np.arange(m) / SR
+            hit = (rnd.standard_normal(m) * np.exp(-tt * 140) + np.sin(2 * np.pi * 1800 * tt) * np.exp(-tt * 200)) * 0.55
+            out[i : i + m] += hit[: n - i]
+        return out
+    if kind == "whirr":  # roulette spin: ball rattle slowing down
+        n = int(2.6 * SR)
+        out = np.zeros(n, dtype=np.float32)
+        t_ = 0.0
+        gap = 0.035
+        while t_ < 2.5:
+            i = int(t_ * SR)
+            m = int(0.012 * SR)
+            tt = np.arange(m) / SR
+            out[i : i + m] += (rnd.standard_normal(m) * np.exp(-tt * 300) * 0.35)[: n - i]
+            t_ += gap
+            gap *= 1.045
+        sos = butter(2, [800, 6000], btype="band", fs=SR, output="sos")
+        return sosfilt(sos, out).astype(np.float32) * 2.2
+    if kind == "projector":  # film projector clatter (~3 s)
+        n = int(3.0 * SR)
+        t = np.arange(n) / SR
+        clatter = rnd.standard_normal(n) * (0.5 + 0.5 * (np.sin(2 * np.pi * 24 * t) > 0.6)) * 0.12
+        sos = butter(2, [300, 3000], btype="band", fs=SR, output="sos")
+        return (sosfilt(sos, clatter) * _env(n, 0.2, 0.3)).astype(np.float32)
     if kind == "hit":  # short punchy accent
         n = int(0.18 * SR)
         t = np.arange(n) / SR

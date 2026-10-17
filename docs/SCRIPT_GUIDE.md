@@ -84,6 +84,25 @@ Each beat = 1–3 sentences of narration, ~4–9 seconds. Fields:
 - `ad` (on image beats) — the fake 1950s ad gag: `{ "badge", "badge_x", "badge_y", "slogan", "slogan_y" }`.
 - `punch` (on any beat) — list of words that get a quick zoom punch + hit sound.
 
+### Channel props (code-drawn, identical every episode)
+
+- `casefile` — `{ "mode": "open", "number": "002", "title": "The casino", "inside": [lines] }` at the start;
+  `{ "mode": "closed", ..., "stamp": "Case closed", "lines": ["Guilty: your brain", "Accomplice: plastic"], "stamp_at": 0.5 }` at the end.
+- `mugshot` — a "suspect" (object or idea): `{ "prompt": "<picture of the suspect>", "suspect": { "number", "name", "alias", "last_seen", "notes", "tag" } }`.
+- `roulette` — American wheel spins, stops, marker circles 0 and 00: `{ "roulette": { "spin", "mark_at", "note" } }`.
+- `maze` — blueprint casino floor, marker traces YOU → EXIT under a magnifier: `{ "maze": { "title", "note", "seed" } }`.
+- `newsreel: true` (or a label string) on image/reuse/photo — 1950s film look with a "Reconstruction" label.
+  Never present a generated image as a real historical photo.
+- `counter` (on any beat) — damage counter card: `{ "from", "to", "prefix": "-$", "decimals", "label", "at", "dur" }`.
+  Only real arithmetic or clearly stated example assumptions.
+
+### Characters and voices
+
+- `characters`: `{ "larry": "a cheerful middle-aged man in a loud yellow checked jacket and a red fedora" }` —
+  write `{larry}` in prompts; the description is pasted in so he is recognisable by his clothes.
+- `voices`: `{ "house": { "lang_code": "a", "voice": "am_onyx", "speed": 0.92 } }`; a beat with
+  `"voice": "house"` is spoken by that voice and its captions are gold. The narrator (the Inspector) is never on screen.
+
 ### Image prompt rules (Flux schnell)
 
 - One clear subject, **centered in the frame**, simple background. Say "centered".

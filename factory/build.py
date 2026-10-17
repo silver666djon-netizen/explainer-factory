@@ -25,9 +25,10 @@ def log(msg: str) -> None:
 def voice_beats(voice, beats: list[dict]) -> list[dict]:
     out = []
     for beat in beats:
-        audio, timings = voice.synth(spoken_text(beat))
+        audio, timings = voice.synth(spoken_text(beat), beat.get("voice"))
         duration = len(audio) / SAMPLE_RATE
-        out.append({"audio": audio, "sr": SAMPLE_RATE, "duration": duration, "words": caption_words(beat, timings, duration)})
+        out.append({"audio": audio, "sr": SAMPLE_RATE, "duration": duration,
+                    "words": caption_words(beat, timings, duration), "speaker": beat.get("voice") or "narrator"})
     return out
 
 
@@ -54,7 +55,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         episode["sources"] = list(episode.get("sources") or []) + credits
 
     log("Narration…")
-    voice = make_voice(cfg, offline)
+    voice = make_voice(cfg, offline, episode.get("voices"))
     beat_lookup = {b["id"]: b for b in episode["beats"]}
     long_voiced = voice_beats(voice, episode["beats"])
 
@@ -80,7 +81,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1)})
 
     thumb = episode.get("thumbnail") or {}
-    first_image = next(b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo"))
+    first_image = next(b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo", "mugshot"))
     thumb_img = images["thumbnail"] if "thumbnail" in images else images[thumb.get("beat") or first_image]
     thumbnail(cfg, thumb_img, thumb.get("text") or episode["title"], out / "thumbnail.jpg", circle=thumb.get("circle", True))
     write_meta(out, episode, plan_long, shorts_info)

@@ -15,6 +15,7 @@ from PIL import Image, ImageDraw
 from . import audio as A
 from .config import hex_to_rgb, resolve_font
 from .images import is_archive_photo
+from .props import CaseFileShot, MazeShot, MugshotShot, NewsreelShot, RouletteShot, projector_sfx_times
 from .shots import ChartShot, DocShot, ImageShot, KineticShot, Shot, StatShot, TitleShot
 from .text import blend, fit_font, font, text_block, wrap
 
@@ -27,6 +28,20 @@ class Caption:
     end: float
     words: list[str]
     word_times: list[tuple[float, float]]
+    speaker: str = "narrator"
+
+
+@dataclass
+class Counter:
+    start: float
+    end: float
+    frm: float
+    to: float
+    dur: float
+    prefix: str
+    suffix: str
+    decimals: int
+    label: str
 
 
 @dataclass
@@ -55,19 +70,20 @@ class Plan:
     captions: list[Caption] = field(default_factory=list)
     cards: list[Card] = field(default_factory=list)
     bubbles: list[Bubble] = field(default_factory=list)
+    counters: list[Counter] = field(default_factory=list)
     punches: list[float] = field(default_factory=list)
     beat_starts: dict[str, float] = field(default_factory=dict)
     timeline: A.Timeline | None = None
 
 
-def group_captions(words, offset: float, max_chars: int, max_words: int) -> list[Caption]:
+def group_captions(words, offset: float, max_chars: int, max_words: int, speaker: str = "narrator") -> list[Caption]:
     out: list[Caption] = []
     cur: list[tuple[str, float, float]] = []
 
     def flush():
         if cur:
             out.append(Caption(offset + cur[0][1], offset + cur[-1][2], [w for w, _, _ in cur],
-                               [(offset + s, offset + e) for _, s, e in cur]))
+                               [(offset + s, offset + e) for _, s, e in cur], speaker))
 
     for w, s, e in words:
         w = w.strip()
@@ -92,11 +108,11 @@ def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
     if visual["type"] == "image":
         n = len(visual.get("prompts") or [visual["prompt"]])
         return [visual["_beat"] if i == 0 else f"{visual['_beat']}.{i}" for i in range(n)]
-    if visual["type"] == "photo":
+    if visual["type"] in ("photo", "mugshot"):
         return [visual["_beat"]]
     if visual["type"] == "reuse":
         src = beat_lookup[visual["beat"]]["visual"]
-        if src["type"] == "photo":
+        if src["type"] in ("photo", "mugshot"):
             return [visual["beat"]]
         n = len(src.get("prompts") or [src["prompt"]])
         idx = int(visual.get("index", 0)) % n
@@ -167,13 +183,32 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
                     motion = MOTION_CYCLE[cycle_i % len(MOTION_CYCLE)]
                     cycle_i += 1
                 shot_marks = [dict(m, at=m["at"] - k * seg) for m in marks] if k == 0 else []
-                plan.shots.append(ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
-                                            marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
-                                            ad=visual.get("ad") if k == 0 else None))
+                shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
+                                 marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
+                                 ad=visual.get("ad") if k == 0 else None)
+                if visual.get("newsreel"):
+                    label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
+                    shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
+                plan.shots.append(shot)
+            if visual.get("newsreel"):
+                for at in projector_sfx_times(shot_start, span):
+                    plan.timeline.add_sfx(at, "projector", seed=i)
             for m in marks:
                 plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
         elif vtype == "title":
             plan.shots.append(TitleShot(shot_start, span, visual["text"], cfg, size))
+        elif vtype in ("mugshot", "roulette", "maze", "casefile"):
+            if vtype == "mugshot":
+                prop = MugshotShot(shot_start, span, pil(images[beat["id"]]), visual["suspect"], cfg, size, lead_in, seed=i)
+            elif vtype == "roulette":
+                prop = RouletteShot(shot_start, span, visual.get("roulette") or {}, cfg, size, lead_in)
+            elif vtype == "maze":
+                prop = MazeShot(shot_start, span, visual.get("maze") or {}, cfg, size, lead_in)
+            else:
+                prop = CaseFileShot(shot_start, span, visual["casefile"], cfg, size, lead_in)
+            plan.shots.append(prop)
+            for at, kind_sfx in prop.sfx(shot_start):
+                plan.timeline.add_sfx(at, kind_sfx, seed=i)
         elif vtype == "doc":
             doc = visual["doc"]
             plan.shots.append(DocShot(shot_start, span, doc, cfg, size, lead_in=lead_in, seed=i))
@@ -208,6 +243,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
             appear = start + 0.25
             plan.cards.append(Card(appear, start + dur, str(beat["on_screen"])))
             plan.timeline.add_sfx(appear, "pop", seed=i)
+        if beat.get("counter"):
+            c = beat["counter"]
+            appear = start + float(c.get("at", 0.5))
+            plan.counters.append(Counter(appear, start + dur, float(c.get("from", 0)), float(c["to"]),
+                                         float(c.get("dur", 1.2)), str(c.get("prefix", "")), str(c.get("suffix", "")),
+                                         int(c.get("decimals", 0)), str(c.get("label", ""))))
+            for k in range(6):
+                plan.timeline.add_sfx(appear + k * float(c.get("dur", 1.2)) / 6, "tick", seed=i + k)
+            plan.timeline.add_sfx(appear + float(c.get("dur", 1.2)), "cash" if c.get("sound") == "cash" else "pop", seed=i)
         if beat.get("bubble"):
             b = beat["bubble"]
             appear = start + float(b.get("at", 0.2))
@@ -224,7 +268,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
                     break
 
         if vtype not in ("title", "kinetic"):  # those already show the words
-            plan.captions.extend(group_captions(v["words"], start, max_chars, max_words))
+            plan.captions.extend(group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator")))
     return plan
 
 
@@ -250,11 +294,14 @@ class Overlay:
             fnt = font(self.head if self.plan.kind == "short" else self.body, self.cap_size)
             words = [w.upper() if self.plan.kind == "short" else w for w in cap.words]
             lines = wrap(" ".join(words), fnt, int(self.W * 0.86))
+            other = cap.speaker != "narrator"  # character lines: gold text, white active word
+            base_col = self.pal["accent"] if other else (255, 255, 255)
+            act_col = (255, 255, 255) if other else self.pal["accent"]
             colors, idx = [], 0
             for line in lines:
                 row = []
                 for _ in line.split(" "):
-                    row.append(self.pal["accent"] if idx == active else (255, 255, 255))
+                    row.append(act_col if idx == active else base_col)
                     idx += 1
                 colors.append(row)
             self.cache[key] = text_block(lines, fnt, fill=(255, 255, 255), stroke_fill=self.pal["ink"],
@@ -314,7 +361,38 @@ class Overlay:
             img = cv2.resize(img, (max(1, int(w * scale)), max(1, int(h * scale))))
         return img, min(p * 1.5, 1.0)
 
+    def counter_img(self, c: Counter, value: float) -> np.ndarray:
+        txt = f"{c.prefix}{value:,.{c.decimals}f}{c.suffix}"
+        key = ("n", id(c), txt)
+        if key not in self.cache:
+            short = self.plan.kind == "short"
+            nf = font(self.head, int(self.H * (0.045 if short else 0.075)))
+            lf = font(self.body, int(self.H * (0.018 if short else 0.026)))
+            num = text_block([txt], nf, fill=self.pal["red"])
+            lab = text_block([c.label.upper()], lf, fill=self.pal["ink"]) if c.label else None
+            w = max(num.shape[1], lab.shape[1] if lab is not None else 0) + int(nf.size * 0.6)
+            h = num.shape[0] + (lab.shape[0] if lab is not None else 0) + int(nf.size * 0.4)
+            card = Image.new("RGBA", (w, h), self.pal["paper"] + (240,))
+            bw = max(5, nf.size // 14)
+            ImageDraw.Draw(card).rectangle((0, 0, w - 1, h - 1), outline=self.pal["red"] + (255,), width=bw)
+            y = int(nf.size * 0.2)
+            if lab is not None:
+                card.alpha_composite(Image.fromarray(lab), ((w - lab.shape[1]) // 2, y))
+                y += lab.shape[0]
+            card.alpha_composite(Image.fromarray(num), ((w - num.shape[1]) // 2, y - int(nf.size * 0.08)))
+            self.cache[key] = np.array(card)
+        return self.cache[key]
+
     def apply(self, frame: np.ndarray, t: float, cap_i: int, card_i: int, bub_i: int) -> None:
+        for c in self.plan.counters:
+            if c.start <= t < c.end:
+                p = min(1.0, (t - c.start) / max(c.dur, 1e-3))
+                p = 1 - (1 - p) ** 2
+                img = self.counter_img(c, c.frm + (c.to - c.frm) * p)
+                op = min(1.0, (t - c.start) / 0.15) * min(1.0, (c.end - t) / 0.15)
+                x = self.W - img.shape[1] - int(self.W * 0.04)
+                y = int(self.H * (0.25 if self.plan.kind == "short" else 0.05))
+                blend(frame, img, x, y, opacity=op)
         cards = self.plan.cards
         if card_i < len(cards) and cards[card_i].start <= t < cards[card_i].end:
             card = cards[card_i]
