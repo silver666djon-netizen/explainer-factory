@@ -100,7 +100,7 @@ def _cloudflare_once(cfg: dict, prompt: str, style_name: str = "ad", refs: list[
             raise ImageQuotaError(f"Cloudflare free daily limit reached: {text}")
         if resp.status_code in (401, 403):
             raise RuntimeError(f"Cloudflare rejected the token/account (HTTP {resp.status_code}): {text}")
-        if resp.status_code == 400 and ("nsfw" in lowered or "8007" in lowered):
+        if resp.status_code == 400 and ("nsfw" in lowered or "8007" in lowered or "flagged" in lowered or "3030" in lowered):
             raise _SafetyFilter(text)
         if resp.status_code == 400:
             raise RuntimeError(f"Cloudflare rejected the prompt (HTTP 400): {text}")
