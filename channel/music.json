@@ -9,7 +9,15 @@
     "tension": "driving heist-movie tension at 128 BPM: staccato strings, pulsing bass, crisp snare, bongos, suspenseful but exciting like a casino-robbery montage, energetic, not sad",
     "curious": "quirky upbeat explainer music at 112 BPM: pizzicato strings, marimba, clarinet, light claps and finger snaps, curious and witty, major key",
     "serious": "cinematic building reveal at 100 BPM: steady pulsing piano eighth notes, rising strings, light driving percussion, intriguing and confident, builds anticipation, hopeful, not sad",
-    "finale": "triumphant upbeat 1960s big-band swing finale at 132 BPM: full brass section, swinging drums, joyful and satisfying, major key"
+    "finale": "triumphant upbeat 1960s big-band swing finale at 132 BPM: full brass section, swinging drums, joyful and satisfying, major key",
+    "v1_intro": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, mysterious-playful detective tiptoe with pizzicato accents, curious and sneaky, 110 BPM",
+    "v2_lounge": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, plus bright brass stabs and finger snaps, glamorous and confident, 124 BPM, major key",
+    "v3_maths": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, lighter and clever, ticking woodblock clock percussion, focused, 116 BPM, major key",
+    "v4_tension": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, minor key but still bouncy, darker vibraphone, driving bass, sneaky heist feel, 122 BPM",
+    "v5_science": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, marimba lead, light claps, curious and witty, 112 BPM, major key",
+    "v6_reveal": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, steady pulse that adds layers and builds anticipation, intriguing, 118 BPM",
+    "v7_finale": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, triumphant with brass hits and cymbal swells, joyful, 128 BPM, major key",
+    "v8_shorts": "in the style of a bouncy hypnotic casino-arcade groove: twinkling glockenspiel and vibraphone, funky bass, tight crisp drums, punchy and catchy hook from the first second, energetic, 126 BPM, major key"
   },
   "stings": {
     "fanfare": "a short triumphant brass fanfare with a cymbal crash, like a 1950s game-show win, then silence",
