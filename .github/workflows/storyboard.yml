@@ -2,10 +2,8 @@ name: Storyboard
 
 # A new or changed script makes the storyboard first (all frames + contact sheets in Telegram).
 # The montage runs only after the storyboard is approved (Render episode workflow).
+# Started on purpose only (no automatic run on every script edit — saves Actions minutes and Telegram clutter).
 on:
-  push:
-    branches: [main]
-    paths: ["episodes/*/script.json"]
   workflow_dispatch:
     inputs:
       episode:
@@ -15,6 +13,10 @@ on:
         description: "Frames to regenerate, e.g. b17,c03 (empty = only missing ones)"
         required: false
         default: ""
+      send:
+        description: "send contact sheets to Telegram (yes/no)"
+        required: false
+        default: "no"
 
 permissions:
   contents: write
@@ -97,7 +99,7 @@ jobs:
         run: |
           set -o pipefail
           for ep in ${{ steps.pick.outputs.list }}; do
-            python -m factory.storyboard "episodes/$ep" --redo "${{ github.event.inputs.redo }}" 2>&1 | tee -a build.log
+            python -m factory.storyboard "episodes/$ep" --redo "${{ github.event.inputs.redo }}" ${{ github.event.inputs.send != 'yes' && '--no-telegram' || '' }} 2>&1 | tee -a build.log
           done
 
       - name: Save generated images

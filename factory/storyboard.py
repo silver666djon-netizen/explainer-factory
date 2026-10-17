@@ -126,8 +126,12 @@ def main(argv=None) -> int:
     if frames_out.exists():
         shutil.rmtree(frames_out)
     frames_out.mkdir(parents=True)
-    for p in cache.glob("*.png"):
+    for p in images.values():  # only the frames in use (old takes stay in the cache, not in the release)
+        p = Path(p)
         shutil.copy2(p, frames_out / p.name)
+        d = p.with_name(p.stem + ".depth.png")
+        if d.exists():
+            shutil.copy2(d, frames_out / d.name)
     sheets = contact_sheets(episode, images, ROOT / "out" / "storyboard" / slug, cfg)
     pack = write_pack(episode, cfg)
     log(f"Storyboard: {len(images)} frames, {len(sheets)} sheets, prompt pack: {pack}")

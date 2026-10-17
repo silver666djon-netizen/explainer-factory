@@ -32,10 +32,17 @@ def voice_beats(voice, beats: list[dict]) -> list[dict]:
     return out
 
 
-def build(episode_path: str, out_dir: str | None, offline: bool, only: str | None) -> Path:
+def build(episode_path: str, out_dir: str | None, offline: bool, only: str | None, preview: bool = False) -> Path:
     started = time.time()
     episode = load_episode(episode_path)
     cfg = load_config(episode.get("config"))
+    if preview:  # fast draft for QC: half size, 15 fps — same layout, timing and sound
+        vc = cfg["video"]
+        vc["fps"] = 15
+        vc["long"] = {"width": vc["long"]["width"] // 2, "height": vc["long"]["height"] // 2}
+        vc["short"] = {"width": vc["short"]["width"] // 2, "height": vc["short"]["height"] // 2}
+        vc["x264_preset"], vc["crf"] = "ultrafast", 30
+        vc["crossfade_frames"] = max(2, int(vc.get("crossfade_frames", 8)) // 2)
     slug = episode["slug"]
     out = Path(out_dir) if out_dir else ROOT / "out" / slug
     out.mkdir(parents=True, exist_ok=True)
@@ -177,6 +184,7 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--out")
     b.add_argument("--offline", action="store_true", help="placeholder images and voice (no APIs)")
     b.add_argument("--only", choices=["long", "shorts"])
+    b.add_argument("--preview", action="store_true", help="fast half-size 15 fps draft for checking")
     c = sub.add_parser("check", help="validate a script without rendering")
     c.add_argument("episode")
     args = ap.parse_args(argv)
@@ -189,7 +197,7 @@ def main(argv: list[str] | None = None) -> int:
                               "approx_minutes": round(words / 150, 1), "shorts": len(ep.get("shorts") or []),
                               "warnings": lint(ep)}, indent=2, ensure_ascii=False))
             return 0
-        build(args.episode, args.out, args.offline, args.only)
+        build(args.episode, args.out, args.offline, args.only, args.preview)
         return 0
     except ScriptError as exc:
         print(f"Script error:\n{exc}", file=sys.stderr)

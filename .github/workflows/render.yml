@@ -11,6 +11,10 @@ on:
         description: "long / shorts / empty = everything"
         required: false
         default: ""
+      preview:
+        description: "yes = fast low-res draft for Claude's QC (release <slug>-preview, nothing sent to Telegram)"
+        required: false
+        default: "no"
 
 permissions:
   contents: write
@@ -107,7 +111,7 @@ jobs:
           set -o pipefail
           only="${{ github.event.inputs.only }}"
           for ep in ${{ steps.pick.outputs.list }}; do
-            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} 2>&1 | tee -a build.log
+            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} ${{ github.event.inputs.preview == 'yes' && '--preview' || '' }} 2>&1 | tee -a build.log
           done
 
       - name: Save generated images (even if the render failed)
@@ -128,6 +132,13 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
+          if [ "${{ github.event.inputs.preview }}" = "yes" ]; then
+            for ep in ${{ steps.pick.outputs.list }}; do
+              gh release delete "$ep-preview" -y --cleanup-tag 2>/dev/null || true
+              gh release create "$ep-preview" out/$ep/*.mp4 --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease
+            done
+            exit 0
+          fi
           for ep in ${{ steps.pick.outputs.list }}; do
             tag="$ep-r${{ github.run_number }}"
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")

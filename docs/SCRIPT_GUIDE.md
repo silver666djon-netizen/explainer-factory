@@ -10,7 +10,7 @@ python -m factory check episodes/<NNNN-slug>
 ## Channel
 
 - **CoinSense** — the psychology of money: why our brains misjudge prices, deals, risk and value.
-- English, documentary British narrator (Kokoro `bm_george`), calm, curious, slightly wry.
+- English, documentary British narrator (Kokoro `bm_lewis`), calm, curious, slightly wry.
 - Look: 1950s print advertising illustrations + flat infographics + a red "investigator marker"
   that circles and annotates the trick + 1950s comic panels + real archive photos.
 - Rhythm: something changes on screen every 1–3 s (the renderer splits long beats automatically,
@@ -119,11 +119,13 @@ Each beat = 1–3 sentences of narration, ~4–9 seconds. Fields:
 
 ### Workflow per episode
 
-1. Script approved → commit `script.json` → **Storyboard** workflow: all frames + depth maps, contact sheets
-   and prompt pack in Telegram (release `frames-<slug>`).
-2. Claude reviews every frame; Klot reviews the sheets. Bad frames: `/redo b17 c03` in the bot
-   (or Storyboard workflow with `redo`). Hand-made frames/clips: send to the bot as a FILE captioned `b17`.
-3. "✅ Раскадровка ок" button (or `/approve`) → **Render episode** → video + Shorts in Telegram.
+See `docs/PRODUCTION_RULES.md` (storyboard → Claude QC → approval → preview → Claude QC → one final render).
+
+### Music
+
+`"music": {"<section>": "<cue>", "_default": "noir"}` maps chapters to moods from `channel/music.json`
+(noir, lounge, slots, tension, curious, serious, finale). Beat `"sting": "fanfare|reveal|closed|jackpot"`
+(+ optional `"sting_at"` seconds) adds a short musical hit. Shorts take the mood of the chapter their pictures come from.
 
 ### Image prompt rules
 
