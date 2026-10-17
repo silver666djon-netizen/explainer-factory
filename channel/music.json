@@ -1,7 +1,7 @@
 {
   "model": "google/lyria-3-pro-preview",
   "clip_model": "google/lyria-3-clip-preview",
-  "common": "Instrumental only, no vocals, no singing. Background score for a lively, witty YouTube explainer: steady groove and consistent energy and volume from the first second to the last, no slow intro, no breakdowns, no fade-out until the final seconds. Bright, clean professional mix.",
+  "common": "Purely instrumental: no vocals, no singing, no humming, no spoken words, no voices, no crowd or audience noise. Background score for a lively, witty YouTube explainer: steady groove and consistent energy and volume from the first second to the last, no slow intro, no breakdowns, no fade-out until the final seconds. Bright, clean professional mix.",
   "beds": {
     "noir": "playful 1960s caper-movie detective jazz at 118 BPM: walking upright bass, crisp swinging brushed drums, finger snaps, vibraphone and muted trumpet riffs, cheeky and curious, major key",
     "lounge": "upbeat 1960s Las Vegas swing at 126 BPM: bright big-band brass stabs, swinging drums, upright bass, vibraphone, glamorous, fun and confident, major key",

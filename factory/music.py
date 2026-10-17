@@ -91,6 +91,23 @@ def generate(model: str, prompt: str) -> bytes:
     raise RuntimeError(f"Music generation failed for {model}: {last}")
 
 
+_WHISPER = None
+
+
+def vocals_in(path: Path) -> str:
+    """Words a speech recogniser hears in a music file ('' = clean). Catches tracks with singing or voices."""
+    global _WHISPER
+    try:
+        from faster_whisper import WhisperModel
+    except ImportError:
+        return ""
+    if _WHISPER is None:
+        _WHISPER = WhisperModel("small", device="cpu", compute_type="int8")
+    segs, _info = _WHISPER.transcribe(str(path), vad_filter=True, beam_size=1)
+    heard = [s.text.strip() for s in segs if s.no_speech_prob < 0.5 and s.avg_logprob > -0.9 and len(s.text.strip()) > 3]
+    return " | ".join(heard)[:300]
+
+
 def _sniff_ext(data: bytes) -> str:
     if data[:4] == b"RIFF":
         return "wav"
@@ -108,7 +125,12 @@ def main() -> None:
     ap.add_argument("--only", default="")
     ap.add_argument("--out", default=str(ROOT / "out" / "music"))
     ap.add_argument("--send", action="store_true")
+    ap.add_argument("--check", default="", help="only check existing files in this folder for voices")
     a = ap.parse_args()
+    if a.check:
+        for f in sorted(Path(a.check).glob("*.mp3")):
+            print(f"{f.stem}: {vocals_in(f) or 'clean'}", flush=True)
+        return
     spec = json.loads(SPEC.read_text(encoding="utf-8"))
     only = {k for k in a.only.split(",") if k}
     out = Path(a.out)
@@ -120,18 +142,31 @@ def main() -> None:
             continue
         model = spec["model"] if kind == "bed" else spec.get("clip_model", spec["model"])
         text = f"{prompt}. {spec['common']}" if kind == "bed" else f"{prompt}. Instrumental only, no vocals."
-        try:
-            data = generate(model, text)
-        except Exception as exc:  # noqa: BLE001
-            errors.append(f"{key}: {exc}")
-            print("ERROR", key, exc, flush=True)
-            continue
-        raw = out / f"{key}.{_sniff_ext(data)}"
-        raw.write_bytes(data)
         mp3 = out / f"{key}.mp3"
-        if raw.suffix != ".mp3":
-            subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-b:a", "192k", str(mp3)], check=True)
-            raw.unlink()
+        ok = False
+        for attempt in range(3):  # a take with voices in it is thrown away and made again
+            try:
+                data = generate(model, text)
+            except Exception as exc:  # noqa: BLE001
+                errors.append(f"{key}: {exc}")
+                print("ERROR", key, exc, flush=True)
+                break
+            raw = out / f"{key}.{_sniff_ext(data)}"
+            raw.write_bytes(data)
+            if raw.suffix != ".mp3":
+                subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(raw), "-b:a", "192k", str(mp3)], check=True)
+                raw.unlink()
+            heard = vocals_in(mp3) if kind == "bed" else ""
+            if heard:
+                print(f"{key}: take {attempt + 1} has voices ({heard}) — regenerating", flush=True)
+                continue
+            ok = True
+            break
+        if not ok:
+            if mp3.exists():
+                mp3.unlink()
+            errors.append(f"{key}: no clean take")
+            continue
         dur = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(mp3)],
                              capture_output=True, text=True).stdout.strip()
         print(f"made {mp3.name} ({dur}s, {kind})", flush=True)

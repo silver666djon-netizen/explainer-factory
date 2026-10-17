@@ -136,6 +136,31 @@ def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
     return []
 
 
+def _norm_word(w: str) -> str:
+    return "".join(c for c in w.lower() if c.isalnum())
+
+
+def word_time(words, phrase: str) -> float | None:
+    """Start time (s from the beat's narration start) of the first occurrence of a word/phrase in the narration."""
+    target = [_norm_word(x) for x in str(phrase).split() if _norm_word(x)]
+    if not target or not words:
+        return None
+    toks = [_norm_word(w[0]) for w in words]
+    for i in range(len(toks) - len(target) + 1):
+        if toks[i : i + len(target)] == target:
+            return float(words[i][1])
+    return None
+
+
+def _timed(spec: dict, words, default: float, key: str = "at") -> float:
+    """'on': 'word' syncs an event to the moment that word is spoken; otherwise the fixed 'at' seconds."""
+    if spec.get("on"):
+        wt = word_time(words, spec["on"])
+        if wt is not None:
+            return wt + float(spec.get("delay", 0.0))
+    return float(spec.get(key, default))
+
+
 def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause: float = 0.0) -> Plan:
     vcfg = cfg["video"]
     pause = float(vcfg.get("pause_after_beat", 0.18)) + extra_pause
@@ -191,7 +216,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.shots.append(ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0))))
         elif vtype in ("image", "reuse", "photo", "clip"):
             keys = _image_keys(visual, beat_lookup)
-            marks = [dict(m, at=float(m.get("at", 0.6)) + lead_in) for m in (visual.get("marks") or [])]
+            marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
             if marks:
                 pieces = len(keys)  # marks need a steady picture: no extra cuts
@@ -262,7 +287,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         if beat.get("_music"):
             plan.timeline.music_cue(max(0.0, start - 0.4), beat["_music"])
         if beat.get("sting"):
-            plan.timeline.add_sting(start + float(beat.get("sting_at", 0.0)), beat["sting"])
+            sat = _timed({"on": beat.get("sting_on"), "at": beat.get("sting_at", 0.0)}, v["words"], 0.0)
+            plan.timeline.add_sting(start + sat, beat["sting"])
         section = beat.get("section")
         explicit = beat.get("sfx")
         if explicit:
@@ -282,7 +308,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.timeline.add_sfx(appear, "pop", seed=i)
         if beat.get("counter"):
             c = beat["counter"]
-            appear = start + float(c.get("at", 0.5))
+            appear = start + _timed(c, v["words"], 0.5)
             plan.counters.append(Counter(appear, start + dur, float(c.get("from", 0)), float(c["to"]),
                                          float(c.get("dur", 1.2)), str(c.get("prefix", "")), str(c.get("suffix", "")),
                                          int(c.get("decimals", 0)), str(c.get("label", ""))))
@@ -291,7 +317,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.timeline.add_sfx(appear + float(c.get("dur", 1.2)), "cash" if c.get("sound") == "cash" else "pop", seed=i)
         if beat.get("bubble"):
             b = beat["bubble"]
-            appear = start + float(b.get("at", 0.2))
+            appear = start + _timed(b, v["words"], 0.2)
             plan.bubbles.append(Bubble(appear, start + dur, str(b["text"]), float(b.get("x", 0.5)),
                                        float(b.get("y", 0.3)), str(b.get("tail", "left"))))
             plan.timeline.add_sfx(appear, "pop", seed=i + 1)

@@ -4,6 +4,10 @@ name: Music library
 on:
   workflow_dispatch:
     inputs:
+      check:
+        description: "yes = only check the current library for voices (no generation)"
+        required: false
+        default: "no"
       only:
         description: "comma-separated cue names (empty = all)"
         required: false
@@ -26,8 +30,17 @@ jobs:
           python-version: "3.11"
       - run: |
           sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
-          pip install -q requests pyyaml numpy pillow
+          pip install -q requests pyyaml numpy pillow faster-whisper
+      - name: Check library for voices
+        if: github.event.inputs.check == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p lib && gh release download music-lib -D lib --pattern "*.mp3"
+          python -m factory.music --check lib 2>&1 | tee check.log
+          echo "::warning title=Voice check::$(cat check.log | grep -v '^$' | tr '\n' ';')"
       - name: Generate
+        if: github.event.inputs.check != 'yes'
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
@@ -40,7 +53,7 @@ jobs:
         run: |
           tail -n 40 music.log | python3 -c 'import sys; t=sys.stdin.read()[-6000:]; print("::error title=Music failed::" + t.replace("%","%25").replace("\r","").replace("\n","%0A"))'
       - name: Publish
-        if: always()
+        if: always() && github.event.inputs.check != 'yes'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |

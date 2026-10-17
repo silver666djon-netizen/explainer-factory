@@ -163,18 +163,23 @@ class CaseFileShot(Shot):
         self._cache = {}
 
     def _scene(self, open_p: float, type_chars: int) -> np.ndarray:
-        key = (round(open_p, 2), type_chars)
+        """The cover swings open on its spine like a real folder (perspective flip), revealing the typed page;
+        the whole folder glides so the open spread ends up centred."""
+        key = (round(open_p, 3), type_chars)
         if key in self._cache:
             return self._cache[key]
         base = Image.fromarray(self.desk.copy()).convert("RGBA")
-        fx, fy, fw, fh = self.fx, self.fy, self.fw, self.fh
+        fw, fh, fy = self.fw, self.fh, self.fy
+        spine = self.fx + int((self.BW // 2 - self.fx) * open_p) if self.mode == "open" else self.fx
+        # shadow under the folder (and under the opened cover)
         shadow = Image.new("RGBA", (fw + 40, fh + 40), (0, 0, 0, 0))
         ImageDraw.Draw(shadow).rectangle((20, 20, fw + 20, fh + 20), fill=(0, 0, 0, 110))
-        base.alpha_composite(shadow.filter(ImageFilter.GaussianBlur(16)), (fx - 4, fy + 10))
+        shadow = shadow.filter(ImageFilter.GaussianBlur(16))
+        base.alpha_composite(shadow, (spine - 4, fy + 10))
         # back of folder + tab
         back = Image.new("RGBA", (fw, fh), _darker(self.manila, 0.9) + (255,))
         ImageDraw.Draw(back).rectangle((int(fw * 0.62), 0, int(fw * 0.95), int(fh * 0.05)), fill=_darker(self.manila, 0.9) + (255,))
-        base.alpha_composite(back, (fx, fy - int(fh * 0.04)))
+        base.alpha_composite(back, (spine, fy - int(fh * 0.04)))
         if open_p > 0:
             page = self.page.copy()
             d = ImageDraw.Draw(page)
@@ -184,15 +189,35 @@ class CaseFileShot(Shot):
                     break
                 d.text((x, y), txt[:remaining], font=self.ft, fill=self.pal["ink"])
                 remaining -= len(txt)
-            base.alpha_composite(page, (fx, fy))
-        if open_p < 1:
-            w = max(1, int(fw * (1 - open_p)))
-            cov = self.cover.resize((w, fh))
-            # darken as it turns away
-            arr = np.array(cov)
-            arr[..., :3] = (arr[..., :3] * (1 - 0.35 * open_p)).astype(np.uint8)
-            base.alpha_composite(Image.fromarray(arr), (fx, fy))
+            base.alpha_composite(page, (spine, fy))
         out = np.array(base.convert("RGB"))
+        if True:  # cover: closed, mid-swing, or lying open on the left
+            theta = math.pi * open_p
+            c, sn = math.cos(theta), math.sin(theta)
+            w = fw * abs(c)
+            if w >= 2:
+                if c > 0:  # front of the cover, still over the page
+                    tex = np.array(self.cover)
+                    shade = 1 - 0.3 * sn
+                else:  # inside of the cover, now lying to the left of the spine
+                    inner = Image.new("RGBA", (fw, fh), _darker(self.manila, 0.96) + (255,))
+                    ImageDraw.Draw(inner).rectangle((0, 0, fw - 1, fh - 1), outline=_darker(self.manila, 0.75) + (255,), width=4)
+                    tex = np.array(inner)
+                    shade = 1 - 0.25 * sn
+                tex = tex.copy()
+                tex[..., :3] = (tex[..., :3] * shade).astype(np.uint8)
+                lift = fh * 0.08 * sn  # the free edge comes towards the camera
+                fx_edge = spine + (w if c > 0 else -w)
+                if c > 0:
+                    src = np.float32([[0, 0], [fw, 0], [fw, fh], [0, fh]])
+                    dst = np.float32([[spine, fy], [fx_edge, fy - lift], [fx_edge, fy + fh + lift], [spine, fy + fh]])
+                else:
+                    src = np.float32([[fw, 0], [0, 0], [0, fh], [fw, fh]])
+                    dst = np.float32([[spine, fy], [fx_edge, fy - lift], [fx_edge, fy + fh + lift], [spine, fy + fh]])
+                M = cv2.getPerspectiveTransform(src, dst)
+                warped = cv2.warpPerspective(tex, M, (out.shape[1], out.shape[0]), flags=cv2.INTER_LINEAR,
+                                             borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 0, 0))
+                blend(out, warped, 0, 0)
         if len(self._cache) > 64:
             self._cache.clear()
         self._cache[key] = out
@@ -200,7 +225,7 @@ class CaseFileShot(Shot):
 
     def frame(self, t: float) -> np.ndarray:
         if self.mode == "open":
-            op = ease((t - self.lead_in - 1.0) / 0.7)
+            op = ease((t - self.lead_in - 0.8) / 1.1)
             total_chars = sum(len(x[2]) for x in self.inside_lines)
             chars = int(total_chars * min(1.0, max(0.0, (t - self.lead_in - 1.7) / 1.6)))
         else:

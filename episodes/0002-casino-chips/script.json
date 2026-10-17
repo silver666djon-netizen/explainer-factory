@@ -110,9 +110,9 @@
             "y": 0.5,
             "w": 0.42,
             "h": 0.5,
-            "at": 0.9,
             "text": "still $500",
-            "text_y": 0.78
+            "text_y": 0.78,
+            "on": "Same"
           }
         ]
       }
@@ -132,7 +132,7 @@
             "y": 0.75,
             "w": 0.13,
             "h": 0.22,
-            "at": 1.2
+            "on": "hiding"
           },
           {
             "type": "arrow",
@@ -140,10 +140,10 @@
             "y": 0.7,
             "from_x": 0.18,
             "from_y": 0.52,
-            "at": 1.7,
             "text": "exhibit Z",
             "text_x": 0.18,
-            "text_y": 0.44
+            "text_y": 0.44,
+            "on": "pocket"
           }
         ]
       }
@@ -216,9 +216,9 @@
             "y": 0.5,
             "w": 0.42,
             "h": 0.5,
-            "at": 0.5,
             "text": "trick #1",
-            "text_y": 0.78
+            "text_y": 0.78,
+            "on": "trick"
           }
         ]
       }
@@ -365,9 +365,9 @@
             "y": 0.5,
             "w": 0.46,
             "h": 0.56,
-            "at": 2.6,
             "text": "it's taking notes",
-            "text_y": 0.8
+            "text_y": 0.8,
+            "on": "track"
           }
         ]
       }
@@ -415,7 +415,7 @@
         "style": "comic"
       },
       "sting": "fanfare",
-      "sting_at": 0.0
+      "sting_on": "comes"
     },
     {
       "id": "b18",
@@ -432,10 +432,10 @@
             "y": 0.45,
             "from_x": 0.2,
             "from_y": 0.2,
-            "at": 2.4,
             "text": "their money?",
             "text_x": 0.27,
-            "text_y": 0.06
+            "text_y": 0.06,
+            "on": "their money"
           }
         ]
       }
@@ -563,7 +563,7 @@
         }
       },
       "sting": "reveal",
-      "sting_at": 0.0
+      "sting_on": "business"
     },
     {
       "id": "s28",
@@ -825,7 +825,7 @@
         "motion": "zoom_in"
       },
       "sting": "reveal",
-      "sting_at": 0.0
+      "sting_on": "no accident"
     },
     {
       "id": "d09",
@@ -965,9 +965,9 @@
             "y": 0.5,
             "w": 0.5,
             "h": 0.6,
-            "at": 6.6,
             "text": "MYTH — says the man who wrote the book",
-            "text_y": 0.82
+            "text_y": 0.82,
+            "on": "myth"
           }
         ]
       }
@@ -1049,7 +1049,7 @@
             "y": 0.3,
             "w": 0.14,
             "h": 0.16,
-            "at": 2.2
+            "on": "count"
           }
         ]
       }
@@ -1097,7 +1097,7 @@
         "motion": "zoom_in"
       },
       "sting": "reveal",
-      "sting_at": 0.0
+      "sting_on": "Take"
     },
     {
       "id": "p48",
@@ -1132,9 +1132,9 @@
             "y": 0.5,
             "w": 0.5,
             "h": 0.5,
-            "at": 1.0,
             "text": "chip",
-            "text_y": 0.8
+            "text_y": 0.8,
+            "on": "Chips"
           }
         ]
       }
