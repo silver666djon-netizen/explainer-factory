@@ -1,0 +1,140 @@
+name: Storyboard
+
+# A new or changed script makes the storyboard first (all frames + contact sheets in Telegram).
+# The montage runs only after the storyboard is approved (Render episode workflow).
+on:
+  push:
+    branches: [main]
+    paths: ["episodes/*/script.json"]
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode folder name, e.g. 0002-casino-chips"
+        required: true
+      redo:
+        description: "Frames to regenerate, e.g. b17,c03 (empty = only missing ones)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: storyboard
+  cancel-in-progress: false
+
+jobs:
+  storyboard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Pick episodes
+        id: pick
+        run: |
+          if [ -n "${{ github.event.inputs.episode }}" ]; then
+            list="${{ github.event.inputs.episode }}"
+          else
+            before="${{ github.event.before }}"
+            if [ -z "$before" ] || [ "$before" = "0000000000000000000000000000000000000000" ]; then before="HEAD~1"; fi
+            list=$(git diff --name-only "$before" HEAD -- 'episodes/*/script.json' | cut -d/ -f2 | sort -u | tr '\n' ' ')
+          fi
+          echo "Episodes: $list"
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: System packages and fonts
+        run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg fonts-dejavu-core
+          mkdir -p assets/fonts
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf; do
+            curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || true
+          done
+
+      - name: Cache models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-depth-v1
+
+      - name: Restore generated images
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/images
+          key: images-${{ github.run_id }}
+          restore-keys: images-
+
+      - name: Reuse frames already published
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for ep in ${{ steps.pick.outputs.list }}; do
+            mkdir -p ".cache/images/$ep"
+            gh release download "frames-$ep" -D ".cache/images/$ep" --clobber 2>/dev/null || echo "no frames yet for $ep"
+          done
+
+      - name: Python packages
+        run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt
+
+      - name: Storyboard
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -o pipefail
+          for ep in ${{ steps.pick.outputs.list }}; do
+            python -m factory.storyboard "episodes/$ep" --redo "${{ github.event.inputs.redo }}" 2>&1 | tee -a build.log
+          done
+
+      - name: Save generated images
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/images
+          key: images-${{ github.run_id }}
+
+      - name: Publish frames + contact sheets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for ep in ${{ steps.pick.outputs.list }}; do
+            gh release delete "frames-$ep" -y --cleanup-tag 2>/dev/null || true
+            gh release create "frames-$ep" out/frames/$ep/* out/storyboard/$ep/*.jpg --title "Storyboard $ep" \
+              --notes "Frames and depth maps for $ep. Contact sheets: sheet_*.jpg" --prerelease
+          done
+
+      - name: Save frame variants, character portraits and prompt packs
+        run: |
+          git config user.name "explainer-factory-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add assets/characters episodes/*/frames.json episodes/*/prompt_pack.md 2>/dev/null || true
+          git commit -m "Storyboard: variants, characters, prompt packs" || echo "nothing to commit"
+          git pull --rebase -q origin main && git push || true
+
+      - name: Report error details
+        if: failure()
+        run: |
+          tail -n 60 build.log 2>/dev/null | python3 -c 'import sys; t=sys.stdin.read()[-6000:]; print("::error title=Storyboard failed::" + t.replace("%","%25").replace("\r","").replace("\n","%0A"))'
+
+      - name: Telegram on failure
+        if: failure()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
+            --data-urlencode "text=⚠️ Раскадровка не удалась. Claude посмотрит причину." > /dev/null || true

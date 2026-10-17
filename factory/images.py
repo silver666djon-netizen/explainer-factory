@@ -1,4 +1,5 @@
-"""Image generation: Cloudflare Workers AI (Flux) with an on-disk cache, plus offline placeholders."""
+"""Image generation: Gemini (Nano Banana) or Cloudflare Workers AI (Flux), on-disk cache, hand-made overrides,
+offline placeholders."""
 from __future__ import annotations
 
 import base64
@@ -26,10 +27,126 @@ def full_prompt(cfg: dict, prompt: str, style_name: str = "ad") -> str:
     return text[:2000]
 
 
-def _cache_name(cfg: dict, key: str, prompt: str, style_name: str = "ad") -> str:
-    digest = hashlib.sha1(f"{cfg['images']['model']}|{full_prompt(cfg, prompt, style_name)}".encode()).hexdigest()[:10]
+def provider(cfg: dict) -> str:
+    """'gemini' when a Gemini key is available (and allowed), otherwise 'cloudflare'."""
+    want = (cfg["images"].get("provider") or "auto").lower()
+    if want == "cloudflare":
+        return "cloudflare"
+    if want in ("gemini", "auto") and env("GEMINI_API_KEY"):
+        return "gemini"
+    return "cloudflare"
+
+
+def model_id(cfg: dict) -> str:
+    return cfg["images"].get("gemini_model", "gemini-nano-banana-2.1") if provider(cfg) == "gemini" else cfg["images"]["model"]
+
+
+def _cache_name(cfg: dict, key: str, prompt: str, style_name: str = "ad", variant: int = 0) -> str:
+    salt = f"|v{variant}" if variant else ""
+    digest = hashlib.sha1(f"{model_id(cfg)}|{full_prompt(cfg, prompt, style_name)}{salt}".encode()).hexdigest()[:10]
     safe_key = "".join(c if c.isalnum() or c in "-_." else "_" for c in key)
     return f"{safe_key}-{digest}.png"
+
+
+def _find_image_b64(obj):
+    """Walks any JSON response and returns the first base64 image payload."""
+    if isinstance(obj, dict):
+        mime = str(obj.get("mime_type") or obj.get("mimeType") or "")
+        data = obj.get("data")
+        if isinstance(data, str) and len(data) > 1000 and (mime.startswith("image/") or obj.get("type") in ("image", "output_image")):
+            return data
+        for k in ("inlineData", "inline_data", "output_image", "image"):
+            if isinstance(obj.get(k), dict):
+                got = _find_image_b64(obj[k])
+                if got:
+                    return got
+        for v in obj.values():
+            got = _find_image_b64(v)
+            if got:
+                return got
+    elif isinstance(obj, list):
+        for v in obj:
+            got = _find_image_b64(v)
+            if got:
+                return got
+    return None
+
+
+def _gemini(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | None = None, variant: int = 0) -> Image.Image:
+    key = env("GEMINI_API_KEY").strip()
+    icfg = cfg["images"]
+    model = icfg.get("gemini_model", "gemini-nano-banana-2.1")
+    text = full_prompt(cfg, prompt, style_name)
+    extra = (icfg.get("gemini_quality_suffix") or "").strip()
+    if extra:
+        text = f"{text.rstrip('. ')}. {extra}"
+    if refs:
+        text += " Keep the character's face, outfit and colours exactly as in the reference portrait."
+    if variant:
+        text += f" (alternative take {variant})"
+    parts = [{"type": "text", "text": text}]
+    legacy_parts = [{"text": text}]
+    for ref in (refs or [])[:4]:
+        im = Image.open(ref).convert("RGB")
+        im.thumbnail((1024, 1024))
+        buf = io.BytesIO()
+        im.save(buf, "JPEG", quality=90)
+        b64 = base64.b64encode(buf.getvalue()).decode()
+        parts.append({"type": "image", "mime_type": "image/jpeg", "data": b64})
+        legacy_parts.append({"inline_data": {"mime_type": "image/jpeg", "data": b64}})
+    aspect = icfg.get("aspect_ratio", "16:9")
+    size = icfg.get("gemini_size", "1K")
+    headers = {"x-goog-api-key": key, "Content-Type": "application/json"}
+    attempts = [
+        ("https://generativelanguage.googleapis.com/v1beta/interactions",
+         {"model": model, "input": parts,
+          "response_format": {"type": "image", "mime_type": "image/png", "aspect_ratio": aspect, "image_size": size}}),
+        (f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
+         {"contents": [{"parts": legacy_parts}],
+          "generationConfig": {"responseModalities": ["IMAGE"], "imageConfig": {"aspectRatio": aspect, "imageSize": size}}}),
+    ]
+    last = ""
+    for url, body in attempts:
+        delay = 5.0
+        for _try in range(4):
+            try:
+                r = requests.post(url, headers=headers, json=body, timeout=180)
+            except requests.RequestException as exc:
+                last = str(exc)
+                time.sleep(delay)
+                delay *= 2
+                continue
+            if r.status_code == 200:
+                b64 = _find_image_b64(r.json())
+                if b64:
+                    return Image.open(io.BytesIO(base64.b64decode(b64))).convert("RGB")
+                last = f"no image in response: {r.text[:300]}"
+                if "safety" in r.text.lower() or "blocked" in r.text.lower():
+                    raise _SafetyFilter(last)
+                break
+            last = f"HTTP {r.status_code}: {r.text[:400]}"
+            if r.status_code in (429, 500, 502, 503, 504):
+                time.sleep(delay)
+                delay *= 2
+                continue
+            if r.status_code in (400, 404) and url.endswith("/interactions"):
+                break  # try the classic endpoint
+            if r.status_code in (401, 403):
+                raise RuntimeError(f"Gemini rejected the key or region/billing ({last})")
+            break
+    raise RuntimeError(f"Gemini image generation failed: {last}")
+
+
+def generate(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | None = None, variant: int = 0) -> Image.Image:
+    if provider(cfg) == "gemini":
+        last: Exception | None = None
+        for prefix in SAFE_PREFIXES:
+            try:
+                return _gemini(cfg, prefix + prompt, style_name, refs, variant)
+            except _SafetyFilter as exc:
+                last = exc
+        raise RuntimeError(f"Image prompt keeps getting blocked, please reword it: {prompt!r} ({last})")
+    return _cloudflare(cfg, prompt if not variant else f"{prompt}, alternative composition {variant}", style_name, refs)
 
 
 SAFE_PREFIXES = ["", "Wholesome family-friendly vintage illustration, fully clothed characters, ",
@@ -148,6 +265,7 @@ def ensure_images(cfg: dict, prompts: dict[str, dict], cache_dir: Path, offline:
         raise RuntimeError(f"Episode needs {len(prompts)} images, limit is {limit}. Reuse images or raise the limit.")
     out: dict[str, Path] = {}
     made = 0
+    variants = _variants(prompts)
     for key, spec in prompts.items():
         prompt, style_name = spec["prompt"], spec.get("style", "ad")
         manual = _manual_image(spec.get("episode_dir"), key)
@@ -155,16 +273,28 @@ def ensure_images(cfg: dict, prompts: dict[str, dict], cache_dir: Path, offline:
             out[key] = manual
             log(f"  image {key}: hand-made file {manual.name}")
             continue
-        path = cache_dir / _cache_name(cfg, key, prompt, style_name)
+        variant = int(variants.get(key, 0))
+        path = cache_dir / _cache_name(cfg, key, prompt, style_name, variant)
         if not path.exists():
             refs = [Path(p) for p in spec.get("refs") or [] if Path(p).exists()]
-            img = placeholder(cfg, key, prompt) if offline else _cloudflare(cfg, prompt, style_name, refs)
+            img = placeholder(cfg, key, prompt) if offline else generate(cfg, prompt, style_name, refs, variant)
             img.save(path)
             made += 1
             log(f"  image {key}: generated ({made})")
         out[key] = path
     log(f"Images ready: {len(out)} total, {made} new")
     return out
+
+
+def _variants(prompts: dict[str, dict]) -> dict[str, int]:
+    """episodes/<slug>/frames.json -> {"variants": {"b17": 2}}: a 'redo' bumps the number."""
+    import json
+    dirs = {spec.get("episode_dir") for spec in prompts.values() if spec.get("episode_dir")}
+    for d in dirs:
+        f = Path(d) / "frames.json"
+        if f.exists():
+            return json.loads(f.read_text(encoding="utf-8")).get("variants", {})
+    return {}
 
 
 def _manual_image(episode_dir: str | None, key: str) -> Path | None:
@@ -206,7 +336,7 @@ def ensure_photos(cfg: dict, photos: dict[str, dict], cache_dir: Path, offline: 
                     if not spec.get("fallback_prompt"):
                         raise RuntimeError(f"Photo {key} could not be downloaded ({exc}) and has no fallback_prompt") from exc
                     log(f"  photo {key}: download failed ({exc}); using illustration instead")
-                    _cloudflare(cfg, spec["fallback_prompt"]).save(fallback)
+                    generate(cfg, spec["fallback_prompt"]).save(fallback)
                     out[key] = fallback
                     continue
         out[key] = path

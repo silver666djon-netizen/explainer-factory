@@ -54,6 +54,13 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         credits = [f"Archive photo: {spec['credit']}" for key, spec in photos.items() if is_archive_photo(got[key])]
         episode["sources"] = list(episode.get("sources") or []) + credits
 
+    try:  # parallax depth for frames that have none yet (e.g. hand-made ones added after the storyboard)
+        from .depth import ensure_depth
+        if not offline:
+            ensure_depth(list(images.values()), log)
+    except Exception as exc:  # noqa: BLE001
+        log(f"depth skipped: {exc}")
+
     log("Narration…")
     voice = make_voice(cfg, offline, episode.get("voices"))
     beat_lookup = {b["id"]: b for b in episode["beats"]}

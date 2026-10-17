@@ -16,7 +16,8 @@ from . import audio as A
 from .config import hex_to_rgb, resolve_font
 from .images import is_archive_photo
 from .props import CaseFileShot, MazeShot, MugshotShot, NewsreelShot, RouletteShot, SlotShot, projector_sfx_times
-from .shots import ChartShot, DocShot, ImageShot, KineticShot, Shot, StatShot, TitleShot
+from .depth import load_depth
+from .shots import ChartShot, ClipShot, DocShot, ImageShot, KineticShot, Shot, StatShot, TitleShot
 from .text import blend, fit_font, font, text_block, wrap
 
 MOTION_CYCLE = ["zoom_in", "pan_right", "zoom_out", "pan_left", "drift", "pan_up", "zoom_in", "pan_down"]
@@ -104,8 +105,22 @@ def group_captions(words, offset: float, max_chars: int, max_words: int, speaker
     return out
 
 
+def _clip_path(beat: dict, visual: dict, beat_lookup: dict[str, dict]):
+    """episodes/<slug>/clips/<beat id>.mp4 (or the reused beat's clip)."""
+    from pathlib import Path as _P
+    ep_dir = beat.get("_episode_dir") or visual.get("_episode_dir")
+    keys = [beat["id"]]
+    if visual.get("type") == "reuse":
+        keys.insert(0, visual["beat"])
+    for key in keys:
+        for ext in (".mp4", ".mov", ".webm"):
+            if ep_dir and (_P(ep_dir) / "clips" / f"{key}{ext}").exists():
+                return _P(ep_dir) / "clips" / f"{key}{ext}"
+    return None
+
+
 def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
-    if visual["type"] == "image":
+    if visual["type"] in ("image", "clip"):
         n = len(visual.get("prompts") or [visual["prompt"]])
         return [visual["_beat"] if i == 0 else f"{visual['_beat']}.{i}" for i in range(n)]
     if visual["type"] in ("photo", "mugshot"):
@@ -161,7 +176,12 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         vtype = visual["type"]
         lead_in = start - shot_start  # marks are timed from the narration start
 
-        if vtype in ("image", "reuse", "photo"):
+        clip_file = None
+        if vtype == "clip" or visual.get("clip"):
+            clip_file = _clip_path(beat, visual, beat_lookup)
+        if clip_file is not None:
+            plan.shots.append(ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0))))
+        elif vtype in ("image", "reuse", "photo", "clip"):
             keys = _image_keys(visual, beat_lookup)
             marks = [dict(m, at=float(m.get("at", 0.6)) + lead_in) for m in (visual.get("marks") or [])]
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
@@ -185,7 +205,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 shot_marks = [dict(m, at=m["at"] - k * seg) for m in marks] if k == 0 else []
                 shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                  marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
-                                 ad=visual.get("ad") if k == 0 else None)
+                                 ad=visual.get("ad") if k == 0 else None, depth=load_depth(path))
                 if visual.get("newsreel"):
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)

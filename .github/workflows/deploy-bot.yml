@@ -1,0 +1,28 @@
+name: Deploy Telegram bot
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q requests
+      - name: Deploy worker and set webhook
+        env:
+          CLOUDFLARE_WORKERS_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          BOT_GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
+        run: |
+          set -o pipefail
+          python bot/deploy.py 2>&1 | tee deploy.log
+      - name: Report error details
+        if: failure()
+        run: tail -n 30 deploy.log | python3 -c 'import sys; t=sys.stdin.read()[-4000:]; print("::error title=Bot deploy failed::" + t.replace("%","%25").replace("\n","%0A"))'

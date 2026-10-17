@@ -28,6 +28,36 @@ def send_text(text: str) -> None:
     _api("sendMessage", data={"text": text, "disable_web_page_preview": "true"})
 
 
+def send_album(paths: list[Path], caption: str = "") -> None:
+    """Photos in groups of up to 10 (Telegram's album limit)."""
+    for start in range(0, len(paths), 10):
+        chunk = paths[start : start + 10]
+        media, files = [], {}
+        for i, p in enumerate(chunk):
+            name = f"f{i}"
+            item = {"type": "photo", "media": f"attach://{name}"}
+            if i == 0 and start == 0 and caption:
+                item["caption"] = caption
+            media.append(item)
+            files[name] = (p.name, open(p, "rb"), "image/jpeg")
+        if len(chunk) == 1:
+            _api("sendPhoto", data={"caption": caption if start == 0 else ""}, files={"photo": files["f0"]})
+        else:
+            _api("sendMediaGroup", data={"media": json.dumps(media)}, files=files)
+        for f in files.values():
+            f[1].close()
+
+
+def send_document(path: Path, caption: str = "") -> None:
+    with open(path, "rb") as fh:
+        _api("sendDocument", data={"caption": caption[:1000]}, files={"document": (path.name, fh)})
+
+
+def send_buttons(text: str, rows: list[list[tuple[str, str]]]) -> None:
+    kb = {"inline_keyboard": [[{"text": t, "callback_data": d[:64]} for t, d in row] for row in rows]}
+    _api("sendMessage", data={"text": text, "reply_markup": json.dumps(kb)})
+
+
 def main(argv: list[str]) -> int:
     if len(argv) >= 2 and argv[0] == "--failed":
         send_text(f"⚠️ Explainer Factory: рендер не удался.\nЛог: {argv[1]}")

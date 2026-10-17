@@ -103,7 +103,29 @@ Each beat = 1–3 sentences of narration, ~4–9 seconds. Fields:
 - `voices`: `{ "house": { "lang_code": "a", "voice": "am_onyx", "speed": 0.92 } }`; a beat with
   `"voice": "house"` is spoken by that voice and its captions are gold. The narrator (the Inspector) is never on screen.
 
-### Image prompt rules (Flux schnell)
+### Scene rules — what AI pictures do well (rule D)
+
+- **Good:** single objects and products, interiors, one character in a mid shot, stylised scenes,
+  calm moments. **Weak:** hands in close-up, crowds, two or more interacting people, text/numbers,
+  exact counts of small objects, fast action. Write scenes around the strengths.
+- Hands: show them only at mid distance or holding one simple object; never as the subject.
+- Numbers, prices, labels → `on_screen`, `stat`, `chart`, `counter`, marker notes (code-drawn, always correct).
+- History → real public-domain archive `photo` where possible, `newsreel` reconstruction otherwise.
+- Every long episode: 8–15 `"hero": true` image beats (cold open, chapter openers, thumbnail subject).
+  These go into the prompt pack for Google Flow / Grok; hand-made files replace the automatic frame.
+- 3–5 `clip` beats per episode for the most important moments (Grok Imagine 6–10 s), each with
+  `"grok": {"action", "camera", "secondary", "sound", "seconds"}` — one subject, one action, one camera move,
+  affirmative wording, material/texture words. Until the clip file arrives, the still frame is used.
+
+### Workflow per episode
+
+1. Script approved → commit `script.json` → **Storyboard** workflow: all frames + depth maps, contact sheets
+   and prompt pack in Telegram (release `frames-<slug>`).
+2. Claude reviews every frame; Klot reviews the sheets. Bad frames: `/redo b17 c03` in the bot
+   (or Storyboard workflow with `redo`). Hand-made frames/clips: send to the bot as a FILE captioned `b17`.
+3. "✅ Раскадровка ок" button (or `/approve`) → **Render episode** → video + Shorts in Telegram.
+
+### Image prompt rules
 
 - One clear subject, **centered in the frame**, simple background. Say "centered".
 - Describe material and texture ("brass cash register", "paper price tag with a red border").

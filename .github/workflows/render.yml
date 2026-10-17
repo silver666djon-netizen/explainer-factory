@@ -1,9 +1,7 @@
 name: Render episode
 
+# Runs after the storyboard is approved (button in Telegram, or dispatched by Claude).
 on:
-  push:
-    branches: [main]
-    paths: ["episodes/*/script.json"]
   workflow_dispatch:
     inputs:
       episode:
@@ -77,6 +75,15 @@ jobs:
           key: images-${{ github.run_id }}
           restore-keys: images-
 
+      - name: Use the approved storyboard frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for ep in ${{ steps.pick.outputs.list }}; do
+            mkdir -p ".cache/images/$ep"
+            gh release download "frames-$ep" -D ".cache/images/$ep" --clobber --pattern "*.png" 2>/dev/null || echo "no storyboard for $ep, frames will be generated now"
+          done
+
       - name: Python packages
         run: |
           pip install -q torch --index-url https://download.pytorch.org/whl/cpu
@@ -86,6 +93,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           set -o pipefail
           only="${{ github.event.inputs.only }}"

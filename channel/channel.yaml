@@ -69,7 +69,15 @@ audio:
   target_lufs: -14
 
 images:
-  provider: cloudflare
-  model: "@cf/black-forest-labs/flux-1-schnell"
+  provider: auto               # auto = Nano Banana (Gemini) when GEMINI_API_KEY is set, otherwise Cloudflare
+  gemini_model: gemini-nano-banana-2.1
+  gemini_size: 1K
+  aspect_ratio: "16:9"
+  gemini_quality_suffix: >-
+    Crisp professional illustration, clean confident linework, anatomically correct hands with five fingers,
+    precise round geometric objects, unlettered surfaces, cinematic composition with depth and a clear foreground.
+  model: "@cf/black-forest-labs/flux-1-schnell"   # Cloudflare fallback
+  width: 1280
+  height: 720
   steps: 4
   max_per_episode: 150         # free tier is ~170 images/day at 1024px — keep headroom

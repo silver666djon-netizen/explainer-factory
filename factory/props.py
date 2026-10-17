@@ -280,7 +280,8 @@ class MugshotShot(Shot):
         cw = int(BW * (0.78 if portrait else 0.38))
         cx = int(BW * (0.5 if portrait else 0.73)) - cw // 2
         cy = int(BH * (0.62 if portrait else 0.2))
-        rows = [("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")), ("LAST SEEN", spec.get("last_seen", ""))]
+        rows = [(k, v) for k, v in (("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")),
+                                    ("LAST SEEN", spec.get("last_seen", ""))) if str(v).strip()]
         if spec.get("notes"):
             rows.append(("NOTES", spec["notes"]))
         lf = font(typew, int(BH * (0.022 if portrait else 0.03)))

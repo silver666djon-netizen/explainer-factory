@@ -195,10 +195,21 @@ class Shot:
 
 class ImageShot(Shot):
     def __init__(self, start, duration, image: Image.Image, motion: str, size, cfg: dict,
-                 marks: list[dict] | None = None, photo: bool = False, seed: int = 0, ad: dict | None = None):
+                 marks: list[dict] | None = None, photo: bool = False, seed: int = 0, ad: dict | None = None,
+                 depth: np.ndarray | None = None):
         super().__init__(start, duration)
         self.W, self.H = size
         self.BW, self.BH = int(self.W * MARGIN), int(self.H * MARGIN)
+        # 2.5D parallax: depth map in the same crop as the picture (white = near)
+        self.depth = None
+        strength = float(cfg["style"].get("parallax", 0.035))
+        if depth is not None and not photo and strength > 0:
+            dimg = Image.fromarray((np.clip(depth, 0, 1) * 255).astype(np.uint8)).resize(image.size, Image.BILINEAR)
+            d = cover(dimg.convert("RGB"), self.BW, self.BH)[..., 0].astype(np.float32) / 255.0
+            self.depth = cv2.GaussianBlur(d, (0, 0), 3) - 0.5
+            self.par = strength * self.W
+            yy, xx = np.mgrid[0 : self.H, 0 : self.W].astype(np.float32)
+            self._grid = (xx, yy)
         if photo:
             base = np.array(archival_print(image, cfg, self.BW, self.BH, seed))
         else:
@@ -241,7 +252,26 @@ class ImageShot(Shot):
         s = self.W / win_w
         M = np.float32([[s, 0, self.W / 2 - s * cx], [0, s, self.H / 2 - s * cy]])
         src = draw_marks(self.base, self.marks, t, self.red, self.cfg) if self.marks else self.base
-        return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+        if self.depth is None:
+            return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+        # inverse mapping: output pixel -> source pixel, then shift near pixels more than far ones
+        xx, yy = self._grid
+        sx = (xx - M[0, 2]) / s
+        sy = (yy - M[1, 2]) / s
+        d = cv2.warpAffine(self.depth, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+        k = ease(p) - 0.5  # -0.5 .. 0.5 over the shot
+        m = self.motion
+        if m in ("zoom_in", "zoom_out", "static"):
+            sign = 1 if m != "zoom_out" else -1
+            ox = -(xx - self.W / 2) / (self.W / 2) * d * self.par * k * sign
+            oy = -(yy - self.H / 2) / (self.H / 2) * d * self.par * k * sign
+        else:
+            ux = 1.0 if m in ("pan_right", "drift") else (-1.0 if m == "pan_left" else 0.0)
+            uy = 1.0 if m == "pan_down" else (-1.0 if m == "pan_up" else (0.3 if m == "drift" else 0.0))
+            ox = d * self.par * k * ux * 2
+            oy = d * self.par * k * uy * 2
+        return cv2.remap(src, (sx + ox / s).astype(np.float32), (sy + oy / s).astype(np.float32),
+                         cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
 
 def _sunburst(size, pal, cfg, seed=5) -> np.ndarray:
@@ -611,3 +641,58 @@ def draw_ad_overlay(base: np.ndarray, ad: dict, cfg: dict) -> np.ndarray:
         ribbon = ribbon.rotate(-3, resample=Image.BICUBIC, expand=True)
         img.alpha_composite(ribbon, ((W - ribbon.width) // 2, int(H * float(ad.get("slogan_y", 0.55)))))
     return np.array(img.convert("RGB"))
+
+
+
+# ---------------------------------------------------------------- video clip (Grok Imagine, Veo, …)
+
+class ClipShot(Shot):
+    """Plays a short video file (muted) scaled to cover the frame; holds the last frame with a slow push
+    if the narration runs longer than the clip."""
+
+    def __init__(self, start, duration, path, size, cfg: dict, speed: float = 1.0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        self.path = str(path)
+        self.cap = cv2.VideoCapture(self.path)
+        self.fps = self.cap.get(cv2.CAP_PROP_FPS) or 24.0
+        self.n = int(self.cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        self.speed = speed
+        self.idx = -1
+        self.last = None
+        g = float(cfg["style"].get("grain", 0)) * 0.6
+        self._g = paper_grain(self.H, self.W, g, 5) if g > 0 else None
+
+    def _read(self, i: int):
+        if i < self.idx:
+            self.cap.release()
+            self.cap = cv2.VideoCapture(self.path)
+            self.idx = -1
+        while self.idx < i:
+            ok, fr = self.cap.read()
+            if not ok:
+                break
+            self.idx += 1
+            self.last = fr
+        return self.last
+
+    def frame(self, t: float) -> np.ndarray:
+        i = int(t * self.fps * self.speed)
+        hold = 0.0
+        if self.n and i >= self.n:
+            hold = (i - self.n + 1) / (self.fps * self.speed)
+            i = self.n - 1
+        fr = self._read(i)
+        if fr is None:
+            return np.zeros((self.H, self.W, 3), np.uint8)
+        rgb = cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)
+        h, w = rgb.shape[:2]
+        z = 1.0 + 0.04 * min(1.0, hold / 3)
+        scale = max(self.W / w, self.H / h) * z
+        nw, nh = int(np.ceil(w * scale)), int(np.ceil(h * scale))
+        big = cv2.resize(rgb, (nw, nh), interpolation=cv2.INTER_LINEAR)
+        x0, y0 = (nw - self.W) // 2, (nh - self.H) // 2
+        out = big[y0 : y0 + self.H, x0 : x0 + self.W]
+        if self._g is not None:
+            return np.clip(out.astype(np.int16) + self._g, 0, 255).astype(np.uint8)
+        return np.ascontiguousarray(out)
