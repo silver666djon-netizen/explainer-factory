@@ -1,0 +1,51 @@
+name: Music library
+
+# Generates the channel's music beds and stings (Lyria via OpenRouter) -> release "music-lib" (+ Telegram).
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "comma-separated cue names (empty = all)"
+        required: false
+        default: ""
+      send:
+        description: "send to Telegram (yes/no)"
+        required: false
+        default: "yes"
+
+permissions:
+  contents: write
+
+jobs:
+  music:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: |
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+          pip install -q requests pyyaml numpy pillow
+      - name: Generate
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          set -o pipefail
+          python -m factory.music --only "${{ github.event.inputs.only }}" ${{ github.event.inputs.send == 'yes' && '--send' || '' }} 2>&1 | tee music.log
+      - name: Report error details
+        if: failure()
+        run: |
+          tail -n 40 music.log | python3 -c 'import sys; t=sys.stdin.read()[-6000:]; print("::error title=Music failed::" + t.replace("%","%25").replace("\r","").replace("\n","%0A"))'
+      - name: Publish
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls -la out/music || exit 0
+          [ -f out/music/errors.txt ] && echo "::warning title=Some cues failed::$(cat out/music/errors.txt | tr '\n' ' ')"
+          ls out/music/*.mp3 >/dev/null 2>&1 || exit 0
+          gh release view music-lib >/dev/null 2>&1 || gh release create music-lib --title "Music library" --notes "Channel music beds and stings (Lyria)"
+          gh release upload music-lib out/music/*.mp3 --clobber

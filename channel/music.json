@@ -1,0 +1,20 @@
+{
+  "model": "google/lyria-3-pro-preview",
+  "clip_model": "google/lyria-3-clip-preview",
+  "common": "Instrumental only, no vocals, no singing. Background score for a documentary narration: steady, uncluttered, no sudden loud hits, mixed so a voice can sit on top. Clean professional studio recording.",
+  "beds": {
+    "noir": "1950s film-noir detective jazz: walking upright bass, brushed snare, soft muted trumpet and sparse piano, mysterious investigation mood, slow tempo",
+    "lounge": "1950s Las Vegas casino lounge jazz: swinging brushed drums, upright bass, vibraphone and a sly muted trumpet, playful glamorous evening mood, medium tempo",
+    "slots": "retro casino slot-machine floor: twinkling celesta and vibraphone arpeggios over a bouncy bass, hypnotic and a little dizzy, looping feel",
+    "tension": "suspense underscore: low pulsing strings, soft ticking percussion, minor key, slowly building tension, cinematic documentary",
+    "curious": "light curious science-explainer underscore: pizzicato strings, marimba and clarinet, inquisitive and gently playful",
+    "serious": "serious reflective reveal underscore: slow piano and low cello, weighty and thoughtful, cinematic documentary",
+    "finale": "warm confident 1950s big-band swing finale: brass section, swinging drums, upbeat satisfying resolution"
+  },
+  "stings": {
+    "fanfare": "a short triumphant brass fanfare with a cymbal crash, like a 1950s game-show win, then silence",
+    "reveal": "a short dramatic orchestral 'dun-dun' brass and timpani sting for a revelation, then silence",
+    "closed": "a short brass chord with a big timpani hit, like a rubber stamp slamming a case closed in a 1950s detective film, then silence",
+    "jackpot": "a short twinkling slot-machine jackpot jingle with bells, then silence"
+  }
+}
