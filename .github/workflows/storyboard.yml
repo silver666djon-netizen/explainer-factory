@@ -121,7 +121,8 @@ jobs:
         run: |
           git config user.name "explainer-factory-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add assets/characters episodes/*/frames.json episodes/*/prompt_pack.md 2>/dev/null || true
+          for p in assets/characters episodes/*/frames.json episodes/*/prompt_pack.md; do [ -e "$p" ] && git add "$p"; done
+          git status --short
           git commit -m "Storyboard: variants, characters, prompt packs" || echo "nothing to commit"
           git pull --rebase -q origin main && git push || true
 
