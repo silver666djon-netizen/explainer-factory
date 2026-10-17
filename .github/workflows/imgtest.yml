@@ -2,6 +2,13 @@ name: Image model test
 
 on:
   workflow_dispatch:
+    inputs:
+      models:
+        description: "comma list: schnell, klein4, klein9"
+        default: "schnell,klein4"
+      only:
+        description: "comma list of test keys (empty = all)"
+        default: ""
 
 permissions:
   contents: write
@@ -26,7 +33,11 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python -m factory.imgtest 2>&1 | tee imgtest.log
+          IMGTEST_MODELS: ${{ github.event.inputs.models }}
+          IMGTEST_ONLY: ${{ github.event.inputs.only }}
+        run: |
+          set -o pipefail
+          python -m factory.imgtest 2>&1 | tee imgtest.log
       - name: Save results to the repo
         if: always()
         run: |

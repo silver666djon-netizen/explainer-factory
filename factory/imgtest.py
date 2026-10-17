@@ -24,16 +24,23 @@ TESTS = [
     ("chips", "five colourful casino chips stacked neatly on green felt, studio light", "ad"),
     ("larry_slots", f"{LARRY} wandering between rows of glowing slot machines", "ad"),
 ]
-MODELS = [("A — сейчас (FLUX.1 schnell)", "@cf/black-forest-labs/flux-1-schnell"),
-          ("B — новая (FLUX.2 klein 4B)", "@cf/black-forest-labs/flux-2-klein-4b")]
+import os
+
+_ALL = {"schnell": ("FLUX.1 schnell (сейчас)", "@cf/black-forest-labs/flux-1-schnell"),
+        "klein4": ("FLUX.2 klein 4B", "@cf/black-forest-labs/flux-2-klein-4b"),
+        "klein9": ("FLUX.2 klein 9B", "@cf/black-forest-labs/flux-2-klein-9b")}
+MODELS = [_ALL[k] for k in os.environ.get("IMGTEST_MODELS", "schnell,klein4").split(",")]
+ONLY = [x for x in os.environ.get("IMGTEST_ONLY", "").split(",") if x]
 
 
 def main() -> int:
     out_dir = ROOT / "tests" / "imgtest"
     out_dir.mkdir(parents=True, exist_ok=True)
     cfg0 = load_config()
-    lab_font = font(resolve_font(cfg0["fonts"]["headline"]), 44)
+    lab_font = font("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", 40)
     for key, prompt, style in TESTS:
+        if ONLY and key not in ONLY:
+            continue
         tiles = []
         for label, model in MODELS:
             cfg = copy.deepcopy(cfg0)
@@ -45,15 +52,17 @@ def main() -> int:
             ImageDraw.Draw(canvas).text((20, 12), label, font=lab_font, fill=(30, 27, 24))
             tiles.append(canvas)
             img.save(out_dir / f"{key}_{model.split('/')[-1]}.png")
+        if len(tiles) == 1:
+            tiles.append(Image.new("RGB", tiles[0].size, (30, 27, 24)))
         h = max(t.height for t in tiles)
         combo = Image.new("RGB", (1940, h), (30, 27, 24))
         combo.paste(tiles[0], (0, 0))
         combo.paste(tiles[1], (980, 0))
-        path = out_dir / f"{key}_compare.jpg"
+        path = out_dir / f"{key}_compare_{'_'.join(m[1].split('/')[-1] for m in MODELS)}.jpg"
         combo.save(path, quality=88)
         buf = io.BytesIO()
         combo.save(buf, "JPEG", quality=85)
-        _api("sendPhoto", data={"caption": f"Сравнение картинок: {key}. Слева сейчас, справа FLUX.2"},
+        _api("sendPhoto", data={"caption": f"Сравнение картинок: {key}. " + " | ".join(m[0] for m in MODELS)},
              files={"photo": ("compare.jpg", buf.getvalue(), "image/jpeg")})
         print("sent", key)
     return 0
