@@ -75,6 +75,14 @@ jobs:
           key: images-${{ github.run_id }}
           restore-keys: images-
 
+      - name: Music library
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p assets/music
+          gh release download music-lib -D assets/music --clobber --pattern "*.mp3" 2>/dev/null || echo "no music library yet"
+          ls -la assets/music
+
       - name: Use the approved storyboard frames
         env:
           GH_TOKEN: ${{ github.token }}

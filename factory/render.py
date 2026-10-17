@@ -259,6 +259,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 plan.timeline.add_sfx(shot_start + rt, "tick", seed=i)
 
         plan.timeline.add_voice(start, v["audio"], v["sr"])
+        if beat.get("_music"):
+            plan.timeline.music_cue(max(0.0, start - 0.4), beat["_music"])
+        if beat.get("sting"):
+            plan.timeline.add_sting(start + float(beat.get("sting_at", 0.0)), beat["sting"])
         section = beat.get("section")
         explicit = beat.get("sfx")
         if explicit:

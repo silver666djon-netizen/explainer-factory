@@ -64,8 +64,9 @@ voice:
 audio:
   narration_db: 0
   sfx_db: -16
-  music_db: -24                # background music level (only if files exist in assets/music)
-  duck_db: -8                  # extra music reduction while the narrator speaks
+  music_db: -19                # mood music bed (channel/music.json cues; episode 'music' maps chapters to cues)
+  duck_db: -9                  # extra music reduction while the narrator speaks
+  sting_db: -9                 # short musical hits (fanfare, reveal, case closed)
   target_lufs: -14
 
 images:

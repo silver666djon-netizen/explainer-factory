@@ -145,21 +145,69 @@ def to_sr(audio: np.ndarray, src_sr: int) -> np.ndarray:
     return resample_poly(audio, SR // g, src_sr // g).astype(np.float32)
 
 
+MUSIC_DIR = ROOT / "assets" / "music"
+_MUSIC_CACHE: dict = {}
+
+
+def _decode(path: Path) -> np.ndarray:
+    if path not in _MUSIC_CACHE:
+        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
+                             check=True, capture_output=True).stdout
+        a = np.frombuffer(raw, dtype=np.float32).copy()
+        peak = float(np.percentile(np.abs(a), 99.5)) if a.size else 0.0
+        _MUSIC_CACHE[path] = a / peak * 0.5 if peak > 0 else a  # every cue at a similar loudness
+    return _MUSIC_CACHE[path]
+
+
+def music_file(cue: str) -> Path | None:
+    for ext in (".mp3", ".wav", ".ogg", ".m4a", ".flac"):
+        f = MUSIC_DIR / f"{cue}{ext}"
+        if f.exists():
+            return f
+    return None
+
+
 def _load_music(total: float) -> np.ndarray | None:
-    folder = ROOT / "assets" / "music"
-    files = sorted(p for p in folder.glob("*") if p.suffix.lower() in {".mp3", ".wav", ".ogg", ".m4a", ".flac"}) if folder.exists() else []
+    """Legacy: one random track for the whole video (used when no cues are given)."""
+    files = sorted(p for p in MUSIC_DIR.glob("*") if p.suffix.lower() in {".mp3", ".wav", ".ogg", ".m4a", ".flac"}) if MUSIC_DIR.exists() else []
     if not files:
         return None
-    track = random.Random(int(total)).choice(files)
-    raw = subprocess.run(
-        ["ffmpeg", "-v", "error", "-i", str(track), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
-        check=True, capture_output=True,
-    ).stdout
-    music = np.frombuffer(raw, dtype=np.float32)
+    music = _decode(random.Random(int(total)).choice(files))
     n = int(total * SR)
-    reps = int(np.ceil(n / max(1, len(music))))
-    music = np.tile(music, reps)[:n]
+    music = np.tile(music, int(np.ceil(n / max(1, len(music)))))[:n]
     return music * _env(n, 1.5, 3.0)
+
+
+def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6) -> np.ndarray | None:
+    """Music bed that changes mood at each cue (crossfaded); each cue resumes where it last stopped."""
+    cues = [(t, c) for t, c in sorted(cues) if c]
+    if not cues or not any(music_file(c) for _t, c in cues):
+        return None
+    out = np.zeros(n, dtype=np.float32)
+    pos: dict[str, int] = {}
+    f = int(fade * SR)
+    for k, (t, cue) in enumerate(cues):
+        path = music_file(cue)
+        if path is None or cue == "none":
+            continue
+        a = max(0, int(t * SR) - f // 2)
+        b = n if k + 1 >= len(cues) else min(n, int(cues[k + 1][0] * SR) + f // 2)
+        if b <= a:
+            continue
+        src = _decode(path)
+        start = pos.get(cue, 0)
+        need = b - a
+        seg = np.tile(src, int(np.ceil((start + need) / max(1, len(src)))) + 1)[start : start + need]
+        pos[cue] = (start + need) % max(1, len(src))
+        env = np.ones(need, dtype=np.float32)
+        fi = min(f, need // 2)
+        if fi > 0:
+            env[:fi] = np.linspace(0, 1, fi)
+            if b < n:
+                env[-fi:] = np.linspace(1, 0, fi)
+        out[a:b] += seg * env
+    out[-int(2.5 * SR):] *= np.linspace(1, 0, int(2.5 * SR))
+    return out
 
 
 class Timeline:
@@ -168,6 +216,21 @@ class Timeline:
         self.n = int(np.ceil(total_seconds * SR)) + SR // 2
         self.voice = np.zeros(self.n, dtype=np.float32)
         self.fx = np.zeros(self.n, dtype=np.float32)
+        self.stings = np.zeros(self.n, dtype=np.float32)
+        self.cues: list[tuple[float, str]] = []
+
+    def music_cue(self, at: float, cue: str) -> None:
+        if not self.cues or self.cues[-1][1] != cue:
+            self.cues.append((max(0.0, at), cue))
+
+    def add_sting(self, at: float, name: str) -> None:
+        path = music_file(name)
+        if path is None:
+            return
+        # a sting is the opening of the generated clip (the model starts on the hit), faded out after ~3 s
+        clip = _decode(path)[: int(3.2 * SR)].copy()
+        clip = clip * _env(len(clip), 0.005, 0.9)
+        self._add(self.stings, max(0.0, at), clip * db(self.cfg.get("sting_db", -10)))
 
     def _add(self, track: np.ndarray, at: float, clip: np.ndarray) -> None:
         i = max(0, int(at * SR))
@@ -185,7 +248,7 @@ class Timeline:
     def mix(self) -> np.ndarray:
         total = self.n / SR
         out = self.voice + self.fx
-        music = _load_music(total)
+        music = _cue_track(self.n, self.cues) if self.cues else _load_music(total)
         if music is not None:
             # duck music under narration: smoothed envelope of voice energy
             energy = np.abs(self.voice)
@@ -195,6 +258,9 @@ class Timeline:
             speaking = np.clip(smooth / (smooth.max() * 0.05 + 1e-9), 0, 1)
             gain = db(self.cfg.get("music_db", -24)) * (1 - speaking * (1 - db(self.cfg.get("duck_db", -8))))
             out = out + music[: self.n] * gain
+            out = out + self.stings * (1 - speaking * (1 - db(-6)))
+        else:
+            out = out + self.stings
         peak = np.abs(out).max()
         if peak > 0.98:
             out = out / peak * 0.98

@@ -61,6 +61,15 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     except Exception as exc:  # noqa: BLE001
         log(f"depth skipped: {exc}")
 
+    # music: one mood per chapter (episode "music": {section: cue}); Shorts take their own "music" or the default
+    mus = episode.get("music") or {}
+    default_cue = mus.get("_default", "noir")
+    for beat in episode["beats"]:
+        beat["_music"] = mus.get(beat.get("section") or "", default_cue)
+    for short in episode.get("shorts") or []:
+        for k, beat in enumerate(short["beats"]):
+            beat["_music"] = short.get("music") or mus.get("_shorts") or default_cue
+
     log("Narration…")
     voice = make_voice(cfg, offline, episode.get("voices"))
     beat_lookup = {b["id"]: b for b in episode["beats"]}

@@ -413,7 +413,9 @@
         "prompt": "{larry} jumping for joy beside a roulette table, arms in the air",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "sting": "fanfare",
+      "sting_at": 0.0
     },
     {
       "id": "b18",
@@ -559,7 +561,9 @@
           "mark_at": -3,
           "note": "the business model"
         }
-      }
+      },
+      "sting": "reveal",
+      "sting_at": 0.0
     },
     {
       "id": "s28",
@@ -819,7 +823,9 @@
         "type": "image",
         "prompt": "the open back of a vintage slot machine revealing gears and a long paper reel strip",
         "motion": "zoom_in"
-      }
+      },
+      "sting": "reveal",
+      "sting_at": 0.0
     },
     {
       "id": "d09",
@@ -1089,7 +1095,9 @@
         "type": "image",
         "prompt": "a hand holding a smartphone with a glowing screen",
         "motion": "zoom_in"
-      }
+      },
+      "sting": "reveal",
+      "sting_at": 0.0
     },
     {
       "id": "p48",
@@ -1175,7 +1183,9 @@
           ],
           "stamp_at": 0.5
         }
-      }
+      },
+      "sting": "closed",
+      "sting_at": 0.5
     },
     {
       "id": "v53",
@@ -1562,5 +1572,18 @@
       ],
       "id": "s8"
     }
-  ]
+  ],
+  "music": {
+    "_default": "noir",
+    "_shorts": "lounge",
+    "The case": "noir",
+    "7 PM: The exchange": "lounge",
+    "9 PM: The win": "lounge",
+    "11 PM: The maths": "tension",
+    "1 AM: Almost": "slots",
+    "2 AM: The building": "noir",
+    "In defence of the accused": "curious",
+    "The twist: your phone": "serious",
+    "Case closed": "finale"
+  }
 }
