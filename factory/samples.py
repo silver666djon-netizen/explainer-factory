@@ -48,7 +48,9 @@ def main() -> int:
             write_wav(wav, to_sr(audio.astype(np.float32), SAMPLE_RATE))
             subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(wav), "-af", "loudnorm=I=-16", "-b:a", "128k", str(mp3)], check=True)
             with open(mp3, "rb") as fh:
-                _api("sendAudio", data={"title": f"{i}. {voice}", "performer": "CoinSense"}, files={"audio": (mp3.name, fh, "audio/mpeg")})
+                resp = _api("sendAudio", data={"title": f"{i}. {voice}", "performer": "CoinSense"}, files={"audio": (mp3.name, fh, "audio/mpeg")})
+            if resp is None or resp.status_code != 200:
+                raise SystemExit(f"Telegram did not accept sample {voice}")
             print(f"sent {name} {i} {voice}")
     return 0
 
