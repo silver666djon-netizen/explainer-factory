@@ -64,6 +64,13 @@ class Bubble:
 
 
 @dataclass
+class Cta:
+    start: float
+    end: float
+    click: float  # moment the button gets "pressed" (turns to SUBSCRIBED + bell rings)
+
+
+@dataclass
 class Plan:
     size: tuple[int, int]
     kind: str  # "long" or "short"
@@ -73,6 +80,7 @@ class Plan:
     cards: list[Card] = field(default_factory=list)
     bubbles: list[Bubble] = field(default_factory=list)
     counters: list[Counter] = field(default_factory=list)
+    ctas: list[Cta] = field(default_factory=list)
     punches: list[float] = field(default_factory=list)
     beat_starts: dict[str, float] = field(default_factory=dict)
     timeline: A.Timeline | None = None
@@ -218,8 +226,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             keys = _image_keys(visual, beat_lookup)
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
-            if marks:
-                pieces = len(keys)  # marks need a steady picture: no extra cuts
+            if marks or beat.get("bubble"):
+                pieces = len(keys)  # marks / bubbles need a steady picture: no extra cuts
             else:
                 pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))
                 while pieces > len(keys) and span / pieces < min_shot:
@@ -230,7 +238,9 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 path = images[key]
                 if k == 0 and visual.get("motion"):
                     motion = visual["motion"]
-                elif marks:
+                    if beat.get("bubble") and motion not in ("zoom_in", "zoom_out", "static"):
+                        motion = "static"  # a speech bubble is fixed on screen: the picture under it must not slide
+                elif marks or beat.get("bubble"):
                     motion = "static"
                 else:
                     motion = MOTION_CYCLE[cycle_i % len(MOTION_CYCLE)]
@@ -284,6 +294,16 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 plan.timeline.add_sfx(shot_start + rt, "tick", seed=i)
 
         plan.timeline.add_voice(start, v["audio"], v["sr"])
+        if beat.get("cta"):  # retro SUBSCRIBE button: pops in, gets clicked, bell rings
+            c = beat["cta"] if isinstance(beat["cta"], dict) else {}
+            appear = start + _timed(c, v["words"], 0.3)
+            click = start + _timed({"on": c.get("click_on"), "at": c.get("click_at")}, v["words"], appear - start + 1.2) \
+                if (c.get("click_on") or c.get("click_at") is not None) else appear + 1.2
+            end = max(click + 1.6, start + dur + float(c.get("hold", 0.0)))
+            plan.ctas.append(Cta(appear, end, click))
+            plan.timeline.add_sfx(appear, "pop", seed=i + 3)
+            plan.timeline.add_sfx(click, "tick", seed=i + 4)
+            plan.timeline.add_sfx(click + 0.12, "ding", seed=i + 5)
         if beat.get("_music"):
             plan.timeline.music_cue(max(0.0, start - 0.4), beat["_music"])
         if beat.get("sting"):
@@ -446,7 +466,58 @@ class Overlay:
             self.cache[key] = np.array(card)
         return self.cache[key]
 
+    def cta_img(self, pressed: bool, wiggle: float) -> np.ndarray:
+        key = ("cta", pressed, round(wiggle, 2))
+        if key not in self.cache:
+            short = self.plan.kind == "short"
+            fs = int(self.H * (0.04 if short else 0.064))
+            fnt = font(self.head, fs)
+            label = "SUBSCRIBED" if pressed else "SUBSCRIBE"
+            tw = int(fnt.getlength(label))
+            bw, bh = tw + int(fs * 1.4), int(fs * 1.7)
+            bell = int(bh * 1.05)
+            W = bw + (bell + int(fs * 0.5) if pressed else 0) + 8
+            img = Image.new("RGBA", (W, bh + 8), (0, 0, 0, 0))
+            d = ImageDraw.Draw(img)
+            fill = (90, 90, 90, 255) if pressed else self.pal["red"] + (255,)
+            d.rounded_rectangle((4, 6, bw + 4, bh + 6), radius=bh // 5, fill=(0, 0, 0, 90))  # shadow
+            d.rounded_rectangle((0, 0, bw, bh), radius=bh // 5, fill=fill, outline=self.pal["ink"] + (255,), width=max(3, fs // 14))
+            d.text((bw // 2, bh // 2), label, font=fnt, fill=(255, 255, 255, 255), anchor="mm")
+            if pressed:  # little ringing bell, drawn by code
+                b = Image.new("RGBA", (bell, bell), (0, 0, 0, 0))
+                bd = ImageDraw.Draw(b)
+                gold = self.pal["accent"] + (255,)
+                ink = self.pal["ink"] + (255,)
+                bd.pieslice((bell * 0.18, bell * 0.12, bell * 0.82, bell * 0.95), 180, 360, fill=gold, outline=ink, width=3)
+                bd.rectangle((bell * 0.18, bell * 0.52, bell * 0.82, bell * 0.72), fill=gold, outline=ink, width=3)
+                bd.ellipse((bell * 0.42, bell * 0.72, bell * 0.58, bell * 0.88), fill=ink)
+                bd.ellipse((bell * 0.44, bell * 0.02, bell * 0.56, bell * 0.14), fill=gold, outline=ink, width=2)
+                b = b.rotate(18 * wiggle, resample=Image.BICUBIC)
+                img.alpha_composite(b, (bw + int(fs * 0.5), 2))
+            self.cache[key] = np.array(img)
+        return self.cache[key]
+
+    def _draw_ctas(self, frame: np.ndarray, t: float) -> None:
+        for c in self.plan.ctas:
+            if not (c.start <= t < c.end):
+                continue
+            pressed = t >= c.click
+            age = t - c.click
+            wiggle = math.sin(age * 28) * max(0.0, 1 - age / 0.8) if pressed else 0.0
+            img = self.cta_img(pressed, wiggle)
+            if pressed and age < 0.12:  # press: quick squash
+                img = cv2.resize(img, (img.shape[1], max(1, int(img.shape[0] * 0.9))))
+            img, op = self._pop(img, t - c.start)
+            op *= min(1.0, (c.end - t) / 0.25)
+            if self.plan.kind == "short":
+                x, y = (self.W - img.shape[1]) // 2, int(self.H * 0.56)
+            else:
+                x, y = int(self.W * 0.05), int(self.H * 0.66)
+            blend(frame, img, x, y, opacity=op)
+
     def apply(self, frame: np.ndarray, t: float, cap_i: int, card_i: int, bub_i: int) -> None:
+        if self.plan.ctas:
+            self._draw_ctas(frame, t)
         for c in self.plan.counters:
             if c.start <= t < c.end:
                 p = min(1.0, (t - c.start) / max(c.dur, 1e-3))
