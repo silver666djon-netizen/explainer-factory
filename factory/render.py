@@ -161,6 +161,13 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             pil_cache[path] = Image.open(path).convert("RGB")
         return pil_cache[path]
 
+    depth_cache: dict = {}
+
+    def depth_of(path):
+        if path not in depth_cache:
+            depth_cache[path] = load_depth(path)
+        return depth_cache[path]
+
     hook_max_shot = float(vcfg.get("hook_max_shot_seconds", 1.8))
     hook_seconds = float(vcfg.get("hook_seconds", 30))
     max_chars, max_words = (26, 5) if kind == "long" else (16, 3)
@@ -205,7 +212,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 shot_marks = [dict(m, at=m["at"] - k * seg) for m in marks] if k == 0 else []
                 shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                  marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
-                                 ad=visual.get("ad") if k == 0 else None, depth=load_depth(path))
+                                 ad=visual.get("ad") if k == 0 else None, depth=depth_of(path))
                 if visual.get("newsreel"):
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
@@ -474,6 +481,8 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
             t = f / fps
             while shot_i < len(shots) - 1 and t >= shots[shot_i + 1].start:
                 shot_i += 1
+                if shot_i >= 2 and hasattr(shots[shot_i - 2], "release"):
+                    shots[shot_i - 2].release()  # free pixels of shots already played
             while cap_i < len(caps) and t >= caps[cap_i].end:
                 cap_i += 1
             while card_i < len(cards) and t >= cards[card_i].end:

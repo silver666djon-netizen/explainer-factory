@@ -193,6 +193,16 @@ class Shot:
         raise NotImplementedError
 
 
+_GRIDS: dict = {}
+
+
+def _pixel_grid(W: int, H: int):
+    if (W, H) not in _GRIDS:
+        yy, xx = np.mgrid[0:H, 0:W].astype(np.float32)
+        _GRIDS[(W, H)] = (xx, yy)
+    return _GRIDS[(W, H)]
+
+
 class ImageShot(Shot):
     def __init__(self, start, duration, image: Image.Image, motion: str, size, cfg: dict,
                  marks: list[dict] | None = None, photo: bool = False, seed: int = 0, ad: dict | None = None,
@@ -200,6 +210,18 @@ class ImageShot(Shot):
         super().__init__(start, duration)
         self.W, self.H = size
         self.BW, self.BH = int(self.W * MARGIN), int(self.H * MARGIN)
+        self.motion = motion
+        self.marks = [dict(m) for m in (marks or [])]
+        self.red = tuple(int(c) for c in hex_to_rgb(cfg["style"]["palette"]["red"]))
+        self.cfg = cfg
+        # heavy pixel buffers are built on the first frame and freed by release() (keeps RAM flat on long videos)
+        self._src = (image, photo, seed, ad, depth)
+        self.base = None
+        self.depth = None
+
+    def _prepare(self) -> None:
+        image, photo, seed, ad, depth = self._src
+        cfg = self.cfg
         # 2.5D parallax: depth map in the same crop as the picture (white = near)
         self.depth = None
         strength = float(cfg["style"].get("parallax", 0.035))
@@ -208,8 +230,7 @@ class ImageShot(Shot):
             d = cover(dimg.convert("RGB"), self.BW, self.BH)[..., 0].astype(np.float32) / 255.0
             self.depth = cv2.GaussianBlur(d, (0, 0), 3) - 0.5
             self.par = strength * self.W
-            yy, xx = np.mgrid[0 : self.H, 0 : self.W].astype(np.float32)
-            self._grid = (xx, yy)
+            self._grid = _pixel_grid(self.W, self.H)
         if photo:
             base = np.array(archival_print(image, cfg, self.BW, self.BH, seed))
         else:
@@ -217,10 +238,10 @@ class ImageShot(Shot):
         if ad:
             base = draw_ad_overlay(base, ad, cfg)
         self.base = add_grain(base, float(cfg["style"].get("grain", 0)), seed)
-        self.motion = motion
-        self.marks = [dict(m) for m in (marks or [])]
-        self.red = tuple(int(c) for c in hex_to_rgb(cfg["style"]["palette"]["red"]))
-        self.cfg = cfg
+
+    def release(self) -> None:
+        self.base = None
+        self.depth = None
 
     def _camera(self, p: float):
         e = ease(p)
@@ -243,6 +264,8 @@ class ImageShot(Shot):
         return z, dx, dy
 
     def frame(self, t: float) -> np.ndarray:
+        if self.base is None:
+            self._prepare()
         p = t / max(self.duration, 1e-6)
         z, dx, dy = self._camera(p)
         win_w, win_h = self.BW / z, self.BH / z
