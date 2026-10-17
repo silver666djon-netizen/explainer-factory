@@ -50,6 +50,7 @@ class Card:
     start: float
     end: float
     text: str
+    corner: bool = False  # top-left instead of top-centre (keeps faces/subjects of pictures clear)
 
 
 @dataclass
@@ -270,7 +271,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
 
         if beat.get("on_screen") and vtype not in ("chart", "stat", "title"):  # those already fill the top
             appear = start + 0.25
-            plan.cards.append(Card(appear, start + dur, str(beat["on_screen"])))
+            bub = beat.get("bubble") or {}
+            bubble_top_left = bool(bub) and float(bub.get("x", 0.5)) < 0.5 and float(bub.get("y", 0.5)) < 0.4
+            corner = vtype in ("image", "reuse", "photo", "clip") and size[0] > size[1] and not bubble_top_left
+            plan.cards.append(Card(appear, start + dur, str(beat["on_screen"]), corner))
             plan.timeline.add_sfx(appear, "pop", seed=i)
         if beat.get("counter"):
             c = beat["counter"]
@@ -341,7 +345,7 @@ class Overlay:
         """Retro price-label card: paper, ink text, thick red frame, slight tilt."""
         key = ("k", id(card))
         if key not in self.cache:
-            fnt, lines = fit_font(card.text.upper(), self.head, int(self.W * 0.72), int(self.H * 0.18), start=int(self.H * 0.08))
+            fnt, lines = fit_font(card.text.upper(), self.head, int(self.W * (0.4 if card.corner else 0.72)), int(self.H * 0.18), start=int(self.H * 0.08))
             blk = text_block(lines, fnt, fill=self.pal["ink"], pad=int(fnt.size * 0.4))
             h, w = blk.shape[:2]
             frame_w = max(6, fnt.size // 9)
@@ -427,7 +431,8 @@ class Overlay:
             card = cards[card_i]
             img, op = self._pop(self.card_img(card), t - card.start)
             op *= min(1.0, (card.end - t) / 0.15)
-            blend(frame, img, (self.W - img.shape[1]) // 2, self.card_y, opacity=op)
+            x = int(self.W * 0.04) if card.corner else (self.W - img.shape[1]) // 2
+            blend(frame, img, x, self.card_y, opacity=op)
         bubs = self.plan.bubbles
         if bub_i < len(bubs) and bubs[bub_i].start <= t < bubs[bub_i].end:
             bub = bubs[bub_i]
@@ -492,8 +497,11 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
             shot = shots[shot_i]
             local = t - shot.start
             frame = shot.frame(local)
-            if shot_i > 0 and local < xfade:
-                prev = shots[shot_i - 1]
+            prev = shots[shot_i - 1] if shot_i > 0 else None
+            # two framings of the same picture are cut, not dissolved (a dissolve looks like a doubled, torn image)
+            same_pic = prev is not None and getattr(prev, "_src", (None,))[0] is not None \
+                and getattr(prev, "_src", (None,))[0] is getattr(shot, "_src", (None,))[0]
+            if prev is not None and local < xfade and not same_pic:
                 a = local / xfade
                 frame = cv2.addWeighted(prev.frame(t - prev.start), 1 - a, frame, a, 0)
             else:

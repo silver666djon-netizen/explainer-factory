@@ -174,6 +174,8 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
             age = (t - at - dur) / 0.25
             nx = float(mark.get("text_x", mark.get("x", 0.5))) * W - note.shape[1] / 2
             ny = float(mark.get("text_y", float(mark.get("y", 0.5)) + float(mark.get("h", 0.18)) * 0.75)) * H
+            ny = min(ny, H * 0.72 - note.shape[0])  # never down in the caption zone
+            nx = min(max(nx, W * 0.1), W * 0.9 - note.shape[1])
             blend(out, note, int(nx), int(ny), opacity=min(1.0, max(0.0, age)))
     return base if out is None else out
 
