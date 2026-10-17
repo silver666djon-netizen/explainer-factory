@@ -137,6 +137,11 @@ def load_episode(path: str | Path) -> dict:
     def fill_beats(beats):
         for b in beats or []:
             v = b.get("visual") or {}
+            used = set()
+            for txt in ([v["prompt"]] if isinstance(v.get("prompt"), str) else []) + (v.get("prompts") if isinstance(v.get("prompts"), list) else []):
+                used.update(re.findall(r"\{(\w+)\}", txt))
+            if used:
+                v["_chars"] = sorted(used)
             if isinstance(v.get("prompt"), str):
                 v["prompt"] = fill(v["prompt"], f"beat {b.get('id')}")
             if isinstance(v.get("prompts"), list):
@@ -183,14 +188,29 @@ def image_prompts(episode: dict) -> dict[str, dict]:
     out: dict[str, dict] = {}
     for beat in episode["beats"]:
         visual = beat["visual"]
+        refs = _refs_for(episode, visual)
         if visual["type"] == "mugshot":
-            out[beat["id"]] = {"prompt": visual["prompt"], "style": visual.get("style", "ad")}
+            out[beat["id"]] = {"prompt": visual["prompt"], "style": visual.get("style", "ad"),
+                               "episode_dir": episode.get("_dir"), "refs": refs}
             continue
         if visual["type"] != "image":
             continue
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):
-            out[beat["id"] if n == 0 else f"{beat['id']}.{n}"] = {"prompt": prompt, "style": visual.get("style", "ad")}
+            out[beat["id"] if n == 0 else f"{beat['id']}.{n}"] = {"prompt": prompt, "style": visual.get("style", "ad"),
+                                                               "episode_dir": episode.get("_dir"), "refs": refs}
+    return out
+
+
+def _refs_for(episode: dict, visual: dict) -> list[str]:
+    """Reference pictures of characters named in this visual (episode 'character_refs': {name: path})."""
+    from .config import ROOT
+    out = []
+    for name in visual.get("_chars") or []:
+        ref = (episode.get("character_refs") or {}).get(name)
+        if ref:
+            p = Path(ref) if Path(ref).is_absolute() else ROOT / ref
+            out.append(str(p))
     return out
 
 

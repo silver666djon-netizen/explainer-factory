@@ -36,12 +36,12 @@ SAFE_PREFIXES = ["", "Wholesome family-friendly vintage illustration, fully clot
                  "Simple wholesome children's-book style picture, "]
 
 
-def _cloudflare(cfg: dict, prompt: str, style_name: str = "ad") -> Image.Image:
+def _cloudflare(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | None = None) -> Image.Image:
     """Tries the prompt; if the provider's safety filter misfires, retries with softer wording."""
     last: Exception | None = None
     for prefix in SAFE_PREFIXES:
         try:
-            return _cloudflare_once(cfg, prefix + prompt, style_name)
+            return _cloudflare_once(cfg, prefix + prompt, style_name, refs)
         except _SafetyFilter as exc:
             last = exc
             print(f"  safety filter misfire, retrying with softer wording: {prompt[:60]}")
@@ -52,18 +52,37 @@ class _SafetyFilter(RuntimeError):
     pass
 
 
-def _cloudflare_once(cfg: dict, prompt: str, style_name: str = "ad") -> Image.Image:
+def _cloudflare_once(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | None = None) -> Image.Image:
     account = env("CLOUDFLARE_ACCOUNT_ID")
     token = env("CLOUDFLARE_API_TOKEN")
     if not account or not token:
         raise RuntimeError("CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN are not set")
-    url = f"https://api.cloudflare.com/client/v4/accounts/{account.strip()}/ai/run/{cfg['images']['model']}"
-    body = {"prompt": full_prompt(cfg, prompt, style_name), "steps": int(cfg["images"].get("steps", 4))}
+    model = cfg["images"]["model"]
+    url = f"https://api.cloudflare.com/client/v4/accounts/{account.strip()}/ai/run/{model}"
+    text_prompt = full_prompt(cfg, prompt, style_name)
+    multipart = "flux-2" in model  # FLUX.2 models take multipart form data (and optional reference images)
     delay = 4.0
     last_error = ""
     for _attempt in range(6):
         try:
-            resp = requests.post(url, headers={"Authorization": f"Bearer {token.strip()}"}, json=body, timeout=120)
+            headers = {"Authorization": f"Bearer {token.strip()}"}
+            if multipart:
+                fields = {
+                    "prompt": (None, text_prompt),
+                    "width": (None, str(int(cfg["images"].get("width", 1280)))),
+                    "height": (None, str(int(cfg["images"].get("height", 720)))),
+                    "seed": (None, str(int(hashlib.sha1(text_prompt.encode()).hexdigest()[:6], 16))),
+                }
+                for n, ref in enumerate((refs or [])[:4]):
+                    buf = io.BytesIO()
+                    im = Image.open(ref).convert("RGB")
+                    im.thumbnail((500, 500))
+                    im.save(buf, "PNG")
+                    fields[f"input_image_{n}"] = (f"ref{n}.png", buf.getvalue(), "image/png")
+                resp = requests.post(url, headers=headers, files=fields, timeout=180)
+            else:
+                body = {"prompt": text_prompt, "steps": int(cfg["images"].get("steps", 4))}
+                resp = requests.post(url, headers=headers, json=body, timeout=120)
         except requests.RequestException as exc:
             last_error = str(exc)
             time.sleep(delay)
@@ -131,15 +150,31 @@ def ensure_images(cfg: dict, prompts: dict[str, dict], cache_dir: Path, offline:
     made = 0
     for key, spec in prompts.items():
         prompt, style_name = spec["prompt"], spec.get("style", "ad")
+        manual = _manual_image(spec.get("episode_dir"), key)
+        if manual is not None:  # hand-made frame (Google Flow, Grok…) dropped into episodes/<slug>/images/
+            out[key] = manual
+            log(f"  image {key}: hand-made file {manual.name}")
+            continue
         path = cache_dir / _cache_name(cfg, key, prompt, style_name)
         if not path.exists():
-            img = placeholder(cfg, key, prompt) if offline else _cloudflare(cfg, prompt, style_name)
+            refs = [Path(p) for p in spec.get("refs") or [] if Path(p).exists()]
+            img = placeholder(cfg, key, prompt) if offline else _cloudflare(cfg, prompt, style_name, refs)
             img.save(path)
             made += 1
             log(f"  image {key}: generated ({made})")
         out[key] = path
     log(f"Images ready: {len(out)} total, {made} new")
     return out
+
+
+def _manual_image(episode_dir: str | None, key: str) -> Path | None:
+    if not episode_dir:
+        return None
+    for ext in (".png", ".jpg", ".jpeg", ".webp"):
+        cand = Path(episode_dir) / "images" / f"{key}{ext}"
+        if cand.exists():
+            return cand
+    return None
 
 
 def is_archive_photo(path: Path) -> bool:

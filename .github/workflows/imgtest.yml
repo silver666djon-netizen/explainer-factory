@@ -1,0 +1,40 @@
+name: Image model test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fonts and packages
+        run: |
+          mkdir -p assets/fonts
+          curl -fsSL -o assets/fonts/Anton-Regular.ttf https://github.com/google/fonts/raw/main/ofl/anton/Anton-Regular.ttf || true
+          pip install -q numpy scipy opencv-python-headless pillow pyyaml requests
+      - name: Compare models
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python -m factory.imgtest 2>&1 | tee imgtest.log
+      - name: Save results to the repo
+        if: always()
+        run: |
+          git config user.name "explainer-factory-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add tests/imgtest || true
+          git commit -m "Image model comparison" || echo "nothing to commit"
+          git push || true
+      - name: Report error details
+        if: failure()
+        run: tail -n 40 imgtest.log | python3 -c 'import sys; t=sys.stdin.read()[-6000:]; print("::error title=Image test failed::" + t.replace("%","%25").replace("\n","%0A"))'
