@@ -34,12 +34,28 @@ def chapters(episode: dict, beat_starts: dict[str, float], total: float) -> list
     return out
 
 
+def music_credits(episode: dict, cues: set[str] | None = None) -> list[str]:
+    """Licence lines for every library track the episode (or the given cues) uses — required by Uppbeat."""
+    f = Path(__file__).resolve().parent.parent / "channel" / "music_credits.json"
+    if not f.exists():
+        return []
+    table = json.loads(f.read_text(encoding="utf-8"))
+    if cues is None:
+        cues = set((episode.get("music") or {}).values())
+        cues |= {b.get("sting") for b in episode.get("beats", []) if b.get("sting")}
+        cues |= {s.get("music") for s in episode.get("shorts") or [] if s.get("music")}
+    return [table[c] for c in sorted(c for c in cues if c in table)]
+
+
 def description(episode: dict, chaps: list[tuple[float, str]]) -> str:
     parts = [episode.get("description", "").strip()]
     if chaps:
         parts.append("Chapters:\n" + "\n".join(f"{_ts(t)} {name}" for t, name in chaps))
     if episode.get("sources"):
         parts.append("Sources:\n" + "\n".join(f"- {s}" for s in episode["sources"]))
+    credits = music_credits(episode)
+    if credits:
+        parts.append("\n\n".join(credits))
     if episode.get("tags"):
         parts.append(" ".join("#" + t.replace(" ", "") for t in episode["tags"][:3]))
     return "\n\n".join(p for p in parts if p)

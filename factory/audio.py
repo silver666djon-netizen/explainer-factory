@@ -179,6 +179,19 @@ def _load_music(total: float) -> np.ndarray | None:
     return music * _env(n, 1.5, 3.0)
 
 
+def _looped(src: np.ndarray, n: int, xfade: float = 2.0) -> np.ndarray:
+    """Repeats a track to length n; each repeat crossfades 2 s of the end into the start (no click, no jump)."""
+    if len(src) >= n:
+        return src[:n]
+    f = min(int(xfade * SR), len(src) // 4)
+    out = src.copy()
+    ramp = np.linspace(0, 1, f, dtype=np.float32)
+    while len(out) < n:
+        head = src[:f] * ramp + out[-f:] * (1 - ramp)
+        out = np.concatenate([out[:-f], head, src[f:]])
+    return out[:n]
+
+
 def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6) -> np.ndarray | None:
     """Music bed that changes mood at each cue (crossfaded); each cue resumes where it last stopped."""
     cues = [(t, c) for t, c in sorted(cues) if c]
@@ -198,7 +211,7 @@ def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6) -> np.n
         src = _decode(path)
         start = pos.get(cue, 0)
         need = b - a
-        seg = np.tile(src, int(np.ceil((start + need) / max(1, len(src)))) + 1)[start : start + need]
+        seg = _looped(src, start + need)[start : start + need]
         pos[cue] = (start + need) % max(1, len(src))
         env = np.ones(need, dtype=np.float32)
         fi = min(f, need // 2)

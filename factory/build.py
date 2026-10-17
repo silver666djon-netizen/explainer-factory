@@ -116,7 +116,10 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         if only in (None, "shorts"):
             render(plan, cfg, out / name, out / f"short_{short['id']}.wav", log)
             (out / f"short_{short['id']}.wav").unlink(missing_ok=True)
-        shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1)})
+        from .meta import music_credits
+        cue = short["beats"][0].get("_music") if short["beats"] else None
+        shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1),
+                            "music_credit": "\n".join(music_credits(episode, {cue} if cue else set()))})
 
     thumb = episode.get("thumbnail") or {}
     first_image = next((b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo", "mugshot")), None)
