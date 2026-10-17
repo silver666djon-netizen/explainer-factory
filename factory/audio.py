@@ -154,8 +154,9 @@ def _decode(path: Path) -> np.ndarray:
         raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                              check=True, capture_output=True).stdout
         a = np.frombuffer(raw, dtype=np.float32).copy()
-        peak = float(np.percentile(np.abs(a), 99.5)) if a.size else 0.0
-        _MUSIC_CACHE[path] = a / peak * 0.5 if peak > 0 else a  # every cue at a similar loudness
+        rms = float(np.sqrt(np.mean(a.astype(np.float64) ** 2))) if a.size else 0.0
+        a = a * (db(-20) / rms) if rms > 0 else a  # every cue at the same loudness (RMS -20 dBFS)
+        _MUSIC_CACHE[path] = np.clip(a, -0.99, 0.99)
     return _MUSIC_CACHE[path]
 
 
@@ -245,22 +246,39 @@ class Timeline:
         if kind and kind != "none":
             self._add(self.fx, at, sfx(kind, seed) * db(self.cfg.get("sfx_db", -16)))
 
+    def _speaking(self) -> np.ndarray:
+        """0..1 'narrator is talking' curve: on within ~0.15 s, holds through the gaps between words and
+        sentences (0.6 s), releases over ~0.8 s — so the music never pumps word by word."""
+        hop = int(0.02 * SR)
+        frames = len(self.voice) // hop + 1
+        pad = np.zeros(frames * hop, dtype=np.float32)
+        pad[: len(self.voice)] = self.voice
+        rms = np.sqrt(np.mean(pad.reshape(frames, hop) ** 2, axis=1))
+        ref = np.percentile(rms[rms > 0], 95) if np.any(rms > 0) else 1.0
+        active = (rms > ref * 0.08).astype(np.float32)
+        hold = int(0.6 / 0.02)
+        held = np.convolve(active, np.ones(hold), mode="full")[: len(active)] > 0  # stays on 0.6 s after speech
+        env = np.zeros(frames, dtype=np.float32)
+        up, down = 0.02 / 0.15, 0.02 / 0.8
+        v = 0.0
+        for i, h in enumerate(held):
+            v = min(1.0, v + up) if h else max(0.0, v - down)
+            env[i] = v
+        return np.repeat(env, hop)[: self.n]
+
     def mix(self) -> np.ndarray:
         total = self.n / SR
         out = self.voice + self.fx
         music = _cue_track(self.n, self.cues) if self.cues else _load_music(total)
+        speaking = self._speaking()
         if music is not None:
-            # duck music under narration: smoothed envelope of voice energy
-            energy = np.abs(self.voice)
-            win = int(0.3 * SR)
-            kernel = np.ones(win, dtype=np.float32) / win
-            smooth = np.convolve(energy, kernel, mode="same")
-            speaking = np.clip(smooth / (smooth.max() * 0.05 + 1e-9), 0, 1)
-            gain = db(self.cfg.get("music_db", -24)) * (1 - speaking * (1 - db(self.cfg.get("duck_db", -8))))
-            out = out + music[: self.n] * gain
-            out = out + self.stings * (1 - speaking * (1 - db(-6)))
-        else:
-            out = out + self.stings
+            music = music[: self.n]
+            # pocket for the voice: ~4 dB less music in the 1.2–4 kHz speech band (instead of heavy ducking)
+            sos = butter(2, [1200, 4000], btype="band", fs=SR, output="sos")
+            music = music - 0.37 * sosfilt(sos, music).astype(np.float32)
+            gain = db(self.cfg.get("music_db", -4)) * (1 - speaking * (1 - db(self.cfg.get("duck_db", -5))))
+            out = out + music * gain
+        out = out + self.stings * (1 - speaking * (1 - db(-4)))
         peak = np.abs(out).max()
         if peak > 0.98:
             out = out / peak * 0.98

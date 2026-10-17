@@ -64,9 +64,9 @@ voice:
 audio:
   narration_db: 0
   sfx_db: -16
-  music_db: -19                # mood music bed (channel/music.json cues; episode 'music' maps chapters to cues)
-  duck_db: -9                  # extra music reduction while the narrator speaks
-  sting_db: -9                 # short musical hits (fanfare, reveal, case closed)
+  music_db: -4                 # music bed (cues are normalised to -20 dBFS RMS): ~-24 in pauses
+  duck_db: -5                  # gentle, smooth dip while the narrator speaks (no pumping)
+  sting_db: -2                 # short musical hits (fanfare, reveal, case closed)
   target_lufs: -14
 
 images:

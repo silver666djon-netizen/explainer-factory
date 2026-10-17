@@ -456,11 +456,28 @@ class Overlay:
             blend(frame, img, (self.W - img.shape[1]) // 2, self.cap_y - img.shape[0] // 2)
 
 
+def _loudnorm_filter(wav_path: Path, lufs: float) -> str:
+    """Two-pass loudnorm in linear mode = one constant gain for the whole mix (single-pass loudnorm rides the
+    volume up and down, which made the music swell and sink)."""
+    import json as _json
+    base = f"loudnorm=I={lufs}:TP=-1.5:LRA=20"
+    try:
+        res = subprocess.run(["ffmpeg", "-v", "info", "-nostats", "-i", str(wav_path), "-af", base + ":print_format=json",
+                              "-f", "null", "-"], capture_output=True, text=True)
+        txt = res.stderr
+        m = _json.loads(txt[txt.rindex("{"): txt.rindex("}") + 1])
+        return (f"{base}:linear=true:measured_I={m['input_i']}:measured_TP={m['input_tp']}:"
+                f"measured_LRA={m['input_lra']}:measured_thresh={m['input_thresh']}:offset={m['target_offset']}")
+    except Exception:  # noqa: BLE001
+        return base
+
+
 def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> Path:
     fps = int(cfg["video"]["fps"])
     W, H = plan.size
     A.write_wav(wav_path, plan.timeline.mix())
     lufs = cfg["audio"].get("target_lufs", -14)
+    loud_af = _loudnorm_filter(wav_path, lufs)
     cmd = [
         "ffmpeg", "-y", "-v", "error",
         "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps), "-i", "-",
@@ -468,7 +485,7 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
         "-map", "0:v", "-map", "1:a",
         "-c:v", "libx264", "-preset", cfg["video"].get("x264_preset", "veryfast"),
         "-crf", str(cfg["video"].get("crf", 21)), "-pix_fmt", "yuv420p",
-        "-af", f"loudnorm=I={lufs}:TP=-1.5:LRA=11", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+        "-af", loud_af, "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
         "-shortest", "-movflags", "+faststart", str(out_path),
     ]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
