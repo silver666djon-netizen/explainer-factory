@@ -69,7 +69,8 @@ audio:
   target_lufs: -14
 
 images:
-  provider: auto               # auto = Nano Banana (Gemini) when GEMINI_API_KEY is set, otherwise Cloudflare
+  provider: auto               # auto = OpenRouter (OPENROUTER_API_KEY) → Gemini (GEMINI_API_KEY) → Cloudflare
+  openrouter_model: google/gemini-3.1-flash-image-preview   # Nano Banana 2 via OpenRouter
   gemini_model: gemini-nano-banana-2.1
   gemini_size: 1K
   aspect_ratio: "16:9"

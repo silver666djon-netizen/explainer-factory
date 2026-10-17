@@ -1,4 +1,4 @@
-"""Image generation: Gemini (Nano Banana) or Cloudflare Workers AI (Flux), on-disk cache, hand-made overrides,
+"""Image generation: Nano Banana via OpenRouter or Gemini, or Cloudflare Workers AI (Flux), on-disk cache, hand-made overrides,
 offline placeholders."""
 from __future__ import annotations
 
@@ -28,17 +28,102 @@ def full_prompt(cfg: dict, prompt: str, style_name: str = "ad") -> str:
 
 
 def provider(cfg: dict) -> str:
-    """'gemini' when a Gemini key is available (and allowed), otherwise 'cloudflare'."""
+    """'openrouter' / 'gemini' when that key is available (and allowed), otherwise 'cloudflare'."""
     want = (cfg["images"].get("provider") or "auto").lower()
     if want == "cloudflare":
         return "cloudflare"
+    if want in ("openrouter", "auto") and env("OPENROUTER_API_KEY"):
+        return "openrouter"
     if want in ("gemini", "auto") and env("GEMINI_API_KEY"):
         return "gemini"
     return "cloudflare"
 
 
 def model_id(cfg: dict) -> str:
-    return cfg["images"].get("gemini_model", "gemini-nano-banana-2.1") if provider(cfg) == "gemini" else cfg["images"]["model"]
+    p = provider(cfg)
+    if p == "openrouter":
+        return cfg["images"].get("openrouter_model", "google/gemini-3.1-flash-image-preview")
+    if p == "gemini":
+        return cfg["images"].get("gemini_model", "gemini-nano-banana-2.1")
+    return cfg["images"]["model"]
+
+
+def _quality_text(cfg: dict, prompt: str, style_name: str, refs, variant: int) -> str:
+    text = full_prompt(cfg, prompt, style_name)
+    extra = (cfg["images"].get("gemini_quality_suffix") or "").strip()
+    if extra:
+        text = f"{text.rstrip('. ')}. {extra}"
+    if refs:
+        text += " Keep the character's face, outfit and colours exactly as in the reference portrait."
+    if variant:
+        text += f" (alternative take {variant})"
+    return text
+
+
+def _ref_b64(ref: Path) -> str:
+    im = Image.open(ref).convert("RGB")
+    im.thumbnail((1024, 1024))
+    buf = io.BytesIO()
+    im.save(buf, "JPEG", quality=90)
+    return base64.b64encode(buf.getvalue()).decode()
+
+
+def _openrouter(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | None = None, variant: int = 0) -> Image.Image:
+    """Nano Banana through OpenRouter's chat completions API (image output as a data URL)."""
+    icfg = cfg["images"]
+    text = _quality_text(cfg, prompt, style_name, refs, variant)
+    content = [{"type": "text", "text": text}]
+    for ref in (refs or [])[:4]:
+        content.append({"type": "image_url", "image_url": {"url": "data:image/jpeg;base64," + _ref_b64(ref)}})
+    body = {
+        "model": model_id(cfg),
+        "messages": [{"role": "user", "content": content}],
+        "modalities": ["image", "text"],
+        "image_config": {"aspect_ratio": icfg.get("aspect_ratio", "16:9"), "image_size": icfg.get("gemini_size", "1K")},
+    }
+    headers = {"Authorization": f"Bearer {env('OPENROUTER_API_KEY').strip()}", "Content-Type": "application/json",
+               "HTTP-Referer": "https://github.com/silver666djon-netizen/explainer-factory", "X-Title": "CoinSense"}
+    last, delay = "", 5.0
+    for _try in range(5):
+        try:
+            r = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=body, timeout=240)
+        except requests.RequestException as exc:
+            last = str(exc)
+            time.sleep(delay)
+            delay *= 2
+            continue
+        if r.status_code == 200:
+            data = r.json()
+            if data.get("error"):
+                last = str(data["error"])[:400]
+                if any(w in last.lower() for w in ("safety", "blocked", "prohibited", "moderation")):
+                    raise _SafetyFilter(last)
+                time.sleep(delay)
+                delay *= 2
+                continue
+            for choice in data.get("choices") or []:
+                for img in (choice.get("message") or {}).get("images") or []:
+                    url = (img.get("image_url") or {}).get("url", "")
+                    if "base64," in url:
+                        return Image.open(io.BytesIO(base64.b64decode(url.split("base64,", 1)[1]))).convert("RGB")
+            last = f"no image in response: {r.text[:300]}"
+            finish = " ".join(str((c or {}).get("finish_reason") or (c or {}).get("native_finish_reason") or "")
+                              for c in data.get("choices") or []).lower()
+            if any(w in (finish + r.text[:2000].lower()) for w in ("safety", "blocked", "prohibited", "image_other")):
+                raise _SafetyFilter(last)
+            time.sleep(delay)  # the model sometimes answers with text only; ask again
+            continue
+        last = f"HTTP {r.status_code}: {r.text[:400]}"
+        if r.status_code == 402:
+            raise ImageQuotaError(f"OpenRouter: out of credits or key limit reached ({last})")
+        if r.status_code in (401, 403):
+            raise RuntimeError(f"OpenRouter rejected the key ({last})")
+        if r.status_code in (408, 429, 500, 502, 503, 504):
+            time.sleep(delay)
+            delay *= 2
+            continue
+        break
+    raise RuntimeError(f"OpenRouter image generation failed: {last}")
 
 
 def _cache_name(cfg: dict, key: str, prompt: str, style_name: str = "ad", variant: int = 0) -> str:
@@ -76,22 +161,11 @@ def _gemini(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | N
     key = env("GEMINI_API_KEY").strip()
     icfg = cfg["images"]
     model = icfg.get("gemini_model", "gemini-nano-banana-2.1")
-    text = full_prompt(cfg, prompt, style_name)
-    extra = (icfg.get("gemini_quality_suffix") or "").strip()
-    if extra:
-        text = f"{text.rstrip('. ')}. {extra}"
-    if refs:
-        text += " Keep the character's face, outfit and colours exactly as in the reference portrait."
-    if variant:
-        text += f" (alternative take {variant})"
+    text = _quality_text(cfg, prompt, style_name, refs, variant)
     parts = [{"type": "text", "text": text}]
     legacy_parts = [{"text": text}]
     for ref in (refs or [])[:4]:
-        im = Image.open(ref).convert("RGB")
-        im.thumbnail((1024, 1024))
-        buf = io.BytesIO()
-        im.save(buf, "JPEG", quality=90)
-        b64 = base64.b64encode(buf.getvalue()).decode()
+        b64 = _ref_b64(ref)
         parts.append({"type": "image", "mime_type": "image/jpeg", "data": b64})
         legacy_parts.append({"inline_data": {"mime_type": "image/jpeg", "data": b64}})
     aspect = icfg.get("aspect_ratio", "16:9")
@@ -138,11 +212,13 @@ def _gemini(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | N
 
 
 def generate(cfg: dict, prompt: str, style_name: str = "ad", refs: list[Path] | None = None, variant: int = 0) -> Image.Image:
-    if provider(cfg) == "gemini":
+    p = provider(cfg)
+    if p in ("openrouter", "gemini"):
+        fn = _openrouter if p == "openrouter" else _gemini
         last: Exception | None = None
         for prefix in SAFE_PREFIXES:
             try:
-                return _gemini(cfg, prefix + prompt, style_name, refs, variant)
+                return fn(cfg, prefix + prompt, style_name, refs, variant)
             except _SafetyFilter as exc:
                 last = exc
         raise RuntimeError(f"Image prompt keeps getting blocked, please reword it: {prompt!r} ({last})")
