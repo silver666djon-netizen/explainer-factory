@@ -194,6 +194,7 @@ class Shot:
 
 
 _GRIDS: dict = {}
+PARALLAX_MOTIONS = ("zoom_in", "zoom_out", "static")
 
 
 def _pixel_grid(W: int, H: int):
@@ -225,7 +226,8 @@ class ImageShot(Shot):
         # 2.5D parallax: depth map in the same crop as the picture (white = near)
         self.depth = None
         strength = float(cfg["style"].get("parallax", 0.035))
-        if depth is not None and not photo and strength > 0:
+        # sideways moves + depth tear the picture apart at depth edges, so parallax is used only on push-ins
+        if depth is not None and not photo and strength > 0 and self.motion in PARALLAX_MOTIONS:
             dimg = Image.fromarray((np.clip(depth, 0, 1) * 255).astype(np.uint8)).resize(image.size, Image.BILINEAR)
             d = cover(dimg.convert("RGB"), self.BW, self.BH)[..., 0].astype(np.float32) / 255.0
             self.depth = cv2.GaussianBlur(d, (0, 0), 3) - 0.5
@@ -551,11 +553,19 @@ class DocShot(Shot):
         top_h = self.line_y[0] if self.line_y else self.ph
         paper.paste(self.text_layer.crop((0, 0, self.pw, top_h)), (0, 0))
         rgba = paper.convert("RGBA").rotate(self.angle, resample=Image.BICUBIC, expand=True)
+        # keep the whole card inside the top ~80% of what the camera shows at the end of its push-in,
+        # so captions at the bottom never cover it
+        win_h = self.BH / 1.12
+        top_v = (self.BH - win_h) / 2
+        top_ok, max_h = top_v + win_h * 0.04, win_h * 0.76
+        if rgba.height > max_h:
+            k = max_h / rgba.height
+            rgba = rgba.resize((int(rgba.width * k), int(rgba.height * k)), Image.LANCZOS)
         base = Image.fromarray(self.desk.copy())
         shadow = Image.new("RGBA", rgba.size, (0, 0, 0, 0))
         shadow.paste((0, 0, 0, 80), mask=rgba.split()[3])
         shadow = shadow.filter(ImageFilter.GaussianBlur(14))
-        x, y = (self.BW - rgba.width) // 2, max(0, (self.BH - rgba.height) // 2 - int(self.BH * 0.06))
+        x, y = (self.BW - rgba.width) // 2, int(top_ok + (max_h - rgba.height) / 2)
         base.paste(shadow, (x + 10, y + 16), shadow)
         base.paste(rgba, (x, y), rgba)
         return np.array(base)

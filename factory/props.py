@@ -432,8 +432,17 @@ class RouletteShot(Shot):
                 _draw_marker(out, st, (t - self.mark_at - k * 0.5) / 0.45, self.red, max(5, self.H // 140))
             if self.note is not None and t >= self.mark_at + 1.1:
                 op = min(1.0, (t - self.mark_at - 1.1) / 0.25)
-                blend(out, self.note, int(self.W * 0.72) - self.note.shape[1] // 2 if self.W > self.H else (self.W - self.note.shape[1]) // 2,
-                      int(self.H * 0.12) if self.W > self.H else int(self.H * 0.08), opacity=op)
+                note = self.note
+                if self.W > self.H:  # to the right of the wheel, vertically centred on it, shrunk to fit
+                    room = self.W - (x0 + self.D) - int(self.W * 0.05)
+                    if note.shape[1] > room > 0:
+                        k = room / note.shape[1]
+                        note = cv2.resize(note, (room, max(1, int(note.shape[0] * k))), interpolation=cv2.INTER_AREA)
+                    nx = x0 + self.D + int(self.W * 0.025)
+                    ny = y0 + self.D // 2 - note.shape[0] // 2
+                else:
+                    nx, ny = (self.W - self.note.shape[1]) // 2, max(int(self.H * 0.05), y0 - self.note.shape[0] - int(self.H * 0.02))
+                blend(out, note, nx, ny, opacity=op)
         return out
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:

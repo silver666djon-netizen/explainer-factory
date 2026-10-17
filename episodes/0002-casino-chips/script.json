@@ -127,15 +127,23 @@
         "motion": "static",
         "marks": [
           {
+            "type": "circle",
+            "x": 0.465,
+            "y": 0.75,
+            "w": 0.13,
+            "h": 0.22,
+            "at": 1.2
+          },
+          {
             "type": "arrow",
-            "x": 0.5,
-            "y": 0.42,
-            "from_x": 0.2,
-            "from_y": 0.18,
-            "at": 1.6,
+            "x": 0.4,
+            "y": 0.7,
+            "from_x": 0.18,
+            "from_y": 0.52,
+            "at": 1.7,
             "text": "exhibit Z",
-            "text_x": 0.27,
-            "text_y": 0.06
+            "text_x": 0.18,
+            "text_y": 0.44
           }
         ]
       }
