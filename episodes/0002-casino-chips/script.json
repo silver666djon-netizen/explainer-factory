@@ -387,6 +387,20 @@
       }
     },
     {
+      "id": "k1",
+      "section": "7 PM: The exchange",
+      "text": "If you enjoy catching casinos red-handed, subscribe. The Inspector has more files.",
+      "visual": {
+        "type": "reuse",
+        "beat": "c02",
+        "motion": "zoom_in"
+      },
+      "cta": {
+        "on": "subscribe",
+        "click_on": "Inspector"
+      }
+    },
+    {
       "id": "t02",
       "section": "9 PM: The win",
       "text": "Nine p.m.",
@@ -1209,6 +1223,45 @@
         "type": "reuse",
         "beat": "h09",
         "motion": "zoom_in"
+      }
+    },
+    {
+      "id": "k2",
+      "section": "Case closed",
+      "text": "Larry's going home broke. You don't have to. Your next case is right here on screen.",
+      "visual": {
+        "type": "reuse",
+        "beat": "b31",
+        "motion": "static"
+      },
+      "cta": {
+        "on": "next",
+        "click_on": "screen",
+        "hold": 0
+      }
+    },
+    {
+      "id": "k3",
+      "section": "Case closed",
+      "text": "Case file zero zero three.",
+      "hold": 14,
+      "visual": {
+        "type": "casefile",
+        "casefile": {
+          "mode": "open",
+          "number": "003",
+          "title": "Credit cards",
+          "inside": [
+            "NEXT CASE: why plastic feels free",
+            "SUSPECT: your credit card",
+            "STATUS: open"
+          ]
+        }
+      },
+      "cta": {
+        "at": 0.2,
+        "click_at": 1.4,
+        "hold": 14
       }
     }
   ],
