@@ -66,9 +66,17 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     default_cue = mus.get("_default", "noir")
     for beat in episode["beats"]:
         beat["_music"] = mus.get(beat.get("section") or "", default_cue)
+    by_id = {b["id"]: b for b in episode["beats"]}
     for short in episode.get("shorts") or []:
-        for k, beat in enumerate(short["beats"]):
-            beat["_music"] = short.get("music") or mus.get("_shorts") or default_cue
+        # a Short keeps one mood: the chapter most of its pictures come from (or its own "music")
+        votes: dict[str, int] = {}
+        for beat in short["beats"]:
+            src = by_id.get((beat.get("visual") or {}).get("beat", "")) or by_id.get(beat.get("id", ""))
+            if src:
+                votes[src["_music"]] = votes.get(src["_music"], 0) + 1
+        cue = short.get("music") or (max(votes, key=votes.get) if votes else mus.get("_shorts") or default_cue)
+        for beat in short["beats"]:
+            beat["_music"] = cue
 
     log("Narration…")
     voice = make_voice(cfg, offline, episode.get("voices"))
