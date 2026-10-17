@@ -32,7 +32,27 @@ def _cache_name(cfg: dict, key: str, prompt: str, style_name: str = "ad") -> str
     return f"{safe_key}-{digest}.png"
 
 
+SAFE_PREFIXES = ["", "Wholesome family-friendly vintage illustration, fully clothed characters, ",
+                 "Simple wholesome children's-book style picture, "]
+
+
 def _cloudflare(cfg: dict, prompt: str, style_name: str = "ad") -> Image.Image:
+    """Tries the prompt; if the provider's safety filter misfires, retries with softer wording."""
+    last: Exception | None = None
+    for prefix in SAFE_PREFIXES:
+        try:
+            return _cloudflare_once(cfg, prefix + prompt, style_name)
+        except _SafetyFilter as exc:
+            last = exc
+            print(f"  safety filter misfire, retrying with softer wording: {prompt[:60]}")
+    raise RuntimeError(f"Image prompt keeps tripping the safety filter, please reword it: {prompt!r} ({last})")
+
+
+class _SafetyFilter(RuntimeError):
+    pass
+
+
+def _cloudflare_once(cfg: dict, prompt: str, style_name: str = "ad") -> Image.Image:
     account = env("CLOUDFLARE_ACCOUNT_ID")
     token = env("CLOUDFLARE_API_TOKEN")
     if not account or not token:
@@ -61,6 +81,8 @@ def _cloudflare(cfg: dict, prompt: str, style_name: str = "ad") -> Image.Image:
             raise ImageQuotaError(f"Cloudflare free daily limit reached: {text}")
         if resp.status_code in (401, 403):
             raise RuntimeError(f"Cloudflare rejected the token/account (HTTP {resp.status_code}): {text}")
+        if resp.status_code == 400 and ("nsfw" in lowered or "8007" in lowered):
+            raise _SafetyFilter(text)
         if resp.status_code == 400:
             raise RuntimeError(f"Cloudflare rejected the prompt (HTTP 400): {text}")
         last_error = f"HTTP {resp.status_code}: {text}"
