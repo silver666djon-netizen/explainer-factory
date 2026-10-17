@@ -76,7 +76,7 @@
         "type": "image",
         "prompts": [
           "a thick stack of paper banknotes dropped onto green casino felt, dramatic top light",
-          "a roulette wheel seen from above, spinning, motion blur"
+          "a vintage roulette wheel seen from directly above on green felt, a small ivory ball resting in the track, gentle motion blur on the spinning wheel"
         ],
         "motion": "zoom_in"
       }
@@ -251,7 +251,7 @@
       "sfx": "tick",
       "visual": {
         "type": "image",
-        "prompt": "a hand happily flipping a colourful casino chip into the air",
+        "prompt": "a single red and cream casino chip tumbling in mid-air above green felt, warm light catching its ridged edge, playful motion lines",
         "motion": "zoom_in"
       }
     },
@@ -373,7 +373,7 @@
       ],
       "visual": {
         "type": "image",
-        "prompt": "{larry} holding up a casino chip and squinting at it suspiciously, close up",
+        "prompt": "{larry} in a mid shot at a casino table, one eyebrow raised, peering suspiciously at a single casino chip resting on his open palm",
         "motion": "zoom_in",
         "style": "comic"
       }
@@ -581,7 +581,7 @@
       },
       "visual": {
         "type": "image",
-        "prompt": "a banknote with one corner neatly torn away, lying on green felt",
+        "prompt": "a plain unlettered green banknote with one corner neatly torn away, the torn corner floating just beside it, lying on green casino felt",
         "motion": "zoom_in"
       }
     },
@@ -919,7 +919,7 @@
       "visual": {
         "type": "image",
         "prompts": [
-          "a 1950s desert boulevard lined with glowing casino signs at dusk",
+          "a wide view of a 1950s desert boulevard lined with glowing neon casino signs at dusk, vintage cars, palm trees, empty sidewalks",
           "a vintage newsreel camera on a tripod pointed at a casino entrance"
         ],
         "newsreel": true
@@ -932,7 +932,7 @@
       "sfx": "scratch",
       "visual": {
         "type": "image",
-        "prompt": "an enormous thick hardback book lying on a desk beside rolled-up architectural blueprints",
+        "prompt": "an enormous thick hardback book with a plain blank cloth cover lying on a wooden desk beside rolled-up architectural blueprints",
         "motion": "zoom_in"
       }
     },
@@ -1107,7 +1107,7 @@
       ],
       "visual": {
         "type": "image",
-        "prompt": "a colourful gift card tied with a red ribbon",
+        "prompt": "a colourful gift card tied with a red ribbon bow, standing upright on a cream tabletop, soft shadow",
         "motion": "static",
         "marks": [
           {
