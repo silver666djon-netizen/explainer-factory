@@ -105,7 +105,8 @@ class CaseFileShot(Shot):
             desk[y : y + 3] = np.clip(desk[y : y + 3].astype(int) + int(rnd.integers(-6, 6)), 0, 255)
         self.desk = add_grain(desk, 0.05, 2)
         portrait = self.H > self.W
-        fh = int(BH * (0.62 if portrait else 0.74))
+        # an opening folder becomes a two-page spread, so it starts smaller to fit the frame when open
+        fh = int(BH * (0.62 if portrait else (0.62 if self.mode == "open" else 0.74)))
         fw = int(fh / 1.28)
         self.fw, self.fh = fw, fh
         self.fx, self.fy = (BW - fw) // 2, (BH - fh) // 2 + int(fh * 0.03)
@@ -135,9 +136,12 @@ class CaseFileShot(Shot):
         y = int(fh * 0.1)
         lines = spec.get("inside") or [f"CASE: {spec.get('title', '')}", "SUSPECTS: see attached", "STATUS: under investigation"]
         self.inside_lines = []
-        for ln in lines:
-            self.inside_lines.append((int(fw * 0.1), y, str(ln)))
-            y += int(fs * 1.9)
+        from .text import wrap as _wrap
+        for ln in lines:  # long lines wrap inside the page instead of running off its edge
+            for k, part in enumerate(_wrap(str(ln), ft, int(fw * 0.8)) or [""]):
+                self.inside_lines.append((int(fw * (0.1 if k == 0 else 0.14)), y, part))
+                y += int(fs * 1.35)
+            y += int(fs * 0.55)
         self.page = page
         self.ft = ft
         # stamp
