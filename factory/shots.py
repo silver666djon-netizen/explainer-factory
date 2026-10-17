@@ -422,7 +422,7 @@ class DocShot(Shot):
         BW, BH = int(self.W * MARGIN), int(self.H * MARGIN)
         self.BW, self.BH = BW, BH
         desk = np.full((BH, BW, 3), tuple(int(c * 0.82) for c in pal["paper"]), dtype=np.uint8)
-        self.desk = add_grain(desk, 0.05, seed)
+        self.desk = add_grain(desk, 0.05, int(spec.get("seed", seed)))
         pw = int(BW * (0.78 if portrait else 0.56))
         head_f = resolve_font(cfg["fonts"]["headline"])
         body_f = resolve_font(cfg["fonts"]["serif"])
@@ -472,6 +472,7 @@ class DocShot(Shot):
             d.text((x0, line_y[i]), ln, font=bfnt, fill=pal["ink"])
         self.text_layer = paper  # paper with text
         self.blines, self.line_y, self.bfnt, self.x0 = blines, line_y, bfnt, x0
+        seed = int(spec.get("seed", seed))
         self.angle = float(np.random.default_rng(seed).uniform(-2.5, 2.5))
         self.at = float(spec.get("at", 1.0)) + lead_in
         self.hl_dur = float(spec.get("dur", 0.9))

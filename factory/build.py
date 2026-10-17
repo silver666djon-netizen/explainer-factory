@@ -61,7 +61,14 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
 
     plan_long = build_plan(episode["beats"], long_voiced, images, cfg,
                            (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup)
-    log(f"Long video: {plan_long.total / 60:.1f} min, {len(plan_long.shots)} shots")
+    target = float(cfg["video"].get("long_min_seconds", 0))
+    if target and plan_long.total < target:
+        # stretch breathing room between beats (max +0.45 s each) to reach the mid-roll threshold
+        extra = min(0.45, (target - plan_long.total) / max(1, len(episode["beats"])) + 0.01)
+        plan_long = build_plan(episode["beats"], long_voiced, images, cfg,
+                               (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup, extra)
+        log(f"Stretched pauses by +{extra:.2f}s per beat to reach {target:.0f}s")
+    log(f"Long video: {plan_long.total / 60:.2f} min, {len(plan_long.shots)} shots")
     if only in (None, "long"):
         render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
         (out / "long.wav").unlink(missing_ok=True)
@@ -81,8 +88,16 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1)})
 
     thumb = episode.get("thumbnail") or {}
-    first_image = next(b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo", "mugshot"))
-    thumb_img = images["thumbnail"] if "thumbnail" in images else images[thumb.get("beat") or first_image]
+    first_image = next((b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo", "mugshot")), None)
+    if "thumbnail" in images:
+        thumb_img = images["thumbnail"]
+    elif thumb.get("beat") or first_image:
+        thumb_img = images[thumb.get("beat") or first_image]
+    else:  # no pictures at all: use a frame from the video
+        import subprocess
+        thumb_img = out / "thumb_src.png"
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-ss", str(plan_long.total * 0.3), "-i", str(out / "long.mp4"),
+                        "-frames:v", "1", str(thumb_img)], check=True)
     thumbnail(cfg, thumb_img, thumb.get("text") or episode["title"], out / "thumbnail.jpg", circle=thumb.get("circle", True))
     write_meta(out, episode, plan_long, shorts_info)
     log(f"Done in {(time.time() - started) / 60:.1f} min -> {out}")

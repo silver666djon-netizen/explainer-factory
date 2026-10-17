@@ -15,6 +15,7 @@ video:
   min_shot_seconds: 1.4        # a shot is never shorter than this
   max_shot_seconds: 3.2        # longer shots are split so something changes every 1–3 s
   crf: 21                      # video quality (lower = better/bigger)
+  long_min_seconds: 482        # mid-roll ads need 8:00+; pauses stretch slightly if the narration is shorter
   hook_seconds: 30             # the first 30 s cut faster: attention is won or lost here
   hook_max_shot_seconds: 1.8
   x264_preset: veryfast
@@ -57,7 +58,7 @@ fonts:
 voice:
   engine: kokoro
   lang_code: b                 # b = British English
-  voice: bm_george             # British male, documentary tone; alternatives: bm_fable, bm_lewis, bm_daniel
+  voice: bm_lewis              # the Inspector (chosen from samples 17 Oct 2026); alternatives: bm_george, bm_fable, bm_daniel
   speed: 0.98
 
 audio:

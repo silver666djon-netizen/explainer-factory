@@ -15,7 +15,7 @@ from PIL import Image, ImageDraw
 from . import audio as A
 from .config import hex_to_rgb, resolve_font
 from .images import is_archive_photo
-from .props import CaseFileShot, MazeShot, MugshotShot, NewsreelShot, RouletteShot, projector_sfx_times
+from .props import CaseFileShot, MazeShot, MugshotShot, NewsreelShot, RouletteShot, SlotShot, projector_sfx_times
 from .shots import ChartShot, DocShot, ImageShot, KineticShot, Shot, StatShot, TitleShot
 from .text import blend, fit_font, font, text_block, wrap
 
@@ -120,9 +120,9 @@ def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
     return []
 
 
-def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
+def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause: float = 0.0) -> Plan:
     vcfg = cfg["video"]
-    pause = float(vcfg.get("pause_after_beat", 0.18))
+    pause = float(vcfg.get("pause_after_beat", 0.18)) + extra_pause
     max_shot = float(vcfg.get("max_shot_seconds", 3.2))
     min_shot = float(vcfg.get("min_shot_seconds", 1.4))
     lead = 0.25 if kind == "long" else 0.05
@@ -130,9 +130,9 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
 
     t = lead
     starts, durations = [], []
-    for v in voiced:
+    for v, b in zip(voiced, beats):
         starts.append(t)
-        d = v["duration"] + pause
+        d = v["duration"] + pause + float(b.get("hold", 0))
         durations.append(d)
         t += d
     total = t + tail
@@ -197,13 +197,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup) -> Plan:
                 plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
         elif vtype == "title":
             plan.shots.append(TitleShot(shot_start, span, visual["text"], cfg, size))
-        elif vtype in ("mugshot", "roulette", "maze", "casefile"):
+        elif vtype in ("mugshot", "roulette", "maze", "casefile", "slot"):
             if vtype == "mugshot":
                 prop = MugshotShot(shot_start, span, pil(images[beat["id"]]), visual["suspect"], cfg, size, lead_in, seed=i)
             elif vtype == "roulette":
                 prop = RouletteShot(shot_start, span, visual.get("roulette") or {}, cfg, size, lead_in)
             elif vtype == "maze":
                 prop = MazeShot(shot_start, span, visual.get("maze") or {}, cfg, size, lead_in)
+            elif vtype == "slot":
+                prop = SlotShot(shot_start, span, visual.get("slot") or {}, cfg, size, lead_in)
             else:
                 prop = CaseFileShot(shot_start, span, visual["casefile"], cfg, size, lead_in)
             plan.shots.append(prop)

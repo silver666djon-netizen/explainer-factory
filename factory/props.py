@@ -405,6 +405,8 @@ class RouletteShot(Shot):
         self.strokes = None
 
     def _angle(self, t: float) -> float:
+        if self.spin <= 0:
+            return 0.0
         p = min(1.0, max(0.0, t / self.spin))
         eased = 1 - (1 - p) ** 3
         return self.turns * 360 * (1 - eased)  # ends at 0 deg -> '0' on top
@@ -434,8 +436,9 @@ class RouletteShot(Shot):
         return out
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
-        ev = [(start_abs + 0.05, "whirr")]
-        ev += [(start_abs + self.mark_at, "scribble"), (start_abs + self.mark_at + 0.5, "scribble")]
+        ev = [(start_abs + 0.05, "whirr")] if self.spin > 0 else []
+        if self.mark_at < self.duration and self.mark_at > 0:
+            ev += [(start_abs + self.mark_at, "scribble"), (start_abs + self.mark_at + 0.5, "scribble")]
         return ev
 
 
@@ -617,3 +620,143 @@ class NewsreelShot(Shot):
     def frame(self, t: float) -> np.ndarray:
         tq = math.floor(t * 12) / 12
         return newsreel(self.inner.frame(tq), t, self.seed, self.label, self.cfg)
+
+
+# ------------------------------------------------------------------ slot machine
+
+SLOT_SYMBOLS = ["7", "CHERRY", "BAR", "LEMON", "BELL", "CHERRY", "BAR", "LEMON", "BELL", "CHERRY", "BAR", "LEMON"]
+
+
+def _symbol(kind: str, s: int, cfg: dict) -> np.ndarray:
+    pal = _pal(cfg)
+    img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    c = s / 2
+    if kind == "7":
+        f = font(resolve_font(cfg["fonts"]["headline"]), int(s * 0.82))
+        d.text((c, c), "7", font=f, fill=pal["red"], anchor="mm", stroke_width=max(3, s // 22), stroke_fill=pal["ink"])
+    elif kind == "BAR":
+        d.rounded_rectangle((s * 0.12, s * 0.3, s * 0.88, s * 0.7), radius=s * 0.08, fill=pal["ink"])
+        f = font(resolve_font(cfg["fonts"]["headline"]), int(s * 0.28))
+        d.text((c, c), "BAR", font=f, fill=pal["paper"], anchor="mm")
+    elif kind == "CHERRY":
+        d.line((s * 0.38, s * 0.62, s * 0.55, s * 0.2), fill=pal["green"], width=max(4, s // 18))
+        d.line((s * 0.66, s * 0.6, s * 0.55, s * 0.2), fill=pal["green"], width=max(4, s // 18))
+        for x, y in ((0.36, 0.66), (0.66, 0.64)):
+            r = s * 0.16
+            d.ellipse((s * x - r, s * y - r, s * x + r, s * y + r), fill=pal["red"], outline=pal["ink"], width=3)
+    elif kind == "LEMON":
+        d.ellipse((s * 0.18, s * 0.3, s * 0.82, s * 0.72), fill=pal["accent"], outline=pal["ink"], width=3)
+    elif kind == "BELL":
+        d.polygon([(s * 0.5, s * 0.18), (s * 0.68, s * 0.35), (s * 0.75, s * 0.68), (s * 0.25, s * 0.68), (s * 0.32, s * 0.35)],
+                  fill=pal["accent"], outline=pal["ink"])
+        d.ellipse((s * 0.44, s * 0.66, s * 0.56, s * 0.78), fill=pal["ink"])
+    return np.array(img)
+
+
+class SlotShot(Shot):
+    """Code-drawn slot machine: reels stop one by one; result 7-7 on the line and the third 7 just above it
+    (a near miss). spec: result ('near_miss' | 'win' | 'loss'), stops [s,s,s], mark (bool), note"""
+
+    def __init__(self, start, duration, spec: dict, cfg: dict, size, lead_in: float = 0.0):
+        super().__init__(start, duration)
+        self.W, self.H = size
+        self.cfg, self.spec, self.lead_in = cfg, spec, lead_in
+        pal = self.pal = _pal(cfg)
+        portrait = self.H > self.W
+        s = int(min(self.W * 0.82 / 3, self.H * (0.16 if portrait else 0.19)))
+        self.s = s
+        win_w, win_h = s * 3, s * 3
+        wy = int(self.H * 0.16) if portrait else int((self.H - win_h) / 2)
+        self.win = (int((self.W - win_w) / 2), wy, win_w, win_h)
+        self.portrait = portrait
+        bg = Image.new("RGB", (self.W, self.H), _darker(pal["red"], 0.55))
+        d = ImageDraw.Draw(bg)
+        wx, wy, ww, wh = self.win
+        pad = int(s * 0.35)
+        d.rounded_rectangle((wx - pad, wy - pad * 3, wx + ww + pad, wy + wh + pad * 2), radius=pad, fill=pal["red"], outline=pal["ink"], width=8)
+        f = font(resolve_font(cfg["fonts"]["headline"]), int(pad * 1.5))
+        d.text((self.W / 2, wy - pad * 1.6), "JACKPOT", font=f, fill=pal["accent"], anchor="mm", stroke_width=4, stroke_fill=pal["ink"])
+        d.rectangle((wx - 8, wy - 8, wx + ww + 8, wy + wh + 8), fill=(200, 200, 200), outline=pal["ink"], width=6)
+        self.bulbs = [(wx - pad + k * (ww + 2 * pad) / 13, wy - pad * 2.9) for k in range(14)]
+        self.bg = add_grain(np.array(bg), 0.03, 21)
+        syms = {k: _symbol(k, s, cfg) for k in set(SLOT_SYMBOLS)}
+        n = len(SLOT_SYMBOLS)
+        strip = np.zeros((n * s * 3, s, 4), np.uint8)
+        for rep in range(3):
+            for k, name in enumerate(SLOT_SYMBOLS):
+                strip[(rep * n + k) * s : (rep * n + k + 1) * s] = syms[name]
+        self.strip, self.n = strip, n
+        result = spec.get("result", "near_miss")
+        i7 = SLOT_SYMBOLS.index("7")
+        if result == "win":
+            finals = [i7, i7, i7]
+        elif result == "loss":
+            finals = [2, 7, 4]
+        else:
+            finals = [i7, i7, i7 + 1]  # third 7 sits one row above the line
+        self.finals = finals
+        stops = spec.get("stops") or [1.0, 1.6, 2.6]
+        self.stops = [lead_in + float(x) for x in stops]
+        self.travel = [14, 20, 30]
+        self.red = tuple(int(x) for x in pal["red"])
+        self.mark_at = self.stops[-1] + 0.35
+        self.note = None
+        if spec.get("note"):
+            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.05))
+            self.note = text_block([spec["note"]], mf, fill=pal["accent"], stroke=4, stroke_fill=pal["ink"])
+        self.strokes = None
+
+    def _pos(self, i: int, t: float) -> float:
+        p = min(1.0, max(0.0, t / self.stops[i]))
+        return self.finals[i] + self.n - self.travel[i] * (1 - p) ** 2
+
+    def frame(self, t: float) -> np.ndarray:
+        out = self.bg.copy()
+        wx, wy, ww, wh = self.win
+        s = self.s
+        reel_bg = np.full((wh, ww, 3), (250, 246, 236), np.uint8)
+        out[wy : wy + wh, wx : wx + ww] = reel_bg
+        for i in range(3):
+            pos = self._pos(i, t) % self.n + self.n
+            top = int((pos - 1) * s)
+            crop = self.strip[top : top + wh]
+            if crop.shape[0] < wh:
+                continue
+            if t < self.stops[i]:  # motion blur while spinning
+                crop = cv2.blur(crop, (1, max(1, int(s * 0.25))))
+            blend(out, crop, wx + i * s, wy)
+            if i:
+                cv2.line(out, (wx + i * s, wy), (wx + i * s, wy + wh), (120, 120, 120), 3)
+        # shading top/bottom of the window
+        grad = np.linspace(0.55, 1.0, s // 2)[:, None, None]
+        out[wy : wy + s // 2, wx : wx + ww] = (out[wy : wy + s // 2, wx : wx + ww] * grad).astype(np.uint8)
+        out[wy + wh - s // 2 : wy + wh, wx : wx + ww] = (out[wy + wh - s // 2 : wy + wh, wx : wx + ww] * grad[::-1]).astype(np.uint8)
+        ly = wy + wh // 2
+        cv2.line(out, (wx - 20, ly), (wx + ww + 20, ly), self.red, max(4, s // 30), cv2.LINE_AA)
+        for k, (bx, by) in enumerate(self.bulbs):  # chasing lights
+            on = (k + int(t * 8)) % 3 == 0
+            cv2.circle(out, (int(bx), int(by)), max(6, s // 18), self.pal["accent"] if on else (120, 90, 40), -1, cv2.LINE_AA)
+        if self.spec.get("mark", True) and self.spec.get("result", "near_miss") == "near_miss" and t >= self.mark_at:
+            if self.strokes is None:
+                cx = (wx + 2.5 * s) / self.W
+                cy = (wy + 0.5 * s) / self.H
+                self.strokes = mark_strokes({"type": "circle", "x": cx, "y": cy, "w": s * 1.05 / self.W, "h": s * 1.05 / self.H}, self.W, self.H, seed=77)
+            _draw_marker(out, self.strokes, (t - self.mark_at) / 0.45, self.red, max(6, self.H // 120))
+            if self.note is not None and t >= self.mark_at + 0.6:
+                if self.portrait:
+                    nx, ny = (self.W - self.note.shape[1]) // 2, wy + wh + int(s * 0.9)
+                else:
+                    nx, ny = min(self.W - self.note.shape[1] - 10, wx + ww + int(s * 0.6)), wy + int(s * 0.2)
+                blend(out, self.note, nx, ny, opacity=min(1.0, (t - self.mark_at - 0.6) / 0.25))
+        z = 1.0 + 0.08 * ease(t / max(self.duration, 1e-6))
+        cw, ch = int(self.W / z), int(self.H / z)
+        return cv2.resize(out[(self.H - ch) // 2 : (self.H - ch) // 2 + ch, (self.W - cw) // 2 : (self.W - cw) // 2 + cw], (self.W, self.H))
+
+    def sfx(self, start_abs: float) -> list[tuple[float, str]]:
+        spinning = self.stops[-1] - self.lead_in > 0.2
+        ev = [(start_abs + self.lead_in + 0.05, "whirr")] if spinning else []
+        ev += [(start_abs + st, "hit") for st in self.stops] if spinning else []
+        if self.spec.get("result", "near_miss") == "near_miss":
+            ev.append((start_abs + self.mark_at, "scribble"))
+        return ev
