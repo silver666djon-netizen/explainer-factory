@@ -153,11 +153,47 @@ def _decode(path: Path) -> np.ndarray:
     if path not in _MUSIC_CACHE:
         raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                              check=True, capture_output=True).stdout
-        a = np.frombuffer(raw, dtype=np.float32).copy()
+        a = _even_out(_trim_quiet_ends(np.frombuffer(raw, dtype=np.float32).copy()))
         rms = float(np.sqrt(np.mean(a.astype(np.float64) ** 2))) if a.size else 0.0
         a = a * (db(-20) / rms) if rms > 0 else a  # every cue at the same loudness (RMS -20 dBFS)
         _MUSIC_CACHE[path] = np.clip(a, -0.99, 0.99)
     return _MUSIC_CACHE[path]
+
+
+def _rms_db(a: np.ndarray, win: int) -> np.ndarray:
+    n = max(1, len(a) // win)
+    blocks = a[: n * win].reshape(n, win).astype(np.float64)
+    return 10 * np.log10(np.mean(blocks ** 2, axis=1) + 1e-12)
+
+
+def _trim_quiet_ends(a: np.ndarray) -> np.ndarray:
+    """Cuts a quiet intro / fade-out tail (15 dB below the track's typical level), so loops don't leave holes."""
+    win = SR // 2
+    if len(a) < win * 8:
+        return a
+    lv = _rms_db(a, win)
+    typical = np.median(lv)
+    loud = np.where(lv > typical - 15)[0]
+    if loud.size == 0:
+        return a
+    return a[loud[0] * win : (loud[-1] + 1) * win]
+
+
+def _even_out(a: np.ndarray, target_span_db: float = 6.0) -> np.ndarray:
+    """Gentle slow compression for background use: lifts quiet passages and tames loud ones (max ±8 dB),
+    with a 1.5 s smoothed envelope, so the bed sits at a steady level under the voice."""
+    win = int(0.25 * SR)
+    if len(a) < win * 8:
+        return a
+    lv = _rms_db(a, win)
+    ref = np.median(lv)
+    k = int(1.5 / 0.25)
+    sm = np.convolve(np.pad(lv, (k, k), mode="edge"), np.ones(2 * k + 1) / (2 * k + 1), mode="same")[k:-k]
+    gain_db = np.clip(-(sm - ref) * 0.6, -8, 8)
+    gain_db = np.where(np.abs(sm - ref) < target_span_db / 2, gain_db * 0.3, gain_db)
+    g = np.repeat(10 ** (gain_db / 20), win).astype(np.float32)
+    g = np.concatenate([g, np.full(len(a) - len(g), g[-1], dtype=np.float32)])
+    return a * g
 
 
 def music_file(cue: str) -> Path | None:
