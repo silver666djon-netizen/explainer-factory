@@ -1250,10 +1250,10 @@
         "casefile": {
           "mode": "open",
           "number": "003",
-          "title": "Credit cards",
+          "title": "Same basket",
           "inside": [
-            "NEXT CASE: why plastic feels free",
-            "SUSPECT: your credit card",
+            "NEXT CASE: same basket, different price",
+            "SUSPECT: the price on your screen",
             "STATUS: open"
           ]
         }
