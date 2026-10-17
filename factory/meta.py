@@ -60,23 +60,35 @@ def srt(captions) -> str:
 
 
 def thumbnail(cfg: dict, image_path: Path, text: str, out: Path, circle: bool = True) -> Path:
+    """Headline on the left, the picture's centred subject in a right-hand panel, red marker circle around it."""
+    import cv2
+    from .shots import mark_strokes
     W, H = 1280, 720
     pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
-    base = cover(Image.open(image_path).convert("RGB"), W, H).astype(np.float32)
-    # darken the left side so the headline pops
-    grad = np.linspace(0.35, 1.0, W)[None, :, None]
-    base = (base * grad).clip(0, 255).astype(np.uint8)
-    head = resolve_font(cfg["fonts"]["headline"])
-    fnt, lines = fit_font(text.upper(), head, int(W * 0.55), int(H * 0.7), start=150, min_size=60)
-    colors = [[pal["accent"] if j == 0 and i == 0 else (255, 255, 255) for j, _ in enumerate(l.split(" "))] for i, l in enumerate(lines)]
-    blk = text_block(lines, fnt, fill=(255, 255, 255), stroke_fill=pal["ink"], stroke=8, align="left", colors=colors)
+    src = Image.open(image_path).convert("RGB")
+    # background: the same picture, blurred and darkened, so the left side never looks empty
+    bg = cover(src, W, H).astype(np.float32)
+    bg = cv2.GaussianBlur(bg, (0, 0), 18) * 0.38 + np.array(pal["ink"], np.float32) * 0.25
+    # right panel: the generated subject sits in the middle of the source picture, so crop the centre
+    PW = int(W * 0.6)
+    panel = cover(src, PW, H).astype(np.float32)
+    x0 = W - PW
+    fade = np.clip(np.linspace(-0.15, 1.0, int(PW * 0.22)) * 1.0, 0, 1)
+    alpha = np.ones(PW, np.float32)
+    alpha[: fade.size] = fade
+    base = bg.copy()
+    base[:, x0:] = bg[:, x0:] * (1 - alpha[None, :, None]) + panel * alpha[None, :, None]
+    base = base.clip(0, 255).astype(np.uint8)
     if circle:  # the channel's red investigator marker around the subject
-        import cv2
-        from .shots import mark_strokes
         red = tuple(int(c) for c in pal["red"])
-        for stroke in mark_strokes({"type": "circle", "x": 0.72, "y": 0.5, "w": 0.36, "h": 0.62}, W, H, seed=5):
+        cx = (x0 + PW * 0.55) / W
+        for stroke in mark_strokes({"type": "circle", "x": cx, "y": 0.5, "w": 0.4, "h": 0.74}, W, H, seed=5):
             cv2.polylines(base, [stroke.astype(np.int32).reshape(-1, 1, 2)], False, red, 12, cv2.LINE_AA)
-    blend(base, blk, 50, (H - blk.shape[0]) // 2)
+    head = resolve_font(cfg["fonts"]["headline"])
+    fnt, lines = fit_font(text.upper(), head, int(W * 0.5), int(H * 0.78), start=170, min_size=60)
+    colors = [[pal["accent"] if j == 0 and i == 0 else (255, 255, 255) for j, _ in enumerate(l.split(" "))] for i, l in enumerate(lines)]
+    blk = text_block(lines, fnt, fill=(255, 255, 255), stroke_fill=pal["ink"], stroke=9, align="left", colors=colors)
+    blend(base, blk, 44, (H - blk.shape[0]) // 2)
     img = Image.fromarray(base)
     ImageDraw.Draw(img).rectangle((0, H - 18, W, H), fill=pal["red"])
     img.save(out, quality=92)

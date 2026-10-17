@@ -1,0 +1,48 @@
+name: Thumbnails
+
+# Three thumbnail variants (A/B/C) for YouTube "Test & compare" — fast, no video render.
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "Episode folder name, e.g. 0002-casino-chips"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  thumbs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Fonts and packages
+        run: |
+          mkdir -p assets/fonts
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf; do
+            curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || true
+          done
+          pip install -q pillow numpy opencv-python-headless pyyaml requests
+      - name: Frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep="${{ github.event.inputs.episode }}"
+          mkdir -p ".cache/images/$ep"
+          gh release download "frames-$ep" -D ".cache/images/$ep" --clobber --pattern "*.png"
+      - name: Thumbnails
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep="${{ github.event.inputs.episode }}"
+          python -m factory.thumbs "episodes/$ep" --out out/thumbs --send
+          tag=$(gh release list --limit 30 --json tagName -q '.[].tagName' | grep "^$ep-r" | head -1)
+          [ -n "$tag" ] && gh release upload "$tag" out/thumbs/*.jpg --clobber || true
