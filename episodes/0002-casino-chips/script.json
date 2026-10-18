@@ -1970,7 +1970,17 @@
           "visual": {
             "type": "reuse",
             "beat": "p51",
-            "motion": "zoom_in"
+            "motion": "static",
+            "draw": {
+              "at": 0.1,
+              "dur": 2.8,
+              "box": [
+                0.15,
+                0.0,
+                0.85,
+                1.0
+              ]
+            }
           }
         },
         {

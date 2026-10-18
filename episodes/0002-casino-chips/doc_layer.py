@@ -85,6 +85,8 @@ for sh in s["shorts"]:
     for i, b in enumerate(sh["beats"]):
         if (sh["id"], i) in SHORT_INS:
             b["inserts"] = SHORT_INS[(sh["id"], i)]
+# hand drawing in the Shorts: the phone-casino picture is drawn on screen at the start of s7
+s["shorts"][4]["beats"][0]["visual"].update({"motion": "static", "draw": {"at": 0.1, "dur": 2.8, "box": [0.15, 0.0, 0.85, 1.0]}})
 # Shorts open with the hand drawing Larry where he is the first picture
 s["shorts"][0]["beats"][0]  # (s1 starts on c03 banknotes: stays)
 
