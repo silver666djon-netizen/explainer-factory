@@ -48,6 +48,9 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     out.mkdir(parents=True, exist_ok=True)
     log(f"Episode: {episode['title']}  ({len(episode['beats'])} beats, {len(episode.get('shorts') or [])} shorts)")
 
+    if not offline:
+        from .stock import resolve_stock
+        resolve_stock(episode, log)
     prompts = image_prompts(episode)
     thumb_spec = episode.get("thumbnail") or {}
     ep_dir0 = Path(episode_path) if Path(episode_path).is_dir() else Path(episode_path).parent
@@ -56,9 +59,6 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
     images = ensure_images(cfg, prompts, cache, offline, log)
     from .archive import ensure_archive, ensure_clips
-    from .stock import resolve_stock
-    if not offline:
-        resolve_stock(episode, log)
     images.update(ensure_archive(episode, cfg, cache, log))
     ensure_clips(episode, cache, log)
     photos = photo_sources(episode)

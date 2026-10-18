@@ -132,6 +132,9 @@ def resolve_stock(episode: dict, log=print) -> None:
             if p:
                 v["file"] = p.name
                 v.setdefault("credit", credit_for(p))
+            elif v.get("fallback_prompt"):
+                v.update({"type": "image", "prompt": v["fallback_prompt"]})
+                v.pop("newsreel", None)
             elif v.get("fallback"):
                 v["type"], v["beat"] = "reuse", v["fallback"]
         if v["type"] == "archive" and v.get("stock_photo") and not v.get("file"):

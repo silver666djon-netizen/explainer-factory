@@ -370,6 +370,64 @@ shorts = [
         r("v72", "Check the price on another phone. Because next time, ask yourself: think the app picked on you?"),
     ]},
 ]
+
+# ------------------------------------------------------------------ documentary layer (inserts / stock)
+LOC = "Library of Congress, Prints & Photographs Division (no known restrictions)"
+INS = {
+    # cold open
+    "c01": [{"file": "lv1940_corner.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "2016", "caption": "Main street corner, Las Vegas, 1940"}],
+    "c02": [{"file": "c05", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.26, "on": "People"}],
+    "c06": [{"file": "p40", "kind": "cutout", "from": "left", "x": 0.14, "y": 0.6, "w": 0.24, "on": "somewhere"}],
+    # 11:47
+    "b11": [{"stock_photo": "taxi night rain city", "kind": "photo", "from": "right", "x": 0.8, "y": 0.4, "w": 0.3, "on": "fare"}],
+    "d13": [{"stock_photo": "podcast microphone studio", "kind": "photo", "from": "right", "x": 0.82, "y": 0.5, "w": 0.28, "on": "podcast" , "at": 0.3}],
+    "d14": [{"file": "c05", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.26, "on": "nobody"}],
+    "d14b": [{"stock_photo": "crowd waiting street rain umbrellas", "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "lots"}],
+    "b16": [{"stock_photo": "smartphone location map pin", "kind": "photo", "from": "right", "x": 0.84, "y": 0.42, "w": 0.26, "on": "Where", "dur": 2.4}],
+    # 8:02
+    "a20": [{"stock_photo": "news van satellite dish", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "KARE"}],
+    "a21": [{"stock_photo": "flat screen television living room", "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.28, "on": "Samsung"}],
+    "a22": [{"stock_photo": "parking lot aerial cars", "kind": "photo", "from": "bottom", "x": 0.24, "y": 0.62, "w": 0.3, "on": "parking"}],
+    "a25": [{"file": "c05", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.26, "on": "lesson"}],
+    # 10:15
+    "s30": [{"stock_photo": "grocery delivery app phone", "kind": "photo", "from": "right", "x": 0.84, "y": 0.4, "w": 0.26, "on": "delivery"}],
+    "s32": [{"file": "supermarket_1957_a.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.45, "w": 0.3, "on": "volunteers", "caption": "Shopping in a supermarket, 1957"}],
+    "s33b": [{"file": "grocery_lincoln_1942.jpg", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "ordinary", "caption": "Grand Grocery, Lincoln, 1942"}],
+    "s36": [{"file": "piggly_aisle_1918.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "tests", "caption": "Piggly Wiggly, 1918 — the first self-service store"}],
+    "s3b": [{"file": "supermarket_carts_1958.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "family", "caption": "Supermarket, 1958"}],
+    # 1:30
+    "h41": [{"file": "wanamaker_oakhall_1865.jpg", "kind": "clipping", "from": "right", "x": 0.84, "y": 0.45, "w": 0.22, "on": "tag", "caption": "Wanamaker & Brown, Oak Hall, 1865"}],
+    "p41": [{"file": "c05", "kind": "cutout", "from": "left", "x": 0.14, "y": 0.62, "w": 0.24, "on": "Shopping"}],
+    "p43": [{"stock_photo": "computer mouse cursor hand", "kind": "photo", "from": "right", "x": 0.84, "y": 0.42, "w": 0.26, "on": "mouse"}],
+    "p45": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.24, "on": "toolbox"}],
+    # defence / twist / close
+    "d51": [{"stock_photo": "discount coupon scissors", "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.26, "on": "discount"}],
+    "d51b": [{"stock_photo": "airplane cabin seats passengers", "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "fares"}],
+    "w60": [{"file": "s30.1", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.24, "on": "knew"}],
+    "w63": [{"file": "w62", "kind": "cutout", "from": "left", "x": 0.16, "y": 0.6, "w": 0.26, "on": "experiment"}],
+    "v72": [{"stock_photo": "laptop online shopping", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "website"}],
+    "v74b": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.24, "on": "guess."}],
+}
+for b in B:
+    if b["id"] in INS:
+        b["inserts"] = INS[b["id"]]
+# stock film where the picture is a plain illustration of a real-world scene
+STOCK = {
+    "d14b": {"stock": "city street night rain traffic", "in": 0, "out": 9, "newsreel": "Stock footage", "fallback": "d14b"},
+    "s31": {"stock": "cash register receipt printing", "in": 0, "out": 7, "newsreel": False, "fallback": "s31"},
+    "h43": {"stock": "market bargaining vendor", "in": 0, "out": 6, "newsreel": "Stock footage", "fallback": "h40"},
+}
+for b in B:
+    st = STOCK.get(b["id"])
+    if st and b["visual"]["type"] == "image":
+        # keep the illustration prompt as the fallback picture: move it to a hidden sibling beat id
+        fb = dict(b); fb["id"] = b["id"] + "_pic"
+        # not inserted into timeline; the fallback is the same illustration so just keep type image when stock missing
+        b["visual"] = {"type": "clip", "stock": st["stock"], "in": st["in"], "out": st["out"], "newsreel": st["newsreel"],
+                       "fallback_prompt": b["visual"].get("prompt"), "credit": "stock"}
+        if b["visual"].get("newsreel") is False:
+            b["visual"].pop("newsreel")
+
 for sh in shorts:
     for k, b in enumerate(sh["beats"]):
         b.setdefault("id", f"{sh['id']}_{k}")

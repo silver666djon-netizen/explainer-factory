@@ -204,6 +204,9 @@ def image_prompts(episode: dict) -> dict[str, dict]:
                                "episode_dir": episode.get("_dir"), "refs": refs}
             continue
         if visual["type"] not in ("image", "clip") or (visual["type"] == "clip" and (visual.get("file") or visual.get("stock"))):
+            if visual.get("stock") and visual.get("fallback_prompt"):  # illustration kept ready in case the stock clip is missing
+                out[beat["id"]] = {"prompt": visual["fallback_prompt"], "style": visual.get("style", "ad"),
+                                   "episode_dir": episode.get("_dir"), "refs": refs}
             continue
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):

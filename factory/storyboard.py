@@ -112,15 +112,15 @@ def main(argv=None) -> int:
     if redo:
         bump_variants(ep_dir, redo, cache)
 
+    if not args.offline:
+        from .stock import resolve_stock
+        resolve_stock(episode, log)
     prompts = image_prompts(episode)
     thumb = episode.get("thumbnail") or {}
     if thumb.get("prompt") and not any((ep_dir / f"thumbnail.{e}").exists() for e in ("png", "jpg")):
         prompts["thumbnail"] = {"prompt": thumb["prompt"], "style": thumb.get("style", "ad"), "episode_dir": str(ep_dir)}
     images = ensure_images(cfg, prompts, cache, args.offline, log)
     from .archive import ensure_archive
-    from .stock import resolve_stock
-    if not args.offline:
-        resolve_stock(episode, log)
     images.update(ensure_archive(episode, cfg, cache, log))
     photos = photo_sources(episode)
     if photos:

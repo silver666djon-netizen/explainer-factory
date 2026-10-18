@@ -62,7 +62,19 @@
         ],
         "motion": "zoom_in"
       },
-      "say": "In twenty sixteen, Uber's own head of economic research said something on a podcast that he may have come to regret."
+      "say": "In twenty sixteen, Uber's own head of economic research said something on a podcast that he may have come to regret.",
+      "inserts": [
+        {
+          "file": "lv1940_corner.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.3,
+          "on": "2016",
+          "caption": "Main street corner, Las Vegas, 1940"
+        }
+      ]
     },
     {
       "id": "c02",
@@ -87,7 +99,18 @@
           }
         ]
       },
-      "on_screen": "Low battery = higher price?"
+      "on_screen": "Low battery = higher price?",
+      "inserts": [
+        {
+          "file": "c05",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.6,
+          "w": 0.26,
+          "on": "People"
+        }
+      ]
     },
     {
       "id": "c03",
@@ -139,7 +162,18 @@
         "type": "image",
         "prompt": "a frosted glass office door with a brass handle; behind the glass, the soft grey blurred outline of a round-headed retro robot with a small bow tie, lit from behind by warm amber light, no face visible, film-noir mood",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "p40",
+          "kind": "cutout",
+          "from": "left",
+          "x": 0.14,
+          "y": 0.6,
+          "w": 0.24,
+          "on": "somewhere"
+        }
+      ]
     },
     {
       "id": "c07",
@@ -222,6 +256,17 @@
       },
       "punch": [
         "battery?"
+      ],
+      "inserts": [
+        {
+          "stock_photo": "taxi night rain city",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.8,
+          "y": 0.4,
+          "w": 0.3,
+          "on": "fare"
+        }
       ]
     },
     {
@@ -255,7 +300,19 @@
           "at": 4.0,
           "highlight": "more willing to accept surge pricing"
         }
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "podcast microphone studio",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.5,
+          "w": 0.28,
+          "on": "podcast",
+          "at": 0.3
+        }
+      ]
     },
     {
       "id": "d14",
@@ -266,17 +323,43 @@
         "beat": "c01",
         "index": 1,
         "motion": "zoom_out"
-      }
+      },
+      "inserts": [
+        {
+          "file": "c05",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.62,
+          "w": 0.26,
+          "on": "nobody"
+        }
+      ]
     },
     {
       "id": "d14b",
       "section": "11:47 PM: 3% battery",
       "text": "Surge pricing itself is real, of course. When lots of people want rides and few drivers are around, the price goes up for everyone in the area. That's demand. Not your battery.",
       "visual": {
-        "type": "image",
-        "prompt": "a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight",
-        "motion": "pan_left"
-      }
+        "type": "clip",
+        "stock": "city street night rain traffic",
+        "in": 0,
+        "out": 9,
+        "newsreel": "Stock footage",
+        "fallback_prompt": "a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight",
+        "credit": "stock"
+      },
+      "inserts": [
+        {
+          "stock_photo": "crowd waiting street rain umbrellas",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.4,
+          "w": 0.3,
+          "on": "lots"
+        }
+      ]
     },
     {
       "id": "b15",
@@ -325,7 +408,19 @@
             "on": "badly"
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "smartphone location map pin",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "Where",
+          "dur": 2.4
+        }
+      ]
     },
     {
       "id": "b17",
@@ -368,7 +463,18 @@
         "motion": "zoom_in",
         "newsreel": "Reconstruction"
       },
-      "say": "February twenty nineteen. A TV news team in Minneapolis, Kare Eleven, tried something simple with the Target app."
+      "say": "February twenty nineteen. A TV news team in Minneapolis, Kare Eleven, tried something simple with the Target app.",
+      "inserts": [
+        {
+          "stock_photo": "news van satellite dish",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.3,
+          "on": "KARE"
+        }
+      ]
     },
     {
       "id": "a21",
@@ -380,7 +486,18 @@
         "motion": "zoom_in"
       },
       "on_screen": "$499.99",
-      "say": "At home, a fifty-five inch Samsung TV showed up in the app at four ninety-nine ninety-nine."
+      "say": "At home, a fifty-five inch Samsung TV showed up in the app at four ninety-nine ninety-nine.",
+      "inserts": [
+        {
+          "stock_photo": "flat screen television living room",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.4,
+          "w": 0.28,
+          "on": "Samsung"
+        }
+      ]
     },
     {
       "id": "a22",
@@ -400,7 +517,18 @@
         "on": "said",
         "dur": 1.4
       },
-      "say": "Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine."
+      "say": "Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine.",
+      "inserts": [
+        {
+          "stock_photo": "parking lot aerial cars",
+          "kind": "photo",
+          "from": "bottom",
+          "x": 0.24,
+          "y": 0.62,
+          "w": 0.3,
+          "on": "parking"
+        }
+      ]
     },
     {
       "id": "a23",
@@ -455,7 +583,18 @@
             "on": "where"
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "file": "c05",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.62,
+          "w": 0.26,
+          "on": "lesson"
+        }
+      ]
     },
     {
       "id": "a26",
@@ -504,16 +643,30 @@
           "{linda} at her own kitchen table tapping on her phone, a neat shopping list beside her, mid shot"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "grocery delivery app phone",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.4,
+          "w": 0.26,
+          "on": "delivery"
+        }
+      ]
     },
     {
       "id": "s31",
       "section": "10:15 AM: Same basket",
       "text": "Same store. Same items. Same minute. Then they compare receipts.",
       "visual": {
-        "type": "image",
-        "prompt": "two long paper shop receipts lying side by side on a kitchen table, their totals hidden under a pencil",
-        "motion": "zoom_in"
+        "type": "clip",
+        "stock": "cash register receipt printing",
+        "in": 0,
+        "out": 7,
+        "fallback_prompt": "two long paper shop receipts lying side by side on a kitchen table, their totals hidden under a pencil",
+        "credit": "stock"
       },
       "bubble": {
         "text": "Why is YOURS cheaper?",
@@ -538,7 +691,19 @@
           "highlight": "offered at different prices"
         }
       },
-      "say": "That's not a made-up scene. In twenty twenty-five, Consumer Reports and the Groundwork Collaborative had hundreds of volunteers buy the same basket, at the same store, at the same time."
+      "say": "That's not a made-up scene. In twenty twenty-five, Consumer Reports and the Groundwork Collaborative had hundreds of volunteers buy the same basket, at the same store, at the same time.",
+      "inserts": [
+        {
+          "file": "supermarket_1957_a.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.45,
+          "w": 0.3,
+          "on": "volunteers",
+          "caption": "Shopping in a supermarket, 1957"
+        }
+      ]
     },
     {
       "id": "s33",
@@ -576,6 +741,18 @@
       },
       "punch": [
         "luck."
+      ],
+      "inserts": [
+        {
+          "file": "grocery_lincoln_1942.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "ordinary",
+          "caption": "Grand Grocery, Lincoln, 1942"
+        }
       ]
     },
     {
@@ -630,7 +807,19 @@
             "on": "five"
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "file": "piggly_aisle_1918.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.4,
+          "w": 0.3,
+          "on": "tests",
+          "caption": "Piggly Wiggly, 1918 — the first self-service store"
+        }
+      ]
     },
     {
       "id": "s37",
@@ -760,7 +949,19 @@
         "label": "a year · family of four (CR estimate)",
         "on": "twelve",
         "dur": 1.6
-      }
+      },
+      "inserts": [
+        {
+          "file": "supermarket_carts_1958.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.3,
+          "on": "family",
+          "caption": "Supermarket, 1958"
+        }
+      ]
     },
     {
       "id": "s3c",
@@ -831,7 +1032,19 @@
           "slogan": "One price. For everyone. Imagine that.",
           "slogan_y": 0.86
         }
-      }
+      },
+      "inserts": [
+        {
+          "file": "wanamaker_oakhall_1865.jpg",
+          "kind": "clipping",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.45,
+          "w": 0.22,
+          "on": "tag",
+          "caption": "Wanamaker & Brown, Oak Hall, 1865"
+        }
+      ]
     },
     {
       "id": "h42",
@@ -909,7 +1122,18 @@
         "motion": "static",
         "style": "comic"
       },
-      "voice": "price"
+      "voice": "price",
+      "inserts": [
+        {
+          "file": "c05",
+          "kind": "cutout",
+          "from": "left",
+          "x": 0.14,
+          "y": 0.62,
+          "w": 0.24,
+          "on": "Shopping"
+        }
+      ]
     },
     {
       "id": "p42",
@@ -967,7 +1191,18 @@
         "prompt": "{price} examining a shopper's silhouette with a big brass magnifying glass held in one white-gloved cartoon hand, small floating labels around it",
         "motion": "static"
       },
-      "on_screen": "Location · Device · Cart"
+      "on_screen": "Location · Device · Cart",
+      "inserts": [
+        {
+          "stock_photo": "computer mouse cursor hand",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "mouse"
+        }
+      ]
     },
     {
       "id": "p44",
@@ -988,7 +1223,18 @@
         "type": "image",
         "prompt": "an open wooden toolbox on a workbench, filled with neat price tags, a magnifier and a little map pin",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "p40",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.62,
+          "w": 0.24,
+          "on": "toolbox"
+        }
+      ]
     },
     {
       "id": "p46",
@@ -1031,7 +1277,18 @@
         "type": "image",
         "prompt": "brass balance scales with a small red discount coupon on one pan and a price tag on the other, evenly balanced",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "discount coupon scissors",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.4,
+          "w": 0.26,
+          "on": "discount"
+        }
+      ]
     },
     {
       "id": "d51b",
@@ -1041,7 +1298,18 @@
         "type": "image",
         "prompt": "a 1950s airliner parked on a sunny runway with passengers climbing a boarding stair",
         "motion": "pan_right"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "airplane cabin seats passengers",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.4,
+          "w": 0.3,
+          "on": "fares"
+        }
+      ]
     },
     {
       "id": "d52",
@@ -1087,7 +1355,18 @@
         "type": "image",
         "prompt": "{larry} at his kitchen table frowning at his phone, a red marker question mark drawn on the wall behind him",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "s30.1",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.6,
+          "w": 0.24,
+          "on": "knew"
+        }
+      ]
     },
     {
       "id": "w61",
@@ -1167,7 +1446,18 @@
           "at": 3.0,
           "highlight": "shoppers are not aware that they're in an experiment"
         }
-      }
+      },
+      "inserts": [
+        {
+          "file": "w62",
+          "kind": "cutout",
+          "from": "left",
+          "x": 0.16,
+          "y": 0.6,
+          "w": 0.26,
+          "on": "experiment"
+        }
+      ]
     },
     {
       "id": "w64",
@@ -1222,7 +1512,18 @@
           "a laptop on a kitchen table next to a phone, both showing a plain shop page"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "laptop online shopping",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "website"
+        }
+      ]
     },
     {
       "id": "v73",
@@ -1264,7 +1565,18 @@
             "on": "guess."
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "file": "p40",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.62,
+          "w": 0.24,
+          "on": "guess."
+        }
+      ]
     },
     {
       "id": "v75",
