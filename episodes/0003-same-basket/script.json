@@ -1359,11 +1359,21 @@
             "type": "reuse",
             "beat": "c05",
             "index": 0,
-            "motion": "zoom_in"
+            "motion": "static"
           },
           "punch": [
             "low?"
           ],
+          "draw": {
+            "at": 0.1,
+            "dur": 2.8,
+            "box": [
+              0.15,
+              0.0,
+              0.85,
+              1.0
+            ]
+          },
           "id": "s1_0"
         },
         {
@@ -1698,7 +1708,17 @@
             "type": "reuse",
             "beat": "p40",
             "index": 0,
-            "motion": "zoom_in"
+            "motion": "static"
+          },
+          "draw": {
+            "at": 0.1,
+            "dur": 2.8,
+            "box": [
+              0.1,
+              0.0,
+              0.9,
+              1.0
+            ]
           },
           "id": "s6_0"
         },

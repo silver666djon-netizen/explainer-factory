@@ -294,7 +294,7 @@ def r(beat_id, text, motion="zoom_in", index=0, **kw):
 
 shorts = [
     {"id": "s1", "hook": 'Low battery = higher price?', "title": "Does your ride cost more on low battery? #shorts", "beats": [
-        r("c05", "Does your ride cost more when your battery is low?", punch=["low?"]),
+        r("c05", "Does your ride cost more when your battery is low?", motion="static", punch=["low?"], draw={"at": 0.1, "dur": 2.8, "box": [0.15, 0.0, 0.85, 1.0]}),
         r("c01", "In 2016, Uber's own economist said riders with a dying phone were more willing to accept surge pricing.", index=1,
           say="In twenty sixteen, Uber's own economist said riders with a dying phone were more willing to accept surge pricing."),
         r("c01", "But he also said Uber doesn't use battery to set prices. Nobody has shown it does.", index=0),
@@ -342,7 +342,7 @@ shorts = [
         r("s37", "So ignore the 'was'. Look again at these crackers: three different 'was' prices."),
     ]},
     {"id": "s6", "hook": 'What shops know about you', "title": "What shops may know before you pay #shorts", "beats": [
-        r("p40", "Meet the machine. He'd like a word about your shopping."),
+        r("p40", "Meet the machine. He'd like a word about your shopping.", motion="static", draw={"at": 0.1, "dur": 2.8, "box": [0.1, 0.0, 0.9, 1.0]}),
         r("p43", "Location. Device. Browsing. Even your mouse movements and abandoned carts.", motion="static"),
         r("p44", "An FTC example: spot a new parent, offer a baby thermometer at a premium.", on_screen="FTC example"),
         r("p45", "The FTC said the findings were preliminary. But the toolbox exists."),
