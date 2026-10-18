@@ -149,6 +149,8 @@ def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
         src = beat_lookup[visual["beat"]]["visual"]
         if src["type"] in ("photo", "mugshot", "archive"):
             return [visual["beat"]]
+        if src["type"] == "clip" and not (src.get("prompts") or src.get("prompt")):
+            return [visual["beat"]]  # stock clip: its illustration fallback lives under the beat id
         n = len(src.get("prompts") or [src["prompt"]])
         idx = int(visual.get("index", 0)) % n
         return [visual["beat"] if idx == 0 else f"{visual['beat']}.{idx}"]
@@ -229,7 +231,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         lead_in = start - shot_start  # marks are timed from the narration start
 
         clip_file = None
-        if vtype == "clip" or visual.get("clip"):
+        if vtype == "clip" or visual.get("clip") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("_clip")):
             clip_file = _clip_path(beat, visual, beat_lookup)
         if clip_file is not None:
             cshot = ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0)))

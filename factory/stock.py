@@ -125,6 +125,15 @@ def credit_for(path: Path) -> str | None:
     return None
 
 
+def stock_offline(episode: dict) -> None:
+    """Offline builds: stock clips show their illustration fallback."""
+    for b in list(episode["beats"]) + [x for sh in episode.get("shorts") or [] for x in sh["beats"]]:
+        v = b["visual"]
+        if v.get("type") == "clip" and v.get("stock") and not v.get("file") and v.get("fallback_prompt"):
+            v.update({"type": "image", "prompt": v["fallback_prompt"]})
+        b["inserts"] = [i for i in b.get("inserts") or [] if not (i.get("stock_photo") and not i.get("file"))]
+
+
 def resolve_stock(episode: dict, log=print) -> None:
     try:
         _resolve_stock(episode, log)

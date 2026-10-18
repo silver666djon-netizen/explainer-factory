@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 *.wav
 assets/fonts/*.ttf
+assets/archive/

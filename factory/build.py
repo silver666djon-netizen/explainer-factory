@@ -48,9 +48,11 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     out.mkdir(parents=True, exist_ok=True)
     log(f"Episode: {episode['title']}  ({len(episode['beats'])} beats, {len(episode.get('shorts') or [])} shorts)")
 
+    from .stock import resolve_stock, stock_offline
     if not offline:
-        from .stock import resolve_stock
         resolve_stock(episode, log)
+    else:
+        stock_offline(episode)
     prompts = image_prompts(episode)
     thumb_spec = episode.get("thumbnail") or {}
     ep_dir0 = Path(episode_path) if Path(episode_path).is_dir() else Path(episode_path).parent
