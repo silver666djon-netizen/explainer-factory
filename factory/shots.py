@@ -294,7 +294,7 @@ class ImageShot(Shot):
                 box = ((bx[0] * nw - left) / self.BW, (bx[1] * nh - top) / self.BH,
                        (bx[2] * nw - left) / self.BW, (bx[3] * nh - top) / self.BH)
                 box = tuple(min(1.0, max(0.0, v)) for v in box)
-                mask = subject_mask(self.base, dcrop, box, self.draw.get("mode", "auto"))
+                mask = subject_mask(self.base, dcrop, box, self.draw.get("mode", "shape"))
             self._ld = LineDrawing(self.base, paper, mask)
             self.depth = None  # no parallax while a picture is being drawn
         if self.full:

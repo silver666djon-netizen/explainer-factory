@@ -86,6 +86,16 @@ def subject_mask(base: np.ndarray, depth: np.ndarray | None, box=(0.0, 0.0, 1.0,
         hi = sub[sub > t1]
         t2 = cv2.threshold(hi.reshape(-1, 1), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0] if hi.size > 50 else t1
         m[y0:y1, x0:x1] = sub > (t1 + t2) / 2
+        # the near layer often includes the counter/table the hero stands at; keep only the part that is
+        # bounded by the picture's own ink outlines (the character), not the flat furniture around it
+        gray = cv2.cvtColor(base, cv2.COLOR_RGB2GRAY)
+        ink = cv2.dilate((gray < 100).astype(np.uint8), np.ones((5, 5), np.uint8))
+        cs, _ = cv2.findContours(ink, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        shape = np.zeros_like(m)
+        cv2.drawContours(shape, cs, -1, 1, thickness=cv2.FILLED)
+        tight = m & shape
+        if tight.sum() > 0.35 * m.sum():
+            m = tight
     else:
         gray = cv2.cvtColor(base, cv2.COLOR_RGB2GRAY)
         ink = (gray < 100).astype(np.uint8)
@@ -146,9 +156,26 @@ class LineDrawing:
         u = np.clip((xx - bx0) / max(1.0, bx1 - bx0), 0, 1)
         v = np.clip((yy - by0) / max(1.0, by1 - by0), 0, 1)
         self.diag = (u * 0.6 + v * 0.4).astype(np.float32)  # colour sweep coordinate 0..1 over the subject
-        # empty state: the scene with a blank paper silhouette where the subject will be drawn
-        a = self.mask[..., None]
-        self.blank = (base * (1 - a) + self.paper * a).astype(np.uint8)
+        # empty state: the scene without the subject. The hole is filled with a smooth continuation of the
+        # surrounding background (large-scale blur sampled from the ring around the subject), so the hand draws
+        # in open space; flat 1950s-ad backgrounds make this read as "nothing there yet".
+        hole = (self.mask > 0.3).astype(np.uint8)
+        if hole.any() and hole.mean() < 0.98:
+            k = max(3, int(min(H, W) * 0.01)) | 1
+            hole_d = cv2.dilate(hole, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+            ring = cv2.dilate(hole_d, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k * 6 | 1, k * 6 | 1))) - hole_d
+            # one flat tone (the median colour of the ring around the subject): in this flat-colour ad style a
+            # clean patch reads as "nothing drawn here yet", while a blurred fill reads as a smudge
+            ringpx = base[ring > 0]
+            tone = np.median(ringpx, axis=0) if len(ringpx) else self.paper
+            # keep the paper grain so the patch is not a dead flat sticker
+            rng = np.random.default_rng(5)
+            grain = (cv2.GaussianBlur(rng.standard_normal((H, W)).astype(np.float32), (0, 0), 0.7) * 6)[..., None]
+            fill = tone[None, None, :] + grain
+            a = cv2.GaussianBlur(hole_d.astype(np.float32), (0, 0), k)[..., None]
+            self.blank = (base * (1 - a) + np.clip(fill, 0, 255) * a).astype(np.uint8)
+        else:
+            self.blank = np.full_like(base, 0) + self.paper.astype(np.uint8)
 
     def point(self, k: int) -> tuple[float, float]:
         if self.total == 0:

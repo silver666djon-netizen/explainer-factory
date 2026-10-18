@@ -44,5 +44,16 @@ no paid generation or Actions minute is spent twice on the same thing.
   the square window (not a macro vertical slice) — check that each one is readable on a phone.
 - Thumbnail A/B/C: text readable small, circle on the subject.
 
+## Hand-drawn beats (channel signature)
+- `"draw": {"on": "<word>", "box": [x0,y0,x1,y1]}` on an image beat: the newspaper hand pencils the subject's
+  outlines, then the colour hand fills it with marker strokes. Heroes, objects, details only — never scenery.
+- The subject must stand on a FLAT backdrop (plain cream / one flat tone): the picture behind it is removed
+  while it is drawn, and a busy background leaves a silhouette. So a draw beat gets its own prompt
+  "... on a plain cream background" (one generation, ~$0.07) or reuses a flat frame (icons, mice, portraits).
+  Never put "draw" on a street/room scene frame.
+- 3–4 draw beats per long video, 1 per Short; red-pencil hand marks: `"hand_marks": true` on the beat.
+- Archive inserts (photos, newspaper clippings, documents, film) in every episode: public domain / CC only
+  (Library of Congress, Prelinger/archive.org, NARA, Wikimedia Commons), credit lines go to the description.
+
 ## Logos / banners / other brand art
 Small batches (≤ 10) only after Klot picks a direction; finals are made once from the chosen draft.
