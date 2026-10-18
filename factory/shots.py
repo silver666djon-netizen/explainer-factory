@@ -80,6 +80,7 @@ def archival_print(img: Image.Image, cfg: dict, w: int, h: int, seed: int = 0, f
     x, y = (w - printed.width) // 2, (h - printed.height) // 2 + int(h * dy)
     canvas.paste(shadow, (x + border // 2, y + border), shadow)
     canvas.paste(printed, (x, y), printed)
+    canvas.info["bottom"] = y + printed.height
     # two strips of tape
     draw = ImageDraw.Draw(canvas, "RGBA")
     tw, th = int(w * 0.09), int(h * 0.035)

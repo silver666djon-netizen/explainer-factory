@@ -26,7 +26,7 @@ from .config import resolve_font
 from .text import font
 
 ARCHIVE_DIR = ROOT / "assets" / "archive"
-LAYOUT_VERSION = 3  # bump when the styling/trim code changes, so cached frames and clips are rebuilt
+LAYOUT_VERSION = 4  # bump when the styling/trim code changes, so cached frames and clips are rebuilt
 
 
 def _pal(cfg):
@@ -102,9 +102,9 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
 
 def print_photo(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: str | None) -> Image.Image:
     from .shots import archival_print
-    canvas = archival_print(img, cfg, w, h, seed, fit=0.56 if caption else 0.80, dy=-0.10 if caption else 0.0)
-    if caption:
-        _caption(canvas, caption, cfg, int(h * 0.64))
+    canvas = archival_print(img, cfg, w, h, seed, fit=0.58 if caption else 0.80, dy=-0.09 if caption else 0.0)
+    if caption:  # just under the print (never under its shadow), and always above the subtitle zone
+        _caption(canvas, caption, cfg, int(canvas.info.get("bottom", h * 0.72)) + int(h * 0.012))
     return canvas
 
 
@@ -122,7 +122,7 @@ def _caption(canvas: Image.Image, text: str, cfg: dict, y: int) -> None:
     d = ImageDraw.Draw(canvas)
     tw = d.textlength(text, font=fnt)
     x = (canvas.width - tw) / 2
-    yy = min(y + int(canvas.height * 0.012), int(canvas.height * 0.66))  # stays above the narration even at full zoom
+    yy = min(y + int(canvas.height * 0.008), int(canvas.height * 0.745))  # stays above the narration even at full zoom
     d.text((x, yy), text, font=fnt, fill=pal["ink"])
 
 
