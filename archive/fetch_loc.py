@@ -20,17 +20,40 @@ def walk(o, acc):
 
 def resolve_loc(url):
     j = get(url + ("&" if "?" in url else "?") + "fo=json")
-    acc = []; walk(j, acc)
-    best = None; score = -1
-    for u in acc:
+    acc = []
+    # only the item's own files (never the "related items" carousels)
+    for r in j.get("resources", []) or []:
+        for group in r.get("files", []) or []:
+            for f in group if isinstance(group, list) else [group]:
+                if isinstance(f, dict) and f.get("url"):
+                    acc.append((f["url"], int(f.get("width") or 0), f.get("mimetype") or ""))
+        if r.get("image"):
+            acc.append((r["image"], 1024, "image/jpeg"))
+    for u in (j.get("item", {}).get("image_url") or []):
         m = re.search(r"#h=(\d+)&w=(\d+)", u)
-        w = int(m.group(2)) if m else (640 if u.endswith("r.jpg") else 1024 if u.endswith("v.jpg") else 0)
-        if "pct:" in u:  # IIIF full-size newspaper page
-            w = 4000 if "pct:100" in u else (2000 if "pct:50" in u else 1000)
-        if u.endswith(".tif"): w = 0  # too big; jpg only
-        if w > score: best, score = u.split("#")[0], w
+        acc.append((u.split("#")[0], int(m.group(2)) if m else 0, "image/jpeg"))
+    best, score = None, -1
+    for u, w, mt in acc:
+        if not re.search(r"\.(jpg|jpeg)(\?|$)", u) and "default.jpg" not in u:
+            continue
+        if "pct:" in u:
+            w = max(w, 4000 if "pct:100" in u else 2000 if "pct:50" in u else 1200)
+        if w == 0:
+            w = 640 if u.endswith("r.jpg") else 1024 if u.endswith("v.jpg") else 100
+        if w > score:
+            best, score = u, w
     meta = j.get("item", {})
-    return best, {"title": meta.get("title"), "date": meta.get("date"), "rights": meta.get("rights_advisory") or meta.get("rights")}
+    return best, {"title": meta.get("title"), "date": meta.get("date"), "rights": str(meta.get("rights_advisory") or meta.get("rights") or "")[:120]}
+
+
+def get_retry(url, n=3):
+    for k in range(n):
+        try:
+            return get(url, binary=True)
+        except Exception as e:
+            if k == n - 1:
+                raise
+            time.sleep(3)
 
 items = json.load(open(sys.argv[1]))
 outdir = pathlib.Path("out/archive"); outdir.mkdir(parents=True, exist_ok=True)
@@ -41,7 +64,7 @@ for it in items:
         if "loc.gov/item/" in url or "loc.gov/resource/" in url:
             url, meta = resolve_loc(url)
             time.sleep(1)
-        data = get(url, binary=True)
+        data = get_retry(url)
         dst = outdir / it["name"]
         dst.write_bytes(data)
         ok = len(data) > 2000 and not data[:15].lower().startswith(b"<!doctype")
