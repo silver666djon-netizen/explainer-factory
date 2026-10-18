@@ -869,10 +869,10 @@
         "motion": "zoom_in",
         "caption": "Caille-Schiemer roulette slot machine, c. 1900",
         "crop": [
-          0.22,
-          0.12,
-          0.78,
-          0.78
+          0.3,
+          0.25,
+          0.72,
+          0.68
         ]
       }
     },
@@ -982,8 +982,8 @@
       "visual": {
         "type": "clip",
         "file": "clip_lv_homemovie_1950s.mp4",
-        "in": 666.0,
-        "out": 684.0,
+        "in": 738.0,
+        "out": 756.0,
         "newsreel": "Las Vegas Strip, 1950s — home movie",
         "credit": "Home movie 010112_001 (1950s Las Vegas), Prelinger Archives / Internet Archive (public domain)"
       }
@@ -1014,7 +1014,7 @@
             "y": 0.5,
             "w": 0.5,
             "h": 0.6,
-            "text": "MYTH — says the man who wrote the book",
+            "text": "MYTH",
             "text_y": 0.82,
             "on": "myth"
           }
