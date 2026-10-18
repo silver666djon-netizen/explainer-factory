@@ -117,8 +117,18 @@
       "text": "Because tonight, your phone is at three percent. You need a ride home.",
       "visual": {
         "type": "image",
-        "prompt": "{larry} standing alone under a street lamp at night in light rain, looking at the faint glow of his phone, mid shot",
-        "motion": "zoom_in"
+        "prompt": "{larry} standing alone, looking at the faint glow of his phone with a hopeful half-smile, mid shot, plain cream background, no scenery",
+        "motion": "static",
+        "draw": {
+          "on": "tonight",
+          "dur": 3.4,
+          "box": [
+            0.15,
+            0.0,
+            0.85,
+            1.0
+          ]
+        }
       }
     },
     {
@@ -288,6 +298,7 @@
         "type": "image",
         "prompt": "a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket",
         "motion": "zoom_out",
+        "hand_marks": true,
         "marks": [
           {
             "type": "circle",
@@ -681,6 +692,36 @@
       ]
     },
     {
+      "id": "s39c",
+      "section": "10:15 AM: Same basket",
+      "text": "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
+      "visual": {
+        "type": "archive",
+        "file": "np_lottery_1887.jpg",
+        "look": "clipping",
+        "credit": "The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "static",
+        "crop": [
+          0.045,
+          0.818,
+          0.232,
+          0.975
+        ],
+        "caption": "The Daily Yellowstone Journal, Miles City, 15 October 1887",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "underline",
+            "x": 0.52,
+            "y": 0.5,
+            "w": 0.27,
+            "on": "double"
+          }
+        ]
+      },
+      "say": "That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only."
+    },
+    {
       "id": "s3a",
       "section": "10:15 AM: Same basket",
       "text": "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
@@ -726,10 +767,12 @@
       "section": "10:15 AM: Same basket",
       "text": "Within two weeks of the report, Instacart ended the experiments. But the method is not Instacart's alone. And the tests were only the visible part.",
       "visual": {
-        "type": "reuse",
-        "beat": "s31",
-        "index": 0,
-        "motion": "static"
+        "type": "clip",
+        "file": "clip_supermarket_1950s.mp4",
+        "in": 96.0,
+        "out": 112.0,
+        "newsreel": "Supermarket film, 1960s",
+        "credit": "\"The Supermarket\" (Ezra Baker Films) — Prelinger Archives / Internet Archive (public domain)"
       }
     },
     {
@@ -746,16 +789,37 @@
       "section": "1:30 PM: The machine",
       "text": "To see why this matters, rewind a hundred and fifty years. For most of history, prices were personal. You walked into a shop, and you haggled.",
       "visual": {
-        "type": "image",
-        "prompt": "a busy nineteenth-century dry-goods shop counter with a shopkeeper and a customer bargaining over a bolt of cloth",
+        "type": "archive",
+        "file": "general_store_1936.jpg",
+        "look": "print",
+        "credit": "Walker Evans / Farm Security Administration, Library of Congress, Prints & Photographs Division (no known restrictions)",
         "motion": "zoom_in",
-        "newsreel": "Reconstruction"
+        "caption": "General store, Moundville, Alabama, 1936 — Walker Evans"
+      }
+    },
+    {
+      "id": "h41a",
+      "section": "1:30 PM: The machine",
+      "text": "Then shops like Wanamaker's in Philadelphia championed a radical idea.",
+      "visual": {
+        "type": "archive",
+        "file": "wanamaker_phila_1896.jpg",
+        "look": "print",
+        "credit": "Alfred S. Campbell stereograph, 1896, Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "crop": [
+          0.06,
+          0.1,
+          0.49,
+          0.9
+        ],
+        "caption": "Wanamaker's, Philadelphia, 1896"
       }
     },
     {
       "id": "h41",
       "section": "1:30 PM: The machine",
-      "text": "Then shops like Wanamaker's in Philadelphia championed a radical idea: one price, for everyone, written on a tag.",
+      "text": "One price, for everyone, written on a tag.",
       "visual": {
         "type": "image",
         "prompt": "a single old-fashioned paper price tag on a string hanging from a folded shirt in a grand 1870s department store",
@@ -801,7 +865,7 @@
         "type": "reuse",
         "beat": "h40",
         "index": 0,
-        "motion": "static"
+        "motion": "zoom_out"
       }
     },
     {
@@ -821,8 +885,18 @@
       "text": "So who sets these prices now? Meet the machine. We'll call him Mister Price.",
       "visual": {
         "type": "image",
-        "prompt": "{price} standing proudly behind a shop counter, arms open in welcome with white-gloved cartoon hands, full figure",
-        "motion": "zoom_in"
+        "prompt": "{price} standing proudly, arms open in welcome with white-gloved cartoon hands, full figure, plain cream background, no scenery",
+        "motion": "static",
+        "draw": {
+          "on": "Meet",
+          "dur": 3.4,
+          "box": [
+            0.1,
+            0.0,
+            0.9,
+            1.0
+          ]
+        }
       }
     },
     {
@@ -853,6 +927,36 @@
         }
       },
       "say": "In January twenty twenty-five, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices."
+    },
+    {
+      "id": "p42b",
+      "section": "1:30 PM: The machine",
+      "text": "Here's the document itself. Page six.",
+      "visual": {
+        "type": "archive",
+        "file": "ftc_surveillance_pricing_2025.pdf",
+        "look": "clipping",
+        "credit": "US Federal Trade Commission staff, Surveillance Pricing 6(b) study research summaries, Jan 2025 (US government work, public domain)",
+        "motion": "zoom_in",
+        "page": 6,
+        "crop": [
+          0.52,
+          0.06,
+          0.98,
+          0.52
+        ],
+        "caption": "FTC staff report, January 2025, p. 6",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "underline",
+            "x": 0.47,
+            "y": 0.15,
+            "w": 0.3,
+            "on": "six."
+          }
+        ]
+      }
     },
     {
       "id": "p43",
@@ -1003,7 +1107,18 @@
       "visual": {
         "type": "image",
         "prompt": "two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering",
-        "motion": "zoom_in"
+        "motion": "static",
+        "draw": {
+          "on": "Group",
+          "dur": 3.0,
+          "box": [
+            0.0,
+            0.35,
+            1.0,
+            1.0
+          ],
+          "mode": "shape"
+        }
       }
     },
     {
@@ -1162,7 +1277,8 @@
         "type": "reuse",
         "beat": "s37",
         "index": 0,
-        "motion": "zoom_in",
+        "motion": "static",
+        "hand_marks": true,
         "marks": [
           {
             "type": "circle",

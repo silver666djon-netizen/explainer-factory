@@ -33,6 +33,16 @@ def reuse(b, motion=None, index=0, **kw):
     return v
 
 
+def arch(file, look="print", credit="", motion="zoom_in", **kw):
+    v = {"type": "archive", "file": file, "look": look, "credit": credit, "motion": motion}
+    v.update(kw)
+    return v
+
+
+LOC = "Library of Congress, Prints & Photographs Division (no known restrictions)"
+PRELINGER = "Prelinger Archives / Internet Archive (public domain)"
+
+
 def kin(bg="paper"):
     return {"type": "kinetic", "kinetic": {"bg": bg}}
 
@@ -61,7 +71,8 @@ beat("c03", S, "So, before we go any further, charge your phone.",
      img("a cream retro-styled smartphone lying on a table and an oversized ordinary household two-prong wall plug, clearly bigger than the phone, being pushed against its tiny charging port — a comically wrong fit, the phone screen showing a red nearly-empty battery icon, close up", motion="zoom_in"), sfx="tick")
 beat("c04", S, "*Trust* me.", kin("ink"))
 beat("c05", S, "Because tonight, your phone is at three percent. You need a ride home.",
-     img("{larry} standing alone under a street lamp at night in light rain, looking at the faint glow of his phone, mid shot", motion="zoom_in"))
+     img("{larry} standing alone, looking at the faint glow of his phone with a hopeful half-smile, mid shot, plain cream background, no scenery", motion="static",
+         draw={"on": "tonight", "dur": 3.4, "box": [0.15, 0.0, 0.85, 1.0]}))
 beat("c06", S, "And somewhere, an algorithm might know exactly what that's worth.",
      img("a frosted glass office door with a brass handle; behind the glass, the soft grey blurred outline of a round-headed retro robot with a small bow tie, lit from behind by warm amber light, no face visible, film-noir mood", motion="zoom_in"))
 beat("c07", S, "The battery story? A rumour. What we found next isn't.",
@@ -93,7 +104,7 @@ beat("d14b", S, "Surge pricing itself is real, of course. When lots of people wa
      img("a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight", motion="pan_left"))
 beat("b15", S, "Verdict: *not* *proven.*", kin("red"), sfx="thud")
 beat("b16", S, "But notice what the rumour got right. Your phone knows things about you. Where you are. What you're doing. How badly you need it.",
-     img("a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket", motion="zoom_out",
+     img("a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket", motion="zoom_out", hand_marks=True,
          marks=[{"type": "circle", "x": 0.31, "y": 0.22, "w": 0.1, "h": 0.2, "on": "Where"},
                 {"type": "circle", "x": 0.49, "y": 0.13, "w": 0.09, "h": 0.19, "on": "doing."},
                 {"type": "circle", "x": 0.67, "y": 0.23, "w": 0.1, "h": 0.2, "on": "badly"}]))
@@ -158,6 +169,11 @@ beat("s38", S, "And every single one of them paid the same sale price: three nin
 beat("s39", S, "Same price. Different *feeling.*", kin("paper"))
 beat("s39b", S, "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
      reuse("s37", motion="static"), punch=["anchoring."])
+beat("s39c", S, "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
+     arch("np_lottery_1887.jpg", look="clipping", credit="The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, " + LOC,
+          crop=[0.045, 0.818, 0.232, 0.975], caption="The Daily Yellowstone Journal, Miles City, 15 October 1887", motion="static", hand_marks=True,
+          marks=[{"type": "underline", "x": 0.52, "y": 0.5, "w": 0.27, "on": "double"}]),
+     say="That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only.")
 beat("s3a", S, "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
      img("a tidy corporate press statement on letterhead lying on a polished desk beside a fountain pen", motion="zoom_in",
          marks=[{"type": "underline", "x": 0.5, "y": 0.55, "w": 0.4, "text": "negligible?", "text_y": 0.7, "on": "negligible"}]))
@@ -165,22 +181,26 @@ beat("s3b", S, "Negligible, by Consumer Reports' estimate, could add up to about
      reuse("s30", index=1, motion="zoom_in"),
      counter={"from": 0, "to": 1200, "prefix": "$", "decimals": 0, "label": "a year · family of four (CR estimate)", "on": "twelve", "dur": 1.6})
 beat("s3c", S, "Within two weeks of the report, Instacart ended the experiments. But the method is not Instacart's alone. And the tests were only the visible part.",
-     reuse("s31", motion="static"))
+     {"type": "clip", "file": "clip_supermarket_1950s.mp4", "in": 96.0, "out": 112.0, "newsreel": "Supermarket film, 1960s",
+      "credit": "\"The Supermarket\" (Ezra Baker Films) — " + PRELINGER})
 
 # ------------------------------------------------------------------ 1:30 PM
 S = "1:30 PM: The machine"
 beat("t04", S, "One thirty p.m.", title("1:30 PM — The machine"))
 beat("h40", S, "To see why this matters, rewind a hundred and fifty years. For most of history, prices were personal. You walked into a shop, and you haggled.",
-     img("a busy nineteenth-century dry-goods shop counter with a shopkeeper and a customer bargaining over a bolt of cloth", motion="zoom_in", newsreel="Reconstruction"))
-beat("h41", S, "Then shops like Wanamaker's in Philadelphia championed a radical idea: one price, for everyone, written on a tag.",
+     arch("general_store_1936.jpg", credit="Walker Evans / Farm Security Administration, " + LOC, caption="General store, Moundville, Alabama, 1936 — Walker Evans", motion="zoom_in"))
+beat("h41a", S, "Then shops like Wanamaker's in Philadelphia championed a radical idea.",
+     arch("wanamaker_phila_1896.jpg", credit="Alfred S. Campbell stereograph, 1896, " + LOC, crop=[0.06, 0.1, 0.49, 0.9], caption="Wanamaker's, Philadelphia, 1896", motion="zoom_in"))
+beat("h41", S, "One price, for everyone, written on a tag.",
      img("a single old-fashioned paper price tag on a string hanging from a folded shirt in a grand 1870s department store", motion="zoom_in",
          ad={"badge": "NEW!", "badge_x": 0.82, "badge_y": 0.2, "slogan": "One price. For everyone. Imagine that.", "slogan_y": 0.86}))
 beat("h42", S, "The price tag was a promise. The rich man and the poor widow paid the same.",
      reuse("h41", motion="static", marks=[{"type": "circle", "x": 0.6, "y": 0.6, "w": 0.18, "h": 0.3, "text": "one price", "text_x": 0.8, "text_y": 0.5, "on": "same"}]))
-beat("h43", S, "Personalised pricing quietly brings the haggling back.", reuse("h40", motion="static"))
+beat("h43", S, "Personalised pricing quietly brings the haggling back.", reuse("h40", motion="zoom_out"))
 beat("h43b", S, "Except only *one* side knows the haggling is happening.", kin("paper"))
 beat("p40", S, "So who sets these prices now? Meet the machine. We'll call him Mister Price.",
-     img("{price} standing proudly behind a shop counter, arms open in welcome with white-gloved cartoon hands, full figure", motion="zoom_in"))
+     img("{price} standing proudly, arms open in welcome with white-gloved cartoon hands, full figure, plain cream background, no scenery", motion="static",
+         draw={"on": "Meet", "dur": 3.4, "box": [0.1, 0.0, 0.9, 1.0]}))
 beat("p41", S, "Good afternoon! Shopping on a phone, I see. Sorting by price, low to high. Lovely.",
      img("{price} leaning over a shop counter with a big friendly grin, white-gloved cartoon hands resting on the counter, comic panel close-up", style="comic", motion="static"), voice="price")
 beat("p42", S, "In January 2025, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices.",
@@ -188,6 +208,11 @@ beat("p42", S, "In January 2025, staff at the US Federal Trade Commission publis
          "Intermediary firms said they could use details such as location, device, browsing, mouse movements and items left in a cart to tailor prices for individual shoppers. The staff called the findings preliminary.",
          highlight="tailor prices for individual shoppers", at=6.0, seed=51),
      say="In January twenty twenty-five, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices.")
+beat("p42b", S, "Here's the document itself. Page six.",
+     arch("ftc_surveillance_pricing_2025.pdf", look="clipping", page=6, crop=[0.52, 0.06, 0.98, 0.52],
+          credit="US Federal Trade Commission staff, Surveillance Pricing 6(b) study research summaries, Jan 2025 (US government work, public domain)",
+          caption="FTC staff report, January 2025, p. 6", motion="zoom_in", hand_marks=True,
+          marks=[{"type": "underline", "x": 0.47, "y": 0.15, "w": 0.3, "on": "six."}]))
 beat("p43", S, "The ingredients on the table: where you are, what device you use, what you browse, even how you move your mouse, and what you leave in your cart.",
      img("{price} examining a shopper's silhouette with a big brass magnifying glass held in one white-gloved cartoon hand, small floating labels around it", motion="static"),
      on_screen="Location · Device · Cart")
@@ -219,7 +244,8 @@ beat("w60", S, "Larry thought the machine had picked on him. That it knew about 
      img("{larry} at his kitchen table frowning at his phone, a red marker question mark drawn on the wall behind him", motion="zoom_in"))
 beat("w61", S, "It didn't need to.", kin("ink"))
 beat("w61b", S, "A test doesn't need to know who you are. It just needs enough people. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
-     img("two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering", motion="zoom_in"))
+     img("two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering", motion="static",
+         draw={"on": "Group", "dur": 3.0, "box": [0.0, 0.35, 1.0, 1.0], "mode": "shape"}))
 beat("w62", S, "It tested everyone. At random. Like mice running through a supermarket.",
      img("dozens of little white cartoon mice each pushing a tiny shopping cart down a long supermarket aisle", motion="zoom_in"), sfx="whoosh",
      bubble={"text": "Is this the cheese aisle?", "x": 0.74, "y": 0.22, "tail": "left", "at": 1.6})
@@ -246,7 +272,7 @@ beat("v75", S, "Larry's phone is now at a hundred percent. He's still checking t
      img("{larry} at home holding his fully charged phone at arm's length and squinting at it suspiciously, mid shot", motion="zoom_in"),
      bubble={"text": "Twice.", "x": 0.75, "y": 0.22, "tail": "left", "at": 2.4})
 beat("v76", S, "And that 'was' price on the crackers? It deserves a case file of its own.",
-     reuse("s37", motion="zoom_in", marks=[{"type": "circle", "x": 0.48, "y": 0.5, "w": 0.44, "h": 0.6, "text": "next case", "text_y": 0.74, "on": "own"}]))
+     reuse("s37", motion="static", hand_marks=True, marks=[{"type": "circle", "x": 0.48, "y": 0.5, "w": 0.44, "h": 0.6, "text": "next case", "text_y": 0.74, "on": "own"}]))
 beat("k2", S, "Larry's learning. You don't have to learn the hard way. Your next case is right here on screen.",
      reuse("v75", motion="static"), cta={"on": "next", "click_on": "screen"})
 beat("k3", S, "Case file zero zero three.", hold=14,

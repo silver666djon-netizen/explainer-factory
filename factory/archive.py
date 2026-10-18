@@ -79,7 +79,7 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
     gray = ImageOps.autocontrast(img.convert("L"), cutoff=0.5)
     gray = gray.filter(ImageFilter.UnsharpMask(radius=1.5, percent=60))
     aged = ImageOps.colorize(gray, black=(40, 36, 30), white=(241, 232, 206))
-    max_w, max_h = int(w * 0.80), int(h * 0.82)
+    max_w, max_h = int(w * 0.80), int(h * (0.72 if caption else 0.82))
     scale = min(max_w / aged.width, max_h / aged.height)
     aged = aged.resize((max(1, int(aged.width * scale)), max(1, int(aged.height * scale))), Image.LANCZOS)
     pad = max(8, int(min(w, h) * 0.012))
@@ -91,7 +91,7 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
     shadow = Image.new("RGBA", piece.size, (0, 0, 0, 0))
     shadow.paste((0, 0, 0, 80), mask=piece.split()[3])
     shadow = shadow.filter(ImageFilter.GaussianBlur(pad))
-    x, y = (w - piece.width) // 2, (h - piece.height) // 2 - int(h * 0.02)
+    x, y = (w - piece.width) // 2, (h - piece.height) // 2 - int(h * (0.05 if caption else 0.02))
     canvas.paste(shadow, (x + pad // 2, y + pad), shadow)
     canvas.paste(piece, (x, y), piece)
     if caption:
@@ -101,9 +101,9 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
 
 def print_photo(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: str | None) -> Image.Image:
     from .shots import archival_print
-    canvas = archival_print(img, cfg, w, h, seed)
+    canvas = archival_print(img, cfg, w, h, seed, fit=0.72 if caption else 0.80, dy=-0.04 if caption else 0.0)
     if caption:
-        _caption(canvas, caption, cfg, int(h * 0.90))
+        _caption(canvas, caption, cfg, int(h * 0.86))
     return canvas
 
 

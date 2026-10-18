@@ -57,7 +57,7 @@ def add_grain(arr: np.ndarray, strength: float, seed: int = 3) -> np.ndarray:
     return np.clip(arr.astype(np.int16) + g, 0, 255).astype(np.uint8)
 
 
-def archival_print(img: Image.Image, cfg: dict, w: int, h: int, seed: int = 0) -> Image.Image:
+def archival_print(img: Image.Image, cfg: dict, w: int, h: int, seed: int = 0, fit: float = 0.80, dy: float = 0.0) -> Image.Image:
     """Real archive photo -> warm halftone print with a white border, laid on paper, slightly rotated."""
     pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
     gray = ImageOps.autocontrast(img.convert("L"), cutoff=1)
@@ -65,7 +65,7 @@ def archival_print(img: Image.Image, cfg: dict, w: int, h: int, seed: int = 0) -
     gray = gray.filter(ImageFilter.UnsharpMask(radius=2, percent=80))
     tinted = ImageOps.colorize(gray, black=pal["ink"], white=tuple(min(255, c + 8) for c in pal["paper"]))
     # fit inside the canvas with a border
-    max_w, max_h = int(w * 0.78), int(h * 0.80)
+    max_w, max_h = int(w * 0.78), int(h * fit)
     scale = min(max_w / tinted.width, max_h / tinted.height)
     tinted = tinted.resize((max(1, int(tinted.width * scale)), max(1, int(tinted.height * scale))), Image.LANCZOS)
     border = max(12, int(min(w, h) * 0.018))
@@ -77,7 +77,7 @@ def archival_print(img: Image.Image, cfg: dict, w: int, h: int, seed: int = 0) -
     shadow = Image.new("RGBA", printed.size, (0, 0, 0, 0))
     shadow.paste((0, 0, 0, 90), mask=printed.split()[3])
     shadow = shadow.filter(ImageFilter.GaussianBlur(border))
-    x, y = (w - printed.width) // 2, (h - printed.height) // 2
+    x, y = (w - printed.width) // 2, (h - printed.height) // 2 + int(h * dy)
     canvas.paste(shadow, (x + border // 2, y + border), shadow)
     canvas.paste(printed, (x, y), printed)
     # two strips of tape

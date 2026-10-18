@@ -75,7 +75,7 @@ def _check_visual(where: str, visual: dict, errors: list[str]) -> None:
     elif vtype == "casefile":
         if (visual.get("casefile") or {}).get("mode") not in ("open", "closed"):
             errors.append(f"{where}: casefile.mode must be 'open' or 'closed'")
-    if visual.get("newsreel") and vtype not in ("image", "reuse", "photo"):
+    if visual.get("newsreel") and vtype not in ("image", "reuse", "photo", "archive", "clip"):
         errors.append(f"{where}: newsreel only works on image, reuse or photo visuals")
     if visual.get("style") is not None and visual["style"] not in STYLES:
         errors.append(f"{where}: style must be one of {sorted(STYLES)}")
@@ -85,7 +85,7 @@ def _check_visual(where: str, visual: dict, errors: list[str]) -> None:
         for key in ("x", "y", "w", "h", "from_x", "from_y", "text_x", "text_y"):
             if key in mark and not (isinstance(mark[key], (int, float)) and -0.2 <= mark[key] <= 1.2):
                 errors.append(f"{where}: mark.{key} must be a number around 0..1")
-    if visual.get("marks") and vtype not in ("image", "reuse", "photo"):
+    if visual.get("marks") and vtype not in ("image", "reuse", "photo", "archive"):
         errors.append(f"{where}: marks only work on image, reuse or photo visuals")
 
 
