@@ -55,7 +55,7 @@ beat("c01", S, "In 2016, Uber's own head of economic research said something on 
                   "a cream retro-styled smartphone standing upright in the centre, its screen filled by a large horizontal battery outline with only a thin red sliver of charge at the left end, a small paper taxi fare tag with a bold red upward arrow leaning against the phone, plain dark green background"], motion="zoom_in"),
      say="In twenty sixteen, Uber's own head of economic research said something on a podcast that he may have come to regret.")
 beat("c02", S, "People whose phone is about to die, he said, are more likely to accept a higher surge price.",
-     reuse("c01", index=1, motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.36, "h": 0.5, "text": "3%", "text_y": 0.7, "on": "die"}]),
+     reuse("c01", index=1, motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.27, "h": 0.28, "text": "3%", "text_x": 0.5, "text_y": 0.64, "on": "die"}]),
      on_screen="Low battery = higher price?")
 beat("c03", S, "So, before we go any further, charge your phone.",
      img("a cream retro-styled smartphone lying on a table and an oversized ordinary household two-prong wall plug, clearly bigger than the phone, being pushed against its tiny charging port — a comically wrong fit, the phone screen showing a red nearly-empty battery icon, close up", motion="zoom_in"), sfx="tick")

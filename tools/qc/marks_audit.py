@@ -15,7 +15,11 @@ ep = load_episode(ep_dir); cfg = load_config(ep.get("config"))
 lookup = {b["id"]: b for b in ep["beats"]}
 files = {os.path.basename(f).rsplit("-", 1)[0]: f for f in glob.glob(f"{fr_dir}/*.png") if "depth" not in f}
 items = []
-for b in ep["beats"] + [x for sh in ep.get("shorts") or [] for x in sh["beats"]]:
+pool = [x for sh in ep.get("shorts") or [] for x in sh["beats"]] if "shorts" in only else ep["beats"] + [x for sh in ep.get("shorts") or [] for x in sh["beats"]]
+if "shorts" in only:
+    only = set()
+for b in pool:
+    b.setdefault("id", "short")
     v = b["visual"]
     if v["type"] not in ("image", "reuse") or not (v.get("marks") or b.get("bubble")):
         continue
