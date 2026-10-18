@@ -16,7 +16,7 @@
   "characters": {
     "larry": "a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red fedora",
     "linda": "a sharp, practical woman in her forties with a neat dark bob and cat-eye glasses, wearing a mint-green 1950s shirt dress",
-    "price": "a friendly retro 1950s department-store robot salesman with a polished round chrome head, a smiling speaker-grille mouth, a red bow tie and a small price-tag badge on its chest"
+    "price": "a friendly retro 1950s department-store robot salesman with a polished round chrome head, a smiling speaker-grille mouth, a red bow tie, a small price-tag badge on its chest, and simple hands in white four-fingered cartoon gloves like a 1950s advertising mascot"
   },
   "voices": {
     "price": {
@@ -94,7 +94,7 @@
       "text": "So, before we go any further, charge your phone.",
       "visual": {
         "type": "image",
-        "prompt": "a cream retro-styled smartphone lying flat on a wooden table, a coiled green charging cable plugged into the port on its short bottom edge, the screen showing one large red nearly-empty battery icon, close up",
+        "prompt": "a cream retro-styled smartphone lying on a table and an oversized ordinary household two-prong wall plug, clearly bigger than the phone, being pushed against its tiny charging port — a comically wrong fit, the phone screen showing a red nearly-empty battery icon, close up",
         "motion": "zoom_in"
       },
       "sfx": "tick"
@@ -764,7 +764,7 @@
       "text": "So who sets these prices now? Meet the machine. We'll call him Mister Price.",
       "visual": {
         "type": "image",
-        "prompt": "{price} standing proudly behind a shop counter, arms open in welcome, full figure",
+        "prompt": "{price} standing proudly behind a shop counter, arms open in welcome with white-gloved cartoon hands, full figure",
         "motion": "zoom_in"
       }
     },
@@ -774,7 +774,7 @@
       "text": "Good afternoon! Shopping on a phone, I see. Sorting by price, low to high. Lovely.",
       "visual": {
         "type": "image",
-        "prompt": "{price} leaning over a shop counter with a big friendly grin, comic panel close-up",
+        "prompt": "{price} leaning over a shop counter with a big friendly grin, white-gloved cartoon hands resting on the counter, comic panel close-up",
         "motion": "static",
         "style": "comic"
       },
@@ -803,7 +803,7 @@
       "text": "The ingredients on the table: where you are, what device you use, what you browse, even how you move your mouse, and what you leave in your cart.",
       "visual": {
         "type": "image",
-        "prompt": "{price} examining a shopper's silhouette with a big brass magnifying glass, small floating labels around it",
+        "prompt": "{price} examining a shopper's silhouette with a big brass magnifying glass held in one white-gloved cartoon hand, small floating labels around it",
         "motion": "static"
       },
       "on_screen": "Location · Device · Cart"

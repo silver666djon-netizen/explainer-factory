@@ -58,7 +58,7 @@ beat("c02", S, "People whose phone is about to die, he said, are more likely to 
      reuse("c01", index=1, motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.36, "h": 0.5, "text": "3%", "text_y": 0.7, "on": "die"}]),
      on_screen="Low battery = higher price?")
 beat("c03", S, "So, before we go any further, charge your phone.",
-     img("a cream retro-styled smartphone lying flat on a wooden table, a coiled green charging cable plugged into the port on its short bottom edge, the screen showing one large red nearly-empty battery icon, close up", motion="zoom_in"), sfx="tick")
+     img("a cream retro-styled smartphone lying on a table and an oversized ordinary household two-prong wall plug, clearly bigger than the phone, being pushed against its tiny charging port — a comically wrong fit, the phone screen showing a red nearly-empty battery icon, close up", motion="zoom_in"), sfx="tick")
 beat("c04", S, "*Trust* me.", kin("ink"))
 beat("c05", S, "Because tonight, your phone is at three percent. You need a ride home.",
      img("{larry} standing alone under a street lamp at night in light rain, looking at the faint glow of his phone, mid shot", motion="zoom_in"))
@@ -176,16 +176,16 @@ beat("h42", S, "The price tag was a promise. The rich man and the poor widow pai
 beat("h43", S, "Personalised pricing quietly brings the haggling back. Except only one side knows the haggling is happening.",
      kin("paper"), punch=["one"])
 beat("p40", S, "So who sets these prices now? Meet the machine. We'll call him Mister Price.",
-     img("{price} standing proudly behind a shop counter, arms open in welcome, full figure", motion="zoom_in"))
+     img("{price} standing proudly behind a shop counter, arms open in welcome with white-gloved cartoon hands, full figure", motion="zoom_in"))
 beat("p41", S, "Good afternoon! Shopping on a phone, I see. Sorting by price, low to high. Lovely.",
-     img("{price} leaning over a shop counter with a big friendly grin, comic panel close-up", style="comic", motion="static"), voice="price")
+     img("{price} leaning over a shop counter with a big friendly grin, white-gloved cartoon hands resting on the counter, comic panel close-up", style="comic", motion="static"), voice="price")
 beat("p42", S, "In January 2025, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices.",
      doc("Summary · US Federal Trade Commission · Jan 2025", "Surveillance pricing: initial findings",
          "Intermediary firms said they could use details such as location, device, browsing, mouse movements and items left in a cart to tailor prices for individual shoppers. The staff called the findings preliminary.",
          highlight="tailor prices for individual shoppers", at=6.0, seed=51),
      say="In January twenty twenty-five, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices.")
 beat("p43", S, "The ingredients on the table: where you are, what device you use, what you browse, even how you move your mouse, and what you leave in your cart.",
-     img("{price} examining a shopper's silhouette with a big brass magnifying glass, small floating labels around it", motion="static"),
+     img("{price} examining a shopper's silhouette with a big brass magnifying glass held in one white-gloved cartoon hand, small floating labels around it", motion="static"),
      on_screen="Location · Device · Cart")
 beat("p44", S, "One illustration in the report: a seller spots a new parent from baby purchases and recent searches, and offers a fast-delivery baby thermometer at a premium.",
      img("a white baby thermometer in a gift box with a red price tag growing larger beside it, soft nursery colours", motion="zoom_in"),
@@ -340,7 +340,7 @@ ep = {
     "characters": {
         "larry": "a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red fedora",
         "linda": "a sharp, practical woman in her forties with a neat dark bob and cat-eye glasses, wearing a mint-green 1950s shirt dress",
-        "price": "a friendly retro 1950s department-store robot salesman with a polished round chrome head, a smiling speaker-grille mouth, a red bow tie and a small price-tag badge on its chest",
+        "price": "a friendly retro 1950s department-store robot salesman with a polished round chrome head, a smiling speaker-grille mouth, a red bow tie, a small price-tag badge on its chest, and simple hands in white four-fingered cartoon gloves like a 1950s advertising mascot",
     },
     "voices": {"price": {"lang_code": "a", "voice": "am_puck", "speed": 0.98}},
     "music": {"_default": "ub_comic_detective", "_shorts": "ub_jump_around",
