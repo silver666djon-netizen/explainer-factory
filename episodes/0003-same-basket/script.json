@@ -329,6 +329,7 @@
       "inserts": [
         {
           "stock_photo": "smartphone low battery",
+          "pick": 3255267,
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -598,6 +599,7 @@
       "inserts": [
         {
           "stock_photo": "shopping app smartphone store",
+          "pick": 1921658,
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -1352,6 +1354,7 @@
       "inserts": [
         {
           "stock_photo": "dice random",
+          "pick": 7634718,
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -1573,18 +1576,7 @@
             "on": "off"
           }
         ]
-      },
-      "inserts": [
-        {
-          "stock_photo": "smartphone settings location",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.28,
-          "on": "location"
-        }
-      ]
+      }
     },
     {
       "id": "v74b",

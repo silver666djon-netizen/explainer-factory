@@ -381,14 +381,14 @@ INS = {
     # 11:47
     "b11": [{"stock_photo": "taxi rain night", "pick": 10435616, "kind": "photo", "from": "right", "x": 0.8, "y": 0.4, "w": 0.3, "on": "fare"}],
     "d13": [{"stock_photo": "radio microphone vintage", "pick": 2627991, "kind": "photo", "from": "right", "x": 0.82, "y": 0.5, "w": 0.28, "on": "podcast" , "at": 0.3}],
-    "d14": [{"stock_photo": "smartphone low battery", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "battery"}],
+    "d14": [{"stock_photo": "smartphone low battery", "pick": 3255267, "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "battery"}],
     "d14b": [{"stock_photo": "people umbrellas rain street", "pick": 3867745, "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "lots"}],
     "b16": [{"stock_photo": "smartphone gps map navigation", "pick": 2198559, "kind": "photo", "from": "right", "x": 0.84, "y": 0.42, "w": 0.26, "on": "Where", "dur": 2.4}],
     # 8:02
     "a20": [{"stock_photo": "television news camera", "pick": 2808321, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "KARE"}],
     "a21": [{"stock_photo": "television electronics store", "pick": 627876, "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.28, "on": "Samsung"}],
     "a22": [{"stock_photo": "supermarket parking lot", "pick": 4054031, "kind": "photo", "from": "bottom", "x": 0.24, "y": 0.62, "w": 0.3, "on": "parking"}],
-    "a25": [{"stock_photo": "shopping app smartphone store", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "lesson"}],
+    "a25": [{"stock_photo": "shopping app smartphone store", "pick": 1921658, "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "lesson"}],
     # 10:15
     "s30": [{"stock_photo": "online grocery shopping phone", "pick": 6974508, "kind": "photo", "from": "right", "x": 0.84, "y": 0.4, "w": 0.26, "on": "delivery"}],
     "s32": [{"file": "supermarket_1957_a.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.45, "w": 0.3, "on": "volunteers", "caption": "Shopping in a supermarket, 1957"}],
@@ -407,8 +407,7 @@ INS = {
     "v72": [{"stock_photo": "comparing prices phone store", "pick": 410324, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "website"}],
     "v74b": [{"file": "grocery_prices_savannah_1939.jpg", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.3, "on": "fact.", "caption": "Prices posted outside a grocery, Savannah, 1939"}],
     "d50": [{"file": "grocery_salem_1940.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "change", "caption": "Grocery store, Salem, Illinois, 1940"}],
-    "d52": [{"stock_photo": "dice random", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.26, "on": "random"}],
-    "v73": [{"stock_photo": "smartphone settings location", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "location"}],
+    "d52": [{"stock_photo": "dice random", "pick": 7634718, "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.26, "on": "random"}],
     "v75": [{"file": "general_store_1936.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "checking", "caption": "Moundville, 1936"}],
 }
 for b in B:
