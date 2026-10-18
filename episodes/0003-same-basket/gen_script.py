@@ -75,7 +75,7 @@ S = "11:47 PM: 3% battery"
 beat("t01", S, "Eleven forty-seven p.m.", title("11:47 PM — 3% battery"))
 beat("b10", S, "Larry is back from Vegas. Broke, tired, and down to three percent.",
      img("{larry} slumped on a bus-stop bench at night holding his phone, an empty wallet on his knee", motion="zoom_in"),
-     bubble={"text": "3%… and falling.", "x": 0.76, "y": 0.22, "tail": "left", "at": 1.8})
+     bubble={"text": "3%… and falling.", "x": 0.83, "y": 0.2, "tail": "left", "at": 1.8})
 beat("b11", S, "He opens the ride app. The fare looks high. Is it the rain? The hour? Or the battery?",
      img("a retro-styled taxi ordering screen glowing on a phone, a yellow 1950s taxi cab waiting in the rain behind it", motion="zoom_in"),
      punch=["battery?"])
@@ -114,7 +114,7 @@ beat("a22", S, "Then the reporter drove to the store. In the parking lot, the sa
      counter={"from": 499.99, "to": 599.99, "prefix": "$", "decimals": 2, "label": "same TV · same app", "on": "said", "dur": 1.4},
      say="Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine.")
 beat("a23", S, "The app had quietly switched to the in-store price the moment the phone arrived near the store.",
-     img("a cream retro-styled smartphone with a red map pin hovering above its screen, standing on a car dashboard", motion="zoom_out",
+     img("a cream retro-styled smartphone with a red map pin hovering above its screen, standing on a car dashboard", motion="static",
          marks=[{"type": "circle", "x": 0.47, "y": 0.2, "w": 0.15, "h": 0.3, "on": "quietly"}]))
 beat("a24", S, "A hundred dollars, for driving to the store.", kin("paper"), punch=["hundred"])
 beat("a25", S, "After the report, Target said changes were coming to the app. But the lesson stuck: the price on your screen can depend on where your screen is.",
@@ -239,7 +239,7 @@ beat("v72", S, "Before you pay, check the price somewhere else: another phone, l
      img(prompts=["two cream retro-styled smartphones side by side on a table showing the same plain shopping screen",
                   "a laptop on a kitchen table next to a phone, both showing a plain shop page"], motion="zoom_in"))
 beat("v73", S, "Switch off location for shopping apps when you don't need it.",
-     reuse("a23", motion="zoom_out", marks=[{"type": "cross", "x": 0.47, "y": 0.2, "w": 0.13, "h": 0.26, "on": "off"}]))
+     reuse("a23", motion="static", marks=[{"type": "cross", "x": 0.47, "y": 0.2, "w": 0.13, "h": 0.26, "on": "off"}]))
 beat("v74b", S, "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
      reuse("h41", motion="zoom_out", marks=[{"type": "circle", "x": 0.6, "y": 0.6, "w": 0.18, "h": 0.3, "on": "guess."}]))
 beat("v75", S, "Larry's phone is now at a hundred percent. He's still checking the price.",

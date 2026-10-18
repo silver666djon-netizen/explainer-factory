@@ -195,8 +195,8 @@
       },
       "bubble": {
         "text": "3%… and falling.",
-        "x": 0.76,
-        "y": 0.22,
+        "x": 0.83,
+        "y": 0.2,
         "tail": "left",
         "at": 1.8
       }
@@ -398,7 +398,7 @@
       "visual": {
         "type": "image",
         "prompt": "a cream retro-styled smartphone with a red map pin hovering above its screen, standing on a car dashboard",
-        "motion": "zoom_out",
+        "motion": "static",
         "marks": [
           {
             "type": "circle",
@@ -1103,7 +1103,7 @@
         "type": "reuse",
         "beat": "a23",
         "index": 0,
-        "motion": "zoom_out",
+        "motion": "static",
         "marks": [
           {
             "type": "cross",
