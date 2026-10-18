@@ -1,0 +1,28 @@
+name: Stock scout
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        description: "episode folder, e.g. 0003-same-basket"
+        required: true
+permissions:
+  contents: write
+jobs:
+  scout:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -q requests pillow pyyaml numpy
+      - name: Scout
+        env:
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        run: python -m factory.stock_scout "episodes/${{ github.event.inputs.episode }}"
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view stock-scout >/dev/null 2>&1 || gh release create stock-scout --title "Stock scout" --notes "Candidate sheets"
+          gh release upload stock-scout out/stock_scout/* --clobber

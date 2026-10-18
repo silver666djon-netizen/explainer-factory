@@ -33,16 +33,17 @@ def _download(url: str, dst: Path) -> None:
                 fh.write(chunk)
 
 
-def stock_video(query: str, orientation: str = "landscape", min_dur: float = 4.0, log=print) -> Path | None:
-    dst = ARCHIVE_DIR / _name("v", query, ".mp4")
+def stock_video(query: str, orientation: str = "landscape", min_dur: float = 4.0, log=print, pick=None) -> Path | None:
+    dst = ARCHIVE_DIR / _name("v", f"{query}#{pick}" if pick else query, ".mp4")
     if dst.exists():
         return dst
     key = os.environ.get("PIXABAY_API_KEY")
     if key:
-        r = requests.get("https://pixabay.com/api/videos/", params={"key": key, "q": query, "per_page": 20, "safesearch": "true"}, timeout=60)
+        params = {"key": key, "id": pick} if pick else {"key": key, "q": query, "per_page": 20, "safesearch": "true"}
+        r = requests.get("https://pixabay.com/api/videos/", params=params, timeout=60)
         r.raise_for_status()
-        hits = [h for h in r.json().get("hits", []) if h.get("duration", 0) >= min_dur]
-        if orientation == "landscape":
+        hits = [h for h in r.json().get("hits", []) if pick or h.get("duration", 0) >= min_dur]
+        if orientation == "landscape" and not pick:
             hits = [h for h in hits if h["videos"]["medium"]["width"] >= h["videos"]["medium"]["height"]] or hits
         if hits:
             h = sorted(hits, key=lambda x: -x.get("views", 0))[0]
@@ -71,15 +72,16 @@ def stock_video(query: str, orientation: str = "landscape", min_dur: float = 4.0
     return None
 
 
-def stock_photo(query: str, orientation: str = "landscape", log=print) -> Path | None:
-    dst = ARCHIVE_DIR / _name("p", query, ".jpg")
+def stock_photo(query: str, orientation: str = "landscape", log=print, pick=None) -> Path | None:
+    dst = ARCHIVE_DIR / _name("p", f"{query}#{pick}" if pick else query, ".jpg")
     if dst.exists():
         return dst
     key = os.environ.get("PIXABAY_API_KEY")
     if key:
-        r = requests.get("https://pixabay.com/api/", params={"key": key, "q": query, "per_page": 20, "image_type": "photo",
-                                                            "orientation": "horizontal" if orientation == "landscape" else "vertical",
-                                                            "safesearch": "true"}, timeout=60)
+        params = {"key": key, "id": pick} if pick else {"key": key, "q": query, "per_page": 20, "image_type": "photo",
+                                                        "orientation": "horizontal" if orientation == "landscape" else "vertical",
+                                                        "safesearch": "true"}
+        r = requests.get("https://pixabay.com/api/", params=params, timeout=60)
         r.raise_for_status()
         hits = r.json().get("hits", [])
         if hits:
@@ -121,14 +123,14 @@ def resolve_stock(episode: dict, log=print) -> None:
         v = beat["visual"]
         for ins in list(beat.get("inserts") or []):
             if ins.get("stock_photo") and not ins.get("file"):
-                p = stock_photo(ins["stock_photo"], ins.get("orientation", "landscape"), log)
+                p = stock_photo(ins["stock_photo"], ins.get("orientation", "landscape"), log, ins.get("pick"))
                 if p:
                     ins["file"] = p.name
                     ins.setdefault("credit", credit_for(p))
                 else:
                     beat["inserts"].remove(ins)
         if v["type"] == "clip" and v.get("stock") and not v.get("file"):
-            p = stock_video(v["stock"], v.get("orientation", "landscape"), float(v.get("out", 0) or 4), log)
+            p = stock_video(v["stock"], v.get("orientation", "landscape"), float(v.get("out", 0) or 4), log, v.get("pick"))
             if p:
                 v["file"] = p.name
                 v.setdefault("credit", credit_for(p))
@@ -138,7 +140,7 @@ def resolve_stock(episode: dict, log=print) -> None:
             elif v.get("fallback"):
                 v["type"], v["beat"] = "reuse", v["fallback"]
         if v["type"] == "archive" and v.get("stock_photo") and not v.get("file"):
-            p = stock_photo(v["stock_photo"], v.get("orientation", "landscape"), log)
+            p = stock_photo(v["stock_photo"], v.get("orientation", "landscape"), log, v.get("pick"))
             if p:
                 v["file"] = p.name
                 v.setdefault("credit", credit_for(p))
