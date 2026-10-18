@@ -55,6 +55,9 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         prompts["thumbnail"] = {"prompt": thumb_spec["prompt"], "style": thumb_spec.get("style", "ad")}
     cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
     images = ensure_images(cfg, prompts, cache, offline, log)
+    from .archive import ensure_archive, ensure_clips
+    images.update(ensure_archive(episode, cfg, cache, log))
+    ensure_clips(episode, cache, log)
     photos = photo_sources(episode)
     if photos:
         got = ensure_photos(cfg, photos, cache, offline, log)

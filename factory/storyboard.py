@@ -117,6 +117,8 @@ def main(argv=None) -> int:
     if thumb.get("prompt") and not any((ep_dir / f"thumbnail.{e}").exists() for e in ("png", "jpg")):
         prompts["thumbnail"] = {"prompt": thumb["prompt"], "style": thumb.get("style", "ad"), "episode_dir": str(ep_dir)}
     images = ensure_images(cfg, prompts, cache, args.offline, log)
+    from .archive import ensure_archive
+    images.update(ensure_archive(episode, cfg, cache, log))
     photos = photo_sources(episode)
     if photos:
         images.update(ensure_photos(cfg, photos, cache, args.offline, log))

@@ -53,7 +53,7 @@ jobs:
       - name: System packages
         run: |
           sudo apt-get update -q
-          sudo apt-get install -y -q ffmpeg espeak-ng fonts-dejavu-core
+          sudo apt-get install -y -q ffmpeg espeak-ng fonts-dejavu-core poppler-utils
 
       - name: Fonts
         run: |
@@ -86,6 +86,21 @@ jobs:
           mkdir -p assets/music
           gh release download music-lib -D assets/music --clobber --pattern "*.mp3" 2>/dev/null || echo "no music library yet"
           ls -la assets/music
+
+      - name: Archive media used by this episode
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p assets/archive
+          for ep in episodes/*/script.json; do
+            python3 - "$ep" <<'PY'
+          import json, sys
+          s = json.load(open(sys.argv[1]))
+          files = {v["file"] for b in s["beats"] for v in [b["visual"]] if v.get("type") in ("archive", "clip") and v.get("file")}
+          print("\n".join(sorted(files)))
+          PY
+          done | sort -u | while read f; do [ -n "$f" ] && [ ! -s "assets/archive/$f" ] && gh release download archive -D assets/archive --pattern "$f" --clobber || true; done
+          ls -la assets/archive || true
 
       - name: Use the approved storyboard frames
         env:

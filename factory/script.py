@@ -6,8 +6,8 @@ import re
 from pathlib import Path
 
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "drift", "static"}
-VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip"}
-IMAGE_BEARING = {"image", "photo", "mugshot", "clip"}
+VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive"}
+IMAGE_BEARING = {"image", "photo", "mugshot", "clip", "archive"}
 MARK_TYPES = {"circle", "underline", "arrow", "cross", "check"}
 STYLES = {"ad", "comic"}
 CHART_KINDS = {"bar", "line"}
@@ -26,7 +26,15 @@ def _check_visual(where: str, visual: dict, errors: list[str]) -> None:
     motion = visual.get("motion")
     if motion is not None and motion not in MOTIONS:
         errors.append(f"{where}: motion must be one of {sorted(MOTIONS)}, got {motion!r}")
-    if vtype in ("image", "clip"):
+    if vtype == "archive":
+        if not visual.get("file"):
+            errors.append(f"{where}: archive visual needs 'file' (name in the archive release)")
+        if not str(visual.get("credit", "")).strip():
+            errors.append(f"{where}: archive visual needs 'credit' (source + licence)")
+    elif vtype == "clip" and visual.get("file"):
+        if not str(visual.get("credit", "")).strip():
+            errors.append(f"{where}: archive clip needs 'credit' (source + licence)")
+    elif vtype in ("image", "clip"):
         prompts = visual.get("prompts") or ([visual["prompt"]] if visual.get("prompt") else [])
         if not prompts or not all(isinstance(p, str) and p.strip() for p in prompts):
             errors.append(f"{where}: image visual needs 'prompt' or non-empty 'prompts'")
@@ -195,7 +203,7 @@ def image_prompts(episode: dict) -> dict[str, dict]:
             out[beat["id"]] = {"prompt": visual["prompt"], "style": visual.get("style", "ad"),
                                "episode_dir": episode.get("_dir"), "refs": refs}
             continue
-        if visual["type"] not in ("image", "clip"):
+        if visual["type"] not in ("image", "clip") or (visual["type"] == "clip" and visual.get("file")):
             continue
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):

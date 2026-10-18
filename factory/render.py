@@ -119,6 +119,12 @@ def group_captions(words, offset: float, max_chars: int, max_words: int, speaker
 def _clip_path(beat: dict, visual: dict, beat_lookup: dict[str, dict]):
     """episodes/<slug>/clips/<beat id>.mp4 (or the reused beat's clip)."""
     from pathlib import Path as _P
+    if visual.get("_clip"):
+        return _P(visual["_clip"])
+    if visual.get("type") == "reuse":
+        srcv = beat_lookup[visual["beat"]]["visual"]
+        if srcv.get("_clip"):
+            return _P(srcv["_clip"])
     ep_dir = beat.get("_episode_dir") or visual.get("_episode_dir")
     keys = [beat["id"]]
     if visual.get("type") == "reuse":
@@ -134,11 +140,13 @@ def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
     if visual["type"] in ("image", "clip"):
         n = len(visual.get("prompts") or [visual["prompt"]])
         return [visual["_beat"] if i == 0 else f"{visual['_beat']}.{i}" for i in range(n)]
-    if visual["type"] in ("photo", "mugshot"):
+    if visual["type"] in ("photo", "mugshot", "archive"):
         return [visual["_beat"]]
+    if visual["type"] == "clip" and visual.get("file"):
+        return []
     if visual["type"] == "reuse":
         src = beat_lookup[visual["beat"]]["visual"]
-        if src["type"] in ("photo", "mugshot"):
+        if src["type"] in ("photo", "mugshot", "archive"):
             return [visual["beat"]]
         n = len(src.get("prompts") or [src["prompt"]])
         idx = int(visual.get("index", 0)) % n
@@ -223,8 +231,14 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         if vtype == "clip" or visual.get("clip"):
             clip_file = _clip_path(beat, visual, beat_lookup)
         if clip_file is not None:
-            plan.shots.append(ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0))))
-        elif vtype in ("image", "reuse", "photo", "clip"):
+            cshot = ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0)))
+            if visual.get("newsreel"):
+                label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Archive film"
+                cshot = NewsreelShot(cshot, cfg, label, seed=i)
+                for at in projector_sfx_times(shot_start, span):
+                    plan.timeline.add_sfx(at, "projector", seed=i)
+            plan.shots.append(cshot)
+        elif vtype in ("image", "reuse", "photo", "clip", "archive"):
             keys = _image_keys(visual, beat_lookup)
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
@@ -346,7 +360,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             appear = 0.0 if beat.get("_hook") else start + 0.25
             bub = beat.get("bubble") or {}
             bubble_top_left = bool(bub) and float(bub.get("x", 0.5)) < 0.5 and float(bub.get("y", 0.5)) < 0.4
-            corner = vtype in ("image", "reuse", "photo", "clip") and size[0] > size[1] and not bubble_top_left
+            corner = vtype in ("image", "reuse", "photo", "clip", "archive") and size[0] > size[1] and not bubble_top_left
             plan.cards.append(Card(appear, start + dur, str(beat["on_screen"]), corner and not beat.get("_hook"),
                                    bool(beat.get("_hook"))))
             if not beat.get("_hook"):
