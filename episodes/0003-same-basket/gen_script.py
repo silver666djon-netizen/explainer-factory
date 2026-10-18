@@ -66,8 +66,8 @@ beat("c06", S, "And somewhere, an algorithm might know exactly what that's worth
      img("{price} in silhouette behind a frosted glass office door, a warm light behind him, film-noir mood", motion="zoom_in"))
 beat("c07", S, "The battery story? A rumour. What we found next isn't.",
      reuse("c05", motion="static", marks=[{"type": "cross", "x": 0.5, "y": 0.45, "w": 0.3, "h": 0.36, "on": "rumour"}]), punch=["isn't."])
-beat("cf1", S, "Case file number three. Same basket, different price.", hold=1.0,
-     visual={"type": "casefile", "casefile": {"mode": "open", "number": "003", "title": "Same basket",
+beat("cf1", S, "Case file number two. Same basket, different price.", hold=1.0,
+     visual={"type": "casefile", "casefile": {"mode": "open", "number": "002", "title": "Same basket",
              "inside": ["SUBJECT: Larry (fictional)", "WITNESS: Linda, his sister", "SUSPECTS: 2", "STATUS: open"]}})
 
 # ------------------------------------------------------------------ 11:47 PM
@@ -214,7 +214,7 @@ beat("t06", S, "Which brings us to the twist.", title("The twist"))
 beat("w60", S, "Larry thought the machine had picked on him. That it knew about the battery, the broke weekend, the bad luck.",
      img("{larry} at his kitchen table frowning at his phone, a red marker question mark drawn on the wall behind him", motion="zoom_in"))
 beat("w61", S, "It didn't need to.", kin("ink"))
-beat("w61b", S, "A test doesn't care who you are. It only needs enough of you. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
+beat("w61b", S, "A test doesn't need to know who you are. It just needs enough people. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
      img("two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering", motion="zoom_in"))
 beat("w62", S, "It tested everyone. At random. Like mice running through a supermarket.",
      img("dozens of little white cartoon mice each pushing a tiny shopping cart down a long supermarket aisle", motion="zoom_in"), sfx="whoosh",
@@ -228,7 +228,7 @@ beat("w64", S, "You weren't *targeted.* You were *sampled.*", kin("red"), sfx="t
 # ------------------------------------------------------------------ case closed
 S = "Case closed"
 beat("v70", S, "So, the verdict.",
-     {"type": "casefile", "casefile": {"mode": "closed", "number": "003", "title": "Same basket", "stamp": "Case closed",
+     {"type": "casefile", "casefile": {"mode": "closed", "number": "002", "title": "Same basket", "stamp": "Case closed",
                                         "lines": ["Battery rumour: not proven", "Price tests: confirmed"], "stamp_at": 0.4}})
 beat("v71", S, "And the ten-second defence.", reuse("c03", motion="zoom_in"))
 beat("v72", S, "Before you pay, check the price somewhere else: another phone, logged out, or the store's own website.",
@@ -236,18 +236,18 @@ beat("v72", S, "Before you pay, check the price somewhere else: another phone, l
                   "a laptop on a kitchen table next to a phone, both showing a plain shop page"], motion="zoom_in"))
 beat("v73", S, "Switch off location for shopping apps when you don't need it.",
      reuse("a23", motion="zoom_in", marks=[{"type": "cross", "x": 0.5, "y": 0.35, "w": 0.22, "h": 0.3, "on": "off"}]))
-beat("v74", S, "And when you see a 'was' price, ignore it. The only number that matters is the one you pay.",
-     reuse("s37", motion="zoom_in", marks=[{"type": "cross", "x": 0.5, "y": 0.4, "w": 0.4, "h": 0.4, "on": "ignore"}]))
 beat("v74b", S, "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
      reuse("c03", motion="zoom_out"))
 beat("v75", S, "Larry's phone is now at a hundred percent. He's still checking the price.",
      img("{larry} at home holding his fully charged phone at arm's length and squinting at it suspiciously, mid shot", motion="zoom_in"),
      bubble={"text": "Twice.", "x": 0.75, "y": 0.22, "tail": "left", "at": 2.4})
+beat("v76", S, "And that 'was' price on the crackers? It deserves a case file of its own.",
+     reuse("s37", motion="zoom_in", marks=[{"type": "circle", "x": 0.5, "y": 0.45, "w": 0.42, "h": 0.5, "text": "next case", "text_y": 0.7, "on": "own"}]))
 beat("k2", S, "Larry's learning. You don't have to learn the hard way. Your next case is right here on screen.",
      reuse("v75", motion="static"), cta={"on": "next", "click_on": "screen"})
-beat("k3", S, "Case file zero zero four.", hold=14,
-     visual={"type": "casefile", "casefile": {"mode": "open", "number": "004", "title": "Classified",
-             "inside": ["NEXT CASE: coming soon", "SUSPECT: classified", "STATUS: open"]}},
+beat("k3", S, "Case file zero zero three.", hold=14,
+     visual={"type": "casefile", "casefile": {"mode": "open", "number": "003", "title": "The fake sale",
+             "inside": ["NEXT CASE: the sale that never was", "SUSPECT: the 'was' price", "STATUS: open"]}},
      cta={"at": 0.2, "click_at": 1.4, "hold": 14})
 
 for b in B:
@@ -334,7 +334,7 @@ for sh in shorts:
 ep = {
     "slug": "0003-same-basket",
     "title": "Same Basket, Different Price: The Secret Grocery Experiment",
-    "description": "Does your ride really cost more when your battery is low? Case file #003 follows Larry (fictional) through one day: a viral battery rumour, a TV that got $100 dearer in a parking lot, and a real 2025 investigation in which hundreds of shoppers paid different prices for the same groceries at the same store, at the same moment.",
+    "description": "Does your ride really cost more when your battery is low? Case file #002 follows Larry (fictional) through one day: a viral battery rumour, a TV that got $100 dearer in a parking lot, and a real 2025 investigation in which hundreds of shoppers paid different prices for the same groceries at the same store, at the same moment.",
     "tags": ["personalized pricing", "surveillance pricing", "instacart prices", "uber battery", "dynamic pricing", "anchoring",
              "psychology of money", "behavioral economics", "price discrimination"],
     "characters": {

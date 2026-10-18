@@ -1,7 +1,7 @@
 {
   "slug": "0003-same-basket",
   "title": "Same Basket, Different Price: The Secret Grocery Experiment",
-  "description": "Does your ride really cost more when your battery is low? Case file #003 follows Larry (fictional) through one day: a viral battery rumour, a TV that got $100 dearer in a parking lot, and a real 2025 investigation in which hundreds of shoppers paid different prices for the same groceries at the same store, at the same moment.",
+  "description": "Does your ride really cost more when your battery is low? Case file #002 follows Larry (fictional) through one day: a viral battery rumour, a TV that got $100 dearer in a parking lot, and a real 2025 investigation in which hundreds of shoppers paid different prices for the same groceries at the same store, at the same moment.",
   "tags": [
     "personalized pricing",
     "surveillance pricing",
@@ -157,12 +157,12 @@
     {
       "id": "cf1",
       "section": "The case",
-      "text": "Case file number three. Same basket, different price.",
+      "text": "Case file number two. Same basket, different price.",
       "visual": {
         "type": "casefile",
         "casefile": {
           "mode": "open",
-          "number": "003",
+          "number": "002",
           "title": "Same basket",
           "inside": [
             "SUBJECT: Larry (fictional)",
@@ -942,7 +942,7 @@
     {
       "id": "w61b",
       "section": "The twist",
-      "text": "A test doesn't care who you are. It only needs enough of you. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
+      "text": "A test doesn't need to know who you are. It just needs enough people. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
       "visual": {
         "type": "image",
         "prompt": "two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering",
@@ -1003,7 +1003,7 @@
         "type": "casefile",
         "casefile": {
           "mode": "closed",
-          "number": "003",
+          "number": "002",
           "title": "Same basket",
           "stamp": "Case closed",
           "lines": [
@@ -1060,27 +1060,6 @@
       }
     },
     {
-      "id": "v74",
-      "section": "Case closed",
-      "text": "And when you see a 'was' price, ignore it. The only number that matters is the one you pay.",
-      "visual": {
-        "type": "reuse",
-        "beat": "s37",
-        "index": 0,
-        "motion": "zoom_in",
-        "marks": [
-          {
-            "type": "cross",
-            "x": 0.5,
-            "y": 0.4,
-            "w": 0.4,
-            "h": 0.4,
-            "on": "ignore"
-          }
-        ]
-      }
-    },
-    {
       "id": "v74b",
       "section": "Case closed",
       "text": "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
@@ -1109,6 +1088,29 @@
       }
     },
     {
+      "id": "v76",
+      "section": "Case closed",
+      "text": "And that 'was' price on the crackers? It deserves a case file of its own.",
+      "visual": {
+        "type": "reuse",
+        "beat": "s37",
+        "index": 0,
+        "motion": "zoom_in",
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.5,
+            "y": 0.45,
+            "w": 0.42,
+            "h": 0.5,
+            "text": "next case",
+            "text_y": 0.7,
+            "on": "own"
+          }
+        ]
+      }
+    },
+    {
       "id": "k2",
       "section": "Case closed",
       "text": "Larry's learning. You don't have to learn the hard way. Your next case is right here on screen.",
@@ -1126,16 +1128,16 @@
     {
       "id": "k3",
       "section": "Case closed",
-      "text": "Case file zero zero four.",
+      "text": "Case file zero zero three.",
       "visual": {
         "type": "casefile",
         "casefile": {
           "mode": "open",
-          "number": "004",
-          "title": "Classified",
+          "number": "003",
+          "title": "The fake sale",
           "inside": [
-            "NEXT CASE: coming soon",
-            "SUSPECT: classified",
+            "NEXT CASE: the sale that never was",
+            "SUSPECT: the 'was' price",
             "STATUS: open"
           ]
         }

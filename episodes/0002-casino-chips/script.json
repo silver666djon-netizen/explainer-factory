@@ -1,7 +1,7 @@
 {
   "slug": "0002-casino-chips",
   "title": "The Casino Trick Hiding in Your Phone",
-  "description": "Why do casinos swap your cash for plastic? Case file #002 follows Larry (fictional) through one night in a casino: the chips, the 'house money' feeling, the arithmetic of two green pockets, the near miss that your brain counts as a win, a famous myth about casino clocks - and the same trick hiding in your phone.",
+  "description": "Why do casinos swap your cash for plastic? Case file #001 follows Larry (fictional) through one night in a casino: the chips, the 'house money' feeling, the arithmetic of two green pockets, the near miss that your brain counts as a win, a famous myth about casino clocks - and the same trick hiding in your phone.",
   "tags": [
     "casino psychology",
     "why casinos use chips",
@@ -151,13 +151,13 @@
     {
       "id": "cf1",
       "section": "The case",
-      "text": "Case file number two. The casino.",
+      "text": "Case file number one. The casino.",
       "hold": 1.2,
       "visual": {
         "type": "casefile",
         "casefile": {
           "mode": "open",
-          "number": "002",
+          "number": "001",
           "title": "The casino",
           "inside": [
             "SUBJECT: Larry (fictional)",
@@ -1180,7 +1180,7 @@
         "type": "casefile",
         "casefile": {
           "mode": "closed",
-          "number": "002",
+          "number": "001",
           "title": "The casino",
           "stamp": "Case closed",
           "lines": [
@@ -1243,13 +1243,13 @@
     {
       "id": "k3",
       "section": "Case closed",
-      "text": "Case file zero zero three.",
+      "text": "Case file zero zero two.",
       "hold": 14,
       "visual": {
         "type": "casefile",
         "casefile": {
           "mode": "open",
-          "number": "003",
+          "number": "002",
           "title": "Same basket",
           "inside": [
             "NEXT CASE: same basket, different price",
