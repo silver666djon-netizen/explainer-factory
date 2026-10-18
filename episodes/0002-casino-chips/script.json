@@ -92,14 +92,14 @@
       },
       "inserts": [
         {
-          "stock_photo": "hundred dollar bills fan",
+          "stock_photo": "hundred dollar bill",
           "kind": "photo",
           "from": "right",
           "x": 0.82,
           "y": 0.4,
           "w": 0.28,
           "on": "cash",
-          "pick": 3950117
+          "pick": 6771234
         }
       ]
     },
@@ -1519,7 +1519,7 @@
           {
             "type": "underline",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.495,
             "w": 0.5,
             "on": "hesitating"
           }

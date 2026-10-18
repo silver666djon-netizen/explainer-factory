@@ -16,7 +16,7 @@ def ph(file, side, x, y, w, on, caption=None, kind="photo", **kw):
     return d
 
 
-PICKS = {'cash money stack hand': ('hundred dollar bills fan', 3950117), 'paying cash wallet': (None, 4843535), 'board game money': (None, 1538331), 'poker chips vintage': (None, 9815260), 'empty wallet': (None, 3548021), 'hundred dollar bill': (None, 6771234), 'brain scan mri': (None, 254866), 'exit sign': (None, 1773916), 'casino chips stacks': (None, 875287), 'mobile game smartphone': (None, 1869655), 'gift cards': (None, 421600), 'las vegas night casino': (None, 932708)}
+PICKS = {'cash money stack hand': ('hundred dollar bill', 6771234), 'paying cash wallet': (None, 4843535), 'board game money': (None, 1538331), 'poker chips vintage': (None, 9815260), 'empty wallet': (None, 3548021), 'hundred dollar bill': (None, 6771234), 'brain scan mri': (None, 254866), 'exit sign': (None, 1773916), 'casino chips stacks': (None, 875287), 'mobile game smartphone': (None, 1869655), 'gift cards': (None, 421600), 'las vegas night casino': (None, 932708)}
 
 
 def st(q, side, x, y, w, on, **kw):
