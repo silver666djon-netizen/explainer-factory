@@ -244,8 +244,9 @@ beat("w60", S, "Larry thought the machine had picked on him. That it knew about 
      img("{larry} at his kitchen table frowning at his phone, a red marker question mark drawn on the wall behind him", motion="zoom_in"))
 beat("w61", S, "It didn't need to.", kin("ink"))
 beat("w61b", S, "A test doesn't need to know who you are. It just needs enough people. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
-     img("two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering", motion="static",
-         draw={"on": "Group", "dur": 3.0, "box": [0.0, 0.35, 1.0, 1.0], "mode": "shape"}))
+     img("two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering", motion="static", hand_marks=True,
+         marks=[{"type": "circle", "x": 0.27, "y": 0.7, "w": 0.4, "h": 0.5, "text": "A", "text_x": 0.27, "text_y": 0.35, "on": "Group"},
+                {"type": "circle", "x": 0.74, "y": 0.7, "w": 0.4, "h": 0.5, "text": "B", "text_x": 0.74, "text_y": 0.35, "on": "B"}]))
 beat("w62", S, "It tested everyone. At random. Like mice running through a supermarket.",
      img("dozens of little white cartoon mice each pushing a tiny shopping cart down a long supermarket aisle", motion="zoom_in"), sfx="whoosh",
      bubble={"text": "Is this the cheese aisle?", "x": 0.74, "y": 0.22, "tail": "left", "at": 1.6})

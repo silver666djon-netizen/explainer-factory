@@ -97,11 +97,19 @@ def subject_mask(base: np.ndarray, depth: np.ndarray | None, box=(0.0, 0.0, 1.0,
         if tight.sum() > 0.35 * m.sum():
             m = tight
     else:
-        gray = cv2.cvtColor(base, cv2.COLOR_RGB2GRAY)
-        ink = (gray < 100).astype(np.uint8)
-        ink[:y0] = 0; ink[y1:] = 0; ink[:, :x0] = 0; ink[:, x1:] = 0
-        ink = cv2.dilate(ink, np.ones((5, 5), np.uint8))
-        cs, _ = cv2.findContours(ink, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # "shape": everything that is not the flat paper backdrop inside the box (colour or ink), holes closed
+        H8 = base.astype(np.int16)
+        ring = np.ones((H, W), bool)
+        ring[y0:y1, x0:x1] = False
+        if ring.sum() < 50:
+            ring = np.zeros((H, W), bool); ring[:8] = ring[-8:] = True; ring[:, :8] = ring[:, -8:] = True
+        paper = np.median(base[ring].reshape(-1, 3), axis=0).astype(np.int16)
+        diff = np.abs(H8 - paper[None, None, :]).max(axis=2)
+        m[y0:y1, x0:x1] = (diff[y0:y1, x0:x1] > 28)
+        k0 = max(3, int(min(H, W) * 0.008)) | 1
+        m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((k0, k0), np.uint8))
+        cs, _ = cv2.findContours(m, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        m = np.zeros_like(m)
         cv2.drawContours(m, cs, -1, 1, thickness=cv2.FILLED)
     n, lab, st, _ = cv2.connectedComponentsWithStats(m)
     if n > 1:

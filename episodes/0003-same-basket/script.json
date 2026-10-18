@@ -1108,17 +1108,31 @@
         "type": "image",
         "prompt": "two neat queues of little white cartoon mice with shopping carts, one queue under a green sign shape and one under a red sign shape, no lettering",
         "motion": "static",
-        "draw": {
-          "on": "Group",
-          "dur": 3.0,
-          "box": [
-            0.0,
-            0.35,
-            1.0,
-            1.0
-          ],
-          "mode": "shape"
-        }
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.27,
+            "y": 0.7,
+            "w": 0.4,
+            "h": 0.5,
+            "text": "A",
+            "text_x": 0.27,
+            "text_y": 0.35,
+            "on": "Group"
+          },
+          {
+            "type": "circle",
+            "x": 0.74,
+            "y": 0.7,
+            "w": 0.4,
+            "h": 0.5,
+            "text": "B",
+            "text_x": 0.74,
+            "text_y": 0.35,
+            "on": "B"
+          }
+        ]
       }
     },
     {
