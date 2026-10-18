@@ -174,7 +174,8 @@ def build_insert(spec: dict, images: dict, depth_of, cfg: dict, size, start: flo
     f = spec["file"]
     cache = ROOT / ".cache" / "inserts"
     cache.mkdir(parents=True, exist_ok=True)
-    key = hashlib.sha1(repr({k: spec.get(k) for k in ("file", "kind", "crop", "page", "caption", "depth")}).encode()).hexdigest()[:10]
+    from .archive import LAYOUT_VERSION
+    key = hashlib.sha1(repr({**{k: spec.get(k) for k in ("file", "kind", "crop", "page", "caption", "depth", "colour")}, "_v": LAYOUT_VERSION}).encode()).hexdigest()[:10]
     cpath = cache / f"insert-{key}.png"
     if cpath.exists():
         img = Image.open(cpath).convert("RGBA")

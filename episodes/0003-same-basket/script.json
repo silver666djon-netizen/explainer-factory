@@ -346,7 +346,7 @@
       "visual": {
         "type": "clip",
         "stock": "city street night rain traffic",
-        "pick": 290680,
+        "pick": 11067,
         "in": 0,
         "out": 12,
         "fallback_prompt": "a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight",

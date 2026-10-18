@@ -415,7 +415,7 @@ for b in B:
         b["inserts"] = INS[b["id"]]
 # stock film where the picture is a plain illustration of a real-world scene
 STOCK = {
-    "d14b": {"stock": "city street night rain traffic", "pick": 290680, "in": 0, "out": 12, "newsreel": False, "fallback": "d14b"},
+    "d14b": {"stock": "city street night rain traffic", "pick": 11067, "in": 0, "out": 12, "newsreel": False, "fallback": "d14b"},
     "a22": {"stock": "parking lot cars aerial", "pick": 271386, "in": 0, "out": 12, "newsreel": False, "fallback": "a22"},
     "d51b": {"stock": "airplane passengers boarding", "pick": 4732, "in": 0, "out": 14, "newsreel": False, "fallback": "d51b"},
 }

@@ -26,6 +26,7 @@ from .config import resolve_font
 from .text import font
 
 ARCHIVE_DIR = ROOT / "assets" / "archive"
+LAYOUT_VERSION = 3  # bump when the styling/trim code changes, so cached frames and clips are rebuilt
 
 
 def _pal(cfg):
@@ -135,7 +136,7 @@ def ensure_archive(episode: dict, cfg: dict, cache: Path, log=print) -> dict[str
         v = beat["visual"]
         if v["type"] != "archive":
             continue
-        key = hashlib.sha1(repr({k: v.get(k) for k in ("file", "look", "crop", "page", "caption")}).encode()).hexdigest()[:10]
+        key = hashlib.sha1(repr({**{k: v.get(k) for k in ("file", "look", "crop", "page", "caption")}, "_layout": LAYOUT_VERSION}).encode()).hexdigest()[:10]
         dst = cache / f"archive-{beat['id']}-{key}.png"
         if not dst.exists():
             src = _source(v, cache)
@@ -180,7 +181,7 @@ def ensure_clips(episode: dict, cache: Path, log=print) -> None:
         if not src.exists():
             raise FileNotFoundError(f"archive clip missing: {src}")
         a, b = float(v.get("in", 0)), float(v.get("out", 0) or 0)
-        key = hashlib.sha1(f"{v['file']}|{a}|{b}".encode()).hexdigest()[:10]
+        key = hashlib.sha1(f"{v['file']}|{a}|{b}|{LAYOUT_VERSION}".encode()).hexdigest()[:10]
         dst = cache / f"clip-{beat['id']}-{key}.mp4"
         if not dst.exists():
             cmd = ["ffmpeg", "-v", "error", "-y", "-ss", str(a), "-i", str(src)]
