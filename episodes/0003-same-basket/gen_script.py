@@ -333,7 +333,7 @@ for sh in shorts:
 
 ep = {
     "slug": "0003-same-basket",
-    "title": "Same Basket, Different Price: The Secret Grocery Experiment",
+    "title": "Why Your Groceries Cost More Than Your Neighbour's",
     "description": "Does your ride really cost more when your battery is low? Case file #002 follows Larry (fictional) through one day: a viral battery rumour, a TV that got $100 dearer in a parking lot, and a real 2025 investigation in which hundreds of shoppers paid different prices for the same groceries at the same store, at the same moment.",
     "tags": ["personalized pricing", "surveillance pricing", "instacart prices", "uber battery", "dynamic pricing", "anchoring",
              "psychology of money", "behavioral economics", "price discrimination"],
