@@ -30,9 +30,18 @@ no paid generation or Actions minute is spent twice on the same thing.
 - Overlays: price cards never on a face (pictures → top-left), marker notes above the caption zone,
   doc cards above captions, prop notes (roulette, slots) not over numbers.
 - Marks point at the real subject of the generated picture (check the frame, not the prompt).
+- MARKS ARE PLACED AFTER THE STORYBOARD, NEVER BLIND: overlay the 0.1 grid on each marked frame
+  (scratch tool grid.py), measure the object, then run the marks audit (marks_audit.py: long + Shorts
+  window, end of the camera move) — every circle must enclose its object, nothing cut by the frame edge.
+  Marks near an edge → use zoom_out/static, not zoom_in.
+- Bubbles are anchored to the picture (they ride with the camera) — place them next to the face, never
+  on it, and check them in the audit for both the long frame and the Shorts window.
+- Every frame must read at a glance and match the line (a "low battery" is a phone with an empty
+  battery, not an abstract red button). Reject abstract stand-ins in the storyboard check.
 - Captions: no overlap with cards/bubbles; names spelled right.
 - Sound: music mood per chapter, stings land on the right word, narration always clearly on top.
-- Shorts: hook in first line, loop back, ≤ 45 s, music matches.
+- Shorts: hook card on frame 0, hook in first line, loop back, ≤ 45 s, music matches; pictures play in
+  the square window (not a macro vertical slice) — check that each one is readable on a phone.
 - Thumbnail A/B/C: text readable small, circle on the subject.
 
 ## Logos / banners / other brand art
