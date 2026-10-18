@@ -259,7 +259,7 @@
       ],
       "inserts": [
         {
-          "stock_photo": "taxi night rain city",
+          "stock_photo": "taxi rain night",
           "kind": "photo",
           "from": "right",
           "x": 0.8,
@@ -303,7 +303,7 @@
       },
       "inserts": [
         {
-          "stock_photo": "podcast microphone studio",
+          "stock_photo": "radio microphone vintage",
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -351,7 +351,7 @@
       },
       "inserts": [
         {
-          "stock_photo": "crowd waiting street rain umbrellas",
+          "stock_photo": "people umbrellas rain street",
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -411,7 +411,7 @@
       },
       "inserts": [
         {
-          "stock_photo": "smartphone location map pin",
+          "stock_photo": "smartphone gps map navigation",
           "kind": "photo",
           "from": "right",
           "x": 0.84,
@@ -466,7 +466,7 @@
       "say": "February twenty nineteen. A TV news team in Minneapolis, Kare Eleven, tried something simple with the Target app.",
       "inserts": [
         {
-          "stock_photo": "news van satellite dish",
+          "stock_photo": "television news camera",
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -489,7 +489,7 @@
       "say": "At home, a fifty-five inch Samsung TV showed up in the app at four ninety-nine ninety-nine.",
       "inserts": [
         {
-          "stock_photo": "flat screen television living room",
+          "stock_photo": "television electronics store",
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -504,9 +504,12 @@
       "section": "8:02 AM: The parking lot",
       "text": "Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said 599 dollars 99.",
       "visual": {
-        "type": "image",
-        "prompt": "a top-down view of a big store parking lot with painted bays, one small red car pulling into a space, flat graphic style",
-        "motion": "static"
+        "type": "clip",
+        "stock": "parking lot cars aerial",
+        "in": 0,
+        "out": 8,
+        "fallback_prompt": "a top-down view of a big store parking lot with painted bays, one small red car pulling into a space, flat graphic style",
+        "credit": "stock"
       },
       "counter": {
         "from": 499.99,
@@ -520,7 +523,7 @@
       "say": "Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine.",
       "inserts": [
         {
-          "stock_photo": "parking lot aerial cars",
+          "stock_photo": "supermarket parking lot",
           "kind": "photo",
           "from": "bottom",
           "x": 0.24,
@@ -646,7 +649,7 @@
       },
       "inserts": [
         {
-          "stock_photo": "grocery delivery app phone",
+          "stock_photo": "online grocery shopping phone",
           "kind": "photo",
           "from": "right",
           "x": 0.84,
@@ -1194,7 +1197,7 @@
       "on_screen": "Location · Device · Cart",
       "inserts": [
         {
-          "stock_photo": "computer mouse cursor hand",
+          "stock_photo": "computer mouse hand",
           "kind": "photo",
           "from": "right",
           "x": 0.84,
@@ -1280,7 +1283,7 @@
       },
       "inserts": [
         {
-          "stock_photo": "discount coupon scissors",
+          "stock_photo": "coupons",
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -1295,13 +1298,16 @@
       "section": "In defence of the accused",
       "text": "Airlines have charged different fares for the same seat for decades, and most of us accept it, because at least we know the game.",
       "visual": {
-        "type": "image",
-        "prompt": "a 1950s airliner parked on a sunny runway with passengers climbing a boarding stair",
-        "motion": "pan_right"
+        "type": "clip",
+        "stock": "airplane passengers boarding",
+        "in": 0,
+        "out": 8,
+        "fallback_prompt": "a 1950s airliner parked on a sunny runway with passengers climbing a boarding stair",
+        "credit": "stock"
       },
       "inserts": [
         {
-          "stock_photo": "airplane cabin seats passengers",
+          "stock_photo": "airport departure board",
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -1515,7 +1521,7 @@
       },
       "inserts": [
         {
-          "stock_photo": "laptop online shopping",
+          "stock_photo": "comparing prices phone store",
           "kind": "photo",
           "from": "left",
           "x": 0.2,
