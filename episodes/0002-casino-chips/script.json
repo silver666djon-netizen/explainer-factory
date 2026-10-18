@@ -1795,6 +1795,8 @@
       "section": "Case closed",
       "text": "Case closed. Guilty: your brain. Accomplice: plastic.",
       "block_start": true,
+      "sting": "ub_sting_brass",
+      "sting_at": 0.1,
       "visual": {
         "type": "endscreen",
         "endscreen": {

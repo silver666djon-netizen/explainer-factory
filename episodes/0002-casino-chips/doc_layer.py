@@ -181,6 +181,7 @@ ES = {"number": "001", "title": "The casino", "stamp": "Case closed",
                "image_file": "next_basket.png", "copies": 2, "prices": ["$114.34", "$123.93"]}}
 end = [
     {"id": "e1", "section": "Case closed", "text": "Case closed. Guilty: your brain. Accomplice: plastic.", "block_start": True,
+     "sting": "ub_sting_brass", "sting_at": 0.1,
      "visual": {"type": "endscreen", "endscreen": ES}},
     {"id": "e2", "section": "Case closed", "text": "Next case: same basket, same shop — two different prices.", "block_at": 7.0,
      "visual": {"type": "continue"}},
