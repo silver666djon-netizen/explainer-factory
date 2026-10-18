@@ -19,7 +19,8 @@ from .config import ROOT
 
 HAND_DIR = ROOT / "assets" / "hands"
 HAND_HEIGHT = 0.62  # hand clipping height as a share of the frame height
-LINES_SHARE = 0.72  # share of the draw time spent on outlines (rest = colour sweep)
+LINES_END = 0.5    # outlines by the pencil hand: 0 .. LINES_END of the draw time
+COLOR_START = 0.6  # colour by the marker hand: COLOR_START .. 1 (the hands swap in between)
 
 
 def ease(p: float) -> float:
@@ -30,6 +31,7 @@ def ease(p: float) -> float:
 @lru_cache(maxsize=8)
 def _hand(kind: str, height: int, mirrored: bool) -> tuple[np.ndarray, tuple[int, int]]:
     meta = json.loads((HAND_DIR / "hand.json").read_text())
+    meta = meta.get(kind, meta.get("pencil", meta))  # per-hand tip position
     img = Image.open(HAND_DIR / f"hand_{kind}.png").convert("RGBA")
     s = height / img.height
     img = img.resize((max(1, int(img.width * s)), height), Image.LANCZOS)
@@ -68,15 +70,51 @@ def hand_path(tip_at, t0: float, t1: float, t: float, W: int, H: int, mirrored: 
     return x + math.sin(t * 31.0) * H * 0.002, y + math.cos(t * 23.0) * H * 0.002
 
 
-class LineDrawing:
-    """Stroke plan for one picture (base pixels)."""
-
-    def __init__(self, base: np.ndarray, paper_rgb):
+def subject_mask(base: np.ndarray, depth: np.ndarray | None, box=(0.0, 0.0, 1.0, 1.0), mode: str = "auto") -> np.ndarray:
+    """0..1 mask of the thing to draw: a hero/object, never the location.
+    depth  - nearest layer inside the box (characters, props standing in a scene);
+    shape  - filled ink outlines inside the box (icons, small details on a plain background)."""
+    H, W = base.shape[:2]
+    x0, y0, x1, y1 = int(box[0] * W), int(box[1] * H), int(box[2] * W), int(box[3] * H)
+    m = np.zeros((H, W), np.uint8)
+    if mode == "auto":
+        mode = "depth" if depth is not None else "shape"
+    if mode == "depth" and depth is not None:
+        d = (np.clip(depth, 0, 1) * 255).astype(np.uint8)
+        sub = d[y0:y1, x0:x1]
+        t1, _ = cv2.threshold(sub, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+        hi = sub[sub > t1]
+        t2 = cv2.threshold(hi.reshape(-1, 1), 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)[0] if hi.size > 50 else t1
+        m[y0:y1, x0:x1] = sub > (t1 + t2) / 2
+    else:
         gray = cv2.cvtColor(base, cv2.COLOR_RGB2GRAY)
-        self.ink = gray < 90
+        ink = (gray < 100).astype(np.uint8)
+        ink[:y0] = 0; ink[y1:] = 0; ink[:, :x0] = 0; ink[:, x1:] = 0
+        ink = cv2.dilate(ink, np.ones((5, 5), np.uint8))
+        cs, _ = cv2.findContours(ink, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        cv2.drawContours(m, cs, -1, 1, thickness=cv2.FILLED)
+    n, lab, st, _ = cv2.connectedComponentsWithStats(m)
+    if n > 1:
+        big = st[1:, cv2.CC_STAT_AREA].max()
+        m = np.isin(lab, [i for i in range(1, n) if st[i, cv2.CC_STAT_AREA] > 0.08 * big]).astype(np.uint8)
+    k = max(5, int(min(H, W) * 0.012)) | 1
+    m = cv2.morphologyEx(m, cv2.MORPH_CLOSE, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k * 3, k * 3)))
+    m = cv2.dilate(m, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+    return cv2.GaussianBlur(m.astype(np.float32), (0, 0), k / 3)
+
+
+class LineDrawing:
+    """Stroke plan for one picture (base pixels). With a mask only that subject is drawn into the scene."""
+
+    def __init__(self, base: np.ndarray, paper_rgb, mask: np.ndarray | None = None):
+        H, W = base.shape[:2]
+        gray = cv2.cvtColor(base, cv2.COLOR_RGB2GRAY)
+        self.mask = mask if mask is not None else np.ones((H, W), np.float32)
+        inside = self.mask > 0.5
+        self.ink = (gray < 90) & inside
         ink8 = self.ink.astype(np.uint8)
         contours, _ = cv2.findContours(ink8, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-        min_len = max(24, int(min(base.shape[:2]) * 0.03))
+        min_len = max(24, int(min(H, W) * 0.03))
         strokes = [c[::2, 0, :].astype(np.float32) for c in contours if len(c) >= min_len]
         strokes.sort(key=len, reverse=True)
         strokes = strokes[:400]
@@ -96,19 +134,26 @@ class LineDrawing:
         self.lengths = np.array([len(s) for s in ordered], dtype=np.int64)
         self.cum = np.concatenate([[0], np.cumsum(self.lengths)])
         self.total = int(self.cum[-1])
-        self.thick = max(6, int(min(base.shape[:2]) * 0.012))
+        self.thick = max(6, int(min(H, W) * 0.012))
         self.base = base
         self.paper = np.array(paper_rgb, dtype=np.float32)
-        self.reveal = np.zeros(base.shape[:2], np.uint8)
+        self.reveal = np.zeros((H, W), np.uint8)
         self.done = 0
-        H, W = base.shape[:2]
+        ys, xs = np.where(inside) if inside.any() else (np.array([0, H - 1]), np.array([0, W - 1]))
+        self.bbox = (float(xs.min()), float(ys.min()), float(xs.max()), float(ys.max()))
+        bx0, by0, bx1, by1 = self.bbox
         yy, xx = np.mgrid[0:H, 0:W]
-        self.diag = ((xx / W) * 0.6 + (yy / H) * 0.4).astype(np.float32)  # colour sweep coordinate 0..1
+        u = np.clip((xx - bx0) / max(1.0, bx1 - bx0), 0, 1)
+        v = np.clip((yy - by0) / max(1.0, by1 - by0), 0, 1)
+        self.diag = (u * 0.6 + v * 0.4).astype(np.float32)  # colour sweep coordinate 0..1 over the subject
+        # empty state: the scene with a blank paper silhouette where the subject will be drawn
+        a = self.mask[..., None]
+        self.blank = (base * (1 - a) + self.paper * a).astype(np.uint8)
 
     def point(self, k: int) -> tuple[float, float]:
         if self.total == 0:
-            H, W = self.base.shape[:2]
-            return W / 2, H / 2
+            bx0, by0, bx1, by1 = self.bbox
+            return (bx0 + bx1) / 2, (by0 + by1) / 2
         k = min(max(k, 0), self.total - 1)
         i = int(np.searchsorted(self.cum, k, side="right") - 1)
         x, y = self.strokes[i][k - self.cum[i]]
@@ -128,33 +173,70 @@ class LineDrawing:
                 cv2.polylines(self.reveal, [seg], False, 1, self.thick, cv2.LINE_8)
         self.done = k
 
-    def tip(self, p: float) -> tuple[float, float]:
-        """Pencil tip (base px) at drawing progress p — pure, safe to call for any time."""
-        p = min(1.0, max(0.0, p))
-        if p <= LINES_SHARE:
-            return self.point(int(self.total * p / LINES_SHARE))
-        pc = (p - LINES_SHARE) / (1 - LINES_SHARE)
+    def _hatch_plan(self) -> None:
+        """Zig-zag marker strokes over the subject (only where the mask is), like colouring in."""
         H, W = self.base.shape[:2]
-        f = min(1.0, pc * 1.25)
-        s = 0.5 + 0.5 * math.sin(pc * math.pi * 9)  # hatching back and forth along the colour front
-        x = W * min(0.95, max(0.05, s * min(1.0, f / 0.6)))
-        y = H * min(0.92, max(0.08, (f - 0.6 * x / W) / 0.4))
-        return x, y
+        bx0, by0, bx1, by1 = self.bbox
+        step = max(10, int(min(H, W) * 0.035))
+        self.cthick = int(step * 1.6)
+        pts, row = [], 0
+        y = by0
+        while y <= by1:
+            xs = np.arange(bx0, bx1 + 1, max(3, step // 3), dtype=np.float32)
+            if row % 2:
+                xs = xs[::-1]
+            slant = (xs - bx0) * 0.25  # slight diagonal, like a real hand
+            for x, dy in zip(xs, slant):
+                yy = int(min(H - 1, max(0, y + dy - (bx1 - bx0) * 0.12)))
+                if self.mask[yy, int(min(W - 1, x))] > 0.5:
+                    pts.append((float(x), float(yy)))
+            y += step
+            row += 1
+        if not pts:
+            pts = [((bx0 + bx1) / 2, (by0 + by1) / 2)]
+        self.hatch = np.array(pts, np.float32)
+        self.paint = np.zeros((H, W), np.uint8)
+        self.painted = 0
+
+    def _paint_to(self, k: int) -> None:
+        if k < self.painted:
+            self.paint[:] = 0
+            self.painted = 0
+        if k > self.painted:
+            seg = self.hatch[max(0, self.painted - 1):k]
+            # split where the path jumps (gaps in the mask) so no stroke crosses empty space
+            jump = np.where(np.hypot(*np.diff(seg, axis=0).T) > self.cthick)[0] + 1
+            for part in np.split(seg, jump):
+                if len(part) >= 1:
+                    cv2.polylines(self.paint, [part.astype(np.int32).reshape(-1, 1, 2)], False, 1, self.cthick, cv2.LINE_AA)
+            self.painted = k
+
+    def tip(self, p: float) -> tuple[float, float]:
+        """Tool tip (base px) at drawing progress p — pencil on outlines, then marker on the colour strokes."""
+        p = min(1.0, max(0.0, p))
+        if p <= LINES_END or not hasattr(self, "hatch"):
+            return self.point(int(self.total * min(1.0, p / LINES_END)))
+        q = min(1.0, max(0.0, (p - COLOR_START) / (1 - COLOR_START)))
+        x, y = self.hatch[min(len(self.hatch) - 1, int(q * (len(self.hatch) - 1)))]
+        return float(x), float(y)
 
     def state(self, p: float) -> np.ndarray:
-        """Picture at drawing progress p (0..1)."""
+        """Picture at drawing progress p (0..1): outlines appear stroke by stroke, then colour stroke by stroke."""
         if p >= 1.0:
             return self.base
-        pl = min(1.0, max(0.0, p) / LINES_SHARE)
-        self._reveal_to(int(self.total * pl))
-        out = np.empty_like(self.base)
-        out[:] = self.paper.astype(np.uint8)
+        if not hasattr(self, "hatch"):
+            self._hatch_plan()
+        self._reveal_to(int(self.total * min(1.0, max(0.0, p) / LINES_END)))
+        out = self.blank.copy()
         m = (self.reveal > 0) & self.ink
         out[m] = self.base[m]
-        if p <= LINES_SHARE:
+        if p <= COLOR_START:
             return out
-        pc = (p - LINES_SHARE) / (1 - LINES_SHARE)
-        a = np.clip((pc * 1.25 - self.diag) / 0.22, 0, 1)[..., None]
+        q = (p - COLOR_START) / (1 - COLOR_START)
+        self._paint_to(int(q * len(self.hatch)))
+        a = (self.paint.astype(np.float32) * self.mask)[..., None]
+        if q > 0.92:  # last touch: fill the tiny gaps the strokes missed
+            a = np.maximum(a, ((q - 0.92) / 0.08) * self.mask[..., None])
         return (out * (1 - a) + self.base * a).astype(np.uint8)
 
 

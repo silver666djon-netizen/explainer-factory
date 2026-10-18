@@ -268,7 +268,7 @@ class ImageShot(Shot):
         # sideways moves + depth tear the picture apart at depth edges, so parallax is used only on push-ins
         if depth is not None and not photo and strength > 0 and self.motion in PARALLAX_MOTIONS:
             dimg = Image.fromarray((np.clip(depth, 0, 1) * 255).astype(np.uint8)).resize(image.size, Image.BILINEAR)
-            d = cover(dimg.convert("RGB"), self.BW, self.BH)[..., 0].astype(np.float32) / 255.0
+            d = cover(dimg.convert("RGB"), self.BW, self.BH, *self.focus)[..., 0].astype(np.float32) / 255.0
             self.depth = cv2.GaussianBlur(d, (0, 0), 3) - 0.5
             self.par = strength * self.W
             self._grid = _pixel_grid(self.W, self.H)
@@ -282,7 +282,20 @@ class ImageShot(Shot):
         if self.draw:
             from .draw import LineDrawing
             paper = hex_to_rgb(cfg["style"]["palette"]["paper"])
-            self._ld = LineDrawing(self.base, paper)
+            from .draw import subject_mask
+            mask = None
+            if self.draw.get("subject", True):
+                dcrop = None
+                if depth is not None:
+                    dimg = Image.fromarray((np.clip(depth, 0, 1) * 255).astype(np.uint8)).resize(image.size, Image.BILINEAR)
+                    dcrop = cover(dimg.convert("RGB"), self.BW, self.BH, *self.focus)[..., 0].astype(np.float32) / 255.0
+                nw, nh, left, top = self._geo
+                bx = self.draw.get("box", [0, 0, 1, 1])  # fractions of the original picture
+                box = ((bx[0] * nw - left) / self.BW, (bx[1] * nh - top) / self.BH,
+                       (bx[2] * nw - left) / self.BW, (bx[3] * nh - top) / self.BH)
+                box = tuple(min(1.0, max(0.0, v)) for v in box)
+                mask = subject_mask(self.base, dcrop, box, self.draw.get("mode", "auto"))
+            self._ld = LineDrawing(self.base, paper, mask)
             self.depth = None  # no parallax while a picture is being drawn
         if self.full:
             fw, fh = self.full
@@ -352,11 +365,15 @@ class ImageShot(Shot):
         from .draw import hand_path, mark_pen, paste_hand
         FW, FH = out.shape[1], out.shape[0]
         if self.draw:
-            at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 2.6))
+            from .draw import COLOR_START, LINES_END
+            at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 3.4))
             tip = lambda tt: self._screen(*self._ld.tip((tt - at) / dur), tt)
-            pos = hand_path(tip, at, at + dur, t, FW, FH, mirrored=False)
-            if pos:
+            pos = hand_path(tip, at, at + dur * LINES_END, t, FW, FH, mirrored=False)
+            if pos:  # black-and-white newspaper hand with a pencil: the draft
                 paste_hand(out, "pencil", pos[0], pos[1], mirrored=False)
+            pos = hand_path(tip, at + dur * COLOR_START, at + dur, t, FW, FH, mirrored=False)
+            if pos:  # colour hand with a marker: colouring in
+                paste_hand(out, "colour", pos[0], pos[1], mirrored=False)
         if self.marks:
             pen = mark_pen(self.marks, t, self.BW, self.BH)
             if pen:
@@ -370,7 +387,7 @@ class ImageShot(Shot):
         p, s, M = self._matrix(t)
         src = self.base
         if self.draw:
-            at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 2.6))
+            at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 3.4))
             src = self._ld.state((t - at) / dur)
         src = draw_marks(src, self.marks, t, self.red, self.cfg) if self.marks else src
         if self.depth is None:

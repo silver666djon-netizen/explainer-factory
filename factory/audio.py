@@ -132,6 +132,15 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         env = np.clip(np.sin(np.pi * t / t[-1]), 0, 1) ** 0.6 * (0.7 + 0.3 * np.sin(2 * np.pi * rnd.uniform(14, 22) * t))
         out = (out + grain) * env
         return (out / (np.abs(out).max() + 1e-9) * 0.55).astype(np.float32)
+    if kind == "marker":  # felt-tip on paper: softer, squeakier stroke
+        n = int(rnd.uniform(0.16, 0.26) * SR)
+        t = np.arange(n) / SR
+        noise = rnd.standard_normal(n).astype(np.float32)
+        out = sosfilt(butter(2, [1200, 4500], btype="band", fs=SR, output="sos"), noise)
+        squeak = np.sin(2 * np.pi * rnd.uniform(1800, 2600) * t + 3 * np.sin(2 * np.pi * 7 * t)) * 0.15
+        env = np.clip(np.sin(np.pi * t / t[-1]), 0, 1) ** 0.8
+        out = (out + squeak) * env
+        return (out / (np.abs(out).max() + 1e-9) * 0.45).astype(np.float32)
     if kind == "scratch":  # record scratch for comic stops
         n = int(0.35 * SR)
         t = np.arange(n) / SR

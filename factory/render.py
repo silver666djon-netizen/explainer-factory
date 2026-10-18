@@ -248,9 +248,30 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     motion = MOTION_CYCLE[cycle_i % len(MOTION_CYCLE)]
                     cycle_i += 1
                 shot_marks = [dict(m, at=m["at"] - k * seg) for m in marks] if k == 0 else []
+                shot_draw = None
+                if visual.get("draw") and k == 0:  # channel signature: the hand draws the subject on screen
+                    dr = dict(visual["draw"]) if isinstance(visual["draw"], dict) else {}
+                    dr["at"] = _timed(dr, v["words"], 0.0) + lead_in
+                    dr.setdefault("dur", 3.4)
+                    shot_draw = dr
+                    from .draw import COLOR_START, LINES_END
+                    t0, d0 = shot_start + dr["at"], float(dr["dur"])
+                    rng = np.random.default_rng(i)
+                    tt = t0
+                    while tt < t0 + d0 * LINES_END:  # pencil strokes
+                        plan.timeline.add_sfx(tt, "pencil", seed=int(tt * 100))
+                        tt += float(rng.uniform(0.12, 0.22))
+                    tt = t0 + d0 * COLOR_START
+                    while tt < t0 + d0:  # marker squeaks while colouring
+                        plan.timeline.add_sfx(tt, "marker", seed=int(tt * 100))
+                        tt += float(rng.uniform(0.18, 0.3))
+                for m in shot_marks:
+                    if m.get("hand") is None:
+                        m["hand"] = bool(visual.get("hand_marks"))
                 shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                  marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
-                                 ad=visual.get("ad") if k == 0 else None, depth=depth_of(path))
+                                 ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
+                                 draw=shot_draw if k == 0 else None)
                 if visual.get("newsreel"):
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
