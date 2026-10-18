@@ -89,7 +89,18 @@
           "a vintage roulette wheel seen from directly above on green felt, a small ivory ball resting in the track, gentle motion blur on the spinning wheel"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "cash money stack hand",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.4,
+          "w": 0.28,
+          "on": "cash"
+        }
+      ]
     },
     {
       "id": "c04",
@@ -103,7 +114,19 @@
         "type": "image",
         "prompt": "five colourful casino chips stacked neatly on green felt, studio light",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "montecarlo_roulette_1900.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.3,
+          "on": "these",
+          "caption": "Monte Carlo, c. 1900"
+        }
+      ]
     },
     {
       "id": "c05",
@@ -199,7 +222,19 @@
           "{larry} handing banknotes through the brass bars of a casino cashier's cage",
           "a cashier's hand sliding a neat stack of casino chips across a marble counter"
         ]
-      }
+      },
+      "inserts": [
+        {
+          "file": "montecarlo_hall_1896.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.4,
+          "w": 0.3,
+          "on": "swaps",
+          "caption": "Gaming hall, Monte Carlo, 1896"
+        }
+      ]
     },
     {
       "id": "h09",
@@ -262,7 +297,18 @@
           "a hand reluctantly letting go of a banknote that flies away like a bird",
           "a sad leather wallet with a single banknote leaving it"
         ]
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "paying cash wallet",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "hurts"
+        }
+      ]
     },
     {
       "id": "b13",
@@ -319,7 +365,18 @@
         "type": "image",
         "prompt": "a fan of pastel toy play money on a cheerful game table",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "board game money",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "Monopoly"
+        }
+      ]
     },
     {
       "id": "n17",
@@ -346,7 +403,20 @@
           "old carved ivory and bone gaming counters on a green card table"
         ],
         "newsreel": true
-      }
+      },
+      "inserts": [
+        {
+          "file": "rowlandson_gaming_1791.jpg",
+          "kind": "clipping",
+          "from": "right",
+          "x": 0.8,
+          "y": 0.42,
+          "w": 0.32,
+          "on": "poker",
+          "caption": "A Gaming Table, Thomas Rowlandson, 1791",
+          "credit": "Thomas Rowlandson, 1791 — The Metropolitan Museum of Art (Open Access, public domain)"
+        }
+      ]
     },
     {
       "id": "n19",
@@ -362,7 +432,18 @@
           "badge_x": 0.8,
           "badge_y": 0.27
         }
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "poker chips vintage",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "clay"
+        }
+      ]
     },
     {
       "id": "n20",
@@ -442,7 +523,19 @@
         "prompt": "{larry} jumping for joy beside a roulette table, arms in the air",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "inserts": [
+        {
+          "file": "lv1940_wheel.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.3,
+          "on": "number",
+          "caption": "Wheel of fortune, Las Vegas, 1940"
+        }
+      ]
     },
     {
       "id": "b18",
@@ -504,9 +597,12 @@
       "section": "9 PM: The win",
       "text": "Here's the catch. The moment the dealer pushed those chips across the table, they stopped being the casino's money.",
       "visual": {
-        "type": "image",
-        "prompt": "a croupier's wooden rake pushing a stack of chips across green felt",
-        "motion": "pan_left"
+        "type": "clip",
+        "stock": "casino chips table dealer",
+        "in": 0,
+        "out": 10,
+        "fallback_prompt": "a croupier's wooden rake pushing a stack of chips across green felt",
+        "credit": "Stock footage / Pixabay"
       }
     },
     {
@@ -540,7 +636,18 @@
         "prompt": "{larry} slumped at a casino table staring at an empty patch of green felt",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "empty wallet",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "gone"
+        }
+      ]
     },
     {
       "id": "h24",
@@ -602,7 +709,19 @@
           "mark_at": -3,
           "note": "the business model"
         }
-      }
+      },
+      "inserts": [
+        {
+          "file": "human_roulette_1908.jpg",
+          "kind": "clipping",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.4,
+          "w": 0.26,
+          "on": "business",
+          "caption": "Human roulette wheel, 1908"
+        }
+      ]
     },
     {
       "id": "s28",
@@ -634,7 +753,18 @@
         "type": "image",
         "prompt": "a plain unlettered green banknote with one corner neatly torn away, the torn corner floating just beside it, lying on green casino felt",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "hundred dollar bill",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.4,
+          "w": 0.28,
+          "on": "hundred"
+        }
+      ]
     },
     {
       "id": "b30",
@@ -703,7 +833,19 @@
         "prompt": "{larry} rolling up his sleeves at the roulette table with grim determination",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "inserts": [
+        {
+          "file": "lv1940_roulette.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "behind",
+          "caption": "Roulette, Las Vegas, 1940"
+        }
+      ]
     },
     {
       "id": "d34",
@@ -790,7 +932,19 @@
         "prompt": "{larry} pressed against the glass of a slot machine, eyes wide, fingers crossed",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "inserts": [
+        {
+          "file": "slot_girl_1938.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "close",
+          "caption": "Slot machine, Louisiana, 1938"
+        }
+      ]
     },
     {
       "id": "a04",
@@ -851,7 +1005,18 @@
         "type": "image",
         "prompt": "a stylized human brain lighting up like a pinball machine full of glowing bulbs",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "brain scan mri",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "brain"
+        }
+      ]
     },
     {
       "id": "a08",
@@ -952,7 +1117,19 @@
         "type": "image",
         "prompt": "a lone glowing slot machine at the end of a dark casino aisle, dramatic light",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "slot_abandoned_1937.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "profitable",
+          "caption": "Old slot machine, Michigan, 1937"
+        }
+      ]
     },
     {
       "id": "t05",
@@ -969,11 +1146,25 @@
       "text": "You've heard it. Casinos have no clocks and no windows, so you lose track of time.",
       "sfx": "projector",
       "visual": {
-        "type": "image",
-        "prompt": "a windowless 1950s casino floor with rows of gaming tables under chandeliers",
-        "motion": "pan_right",
-        "newsreel": true
-      }
+        "type": "clip",
+        "stock": "casino interior slot machines",
+        "in": 0,
+        "out": 12,
+        "fallback_prompt": "a windowless 1950s casino floor with rows of gaming tables under chandeliers",
+        "credit": "Stock footage / Pixabay"
+      },
+      "inserts": [
+        {
+          "file": "lv1940_mainstreet.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.24,
+          "on": "clocks",
+          "caption": "Main street, Las Vegas, 1940"
+        }
+      ]
     },
     {
       "id": "e37",
@@ -1038,7 +1229,19 @@
         "prompt": "an annoyed card player in a grey 1950s suit and hat glaring up at a round wall clock",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "inserts": [
+        {
+          "file": "dude_slot_1939.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "gamblers",
+          "caption": "Slot machine, Montana, 1939"
+        }
+      ]
     },
     {
       "id": "e41",
@@ -1073,7 +1276,18 @@
         "type": "image",
         "prompt": "a tiny glowing exit sign far away at the end of a long winding corridor of slot machines",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "exit sign",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.4,
+          "w": 0.24,
+          "on": "leaving"
+        }
+      ]
     },
     {
       "id": "t06",
@@ -1102,7 +1316,18 @@
             "on": "count"
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "casino chips stacks",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "count"
+        }
+      ]
     },
     {
       "id": "f45",
@@ -1145,7 +1370,18 @@
         "type": "image",
         "prompt": "a glowing smartphone sliding up out of the breast pocket of a grey 1950s suit jacket, warm light from its screen, mid shot of the jacket only",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "c02",
+          "kind": "cutout",
+          "from": "left",
+          "x": 0.14,
+          "y": 0.62,
+          "w": 0.26,
+          "on": "phone"
+        }
+      ]
     },
     {
       "id": "p48",
@@ -1161,7 +1397,18 @@
           "a hand trading a banknote for a handful of glowing gems"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "mobile game smartphone",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "game"
+        }
+      ]
     },
     {
       "id": "p49",
@@ -1187,7 +1434,18 @@
           }
         ],
         "hand_marks": true
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "gift cards",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.4,
+          "w": 0.26,
+          "on": "Gift"
+        }
+      ]
     },
     {
       "id": "p50",
@@ -1195,11 +1453,12 @@
       "text": "And tap to pay? The smoothest chip ever invented. No notes leave your hand. Nothing to count. Just a little beep.",
       "sfx": "ding",
       "visual": {
-        "type": "image",
-        "prompts": [
-          "a smartphone tapping a card payment terminal with a small glow",
-          "an open empty leather wallet with no cash inside"
-        ]
+        "type": "clip",
+        "stock": "contactless payment phone",
+        "in": 0,
+        "out": 8,
+        "fallback_prompt": "a smartphone tapping a card payment terminal with a small glow",
+        "credit": "Stock footage / Pixabay"
       }
     },
     {
@@ -1213,7 +1472,18 @@
         "type": "image",
         "prompt": "a smartphone whose glowing screen shows a green casino table, colourful chips spilling out of it",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "las vegas night casino",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "building"
+        }
+      ]
     },
     {
       "id": "p51b",
@@ -1285,7 +1555,18 @@
         "type": "reuse",
         "beat": "c04",
         "motion": "zoom_out"
-      }
+      },
+      "inserts": [
+        {
+          "file": "c02",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.86,
+          "y": 0.62,
+          "w": 0.26,
+          "on": "real"
+        }
+      ]
     },
     {
       "id": "v55",
@@ -1298,7 +1579,19 @@
         "type": "reuse",
         "beat": "h09",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "lv1940_corner.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "house",
+          "caption": "Las Vegas, 1940"
+        }
+      ]
     },
     {
       "id": "k2",
@@ -1360,7 +1653,18 @@
           "visual": {
             "type": "reuse",
             "beat": "b12"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "paying cash wallet",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.72,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "hurts"
+            }
+          ]
         },
         {
           "text": "A chip doesn't hurt. It's light, it's colourful, it clicks.",
@@ -1390,7 +1694,19 @@
             "type": "reuse",
             "beat": "c04",
             "motion": "zoom_in"
-          }
+          },
+          "inserts": [
+            {
+              "file": "montecarlo_roulette_1900.jpg",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.48,
+              "on": "chip",
+              "caption": "Monte Carlo, c. 1900"
+            }
+          ]
         }
       ],
       "id": "s1",
@@ -1444,7 +1760,18 @@
           "visual": {
             "type": "reuse",
             "beat": "b30"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "hundred dollar bill",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "hundred"
+            }
+          ]
         },
         {
           "text": "Still want to bet a hundred dollars, a hundred times?",
@@ -1452,7 +1779,19 @@
             "type": "reuse",
             "beat": "b31",
             "motion": "zoom_in"
-          }
+          },
+          "inserts": [
+            {
+              "file": "lv1940_roulette.jpg",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.48,
+              "on": "more",
+              "caption": "Las Vegas, 1940"
+            }
+          ]
         }
       ],
       "id": "s3",
@@ -1511,7 +1850,18 @@
             "type": "reuse",
             "beat": "a07",
             "motion": "zoom_in"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "brain scan mri",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "brain"
+            }
+          ]
         }
       ],
       "id": "s5",
@@ -1562,7 +1912,19 @@
           "visual": {
             "type": "reuse",
             "beat": "a08"
-          }
+          },
+          "inserts": [
+            {
+              "file": "slot_abandoned_1937.jpg",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.48,
+              "on": "machine",
+              "caption": "Slot machine, 1937"
+            }
+          ]
         },
         {
           "text": "So the next time it's that close, remember. The jackpot stops just above the line. On purpose.",
@@ -1609,14 +1971,36 @@
           "visual": {
             "type": "reuse",
             "beat": "p48"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "mobile game smartphone",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "gems"
+            }
+          ]
         },
         {
           "text": "Gift cards? Same trick.",
           "visual": {
             "type": "reuse",
             "beat": "p49"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "gift cards",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "Gift"
+            }
+          ]
         },
         {
           "text": "Tap to pay? The smoothest chip ever invented.",
@@ -1659,7 +2043,19 @@
                 "text_y": 0.82
               }
             ]
-          }
+          },
+          "inserts": [
+            {
+              "file": "lv1940_mainstreet.jpg",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.72,
+              "y": 0.45,
+              "w": 0.42,
+              "on": "clocks",
+              "caption": "Las Vegas, 1940"
+            }
+          ]
         },
         {
           "text": "Bill Friedman, who wrote a six-hundred-page book on casino design, called it exactly that.",
@@ -1690,7 +2086,19 @@
             "type": "reuse",
             "beat": "e36",
             "motion": "zoom_in"
-          }
+          },
+          "inserts": [
+            {
+              "file": "dude_slot_1939.jpg",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.48,
+              "on": "past",
+              "caption": "Slot machine, 1939"
+            }
+          ]
         }
       ],
       "id": "s8",
