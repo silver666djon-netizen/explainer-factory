@@ -379,18 +379,8 @@ INS = {
     "c02": [{"file": "c05", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.26, "on": "People"}],
     "c06": [{"file": "p40", "kind": "cutout", "from": "left", "x": 0.14, "y": 0.6, "w": 0.24, "on": "somewhere"}],
     # 11:47
-    "b11": [{"stock_photo": "taxi rain night", "pick": 10435616, "kind": "photo", "from": "right", "x": 0.8, "y": 0.4, "w": 0.3, "on": "fare"}],
-    "d13": [{"stock_photo": "radio microphone vintage", "pick": 2627991, "kind": "photo", "from": "right", "x": 0.82, "y": 0.5, "w": 0.28, "on": "podcast" , "at": 0.3}],
-    "d14": [{"stock_photo": "smartphone low battery", "pick": 3255267, "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "battery"}],
-    "d14b": [{"stock_photo": "people umbrellas rain street", "pick": 3867745, "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "lots"}],
-    "b16": [{"stock_photo": "smartphone gps map navigation", "pick": 2198559, "kind": "photo", "from": "right", "x": 0.84, "y": 0.42, "w": 0.26, "on": "Where", "dur": 2.4}],
     # 8:02
-    "a20": [{"stock_photo": "television news camera", "pick": 2808321, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "KARE"}],
-    "a21": [{"stock_photo": "television electronics store", "pick": 627876, "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.28, "on": "Samsung"}],
-    "a22": [{"stock_photo": "supermarket parking lot", "pick": 4054031, "kind": "photo", "from": "bottom", "x": 0.24, "y": 0.62, "w": 0.3, "on": "parking"}],
-    "a25": [{"stock_photo": "shopping app smartphone store", "pick": 1921658, "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "lesson"}],
     # 10:15
-    "s30": [{"stock_photo": "online grocery shopping phone", "pick": 6974508, "kind": "photo", "from": "right", "x": 0.84, "y": 0.4, "w": 0.26, "on": "delivery"}],
     "s32": [{"file": "supermarket_1957_a.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.45, "w": 0.3, "on": "volunteers", "caption": "Shopping in a supermarket, 1957"}],
     "s33b": [{"file": "grocery_lincoln_1942.jpg", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "ordinary", "caption": "Grand Grocery, Lincoln, 1942"}],
     "s36": [{"file": "piggly_aisle_1918.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "tests", "caption": "Piggly Wiggly, 1918 — the first self-service store"}],
@@ -401,13 +391,10 @@ INS = {
     "p43": [{"stock_photo": "computer mouse hand", "pick": 625152, "kind": "photo", "from": "right", "x": 0.84, "y": 0.42, "w": 0.26, "on": "mouse"}],
     "p45": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.24, "on": "toolbox"}],
     # defence / twist / close
-    "d51": [{"stock_photo": "coupons", "pick": 5219531, "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.26, "on": "discount"}],
     "d51b": [{"stock_photo": "airport departure board", "pick": 4865665, "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "fares"}],
     "w60": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.24, "on": "machine"}],
-    "v72": [{"stock_photo": "comparing prices phone store", "pick": 410324, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "website"}],
     "v74b": [{"file": "grocery_prices_savannah_1939.jpg", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.3, "on": "fact.", "caption": "Prices posted outside a grocery, Savannah, 1939"}],
     "d50": [{"file": "grocery_salem_1940.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "change", "caption": "Grocery store, Salem, Illinois, 1940"}],
-    "d52": [{"stock_photo": "dice random", "pick": 7634718, "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.26, "on": "random"}],
     "v75": [{"file": "general_store_1936.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "checking", "caption": "Moundville, 1936"}],
 }
 for b in B:
@@ -432,18 +419,11 @@ for b in B:
 
 
 SHORT_INS = {  # (short id, beat index) -> inserts; positions inside the Shorts picture window
-    ("s1", 1): [{"stock_photo": "radio microphone vintage", "pick": 2627991, "kind": "photo", "from": "right", "x": 0.72, "y": 0.42, "w": 0.46}],
-    ("s1", 4): [{"stock_photo": "smartphone gps map navigation", "pick": 2198559, "kind": "photo", "from": "left", "x": 0.3, "y": 0.45, "w": 0.46}],
-    ("s2", 0): [{"stock_photo": "television electronics store", "pick": 627876, "kind": "photo", "from": "right", "x": 0.7, "y": 0.5, "w": 0.46, "at": 1.0}],
-    ("s2", 1): [{"stock_photo": "supermarket parking lot", "pick": 4054031, "kind": "photo", "from": "left", "x": 0.3, "y": 0.42, "w": 0.48}],
     ("s3", 0): [{"file": "supermarket_1957_a.jpg", "kind": "photo", "from": "right", "x": 0.7, "y": 0.45, "w": 0.48, "caption": "Supermarket, 1957", "at": 0.8}],
-    ("s3", 4): [{"stock_photo": "online grocery shopping phone", "pick": 6974508, "kind": "photo", "from": "left", "x": 0.3, "y": 0.45, "w": 0.46}],
     ("s4", 3): [{"file": "piggly_aisle_1918.jpg", "kind": "photo", "from": "right", "x": 0.7, "y": 0.45, "w": 0.48, "caption": "Piggly Wiggly, 1918"}],
     ("s5", 0): [{"file": "grocery_lincoln_1942.jpg", "kind": "photo", "from": "left", "x": 0.3, "y": 0.42, "w": 0.48, "caption": "Grocery, 1942", "at": 1.0}],
-    ("s6", 1): [{"stock_photo": "computer mouse hand", "pick": 625152, "kind": "photo", "from": "right", "x": 0.72, "y": 0.42, "w": 0.46}],
     ("s6", 4): [{"file": "c05", "kind": "cutout", "from": "left", "x": 0.24, "y": 0.6, "w": 0.4}],
     ("s7", 0): [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.78, "y": 0.62, "w": 0.4}],
-    ("s7", 5): [{"stock_photo": "comparing prices phone store", "pick": 410324, "kind": "photo", "from": "left", "x": 0.3, "y": 0.45, "w": 0.46}],
 }
 for sh in shorts:
     for k, b in enumerate(sh["beats"]):

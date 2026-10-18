@@ -256,18 +256,6 @@
       },
       "punch": [
         "battery?"
-      ],
-      "inserts": [
-        {
-          "stock_photo": "taxi rain night",
-          "pick": 10435616,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.8,
-          "y": 0.4,
-          "w": 0.3,
-          "on": "fare"
-        }
       ]
     },
     {
@@ -301,20 +289,7 @@
           "at": 4.0,
           "highlight": "more willing to accept surge pricing"
         }
-      },
-      "inserts": [
-        {
-          "stock_photo": "radio microphone vintage",
-          "pick": 2627991,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.5,
-          "w": 0.28,
-          "on": "podcast",
-          "at": 0.3
-        }
-      ]
+      }
     },
     {
       "id": "d14",
@@ -325,19 +300,7 @@
         "beat": "c01",
         "index": 1,
         "motion": "zoom_out"
-      },
-      "inserts": [
-        {
-          "stock_photo": "smartphone low battery",
-          "pick": 3255267,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.42,
-          "w": 0.28,
-          "on": "battery"
-        }
-      ]
+      }
     },
     {
       "id": "d14b",
@@ -351,19 +314,7 @@
         "out": 12,
         "fallback_prompt": "a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight",
         "credit": "Stock footage / Pixabay"
-      },
-      "inserts": [
-        {
-          "stock_photo": "people umbrellas rain street",
-          "pick": 3867745,
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.4,
-          "w": 0.3,
-          "on": "lots"
-        }
-      ]
+      }
     },
     {
       "id": "b15",
@@ -412,20 +363,7 @@
             "on": "badly"
           }
         ]
-      },
-      "inserts": [
-        {
-          "stock_photo": "smartphone gps map navigation",
-          "pick": 2198559,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.84,
-          "y": 0.42,
-          "w": 0.26,
-          "on": "Where",
-          "dur": 2.4
-        }
-      ]
+      }
     },
     {
       "id": "b17",
@@ -468,19 +406,7 @@
         "motion": "zoom_in",
         "newsreel": "Reconstruction"
       },
-      "say": "February twenty nineteen. A TV news team in Minneapolis, Kare Eleven, tried something simple with the Target app.",
-      "inserts": [
-        {
-          "stock_photo": "television news camera",
-          "pick": 2808321,
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.3,
-          "on": "KARE"
-        }
-      ]
+      "say": "February twenty nineteen. A TV news team in Minneapolis, Kare Eleven, tried something simple with the Target app."
     },
     {
       "id": "a21",
@@ -492,19 +418,7 @@
         "motion": "zoom_in"
       },
       "on_screen": "$499.99",
-      "say": "At home, a fifty-five inch Samsung TV showed up in the app at four ninety-nine ninety-nine.",
-      "inserts": [
-        {
-          "stock_photo": "television electronics store",
-          "pick": 627876,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.4,
-          "w": 0.28,
-          "on": "Samsung"
-        }
-      ]
+      "say": "At home, a fifty-five inch Samsung TV showed up in the app at four ninety-nine ninety-nine."
     },
     {
       "id": "a22",
@@ -528,19 +442,7 @@
         "on": "said",
         "dur": 1.4
       },
-      "say": "Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine.",
-      "inserts": [
-        {
-          "stock_photo": "supermarket parking lot",
-          "pick": 4054031,
-          "kind": "photo",
-          "from": "bottom",
-          "x": 0.24,
-          "y": 0.62,
-          "w": 0.3,
-          "on": "parking"
-        }
-      ]
+      "say": "Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine."
     },
     {
       "id": "a23",
@@ -595,19 +497,7 @@
             "on": "where"
           }
         ]
-      },
-      "inserts": [
-        {
-          "stock_photo": "shopping app smartphone store",
-          "pick": 1921658,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.42,
-          "w": 0.28,
-          "on": "lesson"
-        }
-      ]
+      }
     },
     {
       "id": "a26",
@@ -656,19 +546,7 @@
           "{linda} at her own kitchen table tapping on her phone, a neat shopping list beside her, mid shot"
         ],
         "motion": "zoom_in"
-      },
-      "inserts": [
-        {
-          "stock_photo": "online grocery shopping phone",
-          "pick": 6974508,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.84,
-          "y": 0.4,
-          "w": 0.26,
-          "on": "delivery"
-        }
-      ]
+      }
     },
     {
       "id": "s31",
@@ -1301,19 +1179,7 @@
         "type": "image",
         "prompt": "brass balance scales with a small red discount coupon on one pan and a price tag on the other, evenly balanced",
         "motion": "zoom_in"
-      },
-      "inserts": [
-        {
-          "stock_photo": "coupons",
-          "pick": 5219531,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.4,
-          "w": 0.26,
-          "on": "discount"
-        }
-      ]
+      }
     },
     {
       "id": "d51b",
@@ -1350,19 +1216,7 @@
         "beat": "s3a",
         "index": 0,
         "motion": "zoom_out"
-      },
-      "inserts": [
-        {
-          "stock_photo": "dice random",
-          "pick": 7634718,
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.42,
-          "w": 0.26,
-          "on": "random"
-        }
-      ]
+      }
     },
     {
       "id": "d53",
@@ -1543,19 +1397,7 @@
           "a laptop on a kitchen table next to a phone, both showing a plain shop page"
         ],
         "motion": "zoom_in"
-      },
-      "inserts": [
-        {
-          "stock_photo": "comparing prices phone store",
-          "pick": 410324,
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.28,
-          "on": "website"
-        }
-      ]
+      }
     },
     {
       "id": "v73",
@@ -1742,17 +1584,6 @@
             "motion": "zoom_in"
           },
           "say": "In twenty sixteen, Uber's own economist said riders with a dying phone were more willing to accept surge pricing.",
-          "inserts": [
-            {
-              "stock_photo": "radio microphone vintage",
-              "pick": 2627991,
-              "kind": "photo",
-              "from": "right",
-              "x": 0.72,
-              "y": 0.42,
-              "w": 0.46
-            }
-          ],
           "id": "s1_1"
         },
         {
@@ -1784,17 +1615,6 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "inserts": [
-            {
-              "stock_photo": "smartphone gps map navigation",
-              "pick": 2198559,
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.46
-            }
-          ],
           "id": "s1_4"
         },
         {
@@ -1823,18 +1643,6 @@
             "motion": "zoom_in"
           },
           "say": "This TV cost four ninety-nine ninety-nine in the app.",
-          "inserts": [
-            {
-              "stock_photo": "television electronics store",
-              "pick": 627876,
-              "kind": "photo",
-              "from": "right",
-              "x": 0.7,
-              "y": 0.5,
-              "w": 0.46,
-              "at": 1.0
-            }
-          ],
           "id": "s2_0"
         },
         {
@@ -1855,17 +1663,6 @@
             "dur": 1.2
           },
           "say": "The reporter drove to the store. In the parking lot, same TV, same app: five ninety-nine ninety-nine.",
-          "inserts": [
-            {
-              "stock_photo": "supermarket parking lot",
-              "pick": 4054031,
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.42,
-              "w": 0.48
-            }
-          ],
           "id": "s2_1"
         },
         {
@@ -1998,17 +1795,6 @@
             "index": 1,
             "motion": "zoom_in"
           },
-          "inserts": [
-            {
-              "stock_photo": "online grocery shopping phone",
-              "pick": 6974508,
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.46
-            }
-          ],
           "id": "s3_4"
         }
       ]
@@ -2220,17 +2006,6 @@
             "index": 0,
             "motion": "static"
           },
-          "inserts": [
-            {
-              "stock_photo": "computer mouse hand",
-              "pick": 625152,
-              "kind": "photo",
-              "from": "right",
-              "x": 0.72,
-              "y": 0.42,
-              "w": 0.46
-            }
-          ],
           "id": "s6_1"
         },
         {
@@ -2405,17 +2180,6 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "inserts": [
-            {
-              "stock_photo": "comparing prices phone store",
-              "pick": 410324,
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.46
-            }
-          ],
           "id": "s7_5"
         }
       ]
