@@ -45,7 +45,9 @@ def cutout(src: Image.Image, depth: np.ndarray | None, cfg: dict, seed: int) -> 
     d = None
     if depth is not None:
         d = np.array(Image.fromarray((np.clip(depth, 0, 1) * 255).astype(np.uint8)).resize(src.size, Image.BILINEAR)).astype(np.float32) / 255
-    m = subject_mask(base, d, (0.0, 0.0, 1.0, 1.0), "depth" if d is not None else "shape")
+    m = subject_mask(base, None, (0.0, 0.0, 1.0, 1.0), "shape")  # non-paper pixels (plain backdrops)
+    if d is not None:  # light parts (chrome, white gloves) can match the paper: add the near depth layer
+        m = np.maximum(m, subject_mask(base, d, (0.0, 0.0, 1.0, 1.0), "depth"))
     m8 = (np.clip(m, 0, 1) * 255).astype(np.uint8)
     ys, xs = np.where(m8 > 60)
     if len(xs) < 50:

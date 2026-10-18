@@ -106,11 +106,14 @@ def subject_mask(base: np.ndarray, depth: np.ndarray | None, box=(0.0, 0.0, 1.0,
         paper = np.median(base[ring].reshape(-1, 3), axis=0).astype(np.int16)
         diff = np.abs(H8 - paper[None, None, :]).max(axis=2)
         m[y0:y1, x0:x1] = (diff[y0:y1, x0:x1] > 28)
-        k0 = max(3, int(min(H, W) * 0.008)) | 1
-        m = cv2.morphologyEx(m, cv2.MORPH_OPEN, np.ones((k0, k0), np.uint8))
+        k0 = max(3, int(min(H, W) * 0.006)) | 1
+        # thin ink outlines must survive (they close light shapes like a chrome head or white gloves):
+        # bridge small gaps, fill every closed outline, then remove specks
+        m = cv2.dilate(m, np.ones((k0, k0), np.uint8))
         cs, _ = cv2.findContours(m, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         m = np.zeros_like(m)
-        cv2.drawContours(m, cs, -1, 1, thickness=cv2.FILLED)
+        cv2.drawContours(m, [c for c in cs if cv2.contourArea(c) > (H * W) * 0.0004], -1, 1, thickness=cv2.FILLED)
+        m = cv2.erode(m, np.ones((k0, k0), np.uint8))
     n, lab, st, _ = cv2.connectedComponentsWithStats(m)
     if n > 1:
         big = st[1:, cv2.CC_STAT_AREA].max()
@@ -175,7 +178,7 @@ class LineDrawing:
             paper_lvl = float(np.median(gray[hole == 0])) if (hole == 0).any() else 235.0
             halo = ((gray < paper_lvl - 10) & (cv2.dilate(hole, np.ones((k * 4 | 1, k * 4 | 1), np.uint8)) > 0)).astype(np.uint8)
             hole = np.maximum(hole, halo)
-            hole_d = cv2.dilate(hole, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
+            hole_d = cv2.dilate(hole, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k * 2 + 1, k * 2 + 1)))
             known = (1 - hole_d).astype(np.float32)
             basef = base.astype(np.float32)
             sig = max(6.0, min(H, W) * 0.02)
@@ -191,6 +194,9 @@ class LineDrawing:
                 fill_low = np.where(cover[..., None], fill_low, nxt)
                 cover = cover | (wsum > 0.2)
             fill_low = cv2.GaussianBlur(fill_low, (0, 0), sig)
+            # keep the fill a paper tone: nothing darker/lighter than the backdrop's own gentle variation
+            med = np.median(basef[known > 0.5].reshape(-1, 3), axis=0) if (known > 0.5).any() else self.paper
+            fill_low = np.clip(fill_low, med - 10, med + 10)
             low = cv2.GaussianBlur(basef, (0, 0), sig)
             # grain: high-pass of a clean strip (the border region away from the subject), tiled with mirroring
             hp = basef - low

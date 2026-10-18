@@ -1374,13 +1374,13 @@
       },
       "inserts": [
         {
-          "file": "s30.1",
+          "file": "p40",
           "kind": "cutout",
           "from": "right",
           "x": 0.86,
           "y": 0.6,
           "w": 0.24,
-          "on": "knew"
+          "on": "machine"
         }
       ]
     },
@@ -1462,18 +1462,7 @@
           "at": 3.0,
           "highlight": "shoppers are not aware that they're in an experiment"
         }
-      },
-      "inserts": [
-        {
-          "file": "w62",
-          "kind": "cutout",
-          "from": "left",
-          "x": 0.16,
-          "y": 0.6,
-          "w": 0.26,
-          "on": "experiment"
-        }
-      ]
+      }
     },
     {
       "id": "w64",
@@ -2293,7 +2282,7 @@
           },
           "inserts": [
             {
-              "file": "s30.1",
+              "file": "p40",
               "kind": "cutout",
               "from": "right",
               "x": 0.78,

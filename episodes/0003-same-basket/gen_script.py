@@ -403,8 +403,7 @@ INS = {
     # defence / twist / close
     "d51": [{"stock_photo": "coupons", "pick": 5219531, "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.26, "on": "discount"}],
     "d51b": [{"stock_photo": "airport departure board", "pick": 4865665, "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "fares"}],
-    "w60": [{"file": "s30.1", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.24, "on": "knew"}],
-    "w63": [{"file": "w62", "kind": "cutout", "from": "left", "x": 0.16, "y": 0.6, "w": 0.26, "on": "experiment"}],
+    "w60": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.24, "on": "machine"}],
     "v72": [{"stock_photo": "comparing prices phone store", "pick": 410324, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "website"}],
     "v74b": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.24, "on": "guess."}],
 }
@@ -440,7 +439,7 @@ SHORT_INS = {  # (short id, beat index) -> inserts; positions inside the Shorts 
     ("s5", 0): [{"file": "grocery_lincoln_1942.jpg", "kind": "photo", "from": "left", "x": 0.3, "y": 0.42, "w": 0.48, "caption": "Grocery, 1942", "at": 1.0}],
     ("s6", 1): [{"stock_photo": "computer mouse hand", "pick": 625152, "kind": "photo", "from": "right", "x": 0.72, "y": 0.42, "w": 0.46}],
     ("s6", 4): [{"file": "c05", "kind": "cutout", "from": "left", "x": 0.24, "y": 0.6, "w": 0.4}],
-    ("s7", 0): [{"file": "s30.1", "kind": "cutout", "from": "right", "x": 0.78, "y": 0.62, "w": 0.4}],
+    ("s7", 0): [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.78, "y": 0.62, "w": 0.4}],
     ("s7", 5): [{"stock_photo": "comparing prices phone store", "pick": 410324, "kind": "photo", "from": "left", "x": 0.3, "y": 0.45, "w": 0.46}],
 }
 for sh in shorts:
