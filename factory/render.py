@@ -321,7 +321,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         last_section = section or last_section
 
         if beat.get("on_screen") and vtype not in ("chart", "stat", "title"):  # those already fill the top
-            appear = start if beat.get("_hook") else start + 0.25
+            appear = 0.0 if beat.get("_hook") else start + 0.25
             bub = beat.get("bubble") or {}
             bubble_top_left = bool(bub) and float(bub.get("x", 0.5)) < 0.5 and float(bub.get("y", 0.5)) < 0.4
             corner = vtype in ("image", "reuse", "photo", "clip") and size[0] > size[1] and not bubble_top_left
@@ -533,10 +533,19 @@ class Overlay:
         cards = self.plan.cards
         if card_i < len(cards) and cards[card_i].start <= t < cards[card_i].end:
             card = cards[card_i]
-            img, op = (self.card_img(card), 1.0) if card.hook else self._pop(self.card_img(card), t - card.start)
-            op *= min(1.0, (card.end - t) / 0.15)
-            x = int(self.W * 0.04) if card.corner else (self.W - img.shape[1]) // 2
-            blend(frame, img, x, self.card_y, opacity=op)
+            if card.hook:  # Shorts opener: picture slides down under a paper title band, so no face is covered
+                img = self.card_img(card)
+                top = int(self.H * 0.07)  # clear of the Shorts top bar
+                band = min(int(self.H * 0.34), top + img.shape[0] + int(self.H * 0.03))
+                frame[band:] = frame[:self.H - band].copy()
+                frame[:band] = self.pal["paper"]
+                frame[band - max(3, self.H // 240):band] = self.pal["red"]
+                blend(frame, img, (self.W - img.shape[1]) // 2, top + (band - top - img.shape[0]) // 2, opacity=1.0)
+            else:
+                img, op = self._pop(self.card_img(card), t - card.start)
+                op *= min(1.0, (card.end - t) / 0.15)
+                x = int(self.W * 0.04) if card.corner else (self.W - img.shape[1]) // 2
+                blend(frame, img, x, self.card_y, opacity=op)
         bubs = self.plan.bubbles
         if bub_i < len(bubs) and bubs[bub_i].start <= t < bubs[bub_i].end:
             bub = bubs[bub_i]

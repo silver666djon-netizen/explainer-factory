@@ -286,7 +286,33 @@
       "visual": {
         "type": "image",
         "prompt": "a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket",
-        "motion": "zoom_in"
+        "motion": "zoom_in",
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.3,
+            "y": 0.19,
+            "w": 0.1,
+            "h": 0.18,
+            "on": "Where"
+          },
+          {
+            "type": "circle",
+            "x": 0.5,
+            "y": 0.11,
+            "w": 0.1,
+            "h": 0.18,
+            "on": "doing."
+          },
+          {
+            "type": "circle",
+            "x": 0.71,
+            "y": 0.19,
+            "w": 0.1,
+            "h": 0.18,
+            "on": "badly"
+          }
+        ]
       }
     },
     {
@@ -302,9 +328,9 @@
           {
             "type": "circle",
             "x": 0.3,
-            "y": 0.35,
-            "w": 0.18,
-            "h": 0.26,
+            "y": 0.2,
+            "w": 0.14,
+            "h": 0.24,
             "on": "Exhibit"
           }
         ]
@@ -404,9 +430,19 @@
       "text": "After the report, Target said changes were coming to the app. But the lesson stuck: the price on your screen can depend on where your screen is.",
       "visual": {
         "type": "reuse",
-        "beat": "a22",
+        "beat": "b16",
         "index": 0,
-        "motion": "zoom_in"
+        "motion": "zoom_out",
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.3,
+            "y": 0.19,
+            "w": 0.12,
+            "h": 0.2,
+            "on": "where"
+          }
+        ]
       }
     },
     {
@@ -621,12 +657,23 @@
     {
       "id": "s39",
       "section": "10:15 AM: Same basket",
-      "text": "Same price. Different feeling. The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
+      "text": "Same price. Different *feeling.*",
       "visual": {
         "type": "kinetic",
         "kinetic": {
           "bg": "paper"
         }
+      }
+    },
+    {
+      "id": "s39b",
+      "section": "10:15 AM: Same basket",
+      "text": "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
+      "visual": {
+        "type": "reuse",
+        "beat": "s37",
+        "index": 0,
+        "motion": "static"
       },
       "punch": [
         "anchoring."
@@ -747,16 +794,24 @@
     {
       "id": "h43",
       "section": "1:30 PM: The machine",
-      "text": "Personalised pricing quietly brings the haggling back. Except only one side knows the haggling is happening.",
+      "text": "Personalised pricing quietly brings the haggling back.",
+      "visual": {
+        "type": "reuse",
+        "beat": "h40",
+        "index": 0,
+        "motion": "static"
+      }
+    },
+    {
+      "id": "h43b",
+      "section": "1:30 PM: The machine",
+      "text": "Except only *one* side knows the haggling is happening.",
       "visual": {
         "type": "kinetic",
         "kinetic": {
           "bg": "paper"
         }
-      },
-      "punch": [
-        "one"
-      ]
+      }
     },
     {
       "id": "p40",
@@ -888,9 +943,9 @@
       "text": "And Instacart said shoppers were put into test groups at random, by product and location. Not by who they are.",
       "visual": {
         "type": "reuse",
-        "beat": "d51",
+        "beat": "s3a",
         "index": 0,
-        "motion": "static"
+        "motion": "zoom_out"
       }
     },
     {
@@ -1065,9 +1120,19 @@
       "text": "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
       "visual": {
         "type": "reuse",
-        "beat": "c03",
+        "beat": "h41",
         "index": 0,
-        "motion": "zoom_out"
+        "motion": "zoom_out",
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.6,
+            "y": 0.6,
+            "w": 0.18,
+            "h": 0.3,
+            "on": "guess."
+          }
+        ]
       }
     },
     {
@@ -1513,7 +1578,6 @@
             "index": 0,
             "motion": "static"
           },
-          "on_screen": "Location · Device · Cart",
           "id": "s6_1"
         },
         {

@@ -93,9 +93,12 @@ beat("d14b", S, "Surge pricing itself is real, of course. When lots of people wa
      img("a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight", motion="pan_left"))
 beat("b15", S, "Verdict: *not* *proven.*", kin("red"), sfx="thud")
 beat("b16", S, "But notice what the rumour got right. Your phone knows things about you. Where you are. What you're doing. How badly you need it.",
-     img("a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket", motion="zoom_in"))
+     img("a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket", motion="zoom_in",
+         marks=[{"type": "circle", "x": 0.3, "y": 0.19, "w": 0.1, "h": 0.18, "on": "Where"},
+                {"type": "circle", "x": 0.5, "y": 0.11, "w": 0.1, "h": 0.18, "on": "doing."},
+                {"type": "circle", "x": 0.71, "y": 0.19, "w": 0.1, "h": 0.18, "on": "badly"}]))
 beat("b17", S, "And some apps really have changed the price because of one of those things. Exhibit A.",
-     reuse("b16", motion="static", marks=[{"type": "circle", "x": 0.3, "y": 0.35, "w": 0.18, "h": 0.26, "on": "Exhibit"}]), sfx="riser")
+     reuse("b16", motion="static", marks=[{"type": "circle", "x": 0.3, "y": 0.2, "w": 0.14, "h": 0.24, "on": "Exhibit"}]), sfx="riser")
 
 # ------------------------------------------------------------------ 8:02 AM
 S = "8:02 AM: The parking lot"
@@ -115,7 +118,7 @@ beat("a23", S, "The app had quietly switched to the in-store price the moment th
          marks=[{"type": "circle", "x": 0.5, "y": 0.35, "w": 0.22, "h": 0.3, "on": "quietly"}]))
 beat("a24", S, "A hundred dollars, for driving to the store.", kin("paper"), punch=["hundred"])
 beat("a25", S, "After the report, Target said changes were coming to the app. But the lesson stuck: the price on your screen can depend on where your screen is.",
-     reuse("a22", motion="zoom_in"))
+     reuse("b16", motion="zoom_out", marks=[{"type": "circle", "x": 0.3, "y": 0.19, "w": 0.12, "h": 0.2, "on": "where"}]))
 beat("a26", S, "Exhibit A. *Confirmed.*", kin("green"), sfx="thud")
 beat("k1", S, "If you enjoy catching prices red-handed, subscribe. The Inspector has more files.",
      reuse("c05", motion="zoom_in"), cta={"on": "subscribe", "click_on": "Inspector"})
@@ -152,8 +155,9 @@ beat("s37", S, "Now look at these crackers. Shoppers were shown three different 
      on_screen="Was $5.93 · $5.99 · $6.69")
 beat("s38", S, "And every single one of them paid the same sale price: three ninety-nine.",
      reuse("s37", motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.42, "h": 0.55, "text": "everyone: $3.99", "text_y": 0.68, "on": "same"}]))
-beat("s39", S, "Same price. Different feeling. The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
-     kin("paper"), punch=["anchoring."])
+beat("s39", S, "Same price. Different *feeling.*", kin("paper"))
+beat("s39b", S, "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
+     reuse("s37", motion="static"), punch=["anchoring."])
 beat("s3a", S, "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
      img("a tidy corporate press statement on letterhead lying on a polished desk beside a fountain pen", motion="zoom_in",
          marks=[{"type": "underline", "x": 0.5, "y": 0.55, "w": 0.4, "text": "negligible?", "text_y": 0.7, "on": "negligible"}]))
@@ -173,8 +177,8 @@ beat("h41", S, "Then shops like Wanamaker's in Philadelphia championed a radical
          ad={"badge": "NEW!", "badge_x": 0.82, "badge_y": 0.2, "slogan": "One price. For everyone. Imagine that.", "slogan_y": 0.86}))
 beat("h42", S, "The price tag was a promise. The rich man and the poor widow paid the same.",
      reuse("h41", motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.48, "w": 0.3, "h": 0.4, "text": "one price", "text_y": 0.7, "on": "same"}]))
-beat("h43", S, "Personalised pricing quietly brings the haggling back. Except only one side knows the haggling is happening.",
-     kin("paper"), punch=["one"])
+beat("h43", S, "Personalised pricing quietly brings the haggling back.", reuse("h40", motion="static"))
+beat("h43b", S, "Except only *one* side knows the haggling is happening.", kin("paper"))
 beat("p40", S, "So who sets these prices now? Meet the machine. We'll call him Mister Price.",
      img("{price} standing proudly behind a shop counter, arms open in welcome with white-gloved cartoon hands, full figure", motion="zoom_in"))
 beat("p41", S, "Good afternoon! Shopping on a phone, I see. Sorting by price, low to high. Lovely.",
@@ -203,7 +207,7 @@ beat("d51", S, "To be fair, he has a point. Shops have always tested prices, and
 beat("d51b", S, "Airlines have charged different fares for the same seat for decades, and most of us accept it, because at least we know the game.",
      img("a 1950s airliner parked on a sunny runway with passengers climbing a boarding stair", motion="pan_right"))
 beat("d52", S, "And Instacart said shoppers were put into test groups at random, by product and location. Not by who they are.",
-     reuse("d51", motion="static"))
+     reuse("s3a", motion="zoom_out"))
 beat("d53", S, "Alibi: partial.",
      {"type": "mugshot", "prompt": "a cream retro-styled shopping basket with a few groceries, plain light grey background, studio lighting",
       "suspect": {"number": 2, "name": "The price experiment", "alias": "A/B test", "last_seen": "Your delivery app", "tag": "ALIBI: PARTIAL"}})
@@ -237,7 +241,7 @@ beat("v72", S, "Before you pay, check the price somewhere else: another phone, l
 beat("v73", S, "Switch off location for shopping apps when you don't need it.",
      reuse("a23", motion="zoom_in", marks=[{"type": "cross", "x": 0.5, "y": 0.35, "w": 0.22, "h": 0.3, "on": "off"}]))
 beat("v74b", S, "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
-     reuse("c03", motion="zoom_out"))
+     reuse("h41", motion="zoom_out", marks=[{"type": "circle", "x": 0.6, "y": 0.6, "w": 0.18, "h": 0.3, "on": "guess."}]))
 beat("v75", S, "Larry's phone is now at a hundred percent. He's still checking the price.",
      img("{larry} at home holding his fully charged phone at arm's length and squinting at it suspiciously, mid shot", motion="zoom_in"),
      bubble={"text": "Twice.", "x": 0.75, "y": 0.22, "tail": "left", "at": 2.4})
@@ -312,8 +316,7 @@ shorts = [
     ]},
     {"id": "s6", "hook": 'What shops know about you', "title": "What shops may know before you pay #shorts", "beats": [
         r("p40", "Meet the machine. He'd like a word about your shopping."),
-        r("p43", "Location. Device. Browsing. Even your mouse movements and abandoned carts.", motion="static",
-          on_screen="Location · Device · Cart"),
+        r("p43", "Location. Device. Browsing. Even your mouse movements and abandoned carts.", motion="static"),
         r("p44", "An FTC example: spot a new parent, offer a baby thermometer at a premium.", on_screen="FTC example"),
         r("p45", "The FTC said the findings were preliminary. But the toolbox exists."),
         {"text": "Nothing personal. Just data.", "voice": "price", "visual": {"type": "reuse", "beat": "p40", "motion": "zoom_in"}},
