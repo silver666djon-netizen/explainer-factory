@@ -15,6 +15,10 @@ on:
         description: "yes = fast low-res draft for Claude's QC (release <slug>-preview, nothing sent to Telegram)"
         required: false
         default: "no"
+      send:
+        description: "no = publish the release but don't send to Telegram yet (send after QC with the Notify workflow)"
+        required: false
+        default: "yes"
 
 permissions:
   contents: write
@@ -175,7 +179,7 @@ jobs:
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
             gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt"
             url=$(gh release view "$tag" --json url -q .url)
-            python -m factory.notify "out/$ep" "$url"
+            if [ "${{ github.event.inputs.send }}" != "no" ]; then python -m factory.notify "out/$ep" "$url"; fi
           done
 
       - name: Telegram on failure

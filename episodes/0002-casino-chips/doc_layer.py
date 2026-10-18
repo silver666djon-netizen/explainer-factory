@@ -144,7 +144,7 @@ by["a11"]["counter"].pop("at", None)
 by["v54"]["pause_at"] = {"word": "how many", "sec": 1.3, "hit": "stamp"}
 
 # Larry's tab (top-right ledger); inserts that came in from the right now come from the left
-for k in ("b08", "b23", "e43"):
+for k in ("b08", "b23", "e43", "b29"):
     for ins in by[k].get("inserts") or []:
         ins.update({"from": "left", "x": 0.18})
 by["b08"]["ledger"] = [{"label": "CASH IN", "amount": "$500", "on": "five"}, {"label": "CHIPS", "amount": "500", "on": "stack"}]
@@ -186,7 +186,7 @@ end = [
     {"id": "e2", "section": "Case closed", "text": "Next case: same basket, same shop — two different prices.", "block_at": 7.0,
      "visual": {"type": "continue"}},
     {"id": "e3", "section": "Case closed", "text": "Subscribe, so the next case file finds you. And your next case is right here.",
-     "block_at": 14.8, "block_end": 20.0, "visual": {"type": "continue"}},
+     "block_at": 14.3, "block_end": 20.0, "visual": {"type": "continue"}},
 ]
 s["beats"] = [b for b in s["beats"] if b["id"] not in ("k2", "k3")] + end
 by = {b["id"]: b for b in s["beats"]}

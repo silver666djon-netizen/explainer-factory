@@ -866,8 +866,8 @@
         {
           "stock_photo": "hundred dollar bill",
           "kind": "photo",
-          "from": "right",
-          "x": 0.82,
+          "from": "left",
+          "x": 0.18,
           "y": 0.4,
           "w": 0.28,
           "on": "hundred",
@@ -1834,7 +1834,7 @@
       "id": "e3",
       "section": "Case closed",
       "text": "Subscribe, so the next case file finds you. And your next case is right here.",
-      "block_at": 14.8,
+      "block_at": 14.3,
       "block_end": 20.0,
       "visual": {
         "type": "continue"
