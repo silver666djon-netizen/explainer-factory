@@ -260,6 +260,7 @@
       "inserts": [
         {
           "stock_photo": "taxi rain night",
+          "pick": 10435616,
           "kind": "photo",
           "from": "right",
           "x": 0.8,
@@ -304,6 +305,7 @@
       "inserts": [
         {
           "stock_photo": "radio microphone vintage",
+          "pick": 2627991,
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -343,15 +345,16 @@
       "visual": {
         "type": "clip",
         "stock": "city street night rain traffic",
+        "pick": 290317,
         "in": 0,
-        "out": 9,
-        "newsreel": "Stock footage",
+        "out": 12,
         "fallback_prompt": "a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight",
-        "credit": "stock"
+        "credit": "Stock footage / Pixabay"
       },
       "inserts": [
         {
           "stock_photo": "people umbrellas rain street",
+          "pick": 3867745,
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -412,6 +415,7 @@
       "inserts": [
         {
           "stock_photo": "smartphone gps map navigation",
+          "pick": 2198559,
           "kind": "photo",
           "from": "right",
           "x": 0.84,
@@ -467,6 +471,7 @@
       "inserts": [
         {
           "stock_photo": "television news camera",
+          "pick": 2808321,
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -490,6 +495,7 @@
       "inserts": [
         {
           "stock_photo": "television electronics store",
+          "pick": 627876,
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -506,10 +512,11 @@
       "visual": {
         "type": "clip",
         "stock": "parking lot cars aerial",
+        "pick": 271386,
         "in": 0,
-        "out": 8,
+        "out": 12,
         "fallback_prompt": "a top-down view of a big store parking lot with painted bays, one small red car pulling into a space, flat graphic style",
-        "credit": "stock"
+        "credit": "Stock footage / Pixabay"
       },
       "counter": {
         "from": 499.99,
@@ -524,6 +531,7 @@
       "inserts": [
         {
           "stock_photo": "supermarket parking lot",
+          "pick": 4054031,
           "kind": "photo",
           "from": "bottom",
           "x": 0.24,
@@ -650,6 +658,7 @@
       "inserts": [
         {
           "stock_photo": "online grocery shopping phone",
+          "pick": 6974508,
           "kind": "photo",
           "from": "right",
           "x": 0.84,
@@ -664,12 +673,9 @@
       "section": "10:15 AM: Same basket",
       "text": "Same store. Same items. Same minute. Then they compare receipts.",
       "visual": {
-        "type": "clip",
-        "stock": "cash register receipt printing",
-        "in": 0,
-        "out": 7,
-        "fallback_prompt": "two long paper shop receipts lying side by side on a kitchen table, their totals hidden under a pencil",
-        "credit": "stock"
+        "type": "image",
+        "prompt": "two long paper shop receipts lying side by side on a kitchen table, their totals hidden under a pencil",
+        "motion": "zoom_in"
       },
       "bubble": {
         "text": "Why is YOURS cheaper?",
@@ -1198,6 +1204,7 @@
       "inserts": [
         {
           "stock_photo": "computer mouse hand",
+          "pick": 625152,
           "kind": "photo",
           "from": "right",
           "x": 0.84,
@@ -1284,6 +1291,7 @@
       "inserts": [
         {
           "stock_photo": "coupons",
+          "pick": 5219531,
           "kind": "photo",
           "from": "right",
           "x": 0.82,
@@ -1300,14 +1308,16 @@
       "visual": {
         "type": "clip",
         "stock": "airplane passengers boarding",
+        "pick": 4732,
         "in": 0,
-        "out": 8,
+        "out": 14,
         "fallback_prompt": "a 1950s airliner parked on a sunny runway with passengers climbing a boarding stair",
-        "credit": "stock"
+        "credit": "Stock footage / Pixabay"
       },
       "inserts": [
         {
           "stock_photo": "airport departure board",
+          "pick": 4865665,
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -1522,6 +1532,7 @@
       "inserts": [
         {
           "stock_photo": "comparing prices phone store",
+          "pick": 410324,
           "kind": "photo",
           "from": "left",
           "x": 0.2,
@@ -1703,6 +1714,17 @@
             "motion": "zoom_in"
           },
           "say": "In twenty sixteen, Uber's own economist said riders with a dying phone were more willing to accept surge pricing.",
+          "inserts": [
+            {
+              "stock_photo": "radio microphone vintage",
+              "pick": 2627991,
+              "kind": "photo",
+              "from": "right",
+              "x": 0.72,
+              "y": 0.42,
+              "w": 0.46
+            }
+          ],
           "id": "s1_1"
         },
         {
@@ -1734,6 +1756,17 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "stock_photo": "smartphone gps map navigation",
+              "pick": 2198559,
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.46
+            }
+          ],
           "id": "s1_4"
         },
         {
@@ -1762,6 +1795,18 @@
             "motion": "zoom_in"
           },
           "say": "This TV cost four ninety-nine ninety-nine in the app.",
+          "inserts": [
+            {
+              "stock_photo": "television electronics store",
+              "pick": 627876,
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.5,
+              "w": 0.46,
+              "at": 1.0
+            }
+          ],
           "id": "s2_0"
         },
         {
@@ -1782,6 +1827,17 @@
             "dur": 1.2
           },
           "say": "The reporter drove to the store. In the parking lot, same TV, same app: five ninety-nine ninety-nine.",
+          "inserts": [
+            {
+              "stock_photo": "supermarket parking lot",
+              "pick": 4054031,
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.42,
+              "w": 0.48
+            }
+          ],
           "id": "s2_1"
         },
         {
@@ -1845,6 +1901,18 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "file": "supermarket_1957_a.jpg",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.48,
+              "caption": "Supermarket, 1957",
+              "at": 0.8
+            }
+          ],
           "id": "s3_0"
         },
         {
@@ -1902,6 +1970,17 @@
             "index": 1,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "stock_photo": "online grocery shopping phone",
+              "pick": 6974508,
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.46
+            }
+          ],
           "id": "s3_4"
         }
       ]
@@ -1965,6 +2044,17 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "file": "piggly_aisle_1918.jpg",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.48,
+              "caption": "Piggly Wiggly, 1918"
+            }
+          ],
           "id": "s4_3"
         },
         {
@@ -1992,6 +2082,18 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "file": "grocery_lincoln_1942.jpg",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.42,
+              "w": 0.48,
+              "caption": "Grocery, 1942",
+              "at": 1.0
+            }
+          ],
           "id": "s5_0"
         },
         {
@@ -2090,6 +2192,17 @@
             "index": 0,
             "motion": "static"
           },
+          "inserts": [
+            {
+              "stock_photo": "computer mouse hand",
+              "pick": 625152,
+              "kind": "photo",
+              "from": "right",
+              "x": 0.72,
+              "y": 0.42,
+              "w": 0.46
+            }
+          ],
           "id": "s6_1"
         },
         {
@@ -2131,6 +2244,16 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "file": "c05",
+              "kind": "cutout",
+              "from": "left",
+              "x": 0.24,
+              "y": 0.6,
+              "w": 0.4
+            }
+          ],
           "id": "s6_4"
         },
         {
@@ -2168,6 +2291,16 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "file": "s30.1",
+              "kind": "cutout",
+              "from": "right",
+              "x": 0.78,
+              "y": 0.62,
+              "w": 0.4
+            }
+          ],
           "id": "s7_0"
         },
         {
@@ -2244,6 +2377,17 @@
             "index": 0,
             "motion": "zoom_in"
           },
+          "inserts": [
+            {
+              "stock_photo": "comparing prices phone store",
+              "pick": 410324,
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.46
+            }
+          ],
           "id": "s7_5"
         }
       ]

@@ -156,6 +156,13 @@ def ensure_archive(episode: dict, cfg: dict, cache: Path, log=print) -> dict[str
         v = beat["visual"]
         if v["type"] == "clip" and v.get("file") and v.get("credit") and v["credit"] not in credits:
             credits.append(v["credit"])
+    for beat in list(episode["beats"]) + [b for sh in episode.get("shorts") or [] for b in sh["beats"]]:
+        for ins in beat.get("inserts") or []:
+            c = ins.get("credit")
+            if not c and str(ins.get("file", "")).endswith((".jpg", ".png", ".pdf")) and not str(ins.get("file", "")).startswith("stock-"):
+                c = "Library of Congress, Prints & Photographs Division (no known restrictions)"
+            if c and c not in credits:
+                credits.append(c)
     if credits:
         episode["sources"] = list(episode.get("sources") or []) + [f"Archive: {c}" for c in credits]
     return out

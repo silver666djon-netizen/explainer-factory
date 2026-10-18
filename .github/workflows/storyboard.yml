@@ -97,7 +97,9 @@ jobs:
             python3 - "$ep" <<'PY'
           import json, sys
           s = json.load(open(sys.argv[1]))
-          files = {v["file"] for b in s["beats"] for v in [b["visual"]] if v.get("type") in ("archive", "clip") and v.get("file")}
+          beats = s["beats"] + [b for sh in s.get("shorts") or [] for b in sh["beats"]]
+          files = {v["file"] for b in beats for v in [b["visual"]] if v.get("type") in ("archive", "clip") and v.get("file")}
+          files |= {i["file"] for b in beats for i in b.get("inserts") or [] if "." in str(i.get("file", ""))}
           print("\n".join(sorted(files)))
           PY
           done | sort -u | while read f; do [ -n "$f" ] && [ ! -s "assets/archive/$f" ] && gh release download archive -D assets/archive --pattern "$f" --clobber || true; done

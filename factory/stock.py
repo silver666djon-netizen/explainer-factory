@@ -119,7 +119,8 @@ def credit_for(path: Path) -> str | None:
 def resolve_stock(episode: dict, log=print) -> None:
     """Turn 'stock' / 'stock_photo' queries into archive 'file' names (downloading once). Missing stock
     falls back to the beat named in 'fallback' (a reuse) so the render never breaks."""
-    for beat in episode["beats"]:
+    all_beats = list(episode["beats"]) + [b for sh in episode.get("shorts") or [] for b in sh["beats"]]
+    for beat in all_beats:
         v = beat["visual"]
         for ins in list(beat.get("inserts") or []):
             if ins.get("stock_photo") and not ins.get("file"):
