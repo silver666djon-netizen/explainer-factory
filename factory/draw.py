@@ -164,24 +164,46 @@ class LineDrawing:
         u = np.clip((xx - bx0) / max(1.0, bx1 - bx0), 0, 1)
         v = np.clip((yy - by0) / max(1.0, by1 - by0), 0, 1)
         self.diag = (u * 0.6 + v * 0.4).astype(np.float32)  # colour sweep coordinate 0..1 over the subject
-        # empty state: the scene without the subject. The hole is filled with a smooth continuation of the
-        # surrounding background (large-scale blur sampled from the ring around the subject), so the hand draws
-        # in open space; flat 1950s-ad backgrounds make this read as "nothing there yet".
+        # empty state: the scene without the subject. Low frequencies (lighting, vignette) are continued from
+        # the surrounding paper by repeated normalised blurring; the paper grain is cloned from a clean patch
+        # of the same picture, so the filled area is indistinguishable from untouched paper.
         hole = (self.mask > 0.3).astype(np.uint8)
         if hole.any() and hole.mean() < 0.98:
-            k = max(3, int(min(H, W) * 0.01)) | 1
+            k = max(3, int(min(H, W) * 0.012)) | 1
+            # also remove the soft drop shadow / halo the generator paints around a subject on plain paper
+            gray = cv2.cvtColor(base, cv2.COLOR_RGB2GRAY).astype(np.float32)
+            paper_lvl = float(np.median(gray[hole == 0])) if (hole == 0).any() else 235.0
+            halo = ((gray < paper_lvl - 10) & (cv2.dilate(hole, np.ones((k * 4 | 1, k * 4 | 1), np.uint8)) > 0)).astype(np.uint8)
+            hole = np.maximum(hole, halo)
             hole_d = cv2.dilate(hole, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k)))
-            ring = cv2.dilate(hole_d, cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k * 6 | 1, k * 6 | 1))) - hole_d
-            # one flat tone (the median colour of the ring around the subject): in this flat-colour ad style a
-            # clean patch reads as "nothing drawn here yet", while a blurred fill reads as a smudge
-            ringpx = base[ring > 0]
-            tone = np.median(ringpx, axis=0) if len(ringpx) else self.paper
-            # keep the paper grain so the patch is not a dead flat sticker
-            rng = np.random.default_rng(5)
-            grain = (cv2.GaussianBlur(rng.standard_normal((H, W)).astype(np.float32), (0, 0), 0.7) * 6)[..., None]
-            fill = tone[None, None, :] + grain
-            a = cv2.GaussianBlur(hole_d.astype(np.float32), (0, 0), k)[..., None]
-            self.blank = (base * (1 - a) + np.clip(fill, 0, 255) * a).astype(np.uint8)
+            known = (1 - hole_d).astype(np.float32)
+            basef = base.astype(np.float32)
+            sig = max(6.0, min(H, W) * 0.02)
+            # normalised convolution: smooth colour field from KNOWN pixels only (the subject never leaks in)
+            wsum = cv2.GaussianBlur(known, (0, 0), sig)
+            csum = cv2.GaussianBlur(basef * known[..., None], (0, 0), sig)
+            fill_low = csum / np.maximum(wsum, 1e-4)[..., None]
+            cover = wsum > 0.2
+            for _ in range(8):  # grow inwards until the whole hole is covered
+                wsum = cv2.GaussianBlur(wsum, (0, 0), sig * 1.6)
+                csum = cv2.GaussianBlur(csum, (0, 0), sig * 1.6)
+                nxt = csum / np.maximum(wsum, 1e-4)[..., None]
+                fill_low = np.where(cover[..., None], fill_low, nxt)
+                cover = cover | (wsum > 0.2)
+            fill_low = cv2.GaussianBlur(fill_low, (0, 0), sig)
+            low = cv2.GaussianBlur(basef, (0, 0), sig)
+            # grain: high-pass of a clean strip (the border region away from the subject), tiled with mirroring
+            hp = basef - low
+            strip = max(16, int(min(H, W) * 0.08))
+            cands = [hp[:strip, :], hp[-strip:, :], hp[:, :strip].transpose(1, 0, 2), hp[:, -strip:].transpose(1, 0, 2)]
+            kn = [known[:strip, :].mean(), known[-strip:, :].mean(), known[:, :strip].mean(), known[:, -strip:].mean()]
+            src = cands[int(np.argmax(kn))]
+            reps = (H // src.shape[0] + 2, W // src.shape[1] + 2)
+            tile = np.concatenate([src, src[::-1]], axis=0)
+            tile = np.tile(tile, (reps[0] // 2 + 1, reps[1], 1))[:H, :W]
+            fill = fill_low + tile * 0.9
+            a = cv2.GaussianBlur(hole_d.astype(np.float32), (0, 0), k * 0.8)[..., None]
+            self.blank = (basef * (1 - a) + np.clip(fill, 0, 255) * a).astype(np.uint8)
         else:
             self.blank = np.full_like(base, 0) + self.paper.astype(np.uint8)
 

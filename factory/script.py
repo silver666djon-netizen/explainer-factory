@@ -27,11 +27,11 @@ def _check_visual(where: str, visual: dict, errors: list[str]) -> None:
     if motion is not None and motion not in MOTIONS:
         errors.append(f"{where}: motion must be one of {sorted(MOTIONS)}, got {motion!r}")
     if vtype == "archive":
-        if not visual.get("file"):
+        if not visual.get("file") and not visual.get("stock_photo"):
             errors.append(f"{where}: archive visual needs 'file' (name in the archive release)")
         if not str(visual.get("credit", "")).strip():
             errors.append(f"{where}: archive visual needs 'credit' (source + licence)")
-    elif vtype == "clip" and visual.get("file"):
+    elif vtype == "clip" and (visual.get("file") or visual.get("stock")):
         if not str(visual.get("credit", "")).strip():
             errors.append(f"{where}: archive clip needs 'credit' (source + licence)")
     elif vtype in ("image", "clip"):
@@ -203,7 +203,7 @@ def image_prompts(episode: dict) -> dict[str, dict]:
             out[beat["id"]] = {"prompt": visual["prompt"], "style": visual.get("style", "ad"),
                                "episode_dir": episode.get("_dir"), "refs": refs}
             continue
-        if visual["type"] not in ("image", "clip") or (visual["type"] == "clip" and visual.get("file")):
+        if visual["type"] not in ("image", "clip") or (visual["type"] == "clip" and (visual.get("file") or visual.get("stock"))):
             continue
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):

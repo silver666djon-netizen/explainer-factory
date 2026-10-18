@@ -83,6 +83,7 @@ class Plan:
     bubbles: list[Bubble] = field(default_factory=list)
     counters: list[Counter] = field(default_factory=list)
     ctas: list[Cta] = field(default_factory=list)
+    inserts: list = field(default_factory=list)  # cut-out / clipping / photo overlays (factory.inserts)
     punches: list[float] = field(default_factory=list)
     beat_starts: dict[str, float] = field(default_factory=dict)
     timeline: A.Timeline | None = None
@@ -142,7 +143,7 @@ def _image_keys(visual: dict, beat_lookup: dict[str, dict]) -> list[str]:
         return [visual["_beat"] if i == 0 else f"{visual['_beat']}.{i}" for i in range(n)]
     if visual["type"] in ("photo", "mugshot", "archive"):
         return [visual["_beat"]]
-    if visual["type"] == "clip" and visual.get("file"):
+    if visual["type"] == "clip" and (visual.get("file") or visual.get("stock")):
         return []
     if visual["type"] == "reuse":
         src = beat_lookup[visual["beat"]]["visual"]
@@ -374,6 +375,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             for k in range(6):
                 plan.timeline.add_sfx(appear + k * float(c.get("dur", 1.2)) / 6, "tick", seed=i + k)
             plan.timeline.add_sfx(appear + float(c.get("dur", 1.2)), "cash" if c.get("sound") == "cash" else "pop", seed=i)
+        for j, ins in enumerate(beat.get("inserts") or []):
+            from .inserts import build_insert
+            at = start + _timed(ins, v["words"], 0.3)
+            end_t = min(shot_end, at + float(ins.get("dur", max(2.5, dur)))) if ins.get("dur") else shot_end
+            try:
+                plan.inserts.append(build_insert(ins, images, depth_of, cfg, size, at, end_t, seed=i * 11 + j))
+                plan.timeline.add_sfx(at, "whoosh", seed=i + j)
+            except Exception as exc:  # noqa: BLE001
+                print(f"insert skipped on {beat['id']}: {exc}", flush=True)
         if beat.get("bubble"):
             b = beat["bubble"]
             appear = start + _timed(b, v["words"], 0.2)
@@ -556,6 +566,9 @@ class Overlay:
             blend(frame, img, x, y, opacity=op)
 
     def apply(self, frame: np.ndarray, t: float, cap_i: int, card_i: int, bub_i: int) -> None:
+        for ins in self.plan.inserts:
+            if ins.start <= t <= ins.end:
+                ins.draw(frame, t)
         if self.plan.ctas:
             self._draw_ctas(frame, t)
         for c in self.plan.counters:

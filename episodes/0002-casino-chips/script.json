@@ -1160,18 +1160,7 @@
           "a smartphone lying flat on a cream tabletop, a fountain of colourful cartoon gems spilling out of its glowing screen onto the table",
           "a hand trading a banknote for a handful of glowing gems"
         ],
-        "draw": {
-          "on": "gems",
-          "dur": 3.0,
-          "box": [
-            0.1,
-            0.05,
-            0.9,
-            0.95
-          ],
-          "mode": "shape"
-        },
-        "motion": "static"
+        "motion": "zoom_in"
       }
     },
     {

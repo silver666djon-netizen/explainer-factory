@@ -56,6 +56,9 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
     images = ensure_images(cfg, prompts, cache, offline, log)
     from .archive import ensure_archive, ensure_clips
+    from .stock import resolve_stock
+    if not offline:
+        resolve_stock(episode, log)
     images.update(ensure_archive(episode, cfg, cache, log))
     ensure_clips(episode, cache, log)
     photos = photo_sources(episode)

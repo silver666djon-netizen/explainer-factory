@@ -102,6 +102,8 @@ jobs:
           PY
           done | sort -u | while read f; do [ -n "$f" ] && [ ! -s "assets/archive/$f" ] && gh release download archive -D assets/archive --pattern "$f" --clobber || true; done
           ls -la assets/archive || true
+          # stock files fetched earlier live in the same release
+          gh release download archive -D assets/archive --pattern "stock-*" --clobber 2>/dev/null || true
 
       - name: Storyboard
         env:
@@ -109,6 +111,8 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
@@ -123,6 +127,15 @@ jobs:
         with:
           path: .cache/images
           key: images-${{ github.run_id }}
+
+      - name: Keep fetched stock media
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ls assets/archive/stock-* >/dev/null 2>&1 || exit 0
+          gh release view archive >/dev/null 2>&1 || gh release create archive --title "Archive media" --notes "Public-domain and stock media used in episodes"
+          for f in assets/archive/stock-*; do gh release upload archive "$f" --clobber; done
 
       - name: Publish frames + contact sheets
         env:
