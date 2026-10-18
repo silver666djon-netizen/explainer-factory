@@ -58,7 +58,7 @@
         "type": "image",
         "prompts": [
           "a 1950s radio studio microphone on a desk under a glowing red on-air lamp, warm studio light",
-          "a cream retro-styled smartphone standing upright in the centre, its screen filled by a large horizontal battery outline with only a thin red sliver of charge at the left end, a small paper taxi fare tag with a bold red upward arrow leaning against the phone, plain dark green background"
+          "a cream retro-styled smartphone standing upright in the centre, its screen filled by a large horizontal battery outline with only a thin red sliver of charge at the left end, nothing else in the picture, plain dark green background"
         ],
         "motion": "zoom_in"
       },
@@ -1472,7 +1472,18 @@
             "type": "reuse",
             "beat": "a23",
             "index": 0,
-            "motion": "zoom_in"
+            "motion": "static",
+            "marks": [
+              {
+                "type": "circle",
+                "x": 0.47,
+                "y": 0.2,
+                "w": 0.15,
+                "h": 0.3,
+                "on": "close"
+              }
+            ],
+            "hand_marks": true
           },
           "say": "The Target app had switched to the in-store price as the phone got close. Kare Eleven found it in twenty nineteen.",
           "id": "s2_2"
@@ -1558,7 +1569,7 @@
           "text": "Instacart said they were price tests. It ended them in December 2025.",
           "visual": {
             "type": "reuse",
-            "beat": "s3a",
+            "beat": "s3c",
             "index": 0,
             "motion": "zoom_in"
           },
@@ -1588,7 +1599,17 @@
             "type": "reuse",
             "beat": "s35",
             "index": 0,
-            "motion": "static"
+            "motion": "static",
+            "marks": [
+              {
+                "type": "underline",
+                "x": 0.48,
+                "y": 0.955,
+                "w": 0.86,
+                "on": "real?"
+              }
+            ],
+            "hand_marks": true
           },
           "sfx": "pop",
           "id": "s4_0"
@@ -1686,6 +1707,27 @@
           "id": "s5_3"
         },
         {
+          "text": "Montana, 1887. 'These shoes sell for double the price.' One week only. Same trick.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s39c",
+            "index": 0,
+            "motion": "static",
+            "marks": [
+              {
+                "type": "underline",
+                "x": 0.52,
+                "y": 0.455,
+                "w": 0.27,
+                "on": "double"
+              }
+            ],
+            "hand_marks": true
+          },
+          "say": "Montana, eighteen eighty-seven. These shoes sell for double the price. One week only. Same trick.",
+          "id": "s5_4"
+        },
+        {
           "text": "So ignore the 'was'. Look again at these crackers: three different 'was' prices.",
           "visual": {
             "type": "reuse",
@@ -1693,7 +1735,7 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "id": "s5_4"
+          "id": "s5_5"
         }
       ]
     },
@@ -1733,6 +1775,26 @@
           "id": "s6_1"
         },
         {
+          "text": "It's in the regulator's own report: where you are, who you are, what you're doing.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p42b",
+            "index": 0,
+            "motion": "static",
+            "marks": [
+              {
+                "type": "underline",
+                "x": 0.39,
+                "y": 0.245,
+                "w": 0.26,
+                "on": "where"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s6_2"
+        },
+        {
           "text": "An FTC example: spot a new parent, offer a baby thermometer at a premium.",
           "visual": {
             "type": "reuse",
@@ -1741,7 +1803,7 @@
             "motion": "zoom_in"
           },
           "on_screen": "FTC example",
-          "id": "s6_2"
+          "id": "s6_3"
         },
         {
           "text": "The FTC said the findings were preliminary. But the toolbox exists.",
@@ -1751,7 +1813,7 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "id": "s6_3"
+          "id": "s6_4"
         },
         {
           "text": "Nothing personal. Just data.",
@@ -1761,7 +1823,7 @@
             "beat": "p40",
             "motion": "zoom_in"
           },
-          "id": "s6_4"
+          "id": "s6_5"
         },
         {
           "text": "So, before you pay, meet the machine.",
@@ -1771,7 +1833,7 @@
             "index": 0,
             "motion": "static"
           },
-          "id": "s6_5"
+          "id": "s6_6"
         }
       ]
     },
@@ -1801,6 +1863,41 @@
           "id": "s7_1"
         },
         {
+          "text": "Group A sees one price. Group B sees another.",
+          "visual": {
+            "type": "reuse",
+            "beat": "w61b",
+            "index": 0,
+            "motion": "static",
+            "marks": [
+              {
+                "type": "circle",
+                "x": 0.27,
+                "y": 0.7,
+                "w": 0.4,
+                "h": 0.5,
+                "text": "A",
+                "text_x": 0.27,
+                "text_y": 0.35,
+                "on": "Group"
+              },
+              {
+                "type": "circle",
+                "x": 0.74,
+                "y": 0.7,
+                "w": 0.4,
+                "h": 0.5,
+                "text": "B",
+                "text_x": 0.74,
+                "text_y": 0.35,
+                "on": "B"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s7_2"
+        },
+        {
           "text": "The company's own material said: shoppers are not aware that they're in an experiment.",
           "visual": {
             "type": "reuse",
@@ -1808,7 +1905,7 @@
             "index": 0,
             "motion": "static"
           },
-          "id": "s7_2"
+          "id": "s7_3"
         },
         {
           "text": "You weren't *targeted.* You were *sampled.*",
@@ -1819,7 +1916,7 @@
             }
           },
           "sfx": "thud",
-          "id": "s7_3"
+          "id": "s7_4"
         },
         {
           "text": "Check the price on another phone. Because next time, ask yourself: think the app picked on you?",
@@ -1829,7 +1926,7 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "id": "s7_4"
+          "id": "s7_5"
         }
       ]
     }
