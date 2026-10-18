@@ -122,6 +122,14 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
                             "music_credit": "\n".join(music_credits(episode, {cue} if cue else set()))})
 
     thumb = episode.get("thumbnail") or {}
+    ep_dir = Path(episode_path) if Path(episode_path).is_dir() else Path(episode_path).parent
+    custom = next((p for p in (ep_dir / "thumbnail.png", ep_dir / "thumbnail.jpg") if p.exists()), None)
+    if custom:  # hand-made cinematic thumbnail (e.g. from ChatGPT): use as is, fitted to 1280x720 JPEG
+        from PIL import Image, ImageOps
+        ImageOps.fit(Image.open(custom).convert("RGB"), (1280, 720), Image.LANCZOS).save(out / "thumbnail.jpg", quality=92)
+        write_meta(out, episode, plan_long, shorts_info)
+        log(f"Done in {(time.time() - started) / 60:.1f} min -> {out}")
+        return out
     first_image = next((b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo", "mugshot")), None)
     if "thumbnail" in images:
         thumb_img = images["thumbnail"]
