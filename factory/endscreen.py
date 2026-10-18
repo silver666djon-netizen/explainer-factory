@@ -7,7 +7,7 @@ visual: {"type": "endscreen", "endscreen": {
    "number": "001", "title": "The casino", "stamp": "Case closed",
    "verdict": ["Guilty: your brain.", "Accomplice: plastic."],
    "next": {"number": "002", "title": "Same basket", "tagline": "Same basket. Different price.",
-            "image": "<frame key of the subject to sketch>", "copies": 2, "prices": ["$38.40", "$51.20"]},
+            "image": "<frame key of the subject to sketch>", "copies": 2, "prices": ["$114.34", "$123.93"]},
    "times": {...optional overrides, seconds from the shot start...}}}
 """
 from __future__ import annotations
@@ -29,9 +29,9 @@ VIDEO_ZONE = (0.605, 0.205, 0.955, 0.555)   # x0, y0, x1, y1 (16:9 element on th
 SUB_ZONE = (0.045, 0.695, 0.145, 0.875)     # round subscribe element, bottom-left
 SHEET = (0.035, 0.055, 0.565, 0.665)        # next-case sheet (left), above the subscribe zone
 
-T = {"stamp": 0.45, "v1": 1.05, "v2": 2.75, "vdur": 1.45, "swap": 5.0, "draw": 5.75, "ddur": 3.6,
-     "tags": 9.45, "p1": 9.85, "p2": 10.75, "pdur": 0.8, "tagline": 12.05, "zone": 12.6, "zdur": 0.9,
-     "sub": 13.5, "click": 15.1}
+T = {"stamp": 0.15, "v1": 0.9, "v2": 2.6, "vdur": 1.45, "swap": 5.0, "draw": 5.75, "ddur": 3.6,
+     "tags": 9.45, "p1": 9.85, "p2": 10.75, "pdur": 0.8, "tagline": 12.0, "zone": 12.35, "zdur": 0.8,
+     "sketch": 13.0, "skdur": 1.1, "sub": 14.1, "click": 15.15, "push": 15.9}
 
 
 def _pal(cfg):
@@ -111,8 +111,11 @@ def _price_tag(text: str, cfg, width: int, seed: int) -> tuple[np.ndarray, "Writ
     hx, hy, r = width // 2, top + int(h * 0.16), max(5, width // 22)
     d.ellipse((hx - r, hy - r, hx + r, hy + r), fill=(0, 0, 0, 0), outline=pal["ink"] + (255,), width=2)
     d.line((hx, hy - r, hx - width * 0.08, 0), fill=pal["ink"] + (255,), width=max(2, width // 70))  # string
-    fnt = font(resolve_font(cfg["fonts"]["marker"]), int(h * 0.42))
-    wr = Writing(text, fnt, pal["ink"])
+    size = int(h * 0.42)
+    fpath = resolve_font(cfg["fonts"]["marker"])
+    while size > 10 and font(fpath, size).getlength(text) > width * 0.82:
+        size -= 2
+    wr = Writing(text, font(fpath, size), pal["ink"])
     return np.array(tag), wr, (int((width - wr.w) / 2), top + int(h * 0.30))
 
 
@@ -210,6 +213,34 @@ class EndScreenShot(Shot):
                     px, py, cw, ch = self.slots[i]
                     tag, wr, off = _price_tag(p, cfg, int(area_w * 0.36), seed + i)
                     self.tags.append((tag, wr, off, (sx0 + px + cw + int(area_w * 0.17), sy0 + py + int(ch * 0.30))))
+        self.sketch = None
+        if self.draw is not None:
+            zx0, zy0, zx1, zy1 = (int(VIDEO_ZONE[0] * W), int(VIDEO_ZONE[1] * H), int(VIDEO_ZONE[2] * W), int(VIDEO_ZONE[3] * H))
+            zw, zh = zx1 - zx0, zy1 - zy0
+            news_c = np.array((208, 205, 196), np.float32)
+            news = np.clip(np.full((zh, zw, 3), news_c) + np.random.default_rng(seed + 21).standard_normal((zh, zw, 1)) * 4, 0, 255).astype(np.uint8)
+            xa = min(sl[0] for sl in self.slots)
+            xb = max(sl[0] + sl[2] for sl in self.slots) + int(self.tags[0][0].shape[1] * 1.1 if self.tags else 0)
+            ya = min(sl[1] for sl in self.slots)
+            yb = max(sl[1] + sl[3] for sl in self.slots)
+            g = cv2.cvtColor(self.draw.base[ya:yb, xa:xb], cv2.COLOR_RGB2GRAY).astype(np.float32)
+            g = 255 - (255 - g) * 0.85  # grey newsprint pencil
+            k = min(zw * 0.86 / g.shape[1], zh * 0.66 / g.shape[0])
+            g = cv2.resize(g, (int(g.shape[1] * k), int(g.shape[0] * k)), interpolation=cv2.INTER_AREA)
+            gx, gy = (zw - g.shape[1]) // 2, int(zh * 0.12)
+            reg = news[gy:gy + g.shape[0], gx:gx + g.shape[1]].astype(np.float32)
+            news[gy:gy + g.shape[0], gx:gx + g.shape[1]] = np.minimum(reg, g[..., None]).astype(np.uint8)
+            mk = np.zeros((zh, zw), np.float32)
+            mk[gy:gy + g.shape[0], gx:gx + g.shape[1]] = (g < 200).astype(np.float32)
+            mk = cv2.dilate(mk, np.ones((5, 5), np.uint8))
+            lab = Writing(f"CASE FILE #{nx.get('number', '002')}", font(marker, int(zh * 0.10)), (60, 58, 54))
+            la = lab.img[..., 3:4].astype(np.float32) / 255
+            ly, lx = zh - lab.h - int(zh * 0.04), int(zw * 0.04)
+            reg = news[ly:ly + lab.h, lx:lx + lab.w].astype(np.float32)
+            news[ly:ly + lab.h, lx:lx + lab.w] = (reg * (1 - la) + lab.img[..., :3] * la).astype(np.uint8)
+            mk[ly:ly + lab.h, lx:lx + lab.w] = np.maximum(mk[ly:ly + lab.h, lx:lx + lab.w], la[..., 0])
+            self.sketch = LineDrawing(news, tuple(int(c) for c in news_c), mk)
+            self.sketch_pos = (zx0, zy0)
         self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5, max_h=int(sh * 0.11)) if nx.get("tagline") else None
         self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * 0.27))
         # ---- end-screen furniture
@@ -275,9 +306,9 @@ class EndScreenShot(Shot):
                 blend(out, wr.at(p), vx + dx, vy)
                 if p < 1.25 and dx == 0:
                     tip = hand_path(lambda q, wr=wr, vx=vx, vy=vy, t0=t0: (vx + wr.tip((q - t0) / tt["vdur"])[0], vy + wr.tip((q - t0) / tt["vdur"])[1]),
-                                    t0, t0 + tt["vdur"], t, W, H, False)
+                                    t0, t0 + tt["vdur"], t, W, H, False, from_below=True)
                     if tip:
-                        hand = ("ink", tip[0], tip[1], False)
+                        hand = ("ink_under", tip[0], tip[1], False)
         # phase 2: the next-case sheet slides in from the right
         if t > tt["swap"] + 0.1:
             p = ease((t - tt["swap"] - 0.1) / 0.6)
@@ -318,9 +349,9 @@ class EndScreenShot(Shot):
                     if pp < 1.2:
                         bx, by = tx - tag.shape[1] // 2 + off[0], y + off[1]
                         tip = hand_path(lambda q, wr=wr, bx=bx, by=by, t0=t0: (bx + wr.tip((q - t0) / tt["pdur"])[0], by + wr.tip((q - t0) / tt["pdur"])[1]),
-                                        t0, t0 + tt["pdur"], t, W, H, False)
+                                        t0, t0 + tt["pdur"], t, W, H, False, from_below=True)
                         if tip:
-                            hand = ("ink", tip[0], tip[1], False)
+                            hand = ("ink_under", tip[0], tip[1], False)
             if len(self.tags) >= 2 and t >= tt["p2"] + tt["pdur"] + 0.1:  # red marker rings the odd price out
                 tag, wr, off, (tx, ty) = self.tags[-1]
                 c0 = tt["p2"] + tt["pdur"] + 0.1
@@ -332,9 +363,9 @@ class EndScreenShot(Shot):
                 if q < 1:
                     ang = math.radians(a0 + 380 * q)
                     hx, hy = cxr + rx * math.cos(ang), cyr + ry * math.sin(ang)
-                    tip = hand_path(lambda _q: (hx, hy), c0, c0 + 0.55, t, W, H, False)
+                    tip = hand_path(lambda _q: (hx, hy), c0, c0 + 0.55, t, W, H, False, from_below=True)
                     if tip:
-                        hand = ("marker", tip[0], tip[1], False)
+                        hand = ("marker_under", tip[0], tip[1], False)
             if self.tagline is not None and t >= tt["tagline"]:
                 p = min(1.0, (t - tt["tagline"]) / 0.14)
                 sc = 2.0 - 1.0 * p
@@ -360,17 +391,28 @@ class EndScreenShot(Shot):
             lp = (t - tt["zone"] - 0.3) / 0.8
             if lp > 0:
                 blend(out, self.label.at(lp), x0, y0 - self.label.h - 6)
+            if self.sketch is not None and t >= tt["sketch"]:  # faded pencil preview inside the box (~40 %)
+                q = (t - tt["sketch"]) / tt["skdur"]
+                pic = self.sketch.state(q * LINES_END if q < 1 else 1.0)
+                zx, zy = self.sketch_pos
+                reg = out[zy:zy + pic.shape[0], zx:zx + pic.shape[1]].astype(np.float32)
+                out[zy:zy + pic.shape[0], zx:zx + pic.shape[1]] = (reg * 0.6 + pic.astype(np.float32) * 0.4).astype(np.uint8)
+                if q < 1.1:
+                    tip = hand_path(lambda qq: (zx + self.sketch.tip((qq - tt["sketch"]) / tt["skdur"] * LINES_END)[0],
+                                                zy + self.sketch.tip((qq - tt["sketch"]) / tt["skdur"] * LINES_END)[1]),
+                                    tt["sketch"], tt["sketch"] + tt["skdur"], t, W, H, False)
+                    if tip:
+                        hand = ("pencil", tip[0], tip[1], False)
         # our subscribe button beside YouTube's subscribe zone, with a drawn arrow pointing at it
         if t >= tt["sub"]:
             pressed = t >= tt["click"]
             img = self.btn[pressed]
             pop = min(1.0, (t - tt["sub"]) / 0.22)
             sc = 0.6 + 0.4 * ease(pop) + (0.06 * math.sin(pop * math.pi))
-            if pressed and t - tt["click"] < 0.12:
-                sc *= 0.92
+            down = 4 if tt["click"] - 0.1 <= t <= tt["click"] + 0.45 else 0  # the button is pushed in under the finger
             im2 = cv2.resize(img, (max(1, int(img.shape[1] * sc)), max(1, int(img.shape[0] * sc))))
-            bx, by = int(W * 0.17), int(H * 0.715)
-            blend(out, im2, bx, by + (img.shape[0] - im2.shape[0]) // 2)
+            bx, by = int(W * 0.17), int(H * 0.69)
+            blend(out, im2, bx, by + down + (img.shape[0] - im2.shape[0]) // 2)
             # arrow from the button to the subscribe zone
             ax0, ay0 = bx - 8, by + img.shape[0] // 2
             ax1 = int(SUB_ZONE[2] * W) + 10
@@ -394,13 +436,17 @@ class EndScreenShot(Shot):
                         cv2.ellipse(out, (cxb, cyb), (r, r), 0, 190, 230, tuple(int(c) for c in self.pal["accent"]), 4, cv2.LINE_AA)
             # the hand comes in and presses it
             tc = tt["click"]
-            if tc - 0.6 <= t <= tc + 0.5:
-                target = (bx + img.shape[1] * 0.5, by + img.shape[0] * 0.55)
-                tip = hand_path(lambda q: target, tc - 0.05, tc + 0.1, t, W, H, False)
+            if tc - 0.6 <= t <= tc + 1.0:  # enters, presses and holds ~0.6 s, then leaves
+                target = (bx + img.shape[1] * 0.5, by + down + img.shape[0] * 0.5)
+                tip = hand_path(lambda q: target, tc - 0.1, tc + 0.5, t, W, H, False, from_below=True)
                 if tip:
-                    hand = ("ink", tip[0], tip[1], False)
+                    hand = ("ink_under", tip[0], tip[1], False)
         if hand:
             paste_hand(out, hand[0], hand[1], hand[2], hand[3])
+        if t > tt["push"]:  # the end frame keeps breathing: slow 2.5 % push-in until the cut
+            z = 1 + 0.025 * ease((t - tt["push"]) / max(0.5, self.duration - tt["push"]))
+            M = cv2.getRotationMatrix2D((W / 2, H / 2), 0, z)
+            out = cv2.warpAffine(out, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
         return out
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
@@ -427,6 +473,11 @@ class EndScreenShot(Shot):
             out.append((start_abs + tt["p2"] + tt["pdur"] + 0.1, "scribble"))
         if self.tagline is not None:
             out.append((start_abs + tt["tagline"], "stamp"))
-        out += [(start_abs + tt["zone"], "marker"), (start_abs + tt["sub"], "pop"), (start_abs + tt["click"], "tick"),
-                (start_abs + tt["click"] + 0.1, "ding")]
+        out += [(start_abs + tt["zone"], "marker")]
+        if self.sketch is not None:
+            k = 0.0
+            while k < tt["skdur"]:
+                out.append((start_abs + tt["sketch"] + k, "pencil"))
+                k += 0.18
+        out += [(start_abs + tt["sub"], "pop"), (start_abs + tt["click"] - 0.1, "tick"), (start_abs + tt["click"], "ding")]
         return out

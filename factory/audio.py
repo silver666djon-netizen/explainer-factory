@@ -165,6 +165,20 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         body = np.sin(2 * np.pi * (95 - 40 * t) * t) * np.exp(-t * 18)
         slap = sosfilt(butter(2, [400, 3000], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * np.exp(-t * 60)
         return ((body * 0.9 + slap * 0.8) / 1.3).astype(np.float32)
+    if kind == "chips":  # a few clay chips clacking onto a stack
+        n = int(0.5 * SR)
+        out = np.zeros(n, dtype=np.float32)
+        t0 = 0.0
+        for k in range(int(rnd.integers(3, 6))):
+            m = int(0.03 * SR)
+            tt = np.arange(m) / SR
+            f = rnd.uniform(2600, 4200)
+            click = (np.sin(2 * np.pi * f * tt) + 0.6 * np.sin(2 * np.pi * f * 1.51 * tt)) * np.exp(-tt * 170)
+            click += sosfilt(butter(2, [2000, 8000], btype="band", fs=SR, output="sos"), rnd.standard_normal(m)) * np.exp(-tt * 300) * 0.5
+            i = int(t0 * SR)
+            out[i:i + m] += click[: max(0, min(m, n - i))] * rnd.uniform(0.5, 1.0)
+            t0 += rnd.uniform(0.04, 0.09)
+        return (out / (np.abs(out).max() + 1e-9) * 0.6).astype(np.float32)
     if kind == "thud":
         n = int(0.35 * SR)
         t = np.arange(n) / SR

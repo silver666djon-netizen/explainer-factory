@@ -125,7 +125,7 @@ def _sentences(body: str) -> list[str]:
     return [s for s in re.split(r"(?<=[.!?])\s+", body.strip()) if s]
 
 
-def evidence_tag(cfg: dict, source: str, width: int, seed: int) -> Image.Image:
+def evidence_tag(cfg: dict, source: str, width: int, seed: int, word: str = "EVIDENCE") -> Image.Image:
     """Red shipping-tag label: EVIDENCE + journal · year, with a grommet hole."""
     pal = _pal(cfg)
     h = int(width * 0.40)
@@ -141,7 +141,7 @@ def evidence_tag(cfg: dict, source: str, width: int, seed: int) -> Image.Image:
     big = _font(cfg, "headline", "body", int(h * 0.46))
     small = _font(cfg, "typewriter", "serif", int(h * 0.15))
     x0 = int(h * 0.58)
-    d.text((x0, int(h * 0.08)), "EVIDENCE", font=big, fill=(250, 244, 230, 255))
+    d.text((x0, int(h * 0.08)), word, font=big, fill=(250, 244, 230, 255))
     txt = source.upper()
     while small.getlength(txt) > width - x0 - h * 0.08 and small.size > 10:
         small = font(small.path, small.size - 1)
@@ -361,10 +361,10 @@ class EvidenceShot(Shot):
         tsh = tsh.filter(ImageFilter.GaussianBlur(6))
         layer.alpha_composite(tsh, (int(tx - tag.width / 2) + 5, int(ty - tag.height / 2) + 8))
         layer.alpha_composite(tag, (int(tx - tag.width / 2), int(ty - tag.height / 2)))
-        # tape over the tag's corner
-        d = ImageDraw.Draw(layer, "RGBA")
-        tw, th = int(self.tag.width * 0.26), int(self.tag.height * 0.24)
-        d.rectangle((tx - tw / 2, ty - tag.height / 2 + th * 0.05, tx + tw / 2, ty - tag.height / 2 + th * 1.0), fill=(236, 226, 190, 175))
+        # a strip of real-looking tape over the tag: translucent, torn ends, paper fibres showing through
+        tp = tape_strip(int(self.tag.width * 0.34), int(self.tag.height * 0.26), self.seed)
+        tp = tp.rotate(self.angle - 7 + 4, resample=Image.BICUBIC, expand=True)
+        layer.alpha_composite(tp, (int(tx - tp.width / 2), int(ty - tag.height / 2 - tp.height * 0.18)))
         arr = np.array(layer)
         sh = cv2.GaussianBlur(arr[..., 3].astype(np.float32), (0, 0), 14) / 255 * 0.55
         return arr, sh
@@ -425,9 +425,9 @@ class EvidenceShot(Shot):
         if not self.flash and self.strokes:
             cx = np.concatenate(self.strokes)[:, 0].mean()
             mirrored = self._clip_to_board(cx, 0)[0] < self.BW * 0.4
-            tip = hand_path(self._tip, self.mark_at, self.mark_at + self.mark_dur, t, self.W, self.H, mirrored)
+            tip = hand_path(self._tip, self.mark_at, self.mark_at + self.mark_dur, t, self.W, self.H, mirrored, from_below=True)
             if tip:
-                paste_hand(frame, "marker", tip[0], tip[1], mirrored)
+                paste_hand(frame, "marker_under", tip[0], tip[1] + self.H * 0.004, mirrored)  # hand below the line: words stay readable
         return frame
 
     def sfx(self, shot_start: float) -> list[tuple[float, str]]:
@@ -437,3 +437,23 @@ class EvidenceShot(Shot):
             if self.mark_dur > 0.6:
                 out.append((shot_start + self.mark_at + self.mark_dur * 0.5, "marker"))
         return out
+
+
+def tape_strip(w: int, h: int, seed: int) -> Image.Image:
+    """Translucent adhesive tape: torn zig-zag ends, faint fibres, a soft sheen."""
+    rnd = np.random.default_rng(seed + 77)
+    yy, xx = np.mgrid[0:h, 0:w].astype(np.float32)
+    # torn ends: each short side is a ragged line
+    n = max(6, h // 4)
+    left = np.interp(yy[:, 0], np.linspace(0, h, n), rnd.uniform(0, w * 0.06, n))
+    right = w - np.interp(yy[:, 0], np.linspace(0, h, n), rnd.uniform(0, w * 0.06, n))
+    inside = (xx >= left[:, None]) & (xx <= right[:, None])
+    fib = cv2.GaussianBlur(rnd.standard_normal((h, w)).astype(np.float32), (0, 0), 0.9)
+    streak = cv2.GaussianBlur(rnd.standard_normal((1, w)).astype(np.float32), (0, 0), 3)[0]
+    alpha = (0.42 + 0.06 * fib + 0.05 * streak[None, :]) * inside
+    edge = (np.abs(yy - 1) < 1.5) | (np.abs(yy - (h - 2)) < 1.5)
+    alpha = np.where(edge & inside, alpha + 0.12, alpha)
+    sheen = np.exp(-((yy - h * 0.35) ** 2) / (2 * (h * 0.12) ** 2)) * 18
+    rgb = np.stack([238 + sheen + fib * 4, 231 + sheen + fib * 4, 206 + sheen * 0.6 + fib * 4], -1)
+    a = np.clip(alpha * 255, 0, 255)
+    return Image.fromarray(np.dstack([np.clip(rgb, 0, 255), a]).astype(np.uint8), "RGBA")

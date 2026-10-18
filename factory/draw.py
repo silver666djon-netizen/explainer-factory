@@ -42,19 +42,24 @@ def _hand(kind: str, height: int, mirrored: bool) -> tuple[np.ndarray, tuple[int
     return np.array(img), (int(tx), int(ty))
 
 
-def paste_hand(frame: np.ndarray, kind: str, x: float, y: float, mirrored: bool) -> None:
-    """Paste the hand so that its pencil tip sits at (x, y) on the frame."""
+def paste_hand(frame: np.ndarray, kind: str, x: float, y: float, mirrored: bool, scale: float = 1.0) -> None:
+    """Paste the hand so that its pencil tip sits at (x, y) on the frame (scale < 1 for small props)."""
     from .text import blend
     H = min(frame.shape[0], frame.shape[1])  # Shorts: sized to the picture window, not the tall frame
-    img, (tx, ty) = _hand(kind, int(H * HAND_HEIGHT), mirrored)
+    img, (tx, ty) = _hand(kind, int(H * HAND_HEIGHT * scale), mirrored)
     blend(frame, img, int(x - tx), int(y - ty), opacity=1.0)
 
 
-def hand_path(tip_at, t0: float, t1: float, t: float, W: int, H: int, mirrored: bool):
+def hand_path(tip_at, t0: float, t1: float, t: float, W: int, H: int, mirrored: bool, from_below: bool = False):
     """Tip position while the hand is in the frame: slides in before t0 from the side edge (wrist side),
-    follows tip_at(t) between t0 and t1, slides out after t1. Returns None when off screen."""
+    follows tip_at(t) between t0 and t1, slides out after t1. Returns None when off screen.
+    from_below: for the hands held under the line (arm hanging down) — they rise straight up from the
+    bottom edge under the spot they write on, instead of crossing the frame diagonally."""
     enter, leave = 0.28, 0.32
     off = (W * (-0.35 if mirrored else 1.35), H * 1.05)
+    if from_below:
+        sx, _ = tip_at(t0 if t < t0 else t1)
+        off = (sx + W * 0.06, H * 1.25)
     if t < t0 - enter or t > t1 + leave:
         return None
     if t < t0:
