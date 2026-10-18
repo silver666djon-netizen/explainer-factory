@@ -33,8 +33,8 @@ def _hand(kind: str, height: int, mirrored: bool) -> tuple[np.ndarray, tuple[int
     meta = json.loads((HAND_DIR / "hand.json").read_text())
     meta = meta.get(kind, meta.get("pencil", meta))  # per-hand tip position
     img = Image.open(HAND_DIR / f"hand_{kind}.png").convert("RGBA")
-    s = height / img.height
-    img = img.resize((max(1, int(img.width * s)), height), Image.LANCZOS)
+    s = height / float(meta.get("ref", img.height))  # extended sleeves: scale by the original hand size
+    img = img.resize((max(1, int(img.width * s)), max(1, int(img.height * s))), Image.LANCZOS)
     tx, ty = meta["tip"][0] * s, meta["tip"][1] * s
     if mirrored:
         img = img.transpose(Image.FLIP_LEFT_RIGHT)

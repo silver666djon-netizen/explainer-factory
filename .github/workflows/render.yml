@@ -61,7 +61,8 @@ jobs:
           base=https://github.com/google/fonts/raw/main
           for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf \
                    ofl/bangers/Bangers-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf \
-                   ofl/ptserif/PT_Serif-Web-Regular.ttf ofl/oldstandardtt/OldStandard-Regular.ttf; do
+                   ofl/ptserif/PT_Serif-Web-Regular.ttf ofl/oldstandardtt/OldStandard-Regular.ttf \
+                   ofl/oldstandardtt/OldStandard-Bold.ttf apache/specialelite/SpecialElite-Regular.ttf; do
             curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f (fallback font will be used)"
           done
           ls -la assets/fonts

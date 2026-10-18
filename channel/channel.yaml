@@ -53,6 +53,9 @@ fonts:
   body:     ["assets/fonts/ArchivoBlack-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
   comic:    ["assets/fonts/Bangers-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"]
   marker:   ["assets/fonts/PermanentMarker-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-BoldOblique.ttf"]
+  serif_bold: ["assets/fonts/OldStandard-Bold.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif-Bold.ttf"]
+  serif_old: ["assets/fonts/OldStandard-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
+  typewriter: ["assets/fonts/SpecialElite-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf"]
   serif:    ["assets/fonts/PT_Serif-Web-Regular.ttf", "assets/fonts/OldStandard-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSerif.ttf"]
 
 voice:

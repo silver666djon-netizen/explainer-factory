@@ -148,6 +148,23 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         sos = butter(2, [700, 3500], btype="band", fs=SR, output="sos")
         out = sosfilt(sos, noise) * (0.6 + 0.4 * np.sin(2 * np.pi * 18 * t))
         return (out / (np.abs(out).max() + 1e-9) * np.exp(-t * 4) * 0.7).astype(np.float32)
+    if kind == "paper":  # a clipping slides and lands on the desk: soft swish + papery flap
+        n = int(0.42 * SR)
+        t = np.arange(n) / SR
+        noise = rnd.standard_normal(n).astype(np.float32)
+        swish = sosfilt(butter(2, [900, 5200], btype="band", fs=SR, output="sos"), noise)
+        swish *= np.clip(np.sin(np.pi * t / 0.30), 0, 1) ** 1.5 * (t < 0.30)
+        k = int(0.30 * SR)
+        flap = sosfilt(butter(2, [150, 1400], btype="band", fs=SR, output="sos"), rnd.standard_normal(n - k)) * np.exp(-np.arange(n - k) / SR * 28)
+        out = swish * 0.6
+        out[k:] += flap * 1.4
+        return (out / (np.abs(out).max() + 1e-9) * 0.7).astype(np.float32)
+    if kind == "stamp":  # rubber stamp slammed on a folder: low thump + papery slap
+        n = int(0.4 * SR)
+        t = np.arange(n) / SR
+        body = np.sin(2 * np.pi * (95 - 40 * t) * t) * np.exp(-t * 18)
+        slap = sosfilt(butter(2, [400, 3000], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * np.exp(-t * 60)
+        return ((body * 0.9 + slap * 0.8) / 1.3).astype(np.float32)
     if kind == "thud":
         n = int(0.35 * SR)
         t = np.arange(n) / SR
