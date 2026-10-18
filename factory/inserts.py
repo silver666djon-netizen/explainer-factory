@@ -71,10 +71,16 @@ def clipping(src: Image.Image, cfg: dict, seed: int, caption: str | None = None)
     return piece
 
 
-def photo(src: Image.Image, cfg: dict, seed: int, caption: str | None = None) -> Image.Image:
+def photo(src: Image.Image, cfg: dict, seed: int, caption: str | None = None, colour: bool = False) -> Image.Image:
     pal = _pal(cfg)
-    gray = ImageOps.autocontrast(src.convert("L"), cutoff=1).filter(ImageFilter.UnsharpMask(radius=2, percent=80))
-    tinted = ImageOps.colorize(gray, black=pal["ink"], white=tuple(min(255, c + 8) for c in pal["paper"]))
+    if colour:  # modern stock photo: keep colour, slightly warm and soft so it sits on the paper
+        from PIL import ImageEnhance
+        tinted = ImageEnhance.Color(src.convert("RGB")).enhance(0.85)
+        warm = Image.new("RGB", tinted.size, (255, 236, 200))
+        tinted = Image.blend(tinted, warm, 0.08)
+    else:
+        gray = ImageOps.autocontrast(src.convert("L"), cutoff=1).filter(ImageFilter.UnsharpMask(radius=2, percent=80))
+        tinted = ImageOps.colorize(gray, black=pal["ink"], white=tuple(min(255, c + 8) for c in pal["paper"]))
     border = max(10, int(min(tinted.size) * 0.035))
     printed = ImageOps.expand(tinted, border=border, fill=(250, 246, 236)).convert("RGBA")
     if caption:
@@ -188,6 +194,6 @@ def build_insert(spec: dict, images: dict, depth_of, cfg: dict, size, start: flo
         elif kind == "clipping":
             img = clipping(src, cfg, seed, spec.get("caption"))
         else:
-            img = _tape(photo(src, cfg, seed, spec.get("caption")), seed)
+            img = _tape(photo(src, cfg, seed, spec.get("caption"), colour=str(f).startswith("stock-") or spec.get("colour", False)), seed)
         img.save(cpath)
     return Insert(spec, start, end, img, size, seed)

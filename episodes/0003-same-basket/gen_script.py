@@ -172,7 +172,7 @@ beat("s39b", S, "The bigger the fake 'was', the better the deal felt. Economists
 beat("s39c", S, "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
      arch("np_lottery_1887.jpg", look="clipping", credit="The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, " + LOC,
           crop=[0.045, 0.818, 0.232, 0.975], caption="The Daily Yellowstone Journal, Miles City, 15 October 1887", motion="static", hand_marks=True,
-          marks=[{"type": "underline", "x": 0.52, "y": 0.455, "w": 0.27, "on": "double"}]),
+          marks=[{"type": "underline", "x": 0.52, "y": 0.49, "w": 0.27, "on": "double"}]),
      say="That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only.")
 beat("s3a", S, "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
      img("a tidy corporate press statement on letterhead lying on a polished desk beside a fountain pen", motion="zoom_in",
@@ -381,14 +381,14 @@ INS = {
     # 11:47
     "b11": [{"stock_photo": "taxi rain night", "pick": 10435616, "kind": "photo", "from": "right", "x": 0.8, "y": 0.4, "w": 0.3, "on": "fare"}],
     "d13": [{"stock_photo": "radio microphone vintage", "pick": 2627991, "kind": "photo", "from": "right", "x": 0.82, "y": 0.5, "w": 0.28, "on": "podcast" , "at": 0.3}],
-    "d14": [{"file": "c05", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.26, "on": "nobody"}],
+    "d14": [{"stock_photo": "smartphone low battery", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "battery"}],
     "d14b": [{"stock_photo": "people umbrellas rain street", "pick": 3867745, "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "lots"}],
     "b16": [{"stock_photo": "smartphone gps map navigation", "pick": 2198559, "kind": "photo", "from": "right", "x": 0.84, "y": 0.42, "w": 0.26, "on": "Where", "dur": 2.4}],
     # 8:02
     "a20": [{"stock_photo": "television news camera", "pick": 2808321, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "KARE"}],
     "a21": [{"stock_photo": "television electronics store", "pick": 627876, "kind": "photo", "from": "right", "x": 0.82, "y": 0.4, "w": 0.28, "on": "Samsung"}],
     "a22": [{"stock_photo": "supermarket parking lot", "pick": 4054031, "kind": "photo", "from": "bottom", "x": 0.24, "y": 0.62, "w": 0.3, "on": "parking"}],
-    "a25": [{"file": "c05", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.26, "on": "lesson"}],
+    "a25": [{"stock_photo": "shopping app smartphone store", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.28, "on": "lesson"}],
     # 10:15
     "s30": [{"stock_photo": "online grocery shopping phone", "pick": 6974508, "kind": "photo", "from": "right", "x": 0.84, "y": 0.4, "w": 0.26, "on": "delivery"}],
     "s32": [{"file": "supermarket_1957_a.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.45, "w": 0.3, "on": "volunteers", "caption": "Shopping in a supermarket, 1957"}],
@@ -405,14 +405,18 @@ INS = {
     "d51b": [{"stock_photo": "airport departure board", "pick": 4865665, "kind": "photo", "from": "left", "x": 0.2, "y": 0.4, "w": 0.3, "on": "fares"}],
     "w60": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.6, "w": 0.24, "on": "machine"}],
     "v72": [{"stock_photo": "comparing prices phone store", "pick": 410324, "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "website"}],
-    "v74b": [{"file": "p40", "kind": "cutout", "from": "right", "x": 0.86, "y": 0.62, "w": 0.24, "on": "guess."}],
+    "v74b": [{"file": "grocery_prices_savannah_1939.jpg", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.3, "on": "fact.", "caption": "Prices posted outside a grocery, Savannah, 1939"}],
+    "d50": [{"file": "grocery_salem_1940.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.3, "on": "change", "caption": "Grocery store, Salem, Illinois, 1940"}],
+    "d52": [{"stock_photo": "dice random", "kind": "photo", "from": "right", "x": 0.82, "y": 0.42, "w": 0.26, "on": "random"}],
+    "v73": [{"stock_photo": "smartphone settings location", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "location"}],
+    "v75": [{"file": "general_store_1936.jpg", "kind": "photo", "from": "left", "x": 0.2, "y": 0.42, "w": 0.28, "on": "checking", "caption": "Moundville, 1936"}],
 }
 for b in B:
     if b["id"] in INS:
         b["inserts"] = INS[b["id"]]
 # stock film where the picture is a plain illustration of a real-world scene
 STOCK = {
-    "d14b": {"stock": "city street night rain traffic", "pick": 290317, "in": 0, "out": 12, "newsreel": False, "fallback": "d14b"},
+    "d14b": {"stock": "city street night rain traffic", "pick": 290680, "in": 0, "out": 12, "newsreel": False, "fallback": "d14b"},
     "a22": {"stock": "parking lot cars aerial", "pick": 271386, "in": 0, "out": 12, "newsreel": False, "fallback": "a22"},
     "d51b": {"stock": "airplane passengers boarding", "pick": 4732, "in": 0, "out": 14, "newsreel": False, "fallback": "d51b"},
 }

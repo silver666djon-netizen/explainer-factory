@@ -243,6 +243,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.shots.append(cshot)
         elif vtype in ("image", "reuse", "photo", "clip", "archive"):
             keys = _image_keys(visual, beat_lookup)
+            if vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive"):
+                visual["motion"] = "static"  # captioned archive prints: a big push would slide the caption into the subtitles
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
             if marks or beat.get("bubble") or visual.get("draw"):

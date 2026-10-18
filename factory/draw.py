@@ -198,15 +198,14 @@ class LineDrawing:
             med = np.median(basef[known > 0.5].reshape(-1, 3), axis=0) if (known > 0.5).any() else self.paper
             fill_low = np.clip(fill_low, med - 10, med + 10)
             low = cv2.GaussianBlur(basef, (0, 0), sig)
-            # grain: high-pass of a clean strip (the border region away from the subject), tiled with mirroring
-            hp = basef - low
-            strip = max(16, int(min(H, W) * 0.08))
-            cands = [hp[:strip, :], hp[-strip:, :], hp[:, :strip].transpose(1, 0, 2), hp[:, -strip:].transpose(1, 0, 2)]
-            kn = [known[:strip, :].mean(), known[-strip:, :].mean(), known[:, :strip].mean(), known[:, -strip:].mean()]
-            src = cands[int(np.argmax(kn))]
-            reps = (H // src.shape[0] + 2, W // src.shape[1] + 2)
-            tile = np.concatenate([src, src[::-1]], axis=0)
-            tile = np.tile(tile, (reps[0] // 2 + 1, reps[1], 1))[:H, :W]
+            # grain: synthetic noise with the backdrop's own grain strength (copying real pixels can drag
+            # bits of the picture along, so no cloning)
+            hp = basef - cv2.GaussianBlur(basef, (0, 0), 2.0)
+            g_std = float(np.std(hp[known > 0.5])) if (known > 0.5).any() else 3.0
+            rng = np.random.default_rng(7)
+            noise = cv2.GaussianBlur(rng.standard_normal((H, W)).astype(np.float32), (0, 0), 0.8)
+            noise *= g_std / max(1e-3, float(noise.std()))
+            tile = np.repeat(noise[..., None], 3, axis=2)
             fill = fill_low + tile * 0.9
             a = cv2.GaussianBlur(hole_d.astype(np.float32), (0, 0), k * 0.8)[..., None]
             self.blank = (basef * (1 - a) + np.clip(fill, 0, 255) * a).astype(np.uint8)
