@@ -1,0 +1,41 @@
+name: Fetch archive
+# Downloads public-domain archive files (LOC, archive.org, NARA, FTC…) into the release "archive"
+# so the render runners (and Claude, via the GitHub API) can use them. Started on purpose only.
+on:
+  workflow_dispatch:
+    inputs:
+      list:
+        description: "path to a JSON list: [{\"name\": \"file.jpg\", \"url\": \"https://…\"}, …]"
+        required: true
+        default: "archive/fetch.json"
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          mkdir -p out/archive
+          python3 - "${{ github.event.inputs.list }}" <<'PY'
+          import json, sys, subprocess, pathlib
+          items = json.load(open(sys.argv[1]))
+          ok = []
+          for it in items:
+              dst = pathlib.Path("out/archive") / it["name"]
+              r = subprocess.run(["curl", "-sSL", "--max-time", "600", "-A", "Mozilla/5.0 (X11; Linux x86_64) CoinSense-archive-fetch/1.0",
+                                  "-o", str(dst), it["url"]])
+              size = dst.stat().st_size if dst.exists() else 0
+              print(f"{'OK ' if r.returncode == 0 and size > 2000 else 'ERR'} {size:>10} {it['name']}  <- {it['url']}")
+              if r.returncode == 0 and size > 2000: ok.append(it["name"])
+              else: dst.unlink(missing_ok=True)
+          print("fetched", len(ok), "of", len(items))
+          PY
+          ls -la out/archive
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view archive >/dev/null 2>&1 || gh release create archive --title "Archive media" --notes "Public-domain photos, clips and documents used in episodes"
+          cd out/archive && for f in *; do gh release upload archive "$f" --clobber; done

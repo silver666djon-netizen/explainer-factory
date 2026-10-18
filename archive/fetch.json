@@ -1,0 +1,8 @@
+[
+ {"name": "test_loc_rothstein_slots.jpg", "url": "https://tile.loc.gov/storage-services/service/pnp/fsa/8b19000/8b19700/8b19717v.jpg"},
+ {"name": "test_loc_item_2017779953.json", "url": "https://www.loc.gov/item/2017779953/?fo=json"},
+ {"name": "test_chronam_1887.pdf", "url": "https://chroniclingamerica.loc.gov/lccn/sn86075021/1887-10-15/ed-1/seq-4.pdf"},
+ {"name": "test_commons_faro.jpg", "url": "https://commons.wikimedia.org/wiki/Special:FilePath/Orient%20Saloon%20at%20Bisbee%2C%20Arizona...%20Faro%20game%20in%20full%20blast.%20Recognized%2C%20Left%20to%20right-Tony%20Downs%20(standing%20with%20derby)%20-%20NARA%20-%20530986.jpg"},
+ {"name": "test_flickr_evans.jpg", "url": "https://live.staticflickr.com/3376/3548854237_80ef88a368_b.jpg"},
+ {"name": "test_prelinger_super.mp4", "url": "https://archive.org/download/0388_Supermarket_The_20_31_00_00/0388_Supermarket_The_20_31_00_00_3mb.mp4"}
+]
