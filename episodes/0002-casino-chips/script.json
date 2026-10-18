@@ -272,18 +272,7 @@
       "visual": {
         "type": "image",
         "prompt": "one round red and cream casino chip with a ridged edge, standing on its edge and spinning on green felt, small curved motion lines around it",
-        "motion": "static",
-        "draw": {
-          "on": "chip",
-          "dur": 2.8,
-          "box": [
-            0.2,
-            0.1,
-            0.8,
-            0.9
-          ],
-          "mode": "shape"
-        }
+        "motion": "zoom_in"
       }
     },
     {
