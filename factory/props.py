@@ -657,8 +657,11 @@ class NewsreelShot(Shot):
         self.inner, self.cfg, self.label, self.seed = inner, cfg, label, seed
 
     def frame(self, t: float) -> np.ndarray:
-        tq = math.floor(t * 12) / 12
-        return newsreel(self.inner.frame(tq), t, self.seed, self.label, self.cfg)
+        # smooth picture (no 12 fps judder of the camera); a gentle film weave of at most 1 px at <=2 Hz
+        out = newsreel(self.inner.frame(t), t, self.seed, self.label, self.cfg)
+        dx, dy = math.sin(t * 2 * math.pi * 1.1 + self.seed) * 0.8, math.sin(t * 2 * math.pi * 0.7 + 1.3 * self.seed) * 0.8
+        M = np.float32([[1, 0, dx], [0, 1, dy]])
+        return cv2.warpAffine(out, M, (out.shape[1], out.shape[0]), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
 
 # ------------------------------------------------------------------ slot machine

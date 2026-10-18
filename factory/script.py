@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "drift", "static"}
-VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive"}
+VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive", "houseedge", "endscreen", "continue"}
 IMAGE_BEARING = {"image", "photo", "mugshot", "clip", "archive"}
 MARK_TYPES = {"circle", "underline", "arrow", "cross", "check"}
 STYLES = {"ad", "comic"}

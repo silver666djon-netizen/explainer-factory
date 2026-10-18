@@ -33,18 +33,24 @@ def _typew(cfg):
 # ---------------------------------------------------------------------------------------------- ledger
 
 class Ledger:
-    """rows: [{"label": "CASH IN", "amount": "$500", "loss": False, "at": abs_time, "end": abs_time?}]
-    The card appears with the first row; every later row is handwritten at its time (0.7 s)."""
+    """Larry's tab. rows: [{"label", "amount", "loss": bool, "at": abs s, "note": bool, "circle": bool}]
+    A note row is a small handwritten margin line (no amount). States: "sleeping" — a small card (~12 % of
+    the frame width) pinned top-right with 24 px margins; "writing" — it grows to full size for ~2 s while
+    the hand writes the new line, then shrinks back. Hidden during the spans in `hide`."""
 
     WRITE = 0.7
+    GROW = 0.3
+    HOLD = 0.9
 
     def __init__(self, rows: list[dict], cfg: dict, size, title: str = "LARRY'S TAB", hide: list | None = None):
         self.W, self.H = W, H = size
         self.rows = sorted(rows, key=lambda r: r["at"])
         self.pal = pal = _pal(cfg)
-        self.hide = hide or []  # [(t0, t1)] spans where the card steps aside (full-frame cards, titles)
+        self.hide = sorted(hide or [])
         portrait = H > W
         cw = int(W * (0.40 if portrait else 0.20))
+        self.small_w = int(W * (0.22 if portrait else 0.12))
+        self.margin = int(24 * W / 1920)
         self.row_h = rh = int(cw * 0.105)
         head_h = int(rh * 1.45)
         ch = head_h + rh * len(self.rows) + int(rh * 0.5)
@@ -61,52 +67,85 @@ class Ledger:
         d.line((int(cw * 0.60), head_h, int(cw * 0.60), ch - 6), fill=(200, 120, 110, 150), width=1)
         lf = font(_typew(cfg), int(rh * 0.44))
         mf = font(resolve_font(cfg["fonts"]["marker"]), int(rh * 0.70))
-        self.labels, self.amounts = [], []
+        nf = font(resolve_font(cfg["fonts"]["marker"]), int(rh * 0.42))
+        self.items = []  # (label rgba | None, Writing, x, y)
         for k, r in enumerate(self.rows):
             y = head_h + k * rh
+            if r.get("note"):
+                wr = Writing(r["label"], nf, pal["red"])
+                self.items.append((None, wr, int(cw * 0.08), y + int(rh * 0.05)))
+                continue
             lab = Image.new("RGBA", (int(cw * 0.56), rh), (0, 0, 0, 0))
             ImageDraw.Draw(lab).text((int(cw * 0.06), int(rh * 0.30)), r["label"], font=lf, fill=pal["ink"] + (255,))
-            self.labels.append((np.array(lab), y))
             col = pal["red"] if r.get("loss") else pal["ink"]
-            self.amounts.append((Writing(r["amount"], mf, col), y))
+            self.items.append((np.array(lab), Writing(r["amount"], mf, col), int(cw * 0.62), y - int(rh * 0.12)))
         self.card = np.array(card.convert("RGB"))
-        tape = np.array(tape_strip(int(cw * 0.30), int(rh * 0.55), 5).rotate(-4, expand=True))
-        self.tape = tape
-        self.x = int(W * (0.565 if portrait else 0.765))
-        self.y = int(H * (0.035 if not portrait else 0.03))
-        self.angle = 1.5
+        self.tape = np.array(tape_strip(int(cw * 0.30), int(rh * 0.55), 5).rotate(-4, expand=True))
+        self._cache = {}
 
     def visible(self, t: float) -> bool:
-        return bool(self.rows) and t >= self.rows[0]["at"] - 0.3 and not any(a <= t <= b for a, b in self.hide)
+        if not self.rows or t < self.rows[0]["at"] - 0.3:
+            return False
+        return not any(a <= t <= b for a, b in self.hide)
 
-    def draw(self, frame: np.ndarray, t: float) -> None:
-        if not self.visible(t):
-            return
+    def _state(self, t):
+        """(scale 0..1 between small and full, index of the row being written or None)"""
+        best, cur = 0.0, None
+        for k, r in enumerate(self.rows):
+            a = r["at"] - self.GROW
+            b = r["at"] + 0.15 + self.WRITE + self.HOLD
+            if a <= t <= b + self.GROW:
+                g = min(1.0, (t - a) / self.GROW, (b + self.GROW - t) / self.GROW)
+                if g > best:
+                    best, cur = g, k
+        return ease(max(0.0, best)), cur
+
+    def _render_card(self, t) -> np.ndarray:
         img = self.card.copy()
         hand = None
         for k, r in enumerate(self.rows):
             if t < r["at"]:
                 break
-            lab, y = self.labels[k]
-            blend(img, lab, 0, y)
-            wr, y = self.amounts[k]
+            lab, wr, x, y = self.items[k]
+            if lab is not None:
+                blend(img, lab, 0, y + int(self.row_h * 0.12))
             p = (t - r["at"] - 0.15) / self.WRITE
             if p > 0:
-                ax = int(self.cw * 0.62)
-                blend(img, wr.at(p), ax, y - int(self.row_h * 0.12))
+                blend(img, wr.at(p), x, y)
                 if p < 1.3:
-                    hand = (ax, y - int(self.row_h * 0.12), wr, r["at"] + 0.15)
-        # appear: drop in on the first row
+                    hand = (x, y, wr, r["at"] + 0.15)
+            if r.get("circle") and p > 1.0:
+                q = min(1.0, (p - 1.0) / 0.6)
+                cxr, cyr = x + wr.w // 2, y + wr.h // 2
+                cv2.ellipse(img, (cxr, cyr), (int(wr.w * 0.62), int(wr.h * 0.62)), -4, -140, -140 + 370 * q,
+                            tuple(int(c) for c in self.pal["red"]), max(3, self.row_h // 12), cv2.LINE_AA)
+        return img, hand
+
+    def draw(self, frame: np.ndarray, t: float) -> None:
+        if not self.visible(t):
+            return
+        g, cur = self._state(t)
+        img, hand = self._render_card(t)
+        if cur is None:
+            hand = None
+        # entrance: first appearance drops in (small)
         a = min(1.0, (t - self.rows[0]["at"] + 0.3) / 0.3)
-        dy = int((1 - ease(a)) * -self.ch * 0.4)
-        sh = np.zeros(img.shape[:2] + (4,), np.uint8)
+        w = int(self.small_w + (self.cw - self.small_w) * g)
+        k = w / self.cw
+        h = int(self.ch * k)
+        small = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
+        x = self.W - self.margin - w
+        top = int(self.H * 0.175) if self.H > self.W else 0  # Shorts: inside the picture window, under the title band
+        y = top + self.margin + int((1 - ease(a)) * -h * 0.5)
+        sh = np.zeros((h, w, 4), np.uint8)
         sh[..., 3] = 115
-        blend(frame, cv2.GaussianBlur(sh, (0, 0), 8), self.x + 6, self.y + dy + 9)
-        blend(frame, np.dstack([img, np.full(img.shape[:2], 255, np.uint8)]), self.x, self.y + dy)
-        blend(frame, self.tape, self.x + self.cw // 2 - self.tape.shape[1] // 2, self.y + dy - self.tape.shape[0] // 3)
-        if hand:
-            ax, ay, wr, t0 = hand
-            tip = hand_path(lambda q: (self.x + ax + wr.tip((q - t0) / self.WRITE)[0], self.y + ay + wr.tip((q - t0) / self.WRITE)[1]),
+        blend(frame, cv2.GaussianBlur(sh, (0, 0), 6), x + 5, y + 7)
+        blend(frame, np.dstack([small, np.full((h, w), 255, np.uint8)]), x, y, opacity=ease(a))
+        tp = cv2.resize(self.tape, (max(1, int(self.tape.shape[1] * k)), max(1, int(self.tape.shape[0] * k))))
+        blend(frame, tp, x + w // 2 - tp.shape[1] // 2, y - tp.shape[0] // 3, opacity=ease(a))
+        if hand and g > 0.95:
+            hx, hy, wr, t0 = hand
+            tip = hand_path(lambda q: (x + (hx + wr.tip((q - t0) / self.WRITE)[0]) * k, y + (hy + wr.tip((q - t0) / self.WRITE)[1]) * k),
                             t0, t0 + self.WRITE, t, self.W, self.H, False, from_below=True)
             if tip:
                 paste_hand(frame, "ink_under", tip[0], tip[1], False, scale=0.72)
@@ -115,8 +154,8 @@ class Ledger:
         out = [(self.rows[0]["at"] - 0.3, "paper")] if self.rows else []
         for r in self.rows:
             out += [(r["at"] + 0.15, "marker"), (r["at"] + 0.5, "marker")]
-            if r.get("loss"):
-                out.append((r["at"] + 0.9, "cash"))
+            if r.get("circle"):
+                out += [(r["at"] + 0.15 + self.WRITE, "scribble"), (r["at"] + 0.15 + self.WRITE + 0.6, "stamp")]
         return out
 
 
@@ -147,7 +186,7 @@ def chip_stack(n: int, w: int, color, pal, seed: int, thick: int | None = None) 
     rnd = np.random.default_rng(seed)
     for k in range(n):
         yb = H - 4 - eh // 2 - k * t  # centre of this chip's bottom ellipse
-        ox = int(rnd.uniform(-w * 0.03, w * 0.03))  # hand-stacked, not perfect
+        ox = int(round(math.sin(k * 0.9 + seed) * w * 0.010))  # hand-stacked: a gentle, continuous lean
         x0, x1 = 4 + ox, 4 + w + ox
         d.ellipse((x0, yb - eh // 2, x1, yb + eh // 2), fill=dark, outline=ink, width=3)
         d.rectangle((x0, yb - t, x1, yb), fill=dark)
@@ -181,29 +220,32 @@ class HouseEdgeShot(Shot):
         d = ImageDraw.Draw(img)
         # printed table lines (like a betting layout), faint
         cream = (238, 230, 205)
-        d.rounded_rectangle((int(BW * 0.06), int(BH * 0.20), int(BW * 0.94), int(BH * 0.80)), radius=int(BH * 0.08),
-                            outline=cream + (90,), width=4)
         head = resolve_font(cfg["fonts"]["headline"])
-        tf, tl = fit_font(spec.get("title", "House edge").upper(), head, int(W * 0.6), int(H * 0.12), start=int(H * 0.11))
+        pt = H > W  # Shorts: everything sits in the picture window under the title band
+        U = min(W, H)  # sizes follow the short side
+        tf, tl = fit_font(spec.get("title", "House edge").upper(), head, int(W * 0.8), int(U * 0.12), start=int(U * 0.11))
+        ty0 = int(H * 0.22) if pt else int(H * 0.085)
         off_x, off_y = (BW - W) // 2, (BH - H) // 2
-        d.text((BW // 2, off_y + int(H * 0.085)), " ".join(tl), font=tf, fill=cream + (255,), anchor="mm")
-        sf = font(_typew(cfg), int(H * 0.034))
-        d.text((BW // 2, off_y + int(H * 0.165)), spec.get("sub", "what the house keeps from every $100 bet"), font=sf, fill=cream + (230,), anchor="mm")
+        d.text((BW // 2, off_y + ty0), " ".join(tl), font=tf, fill=cream + (255,), anchor="mm")
+        sf = font(_typew(cfg), int(U * 0.034))
+        while sf.getlength(spec.get("sub", "")) > W * 0.9 and sf.size > 10:
+            sf = font(sf.path, sf.size - 1)
+        d.text((BW // 2, off_y + ty0 + int(U * 0.08)), spec.get("sub", "what the house keeps from every $100 bet"), font=sf, fill=cream + (230,), anchor="mm")
         bars = spec.get("bars") or []
         per = float(spec.get("per_chip", 0.5))
         colors = {"red": pal["red"], "ink": (52, 52, 58), "green": pal["green"], "accent": pal["accent"]}
         self.layers = []  # (LineDrawing over the felt for this stack, bbox)
         base = np.array(img.convert("RGB"))
         self.labels = []
-        cw = int(W * 0.13)
-        floor = off_y + int(H * 0.72)
-        xs = [off_x + int(W * 0.34), off_x + int(W * 0.66)] if len(bars) == 2 else [off_x + int(W * (i + 1) / (len(bars) + 1)) for i in range(len(bars))]
-        nf = font(head, int(H * 0.048))
-        notef = font(_typew(cfg), int(H * 0.03))
-        vf = font(resolve_font(cfg["fonts"]["marker"]), int(H * 0.085))
+        cw = int(W * (0.24 if pt else 0.13))
+        floor = off_y + int(H * (0.60 if pt else 0.66))
+        xs = [off_x + int(W * (0.28 if pt else 0.34)), off_x + int(W * (0.72 if pt else 0.66))] if len(bars) == 2 else [off_x + int(W * (i + 1) / (len(bars) + 1)) for i in range(len(bars))]
+        nf = font(head, int(U * (0.042 if pt else 0.048)))
+        notef = font(_typew(cfg), int(U * 0.03))
+        vf = font(resolve_font(cfg["fonts"]["marker"]), int(U * 0.085))
         masks = []
         n_max = max(max(1, int(round(float(b["value"]) / per))) for b in bars) if bars else 1
-        thick = max(8, min(int(cw * 0.15), int((H * 0.36 - cw * 0.30) / n_max)))
+        thick = max(8, min(int(cw * 0.15), int((U * 0.36 - cw * 0.30) / n_max)))
         for i, b in enumerate(bars):
             n = max(1, int(round(float(b["value"]) / per)))
             st = chip_stack(n, cw, colors.get(b.get("color", "red"), pal["red"]), pal, seed + i, thick)
@@ -217,12 +259,12 @@ class HouseEdgeShot(Shot):
             m[y:y + st.height, x:x + st.width] = al[..., 0]
             masks.append(m)
             # name (display font) printed on the felt under the stack
-            nimg = Image.new("RGBA", (int(W * 0.30), int(H * 0.13)), (0, 0, 0, 0))
+            nimg = Image.new("RGBA", (int(W * (0.46 if pt else 0.30)), int(U * 0.13)), (0, 0, 0, 0))
             nd = ImageDraw.Draw(nimg)
-            nd.text((nimg.width // 2, int(H * 0.03)), b["name"].upper(), font=nf, fill=cream + (255,), anchor="mm")
+            nd.text((nimg.width // 2, int(U * 0.03)), b["name"].upper(), font=nf, fill=cream + (255,), anchor="mm")
             if b.get("note"):
-                nd.text((nimg.width // 2, int(H * 0.085)), f"({b['note']})", font=notef, fill=cream + (220,), anchor="mm")
-            self.labels.append((np.array(nimg), xs[i] - nimg.width // 2 - off_x, floor + int(H * 0.025) - off_y))
+                nd.text((nimg.width // 2, int(U * 0.085)), f"({b['note']})", font=notef, fill=cream + (220,), anchor="mm")
+            self.labels.append((np.array(nimg), xs[i] - nimg.width // 2 - off_x, floor + int(U * 0.025) - off_y))
             # value: handwritten above the stack
             wr = Writing(f"{float(b['value']):.2f}%", vf, (250, 244, 228) if b.get("color") != "red" else (255, 214, 92))
             self.labels_v = getattr(self, "labels_v", []) + [(wr, xs[i] - wr.w // 2, y - wr.h - int(H * 0.01))]
@@ -238,6 +280,9 @@ class HouseEdgeShot(Shot):
         self.felt = felt
         da = spec.get("draw_at") or [0.3, 2.6]
         wa = spec.get("write_at") or [da[0] + 2.0, da[1] + 2.0]
+        if spec.get("predrawn"):  # continues an earlier House Edge shot: stacks already there
+            da = [-10.0 - lead_in] * len(bars)
+        wa = [(-10.0 - lead_in) if (spec.get("prewritten") or [False] * len(bars))[i] else w for i, w in enumerate(wa)]
         self.draw_at = [float(x) + lead_in for x in da]
         self.write_at = [float(x) + lead_in for x in wa]
         self.ddur = float(spec.get("draw_dur", 1.8))
@@ -313,12 +358,26 @@ class HouseEdgeShot(Shot):
 
 # ---------------------------------------------------------------------------------------------- exhibit
 
+_DESKS: dict = {}
+LAST_TAG = (0.0, 0.0)
+
+
 def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: int, label: str, tag: str,
                   tag_p: float = 1.0) -> np.ndarray:
     """One frame of a live-action clip presented as evidence on the desk."""
     pal = _pal(cfg)
-    out = desk(W, H, pal, 6)
-    pw, ph = int(W * 0.80), int(H * 0.70)
+    if (W, H) not in _DESKS:
+        _DESKS[(W, H)] = desk(W, H, pal, 6)
+    out = _DESKS[(W, H)].copy()
+    portrait = H > W
+    pw, ph = (int(W * 0.86), int(W * 0.86 * 0.75)) if portrait else (int(W * 0.74), int(H * 0.64))
+    sh_, sw_ = rgb.shape[:2]
+    if sw_ / sh_ > pw / ph:  # crop the clip to the print's shape (never stretch)
+        cw_ = int(sh_ * pw / ph)
+        rgb = rgb[:, (sw_ - cw_) // 2:(sw_ - cw_) // 2 + cw_]
+    else:
+        ch_ = int(sw_ * ph / pw)
+        rgb = rgb[(sh_ - ch_) // 2:(sh_ - ch_) // 2 + ch_]
     # grade: a little warmer and softer, grain that changes every frame, vignette
     v = cv2.resize(rgb, (pw, ph), interpolation=cv2.INTER_AREA).astype(np.float32)
     g = v.mean(2, keepdims=True)
@@ -341,7 +400,7 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
     tf = font(_typew(cfg), int(bb * 0.42))
     d.text((b + int(W * 0.01), b + ph + int(bb * 0.24)), label.upper(), font=tf, fill=pal["ink"])
     pr = np.array(pil.convert("RGBA").rotate(-1.2, resample=Image.BICUBIC, expand=True))
-    x, y = (W - pr.shape[1]) // 2, int(H * 0.035)
+    x, y = (W - pr.shape[1]) // 2, int(H * (0.17 if portrait else 0.03))
     sh = np.zeros_like(pr)
     sh[..., 3] = (pr[..., 3] * 0.5).astype(np.uint8)
     blend(out, cv2.GaussianBlur(sh, (0, 0), 12), x + 10, y + 16)
@@ -356,5 +415,36 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
         tg = tg.rotate(9, resample=Image.BICUBIC, expand=True)
         tg = tg.resize((int(tg.width * s), int(tg.height * s)), Image.LANCZOS)
         ta = np.array(tg)
-        blend(out, ta, x + pr.shape[1] - int(ta.shape[1] * 0.80), y + pr.shape[0] - int(ta.shape[0] * 0.95), opacity=min(1.0, tag_p * 2))
+        tx0, ty0 = x + pr.shape[1] - int(ta.shape[1] * 0.80), y + pr.shape[0] - int(ta.shape[0] * 0.95)
+        blend(out, ta, tx0, ty0, opacity=min(1.0, tag_p * 2))
+    global LAST_TAG
+    tw0 = int(W * 0.20 * 1.15)
+    LAST_TAG = (x + pr.shape[1] - tw0 * 0.30, y + pr.shape[0] - tw0 * 0.20)
     return out
+
+
+class ExhibitShot(Shot):
+    """Live clip as evidence: keeps playing inside the paper print, slow 3 % push-in, the hand slaps the red
+    EXHIBIT tag on at the start."""
+
+    def __init__(self, inner: Shot, cfg: dict, size, label: str, tag: str, seed: int = 0):
+        super().__init__(inner.start, inner.duration)
+        self.inner, self.cfg, self.label, self.tag, self.seed = inner, cfg, label, tag, seed
+        self.W, self.H = size
+
+    def frame(self, t: float) -> np.ndarray:
+        W, H = self.W, self.H
+        tag_p = min(1.0, max(0.0, (t - 0.25) / 0.2))
+        out = exhibit_frame(self.inner.frame(t), W, H, self.cfg, t, self.seed, self.label, self.tag, tag_p)
+        if t < 0.75:  # the hand slaps the tag on, then leaves
+            portrait = H > W
+            tx, ty = LAST_TAG
+            tip = hand_path(lambda q: (tx, ty), 0.2, 0.45, t, W, H, False, from_below=True)
+            if tip:
+                paste_hand(out, "ink_under", tip[0], tip[1], False)
+        z = 1 + 0.03 * ease(t / max(self.duration, 1e-6))
+        M = cv2.getRotationMatrix2D((W / 2, H * 0.45), 0, z)
+        return cv2.warpAffine(out, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+
+    def sfx(self, start_abs: float) -> list[tuple[float, str]]:
+        return [(start_abs + 0.05, "paper"), (start_abs + 0.42, "stamp")]

@@ -10,7 +10,7 @@ video:
   fps: 30
   long:  { width: 1920, height: 1080 }
   short: { width: 1080, height: 1920 }
-  crossfade_frames: 8          # soft cut between shots
+  crossfade_frames: 3          # near-hard cut between shots (long dissolves left ghost images)
   pause_after_beat: 0.18       # seconds of silence after each narration beat
   min_shot_seconds: 1.4        # a shot is never shorter than this
   max_shot_seconds: 3.2        # longer shots are split so something changes every 1–3 s
@@ -66,10 +66,11 @@ voice:
 
 audio:
   narration_db: 0
-  sfx_db: -16
-  music_db: -4                 # music bed (cues are normalised to -20 dBFS RMS): ~-24 in pauses
-  duck_db: -5                  # gentle, smooth dip while the narrator speaks (no pumping)
-  sting_db: -2                 # short musical hits (fanfare, reveal, case closed)
+  sfx_db: -16                  # soft foley (pencil, paper, marker, whoosh)
+  hit_db: -6                   # impacts (stamp, hit, cash, chips) peak this far under the voice peaks
+  music_gap_db: -8             # music level vs the narration in the gaps
+  music_under_voice_db: -14    # music level vs the narration while he speaks (smooth, no pumping)
+  sting_db: -6                 # musical hits on chapter titles and reveals (peak vs voice peaks)
   target_lufs: -14
 
 images:

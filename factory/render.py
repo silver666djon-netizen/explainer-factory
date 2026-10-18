@@ -87,6 +87,8 @@ class Plan:
     punches: list[float] = field(default_factory=list)
     beat_starts: dict[str, float] = field(default_factory=dict)
     timeline: A.Timeline | None = None
+    ledger: object | None = None  # factory.devices.Ledger (Larry's tab, top-right)
+    ledger_hide: list = field(default_factory=list)
 
 
 def group_captions(words, offset: float, max_chars: int, max_words: int, speaker: str = "narrator") -> list[Caption]:
@@ -182,8 +184,29 @@ def _timed(spec: dict, words, default: float, key: str = "at") -> float:
     return float(spec.get(key, default))
 
 
+def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
+    """Insert `sec` of silence right before `word` (a reveal lands in silence). Returns the new voiced beat and
+    the (shifted) start of that word."""
+    wt = word_time(v["words"], word)
+    if wt is None or sec <= 0:
+        return v, None
+    sr = v["sr"]
+    cut = max(0, int((wt - 0.03) * sr))
+    audio = np.concatenate([v["audio"][:cut], np.zeros(int(sec * sr), dtype=v["audio"].dtype), v["audio"][cut:]])
+    words = [(w, s0 + (sec if s0 >= wt - 0.03 else 0.0), e0 + (sec if s0 >= wt - 0.03 else 0.0)) for w, s0, e0 in v["words"]]
+    return {**v, "audio": audio, "words": words, "duration": v["duration"] + sec}, wt + sec
+
+
 def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause: float = 0.0) -> Plan:
     vcfg = cfg["video"]
+    reveal_hits = []  # (beat index, word time, sfx) after inserted pauses
+    voiced = list(voiced)
+    for i, b in enumerate(beats):
+        pa = b.get("pause_at")
+        if pa:
+            voiced[i], wt = _with_pause(voiced[i], pa["word"], float(pa.get("sec", 1.2)))
+            if wt is not None and pa.get("hit", "stamp"):
+                reveal_hits.append((i, wt, pa.get("hit", "stamp")))
     pause = float(vcfg.get("pause_after_beat", 0.18)) + extra_pause
     max_shot = float(vcfg.get("max_shot_seconds", 3.2))
     min_shot = float(vcfg.get("min_shot_seconds", 1.4))
@@ -191,10 +214,19 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
     tail = 0.8 if kind == "long" else 0.15
 
     t = lead
-    starts, durations = [], []
+    starts, durations, shot_starts = [], [], []
+    block0 = None
     for v, b in zip(voiced, beats):
+        shot_starts.append(t)
+        if b.get("block_start"):  # a fixed-length sequence (end screen): later beats sit at fixed offsets
+            block0 = t
+        if b.get("block_at") is not None and block0 is not None:
+            t = max(t, block0 + float(b["block_at"]))
+        t += float(b.get("pause_before", 0))  # silence before the line (chapter titles: hit, then 1 s)
         starts.append(t)
         d = v["duration"] + pause + float(b.get("hold", 0))
+        if b.get("block_end") is not None and block0 is not None:
+            d = max(d, block0 + float(b["block_end"]) - t)
         durations.append(d)
         t += d
     total = t + tail
@@ -220,10 +252,14 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
     max_chars, max_words = (26, 5) if kind == "long" else (16, 3)
     last_section = None
     cycle_i = 0
+    ledger_rows: list[dict] = []
     for i, (beat, v, start, dur) in enumerate(zip(beats, voiced, starts, durations)):
         plan.beat_starts[beat["id"]] = start
-        shot_start = 0.0 if i == 0 else start
-        shot_end = total if i == len(beats) - 1 else start + dur
+        shot_start = 0.0 if i == 0 else shot_starts[i]
+        j = i
+        while j + 1 < len(beats) and beats[j + 1]["visual"]["type"] == "continue":
+            j += 1  # following beats keep this shot running (one continuous device)
+        shot_end = total if j == len(beats) - 1 else starts[j] + durations[j]
         span = shot_end - shot_start
         visual = dict(beat["visual"])
         visual["_beat"] = beat["id"]
@@ -231,7 +267,9 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         lead_in = start - shot_start  # marks are timed from the narration start
 
         clip_file = None
-        if vtype == "clip" or visual.get("clip") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("_clip")):
+        if vtype == "continue":
+            pass
+        elif vtype == "clip" or visual.get("clip") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("_clip")):
             clip_file = _clip_path(beat, visual, beat_lookup)
         if clip_file is not None:
             cshot = ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0)))
@@ -240,6 +278,13 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 cshot = NewsreelShot(cshot, cfg, label, seed=i)
                 for at in projector_sfx_times(shot_start, span):
                     plan.timeline.add_sfx(at, "projector", seed=i)
+            if visual.get("exhibit"):  # live action presented as evidence (paper print, tag, grain)
+                from .devices import ExhibitShot
+                ex = visual["exhibit"]
+                cshot = ExhibitShot(cshot, cfg, size, ex.get("label", "Evidence"), ex.get("tag", ""), seed=i)
+                for at, k_ in cshot.sfx(shot_start):
+                    plan.timeline.add_sfx(at, k_, seed=i)
+                plan.ledger_hide.append((shot_start, shot_end))
             plan.shots.append(cshot)
         elif vtype in ("image", "reuse", "photo", "clip", "archive"):
             keys = _image_keys(visual, beat_lookup)
@@ -317,9 +362,64 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             for at, kind_sfx in prop.sfx(shot_start):
                 plan.timeline.add_sfx(at, kind_sfx, seed=i)
         elif vtype == "doc":
+            from .evidence import EvidenceShot
             doc = visual["doc"]
-            plan.shots.append(DocShot(shot_start, span, doc, cfg, size, lead_in=lead_in, seed=i))
-            plan.timeline.add_sfx(start + float(doc.get("at", 1.0)), "scribble", seed=i)
+            cap = float(doc.get("max", 6.5))
+            if doc.get("flash"):
+                c0, c1 = shot_start, min(shot_end, shot_start + float(doc.get("flash_dur", 1.5)))
+                mark_abs = c0
+            else:
+                mark_abs = start + _timed(doc, v["words"], 1.0)
+                c0 = max(shot_start, mark_abs - float(doc.get("lead", 2.2)))
+                if c0 - shot_start < 1.2:
+                    c0 = shot_start
+                c1 = min(shot_end, c0 + cap)
+                if shot_end - c1 < 1.0 and shot_end - c0 <= cap + 0.7:
+                    c1 = shot_end
+            def _still(key_beat, a, b, motion):
+                if b - a < 0.05 or not key_beat:
+                    return
+                keys = _image_keys({"type": "reuse", "beat": key_beat, "index": doc.get("index", 0)}, beat_lookup)
+                path = images[keys[0]]
+                plan.shots.append(ImageShot(a, b - a, pil(path), motion, size, cfg, photo=is_archive_photo(path), seed=i * 7 + 3,
+                                            depth=depth_of(path)))
+            if c0 > shot_start:
+                _still(doc.get("pre"), shot_start, c0, "zoom_in")
+            plan.shots.append(EvidenceShot(c0, c1 - c0, doc, cfg, size, mark_at=mark_abs - c0, seed=i))
+            for at, k_ in plan.shots[-1].sfx(c0):
+                plan.timeline.add_sfx(at, k_, seed=i)
+            plan.ledger_hide.append((c0, c1))
+            if c1 < shot_end:
+                _still(doc.get("post") or doc.get("pre"), c1, shot_end, "zoom_out")
+        elif vtype == "houseedge":
+            from .devices import HouseEdgeShot
+            he = dict(visual["houseedge"])
+            for key in ("write_on", "draw_on"):
+                if he.get(key):
+                    tgt = "write_at" if key == "write_on" else "draw_at"
+                    he[tgt] = [(_timed({"on": w}, v["words"], 1.0) + lead_in) if w else 1e9 for k, w in enumerate(he[key])]
+            shot = HouseEdgeShot(shot_start, span, he, cfg, size, lead_in=0.0, seed=i)
+            plan.shots.append(shot)
+            for at, k_ in shot.sfx(shot_start):
+                plan.timeline.add_sfx(at, k_, seed=i)
+            plan.ledger_hide.append((shot_start, shot_end))
+        elif vtype == "endscreen":
+            from .endscreen import EndScreenShot
+            es = visual["endscreen"]
+            subj = None
+            nx = es.get("next") or {}
+            if nx.get("image_file") and beat.get("_episode_dir"):
+                fp = Path(beat["_episode_dir"]) / nx["image_file"]
+                if fp.exists():
+                    subj = Image.open(fp).convert("RGB")
+            elif nx.get("image") in images:
+                subj = pil(images[nx["image"]])
+            shot = EndScreenShot(shot_start, span, es, cfg, size, subject=subj, lead_in=0.0, seed=i)
+            plan.shots.append(shot)
+            for at, k_ in shot.sfx(shot_start):
+                plan.timeline.add_sfx(at, k_, seed=i)
+            plan.ledger_hide.append((shot_start, total))
+            plan.timeline.align_end = True
         elif vtype == "kinetic":
             words_rel = [(w, s0, e0) for w, s0, e0 in v["words"]]
             ktext = visual.get("text") or beat["text"]
@@ -385,7 +485,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             end_t = min(shot_end, at + float(ins.get("dur", max(2.5, dur)))) if ins.get("dur") else shot_end
             try:
                 plan.inserts.append(build_insert(ins, images, depth_of, cfg, size, at, end_t, seed=i * 11 + j))
-                plan.timeline.add_sfx(at, "whoosh", seed=i + j)
+                paperish = ins.get("kind") in ("clipping", "photo") or (ins.get("kind") is None and ins.get("file") not in images)
+                plan.timeline.add_sfx(at, "paper" if paperish else "whoosh", seed=i + j)
             except Exception as exc:  # noqa: BLE001
                 print(f"insert skipped on {beat['id']}: {exc}", flush=True)
         if beat.get("bubble"):
@@ -405,6 +506,24 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
 
         if vtype not in ("title", "kinetic"):  # those already show the words
             plan.captions.extend(group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator")))
+        if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
+            plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
+        for row in beat.get("ledger") or []:
+            ledger_rows.append({**row, "at": start + _timed(row, v["words"], 0.5)})
+        for ev in beat.get("sfx_at") or []:  # extra foley synced to words (chips, roulette ball, register…)
+            plan.timeline.add_sfx(start + _timed(ev, v["words"], 0.3), ev["kind"], seed=i + 17)
+    for i, wt, k_ in reveal_hits:  # the number lands in silence, then the hit
+        plan.timeline.add_sfx(starts[i] + wt - 0.02, k_, seed=i + 31)
+    for c in plan.counters:
+        plan.ledger_hide.append((c.start - 0.2, c.end + 0.2))
+    for b in plan.bubbles:
+        if b.x > 0.55 and b.y < 0.5:
+            plan.ledger_hide.append((b.start - 0.2, b.end + 0.2))
+    if ledger_rows:
+        from .devices import Ledger
+        plan.ledger = Ledger(ledger_rows, cfg, size, hide=plan.ledger_hide)
+        for at, k_ in plan.ledger.sfx():
+            plan.timeline.add_sfx(at, k_, seed=int(at * 10))
     return plan
 
 
@@ -573,6 +692,8 @@ class Overlay:
         for ins in self.plan.inserts:
             if ins.start <= t <= ins.end:
                 ins.draw(frame, t)
+        if self.plan.ledger is not None:
+            self.plan.ledger.draw(frame, t)
         if self.plan.ctas:
             self._draw_ctas(frame, t)
         for c in self.plan.counters:
@@ -620,7 +741,7 @@ def _loudnorm_filter(wav_path: Path, lufs: float) -> str:
     """Two-pass loudnorm in linear mode = one constant gain for the whole mix (single-pass loudnorm rides the
     volume up and down, which made the music swell and sink)."""
     import json as _json
-    base = f"loudnorm=I={lufs}:TP=-1.5:LRA=20"
+    base = f"loudnorm=I={lufs}:TP=-1.0:LRA=20"
     try:
         res = subprocess.run(["ffmpeg", "-v", "info", "-nostats", "-i", str(wav_path), "-af", base + ":print_format=json",
                               "-f", "null", "-"], capture_output=True, text=True)

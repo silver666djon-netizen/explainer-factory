@@ -22,7 +22,8 @@
     "Mental Floss: Why Don't Casinos Have Windows? (Friedman on the clock myth).",
     "Casino chip history: Wikipedia, 'Casino chip'.",
     "Roulette maths: American wheel 2/38 = 5.26% house edge; European wheel 1/37 = 2.70%.",
-    "Larry is a fictional character. Archive-style scenes marked 'Reconstruction' are illustrations, not historical footage."
+    "Larry is a fictional character. Archive-style scenes marked 'Reconstruction' are illustrations, not historical footage.",
+    "US Federal Trade Commission staff (Jan 2025). Surveillance Pricing 6(b) study: research summaries, p. 6 (quoted)."
   ],
   "characters": {
     "larry": "a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red fedora",
@@ -127,6 +128,12 @@
           "on": "these",
           "caption": "Monte Carlo, c. 1900"
         }
+      ],
+      "sfx_at": [
+        {
+          "on": "these",
+          "kind": "chips"
+        }
       ]
     },
     {
@@ -211,7 +218,10 @@
       "visual": {
         "type": "title",
         "text": "7:00 PM — The exchange"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "b08",
@@ -228,12 +238,30 @@
         {
           "file": "montecarlo_hall_1896.jpg",
           "kind": "photo",
-          "from": "right",
-          "x": 0.82,
+          "from": "left",
+          "x": 0.18,
           "y": 0.4,
           "w": 0.3,
           "on": "swaps",
           "caption": "Gaming hall, Monte Carlo, 1896"
+        }
+      ],
+      "ledger": [
+        {
+          "label": "CASH IN",
+          "amount": "$500",
+          "on": "five"
+        },
+        {
+          "label": "CHIPS",
+          "amount": "500",
+          "on": "stack"
+        }
+      ],
+      "sfx_at": [
+        {
+          "on": "plastic",
+          "kind": "chips"
         }
       ]
     },
@@ -264,7 +292,7 @@
             "y": 0.5,
             "w": 0.42,
             "h": 0.5,
-            "text": "trick #1",
+            "text": "suspect no. 1",
             "text_y": 0.78,
             "on": "trick"
           }
@@ -321,7 +349,13 @@
         "type": "image",
         "prompt": "one round red and cream casino chip with a ridged edge, standing on its edge and spinning on green felt, small curved motion lines around it",
         "motion": "zoom_in"
-      }
+      },
+      "sfx_at": [
+        {
+          "on": "clicks",
+          "kind": "chips"
+        }
+      ]
     },
     {
       "id": "d14",
@@ -329,14 +363,10 @@
       "text": "In 2008, researchers Priya Raghubir and Joydeep Srivastava put this to the test.",
       "say": "In two thousand and eight, researchers Priya Raghubir and Joydeep Srivastava put this to the test.",
       "visual": {
-        "type": "doc",
-        "doc": {
-          "source": "Summary · Journal of Experimental Psychology: Applied · 2008",
-          "headline": "Monopoly Money: payment form and spending",
-          "body": "Across four studies, people were willing to spend more when paying by credit card than with cash, and spent a $50 gift certificate more freely than $50 in cash. Less transparent ways of paying were treated a bit like play money.",
-          "seed": 101,
-          "at": 999
-        }
+        "type": "reuse",
+        "beat": "b12",
+        "index": 1,
+        "motion": "zoom_in"
       }
     },
     {
@@ -351,7 +381,9 @@
           "body": "Across four studies, people were willing to spend more when paying by credit card than with cash, and spent a $50 gift certificate more freely than $50 in cash. Less transparent ways of paying were treated a bit like play money.",
           "seed": 101,
           "highlight": "spent a $50 gift certificate more freely than $50 in cash",
-          "at": 1.2
+          "mark": "underline",
+          "on": "certificate",
+          "pre": "c03"
         }
       }
     },
@@ -447,6 +479,12 @@
           "on": "clay",
           "pick": 9815260
         }
+      ],
+      "sfx_at": [
+        {
+          "on": "clay",
+          "kind": "chips"
+        }
       ]
     },
     {
@@ -507,7 +545,10 @@
       "visual": {
         "type": "title",
         "text": "9:00 PM — The win"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "b17",
@@ -539,6 +580,12 @@
           "on": "number",
           "caption": "Wheel of fortune, Las Vegas, 1940"
         }
+      ],
+      "sfx_at": [
+        {
+          "on": "profit",
+          "kind": "cash"
+        }
       ]
     },
     {
@@ -562,7 +609,14 @@
             "on": "their money"
           }
         ]
-      }
+      },
+      "ledger": [
+        {
+          "label": "WIN",
+          "amount": "+100",
+          "on": "files"
+        }
+      ]
     },
     {
       "id": "d19",
@@ -570,14 +624,9 @@
       "text": "Economists Richard Thaler and Eric Johnson studied this in 1990, with real money on the line.",
       "say": "Economists Richard Thaler and Eric Johnson studied this in nineteen ninety, with real money on the line.",
       "visual": {
-        "type": "doc",
-        "doc": {
-          "source": "Summary · Management Science · 1990",
-          "headline": "Gambling with the house money",
-          "body": "In experiments with real money, people who had just won became more willing to take risks, as if the winnings were not really their own. After a loss, bets that offered a chance to break even became especially attractive.",
-          "seed": 202,
-          "at": 999
-        }
+        "type": "reuse",
+        "beat": "b18",
+        "motion": "zoom_in"
       }
     },
     {
@@ -592,7 +641,10 @@
           "body": "In experiments with real money, people who had just won became more willing to take risks, as if the winnings were not really their own. After a loss, bets that offered a chance to break even became especially attractive.",
           "seed": 202,
           "highlight": "as if the winnings were not really their own",
-          "at": 1.0
+          "mark": "underline",
+          "on": "winnings",
+          "pre": "b18",
+          "post": "b17"
         }
       }
     },
@@ -604,7 +656,13 @@
         "type": "image",
         "prompt": "a croupier's wooden rake pushing a stack of chips across green felt",
         "motion": "pan_left"
-      }
+      },
+      "sfx_at": [
+        {
+          "on": "pushed",
+          "kind": "chips"
+        }
+      ]
     },
     {
       "id": "b22",
@@ -626,7 +684,10 @@
       "visual": {
         "type": "title",
         "text": "11:00 PM — The maths"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "b23",
@@ -642,12 +703,25 @@
         {
           "stock_photo": "empty wallet",
           "kind": "photo",
-          "from": "right",
-          "x": 0.82,
+          "from": "left",
+          "x": 0.18,
           "y": 0.42,
           "w": 0.26,
           "on": "gone",
           "pick": 3548021
+        }
+      ],
+      "pause_at": {
+        "word": "So is a chunk",
+        "sec": 1.0,
+        "hit": "hit"
+      },
+      "ledger": [
+        {
+          "label": "TILT BET",
+          "amount": "-360",
+          "loss": true,
+          "on": "chunk"
         }
       ]
     },
@@ -674,7 +748,13 @@
         "motion": "zoom_in",
         "caption": "Roulette players, Las Vegas, 1940 — Arthur Rothstein"
       },
-      "say": "Las Vegas, nineteen forty. The wheel hasn't changed since. Neither has the arithmetic."
+      "say": "Las Vegas, nineteen forty. The wheel hasn't changed since. Neither has the arithmetic.",
+      "sfx_at": [
+        {
+          "on": "wheel",
+          "kind": "whirr"
+        }
+      ]
     },
     {
       "id": "r25",
@@ -730,13 +810,39 @@
       "section": "11 PM: The maths",
       "text": "On almost every bet on the table, they give the house an edge of about five point two six percent.",
       "visual": {
-        "type": "stat",
-        "stat": {
-          "value": 5.26,
-          "decimals": 2,
-          "suffix": "%",
-          "label": "house edge, American roulette"
+        "type": "houseedge",
+        "houseedge": {
+          "title": "House edge",
+          "sub": "what the house keeps from every $100 bet",
+          "bars": [
+            {
+              "name": "American wheel",
+              "note": "0 and 00",
+              "value": 5.26,
+              "color": "red"
+            },
+            {
+              "name": "European wheel",
+              "note": "single 0",
+              "value": 2.7,
+              "color": "ink"
+            }
+          ],
+          "draw_at": [
+            0.25,
+            1.5
+          ],
+          "draw_dur": 1.8,
+          "write_on": [
+            "five",
+            null
+          ]
         }
+      },
+      "pause_at": {
+        "word": "five",
+        "sec": 1.2,
+        "hit": "stamp"
       }
     },
     {
@@ -766,6 +872,12 @@
           "w": 0.28,
           "on": "hundred",
           "pick": 6771234
+        }
+      ],
+      "sfx_at": [
+        {
+          "on": "hundred",
+          "kind": "cash"
         }
       ]
     },
@@ -809,21 +921,38 @@
       "section": "11 PM: The maths",
       "text": "Even a European wheel, with a single green zero, keeps about two point seven percent. The house always takes a slice.",
       "visual": {
-        "type": "chart",
-        "chart": {
-          "kind": "bar",
+        "type": "houseedge",
+        "houseedge": {
           "title": "House edge",
-          "labels": [
-            "American wheel",
-            "European wheel"
+          "sub": "what the house keeps from every $100 bet",
+          "bars": [
+            {
+              "name": "American wheel",
+              "note": "0 and 00",
+              "value": 5.26,
+              "color": "red"
+            },
+            {
+              "name": "European wheel",
+              "note": "single 0",
+              "value": 2.7,
+              "color": "ink"
+            }
           ],
-          "values": [
-            5.26,
-            2.7
+          "draw_at": [
+            0.25,
+            1.5
           ],
-          "unit": "%",
-          "decimals": 2,
-          "highlight": 0
+          "draw_dur": 1.8,
+          "predrawn": true,
+          "prewritten": [
+            true,
+            false
+          ],
+          "write_on": [
+            null,
+            "two"
+          ]
         }
       }
     },
@@ -862,7 +991,9 @@
           "body": "In experiments with real money, people who had just won became more willing to take risks, as if the winnings were not really their own. After a loss, bets that offered a chance to break even became especially attractive.",
           "seed": 202,
           "highlight": "bets that offered a chance to break even became especially attractive",
-          "at": 1.4
+          "mark": "underline",
+          "flash": true,
+          "post": "b33"
         }
       }
     },
@@ -878,7 +1009,20 @@
         "prompt": "{larry} pushing a tall tower of casino chips onto a roulette table",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "ledger": [
+        {
+          "label": "house keeps 5.26% of every bet",
+          "note": true,
+          "on": "arithmetic"
+        }
+      ],
+      "sfx_at": [
+        {
+          "on": "bigger",
+          "kind": "chips"
+        }
+      ]
     },
     {
       "id": "t04",
@@ -887,7 +1031,10 @@
       "visual": {
         "type": "title",
         "text": "1:00 AM — Almost"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "a01",
@@ -965,7 +1112,20 @@
           ],
           "note": "a loss"
         }
-      }
+      },
+      "pause_at": {
+        "word": "It's a loss",
+        "sec": 1.2,
+        "hit": "stamp"
+      },
+      "ledger": [
+        {
+          "label": "SLOTS",
+          "amount": "-240",
+          "loss": true,
+          "on": "ordinary"
+        }
+      ]
     },
     {
       "id": "d05",
@@ -973,14 +1133,9 @@
       "text": "In 2009, a Cambridge team led by Luke Clark scanned people's brains while they played a slot machine.",
       "say": "In two thousand and nine, a Cambridge team led by Luke Clark scanned people's brains while they played a slot machine.",
       "visual": {
-        "type": "doc",
-        "doc": {
-          "source": "Summary · Neuron · 2009",
-          "headline": "Gambling near-misses enhance motivation to gamble",
-          "body": "Volunteers played a simple slot machine in a brain scanner. Near-misses were rated as unpleasant, yet they increased the desire to keep playing and activated brain regions that also respond to wins.",
-          "seed": 303,
-          "at": 999
-        }
+        "type": "reuse",
+        "beat": "a07",
+        "motion": "zoom_in"
       }
     },
     {
@@ -995,7 +1150,9 @@
           "body": "Volunteers played a simple slot machine in a brain scanner. Near-misses were rated as unpleasant, yet they increased the desire to keep playing and activated brain regions that also respond to wins.",
           "seed": 303,
           "highlight": "increased the desire to keep playing",
-          "at": 2.0
+          "mark": "circle",
+          "on": "keep",
+          "pre": "a03"
         }
       }
     },
@@ -1050,14 +1207,9 @@
       "section": "1 AM: Almost",
       "text": "Researcher Kevin Harrigan took apart the maths of one classic machine.",
       "visual": {
-        "type": "doc",
-        "doc": {
-          "source": "Summary · Journal of Gambling Issues · 2007",
-          "headline": "Slot machine structural characteristics",
-          "body": "The machine's 22 physical reel stops were mapped onto a hidden 64-stop virtual reel. On reel one, the top symbol landed just above the payline 8 times in 64, but on the payline only 2 times in 64.",
-          "seed": 404,
-          "at": 999
-        }
+        "type": "reuse",
+        "beat": "a13",
+        "motion": "zoom_in"
       }
     },
     {
@@ -1072,7 +1224,9 @@
           "body": "The machine's 22 physical reel stops were mapped onto a hidden 64-stop virtual reel. On reel one, the top symbol landed just above the payline 8 times in 64, but on the payline only 2 times in 64.",
           "seed": 404,
           "highlight": "mapped onto a hidden 64-stop virtual reel",
-          "at": 2.0
+          "mark": "underline",
+          "on": "hidden",
+          "pre": "a08"
         }
       }
     },
@@ -1086,7 +1240,7 @@
         "suffix": "×",
         "decimals": 0,
         "label": "above the line vs on it",
-        "at": 3.4
+        "on": "four"
       },
       "visual": {
         "type": "slot",
@@ -1099,6 +1253,11 @@
           ],
           "note": "by design"
         }
+      },
+      "pause_at": {
+        "word": "four",
+        "sec": 1.2,
+        "hit": "stamp"
       }
     },
     {
@@ -1142,13 +1301,15 @@
       "visual": {
         "type": "title",
         "text": "2:00 AM — The building"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "e36",
       "section": "2 AM: The building",
       "text": "You've heard it. Casinos have no clocks and no windows, so you lose track of time.",
-      "sfx": "projector",
       "visual": {
         "type": "clip",
         "stock": "casino interior slot machines",
@@ -1156,16 +1317,20 @@
         "in": 0,
         "out": 14,
         "fallback_prompt": "a windowless 1950s casino floor with rows of gaming tables under chandeliers",
-        "credit": "Stock footage / Pixabay"
+        "credit": "Stock footage / Pixabay",
+        "exhibit": {
+          "label": "Evidence · slot floor · present day · reconstruction",
+          "tag": "Slot floor · 2020s"
+        }
       },
       "inserts": [
         {
           "file": "lv1940_mainstreet.jpg",
           "kind": "photo",
-          "from": "right",
-          "x": 0.84,
-          "y": 0.42,
-          "w": 0.24,
+          "from": "left",
+          "x": 0.15,
+          "y": 0.4,
+          "w": 0.22,
           "on": "clocks",
           "caption": "Main street, Las Vegas, 1940"
         }
@@ -1286,12 +1451,21 @@
         {
           "stock_photo": "exit sign",
           "kind": "photo",
-          "from": "right",
-          "x": 0.84,
+          "from": "left",
+          "x": 0.18,
           "y": 0.4,
           "w": 0.24,
           "on": "leaving",
           "pick": 1773916
+        }
+      ],
+      "ledger": [
+        {
+          "label": "HOME",
+          "amount": "$0",
+          "loss": true,
+          "circle": true,
+          "on": "leaving"
         }
       ]
     },
@@ -1302,7 +1476,10 @@
       "visual": {
         "type": "title",
         "text": "In defence of the accused"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "f44",
@@ -1333,6 +1510,12 @@
           "w": 0.28,
           "on": "count",
           "pick": 875287
+        }
+      ],
+      "sfx_at": [
+        {
+          "on": "stack",
+          "kind": "chips"
         }
       ]
     },
@@ -1416,6 +1599,12 @@
           "on": "game",
           "pick": 1869655
         }
+      ],
+      "sfx_at": [
+        {
+          "on": "gems",
+          "kind": "chips"
+        }
       ]
     },
     {
@@ -1468,7 +1657,11 @@
         "in": 0,
         "out": 10,
         "fallback_prompt": "a smartphone tapping a card payment terminal with a small glow",
-        "credit": "Stock footage / Pixabay"
+        "credit": "Stock footage / Pixabay",
+        "exhibit": {
+          "label": "Evidence · tap to pay · present day · reconstruction",
+          "tag": "Tap to pay · 2020s"
+        }
       }
     },
     {
@@ -1501,29 +1694,18 @@
       "section": "The twist: your phone",
       "text": "One more exhibit. In 2025, US regulators described a tool for betting sites that spots a hesitating customer and pops up a nudge to stay.",
       "visual": {
-        "type": "archive",
-        "file": "ftc_surveillance_pricing_2025.pdf",
-        "look": "clipping",
-        "credit": "US Federal Trade Commission staff, Surveillance Pricing 6(b) study research summaries, Jan 2025 (US government work, public domain)",
-        "motion": "static",
-        "page": 6,
-        "crop": [
-          0.04,
-          0.07,
-          0.5,
-          0.3
-        ],
-        "caption": "FTC staff report, January 2025, p. 6",
-        "hand_marks": true,
-        "marks": [
-          {
-            "type": "underline",
-            "x": 0.5,
-            "y": 0.495,
-            "w": 0.5,
-            "on": "hesitating"
-          }
-        ]
+        "type": "doc",
+        "doc": {
+          "source": "FTC staff report · Jan 2025",
+          "kicker": "STAFF REPORT  ·  QUOTED, P. 6",
+          "headline": "Targeting Reluctant Gamblers",
+          "body": "For instance, if a hypothetical customer who visits a sports betting website demonstrates hesitation by lingering on the homepage longer than expected or moves their cursor towards the button to close out their browser tab, the website may trigger a pop-up showing popular sporting events to incentivize the visitor to remain on the website and place a bet.",
+          "highlight": "the website may trigger a pop-up showing popular sporting events",
+          "mark": "underline",
+          "on": "pops",
+          "pre": "p51",
+          "seed": 505
+        }
       },
       "say": "One more exhibit. In twenty twenty-five, US regulators described a tool for betting sites that spots a hesitating customer and pops up a nudge to stay."
     },
@@ -1539,13 +1721,12 @@
           "number": "001",
           "title": "The casino",
           "stamp": "Case closed",
-          "lines": [
-            "Guilty: your brain",
-            "Accomplice: plastic"
-          ],
-          "stamp_at": 0.5
+          "stamp_at": -0.9
         }
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_brass",
+      "sting_at": -1.0
     },
     {
       "id": "v53",
@@ -1577,7 +1758,12 @@
           "w": 0.26,
           "on": "real"
         }
-      ]
+      ],
+      "pause_at": {
+        "word": "how many",
+        "sec": 1.3,
+        "hit": "stamp"
+      }
     },
     {
       "id": "v55",
@@ -1605,89 +1791,86 @@
       ]
     },
     {
-      "id": "k2",
+      "id": "e1",
       "section": "Case closed",
-      "text": "Larry's going home broke. You don't have to. Your next case is right here on screen.",
+      "text": "Case closed. Guilty: your brain. Accomplice: plastic.",
+      "block_start": true,
       "visual": {
-        "type": "reuse",
-        "beat": "b31",
-        "motion": "static"
-      },
-      "cta": {
-        "on": "next",
-        "click_on": "screen",
-        "hold": 0
+        "type": "endscreen",
+        "endscreen": {
+          "number": "001",
+          "title": "The casino",
+          "stamp": "Case closed",
+          "verdict": [
+            "Guilty: your brain.",
+            "Accomplice: plastic."
+          ],
+          "next": {
+            "number": "002",
+            "title": "Same basket",
+            "tagline": "Same basket. Different price.",
+            "image_file": "next_basket.png",
+            "copies": 2,
+            "prices": [
+              "$114.34",
+              "$123.93"
+            ]
+          }
+        }
       }
     },
     {
-      "id": "k3",
+      "id": "e2",
       "section": "Case closed",
-      "text": "Case file zero zero two.",
-      "hold": 14,
+      "text": "Next case: same basket, same shop — two different prices.",
+      "block_at": 7.0,
       "visual": {
-        "type": "casefile",
-        "casefile": {
-          "mode": "open",
-          "number": "002",
-          "title": "Same basket",
-          "inside": [
-            "NEXT CASE: same basket, different price",
-            "SUSPECT: the price on your screen",
-            "STATUS: open"
-          ]
-        }
-      },
-      "cta": {
-        "at": 0.2,
-        "click_at": 1.4,
-        "hold": 14
+        "type": "continue"
+      }
+    },
+    {
+      "id": "e3",
+      "section": "Case closed",
+      "text": "Subscribe, so the next case file finds you. And your next case is right here.",
+      "block_at": 14.8,
+      "block_end": 20.0,
+      "visual": {
+        "type": "continue"
       }
     }
   ],
   "shorts": [
     {
-      "title": "Why casinos never let you hold cash #shorts",
+      "id": "s1",
+      "title": "A chip has no pain #shorts",
+      "hook": "A chip has no pain",
       "beats": [
         {
-          "text": "Why do casinos never let you hold cash?",
-          "punch": [
-            "cash?"
-          ],
+          "text": "A chip has no pain. It's light, it's colourful, and it clicks.",
           "visual": {
             "type": "reuse",
-            "beat": "c03",
+            "beat": "b13",
             "motion": "zoom_in"
-          }
-        },
-        {
-          "text": "Because cash hurts when it leaves your hand. You can see it go.",
-          "visual": {
-            "type": "reuse",
-            "beat": "b12"
           },
-          "inserts": [
+          "sfx_at": [
             {
-              "stock_photo": "paying cash wallet",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.72,
-              "y": 0.45,
-              "w": 0.46,
-              "on": "hurts",
-              "pick": 4843535
+              "on": "clicks",
+              "kind": "chips"
             }
-          ]
+          ],
+          "sfx": "tick"
         },
         {
-          "text": "A chip doesn't hurt. It's light, it's colourful, it clicks.",
-          "sfx": "tick",
+          "text": "Cash hurts a little when it leaves your hand. You can see it go. Economists even have a name for that feeling: the pain of paying.",
           "visual": {
             "type": "reuse",
-            "beat": "b13"
-          }
+            "beat": "b12",
+            "motion": "zoom_in"
+          },
+          "on_screen": "The pain of paying"
         },
         {
-          "text": "Researchers found people spend more freely with money that doesn't feel like money.",
+          "text": "People were willing to spend more with a credit card than with cash. And a fifty-dollar gift certificate got spent more freely than fifty dollars in notes.",
           "visual": {
             "type": "doc",
             "doc": {
@@ -1695,126 +1878,189 @@
               "headline": "Monopoly Money: payment form and spending",
               "body": "Across four studies, people were willing to spend more when paying by credit card than with cash, and spent a $50 gift certificate more freely than $50 in cash. Less transparent ways of paying were treated a bit like play money.",
               "seed": 101,
-              "highlight": "treated a bit like play money",
-              "at": 2.4
+              "highlight": "spent a $50 gift certificate more freely than $50 in cash",
+              "mark": "underline",
+              "on": "certificate",
+              "pre": "c03"
             }
           }
         },
         {
-          "text": "So next time someone hands you plastic, ask yourself:",
+          "text": "So the casino swaps your cash for something that doesn't hurt.",
           "visual": {
             "type": "reuse",
-            "beat": "c04",
+            "beat": "b08",
             "motion": "zoom_in"
-          },
-          "inserts": [
-            {
-              "file": "montecarlo_roulette_1900.jpg",
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.48,
-              "on": "chip",
-              "caption": "Monte Carlo, c. 1900"
-            }
-          ]
+          }
         }
-      ],
-      "id": "s1",
-      "hook": "Why chips, not cash?"
+      ]
     },
     {
-      "title": "Bet $100 a hundred times. Here's the bill. #shorts",
+      "id": "s2",
+      "title": "5.26% is the whole business model #shorts",
+      "hook": "5.26%",
       "beats": [
         {
-          "text": "Bet a hundred dollars, a hundred times. Here's the bill.",
+          "text": "Five point two six percent. That's the casino's entire business model.",
           "visual": {
-            "type": "reuse",
-            "beat": "c03",
-            "motion": "zoom_in"
+            "type": "houseedge",
+            "houseedge": {
+              "title": "House edge",
+              "sub": "what the house keeps from every $100 bet",
+              "bars": [
+                {
+                  "name": "American wheel",
+                  "note": "0 and 00",
+                  "value": 5.26,
+                  "color": "red"
+                },
+                {
+                  "name": "European wheel",
+                  "note": "single 0",
+                  "value": 2.7,
+                  "color": "ink"
+                }
+              ],
+              "draw_at": [
+                0.25,
+                1.5
+              ],
+              "draw_dur": 1.8,
+              "predrawn": true,
+              "prewritten": [
+                true,
+                false
+              ],
+              "write_on": [
+                null,
+                null
+              ]
+            }
           }
         },
         {
-          "text": "An American roulette wheel has thirty-eight pockets. Two are green, and they belong to the house.",
+          "text": "So let's do the arithmetic. An American roulette wheel has thirty-eight pockets. Thirty-six are red or black.",
           "visual": {
             "type": "roulette",
             "roulette": {
-              "spin": 2.5,
-              "mark_at": 3.6
+              "spin": 2.8,
+              "mark_at": 999
             }
           }
         },
         {
-          "text": "That's an edge of about five point two six percent on almost every bet.",
+          "text": "And two are green. Zero, and double zero.",
           "visual": {
-            "type": "stat",
-            "stat": {
-              "value": 5.26,
-              "decimals": 2,
-              "suffix": "%",
-              "label": "house edge"
+            "type": "roulette",
+            "roulette": {
+              "spin": 0,
+              "mark_at": 0.9
             }
           }
         },
         {
-          "text": "So a hundred bets of a hundred dollars cost you about five hundred and twenty-six. On average.",
-          "counter": {
-            "from": 0,
-            "to": 526,
-            "prefix": "-$",
-            "decimals": 0,
-            "label": "expected loss",
-            "at": 1.0,
-            "dur": 2.0,
-            "sound": "cash"
-          },
+          "text": "Those two green pockets are the entire business model.",
+          "visual": {
+            "type": "roulette",
+            "roulette": {
+              "spin": 0,
+              "mark_at": -3,
+              "note": "the business model"
+            }
+          }
+        },
+        {
+          "text": "In plain money: for every hundred dollars Larry bets, he can expect to lose about five dollars twenty-six.",
           "visual": {
             "type": "reuse",
-            "beat": "b30"
+            "beat": "b29",
+            "motion": "zoom_in"
           },
-          "inserts": [
+          "counter": {
+            "from": 0,
+            "to": 5.26,
+            "prefix": "-$",
+            "decimals": 2,
+            "label": "per $100 bet",
+            "at": 2.4
+          },
+          "sfx_at": [
             {
-              "stock_photo": "hundred dollar bill",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.46,
               "on": "hundred",
-              "pick": 6771234
+              "kind": "cash"
             }
           ]
         },
         {
-          "text": "Still want to bet a hundred dollars, a hundred times?",
+          "text": "Bet a hundred dollars a hundred times, and the expected bill is five hundred and twenty-six dollars.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b30",
+            "motion": "zoom_in"
+          },
+          "counter": {
+            "from": 5.26,
+            "to": 526,
+            "prefix": "-$",
+            "decimals": 0,
+            "label": "100 bets of $100",
+            "at": 1.6,
+            "dur": 2.0,
+            "sound": "cash"
+          }
+        },
+        {
+          "text": "Which, you'll notice, is more than Larry walked in with.",
           "visual": {
             "type": "reuse",
             "beat": "b31",
             "motion": "zoom_in"
           },
-          "inserts": [
-            {
-              "file": "lv1940_roulette.jpg",
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.48,
-              "on": "more",
-              "caption": "Las Vegas, 1940"
-            }
-          ]
+          "punch": [
+            "more"
+          ],
+          "on_screen": "$526 > $500"
+        },
+        {
+          "text": "And it all comes down to one number.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b33",
+            "motion": "zoom_in"
+          }
         }
-      ],
-      "id": "s3",
-      "hook": "$100 × 100 = ?"
+      ]
     },
     {
-      "title": "This is a loss. Your brain thinks it's a win. #shorts",
+      "id": "s3",
+      "title": "A near miss is a loss #shorts",
+      "hook": "So close…",
       "beats": [
         {
-          "text": "This is a loss. Your brain thinks it's a win.",
+          "text": "So close. Larry can feel it. One more spin and it's his.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a03",
+            "motion": "zoom_in"
+          }
+        },
+        {
+          "text": "Seven. Seven. And the third seven stops… just above the line.",
+          "visual": {
+            "type": "slot",
+            "slot": {
+              "result": "near_miss",
+              "stops": [
+                0.6,
+                1.3,
+                3.0
+              ],
+              "note": "so close…"
+            }
+          }
+        },
+        {
+          "text": "Here's the strange part. A near miss isn't a near win. It's a loss. A completely ordinary loss.",
           "visual": {
             "type": "slot",
             "slot": {
@@ -1826,25 +2072,16 @@
               ],
               "note": "a loss"
             }
+          },
+          "on_screen": "near miss = loss",
+          "pause_at": {
+            "word": "It's a loss",
+            "sec": 1.2,
+            "hit": "stamp"
           }
         },
         {
-          "text": "Seven, seven, and the third one stops just above the line.",
-          "visual": {
-            "type": "slot",
-            "slot": {
-              "result": "near_miss",
-              "stops": [
-                0.4,
-                0.9,
-                2.2
-              ],
-              "note": "so close…"
-            }
-          }
-        },
-        {
-          "text": "Cambridge researchers found near misses make people want to keep playing, and light up the brain's win circuits.",
+          "text": "The near misses felt unpleasant. And yet they made people want to keep playing, and lit up the same brain circuits that respond to wins.",
           "visual": {
             "type": "doc",
             "doc": {
@@ -1853,295 +2090,348 @@
               "body": "Volunteers played a simple slot machine in a brain scanner. Near-misses were rated as unpleasant, yet they increased the desire to keep playing and activated brain regions that also respond to wins.",
               "seed": 303,
               "highlight": "increased the desire to keep playing",
-              "at": 2.2
+              "mark": "circle",
+              "on": "keep",
+              "pre": "a03"
             }
           }
         },
         {
-          "text": "But no matter how it feels…",
+          "text": "In Clark's words, the brain responds to a near miss as if a win has been delivered, even though it's technically a loss.",
           "visual": {
             "type": "reuse",
             "beat": "a07",
             "motion": "zoom_in"
           },
-          "inserts": [
-            {
-              "stock_photo": "brain scan mri",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.46,
-              "on": "brain",
-              "pick": 254866
-            }
-          ]
-        }
-      ],
-      "id": "s5",
-      "hook": "A loss that feels like a win"
-    },
-    {
-      "title": "The jackpot stops just above the line. On purpose. #shorts",
-      "beats": [
-        {
-          "text": "The jackpot stops just above the line. On purpose.",
-          "visual": {
-            "type": "slot",
-            "slot": {
-              "result": "near_miss",
-              "stops": [
-                0.3,
-                0.6,
-                1.4
-              ],
-              "note": "by design"
-            }
-          }
+          "on_screen": "“as if a win has been delivered”"
         },
         {
-          "text": "Researcher Kevin Harrigan found a hidden virtual reel behind the real one on a classic machine.",
-          "visual": {
-            "type": "doc",
-            "doc": {
-              "source": "Summary · Journal of Gambling Issues · 2007",
-              "headline": "Slot machine structural characteristics",
-              "body": "The machine's 22 physical reel stops were mapped onto a hidden 64-stop virtual reel. On reel one, the top symbol landed just above the payline 8 times in 64, but on the payline only 2 times in 64.",
-              "seed": 404,
-              "highlight": "mapped onto a hidden 64-stop virtual reel",
-              "at": 2.2
-            }
-          }
-        },
-        {
-          "text": "On its first reel, the top symbol landed just above the line four times more often than on it.",
-          "counter": {
-            "from": 1,
-            "to": 4,
-            "suffix": "×",
-            "decimals": 0,
-            "label": "above vs on the line",
-            "at": 3.0
-          },
+          "text": "And Larry? He's sure the next one is a win.",
           "visual": {
             "type": "reuse",
-            "beat": "a08"
-          },
-          "inserts": [
-            {
-              "file": "slot_abandoned_1937.jpg",
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.48,
-              "on": "machine",
-              "caption": "Slot machine, 1937"
-            }
-          ]
-        },
-        {
-          "text": "So the next time it's that close, remember. The jackpot stops just above the line. On purpose.",
-          "visual": {
-            "type": "slot",
-            "slot": {
-              "result": "near_miss",
-              "stops": [
-                0.01,
-                0.02,
-                0.03
-              ],
-              "note": "by design"
-            }
+            "beat": "h09"
           }
         }
-      ],
-      "id": "s6",
-      "hook": "Almost… on purpose"
+      ]
     },
     {
-      "title": "Your phone is a casino chip #shorts",
+      "id": "s4",
+      "title": "No clocks, no windows? The real casino trick #shorts",
+      "hook": "The no-clock myth",
       "beats": [
         {
-          "text": "Your phone is a casino chip.",
-          "punch": [
-            "chip."
-          ],
-          "visual": {
-            "type": "reuse",
-            "beat": "p51",
-            "motion": "static",
-            "draw": {
-              "at": 0.1,
-              "dur": 2.8,
-              "box": [
-                0.15,
-                0.0,
-                0.85,
-                1.0
-              ]
-            }
-          }
-        },
-        {
-          "text": "Casinos swap your cash for plastic, so spending stops feeling like spending.",
-          "visual": {
-            "type": "reuse",
-            "beat": "b08"
-          }
-        },
-        {
-          "text": "Game gems? Same trick.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p48"
-          },
-          "inserts": [
-            {
-              "stock_photo": "mobile game smartphone",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.46,
-              "on": "gems",
-              "pick": 1869655
-            }
-          ]
-        },
-        {
-          "text": "Gift cards? Same trick.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p49"
-          },
-          "inserts": [
-            {
-              "stock_photo": "gift cards",
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.46,
-              "on": "Gift",
-              "pick": 421600
-            }
-          ]
-        },
-        {
-          "text": "Tap to pay? The smoothest chip ever invented.",
-          "sfx": "ding",
-          "visual": {
-            "type": "reuse",
-            "beat": "p50"
-          }
-        },
-        {
-          "text": "So look at your screen again. Because your phone is a casino chip.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p47",
-            "motion": "zoom_in"
-          }
-        }
-      ],
-      "id": "s7",
-      "hook": "Your phone is a chip"
-    },
-    {
-      "title": "“No clocks in casinos” is a myth #shorts",
-      "beats": [
-        {
-          "text": "No clocks in casinos? That's a myth.",
+          "text": "You've heard it. Casinos have no clocks and no windows, so you lose track of time.",
           "visual": {
             "type": "reuse",
             "beat": "e39",
-            "motion": "static",
-            "marks": [
-              {
-                "type": "cross",
-                "x": 0.5,
-                "y": 0.5,
-                "w": 0.5,
-                "h": 0.6,
-                "at": 1.0,
-                "text": "MYTH",
-                "text_y": 0.82
-              }
-            ]
-          },
-          "inserts": [
-            {
-              "file": "lv1940_mainstreet.jpg",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.72,
-              "y": 0.45,
-              "w": 0.42,
-              "on": "clocks",
-              "caption": "Las Vegas, 1940"
-            }
-          ]
+            "motion": "zoom_in"
+          }
         },
         {
-          "text": "Bill Friedman, who wrote a six-hundred-page book on casino design, called it exactly that.",
+          "text": "There's just one problem.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e38",
+            "motion": "zoom_in"
+          },
+          "sfx": "scratch"
+        },
+        {
+          "text": "Bill Friedman, a former Las Vegas casino manager who wrote a six-hundred-page book on casino design, called the clock story a myth.",
           "visual": {
             "type": "reuse",
             "beat": "e38"
           }
         },
         {
-          "text": "By his account, serious gamblers wanted the clocks gone.",
+          "text": "By his account, it was the serious gamblers who wanted the clocks gone.",
           "visual": {
             "type": "reuse",
-            "beat": "e40"
+            "beat": "e40",
+            "motion": "zoom_in"
           }
         },
         {
-          "text": "His real trick? A maze. Winding paths and machines in every nook.",
+          "text": "Friedman's real advice is more interesting. Don't build one big open hall. Build a maze.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e41",
+            "motion": "zoom_in"
+          },
+          "punch": [
+            "maze."
+          ]
+        },
+        {
+          "text": "Low ceilings. Winding paths. Little nooks packed with machines, so the way out tends to wind past one more game.",
           "visual": {
             "type": "maze",
             "maze": {
+              "title": "Casino floor plan",
               "note": "the long way out"
             }
+          }
+        },
+        {
+          "text": "No conspiracy about clocks. Just a floor plan where leaving takes a little more effort than staying.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e43",
+            "motion": "zoom_in"
           }
         },
         {
           "text": "So the next time someone tells you there are no clocks in casinos…",
           "visual": {
             "type": "reuse",
-            "beat": "e36",
+            "beat": "e36"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "Your phone is a casino chip #shorts",
+      "hook": "Your phone is a chip",
+      "beats": [
+        {
+          "text": "Your phone is a casino chip.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p51",
+            "motion": "zoom_in"
+          }
+        },
+        {
+          "text": "The gems in your game? Chips. You trade real money for a currency with a cute name, and the price stops feeling like a price.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p48",
             "motion": "zoom_in"
           },
-          "inserts": [
+          "punch": [
+            "Chips."
+          ],
+          "sfx_at": [
             {
-              "file": "dude_slot_1939.jpg",
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.45,
-              "w": 0.48,
-              "on": "past",
-              "caption": "Slot machine, 1939"
+              "on": "gems",
+              "kind": "chips"
             }
           ]
+        },
+        {
+          "text": "Gift cards? Chips. Remember the study: the gift certificate got spent more freely than the same amount in cash.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p49",
+            "motion": "zoom_in"
+          },
+          "punch": [
+            "Chips."
+          ]
+        },
+        {
+          "text": "And tap to pay? The smoothest chip ever invented. No notes leave your hand. Nothing to count. Just a little beep.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p50",
+            "motion": "zoom_in",
+            "exhibit": {
+              "label": "Evidence · tap to pay · present day · reconstruction",
+              "tag": "Tap to pay · 2020s"
+            }
+          },
+          "sfx": "ding"
+        },
+        {
+          "text": "One more exhibit. In 2025, US regulators described a tool for betting sites that spots a hesitating customer and pops up a nudge to stay.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "FTC staff report · Jan 2025",
+              "kicker": "STAFF REPORT  ·  QUOTED, P. 6",
+              "headline": "Targeting Reluctant Gamblers",
+              "body": "For instance, if a hypothetical customer who visits a sports betting website demonstrates hesitation by lingering on the homepage longer than expected or moves their cursor towards the button to close out their browser tab, the website may trigger a pop-up showing popular sporting events to incentivize the visitor to remain on the website and place a bet.",
+              "highlight": "the website may trigger a pop-up showing popular sporting events",
+              "mark": "underline",
+              "on": "pops",
+              "pre": "p51",
+              "seed": 505
+            }
+          },
+          "say": "One more exhibit. In twenty twenty-five, US regulators described a tool for betting sites that spots a hesitating customer and pops up a nudge to stay."
+        },
+        {
+          "text": "Take a look at your screen.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p47",
+            "motion": "zoom_in"
+          }
         }
-      ],
-      "id": "s8",
-      "hook": "The no-clock myth"
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "One question before you tap #shorts",
+      "hook": "How many real dollars?",
+      "beats": [
+        {
+          "text": "How many real dollars is this?",
+          "visual": {
+            "type": "reuse",
+            "beat": "c04",
+            "motion": "zoom_in"
+          }
+        },
+        {
+          "text": "Before you tap, before you buy the gems, before you swap money for anything shiny, ask one question: how many real dollars is this?",
+          "visual": {
+            "type": "reuse",
+            "beat": "c04"
+          }
+        },
+        {
+          "text": "Because the house doesn't need you to lose. It just needs you to stop counting.",
+          "visual": {
+            "type": "reuse",
+            "beat": "h09"
+          },
+          "punch": [
+            "counting."
+          ]
+        },
+        {
+          "text": "So before you tap, ask yourself.",
+          "visual": {
+            "type": "reuse",
+            "beat": "h09",
+            "motion": "zoom_in"
+          }
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "Larry's tab: $500 to $0 in one night #shorts",
+      "hook": "$500 → $0",
+      "beats": [
+        {
+          "text": "Tonight, Larry walks into a casino with five hundred dollars.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c02",
+            "motion": "zoom_in"
+          },
+          "ledger": [
+            {
+              "label": "CASH IN",
+              "amount": "$500",
+              "on": "five"
+            }
+          ]
+        },
+        {
+          "text": "He swaps it for a neat little stack of plastic.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b08",
+            "motion": "zoom_in"
+          },
+          "ledger": [
+            {
+              "label": "CHIPS",
+              "amount": "500",
+              "on": "stack"
+            }
+          ]
+        },
+        {
+          "text": "His number comes up. One hundred dollars, profit.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b17",
+            "motion": "zoom_in"
+          },
+          "ledger": [
+            {
+              "label": "WIN",
+              "amount": "+100",
+              "on": "hundred"
+            }
+          ]
+        },
+        {
+          "text": "Then he bets bigger to win it back. Gone.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b23",
+            "motion": "zoom_in"
+          },
+          "ledger": [
+            {
+              "label": "TILT BET",
+              "amount": "-360",
+              "loss": true,
+              "on": "Gone"
+            }
+          ]
+        },
+        {
+          "text": "The slots take the rest.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a03",
+            "motion": "zoom_in"
+          },
+          "ledger": [
+            {
+              "label": "SLOTS",
+              "amount": "-240",
+              "loss": true,
+              "on": "rest"
+            }
+          ]
+        },
+        {
+          "text": "He goes home with nothing.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b31",
+            "motion": "zoom_in"
+          },
+          "ledger": [
+            {
+              "label": "HOME",
+              "amount": "$0",
+              "loss": true,
+              "circle": true,
+              "on": "nothing"
+            }
+          ]
+        },
+        {
+          "text": "Tomorrow night? He'll be back.",
+          "visual": {
+            "type": "reuse",
+            "beat": "h09",
+            "motion": "zoom_in"
+          }
+        }
+      ]
     }
   ],
   "music": {
-    "_default": "ub_comic_detective",
-    "_shorts": "ub_jump_around",
-    "The case": "ub_comic_detective",
-    "7 PM: The exchange": "ub_night_spot",
-    "9 PM: The win": "ub_night_spot",
-    "11 PM: The maths": "ub_mystery_theatre",
-    "1 AM: Almost": "ub_frostfall",
-    "2 AM: The building": "ub_comic_detective",
-    "In defence of the accused": "ub_mystery_theatre",
-    "The twist: your phone": "ub_ticking_tension",
-    "Case closed": "ub_jump_around"
+    "_default": "ub_private_detective",
+    "_shorts": "ub_wells_street",
+    "The case": "ub_private_detective",
+    "7 PM: The exchange": "ub_wells_street",
+    "9 PM: The win": "ub_wells_street",
+    "11 PM: The maths": "ub_clock_is_ticking",
+    "1 AM: Almost": "ub_mechanisms_of_action",
+    "2 AM: The building": "ub_tunnel_vision",
+    "In defence of the accused": "ub_usual_suspects",
+    "The twist: your phone": "ub_secret_report",
+    "Case closed": "ub_jazz_rumble"
   }
 }

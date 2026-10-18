@@ -278,7 +278,7 @@ def _looped(src: np.ndarray, n: int, xfade: float = 2.0) -> np.ndarray:
     return out[:n]
 
 
-def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6) -> np.ndarray | None:
+def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6, align_end: bool = False) -> np.ndarray | None:
     """Music bed that changes mood at each cue (crossfaded); each cue resumes where it last stopped."""
     cues = [(t, c) for t, c in sorted(cues) if c]
     if not cues or not any(music_file(c) for _t, c in cues):
@@ -297,6 +297,9 @@ def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6) -> np.n
         src = _decode(path)
         start = pos.get(cue, 0)
         need = b - a
+        last = k + 1 >= len(cues)
+        if last and align_end and cue not in pos and len(src) >= need:
+            start = len(src) - need  # the track's own ending lands on the last frame
         seg = _looped(src, start + need)[start : start + need]
         pos[cue] = (start + need) % max(1, len(src))
         env = np.ones(need, dtype=np.float32)
@@ -306,7 +309,8 @@ def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6) -> np.n
             if b < n:
                 env[-fi:] = np.linspace(1, 0, fi)
         out[a:b] += seg * env
-    out[-int(2.5 * SR):] *= np.linspace(1, 0, int(2.5 * SR))
+    tail = int((0.25 if align_end else 2.5) * SR)
+    out[-tail:] *= np.linspace(1, 0, tail)
     return out
 
 
@@ -316,8 +320,10 @@ class Timeline:
         self.n = int(np.ceil(total_seconds * SR)) + SR // 2
         self.voice = np.zeros(self.n, dtype=np.float32)
         self.fx = np.zeros(self.n, dtype=np.float32)
+        self.hits = np.zeros(self.n, dtype=np.float32)    # impacts (stamp, hit, cash…): set to -6 dB under voice peaks
         self.stings = np.zeros(self.n, dtype=np.float32)
         self.cues: list[tuple[float, str]] = []
+        self.align_end = False  # last music cue ends exactly on the last frame (music resolves on the end card)
 
     def music_cue(self, at: float, cue: str) -> None:
         if not self.cues or self.cues[-1][1] != cue:
@@ -330,7 +336,8 @@ class Timeline:
         # a sting is the opening of the generated clip (the model starts on the hit), faded out after ~3 s
         clip = _decode(path)[: int(3.2 * SR)].copy()
         clip = clip * _env(len(clip), 0.005, 0.9)
-        self._add(self.stings, max(0.0, at), clip * db(self.cfg.get("sting_db", -10)))
+        clip = clip / (np.abs(clip).max() + 1e-9)  # peak 1.0: scaled against the voice in mix()
+        self._add(self.stings, max(0.0, at), clip)
 
     def _add(self, track: np.ndarray, at: float, clip: np.ndarray) -> None:
         i = max(0, int(at * SR))
@@ -341,8 +348,15 @@ class Timeline:
     def add_voice(self, at: float, audio24k: np.ndarray, src_sr: int) -> None:
         self._add(self.voice, at, to_sr(audio24k, src_sr) * db(self.cfg.get("narration_db", 0)))
 
+    HIT_KINDS = ("stamp", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter")
+
     def add_sfx(self, at: float, kind: str, seed: int = 0) -> None:
-        if kind and kind != "none":
+        if not kind or kind == "none":
+            return
+        if kind in self.HIT_KINDS:
+            c = sfx(kind, seed)
+            self._add(self.hits, at, c / (np.abs(c).max() + 1e-9))
+        else:
             self._add(self.fx, at, sfx(kind, seed) * db(self.cfg.get("sfx_db", -16)))
 
     def _speaking(self) -> np.ndarray:
@@ -367,17 +381,24 @@ class Timeline:
 
     def mix(self) -> np.ndarray:
         total = self.n / SR
-        out = self.voice + self.fx
-        music = _cue_track(self.n, self.cues) if self.cues else _load_music(total)
         speaking = self._speaking()
+        # levels relative to the narration: music -8 dB in the gaps and -14 dB under the voice,
+        # impacts and musical hits peaking 6 dB under the voice peaks
+        act = speaking > 0.5
+        v_rms = float(np.sqrt(np.mean(self.voice[act] ** 2))) if act.any() else 0.05
+        v_peak = float(np.percentile(np.abs(self.voice[act]), 99.9)) if act.any() else 0.5
+        out = self.voice + self.fx + self.hits * v_peak * db(self.cfg.get("hit_db", -6))
+        music = _cue_track(self.n, self.cues, align_end=self.align_end) if self.cues else _load_music(total)
         if music is not None:
             music = music[: self.n]
-            # pocket for the voice: ~4 dB less music in the 1.2–4 kHz speech band (instead of heavy ducking)
             sos = butter(2, [1200, 4000], btype="band", fs=SR, output="sos")
-            music = music - 0.37 * sosfilt(sos, music).astype(np.float32)
-            gain = db(self.cfg.get("music_db", -4)) * (1 - speaking * (1 - db(self.cfg.get("duck_db", -5))))
+            music = music - 0.37 * sosfilt(sos, music).astype(np.float32)  # pocket for the voice
+            m_rms = float(np.sqrt(np.mean(music[np.abs(music) > 1e-4] ** 2))) if np.any(np.abs(music) > 1e-4) else 1.0
+            gap = v_rms * db(self.cfg.get("music_gap_db", -8)) / max(m_rms, 1e-6)
+            duck = db(self.cfg.get("music_under_voice_db", -14) - self.cfg.get("music_gap_db", -8))
+            gain = gap * (1 - speaking * (1 - duck))
             out = out + music * gain
-        out = out + self.stings * (1 - speaking * (1 - db(-4)))
+        out = out + self.stings * v_peak * db(self.cfg.get("sting_db", -6)) * (1 - speaking * (1 - db(-4)))
         peak = np.abs(out).max()
         if peak > 0.98:
             out = out / peak * 0.98

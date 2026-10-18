@@ -211,7 +211,7 @@ class Clipping:
         sharp = Image.new("L", (pw, ph), 0)
         soft = Image.new("L", (pw, ph), 0)
         ds, dsoft = ImageDraw.Draw(sharp), ImageDraw.Draw(soft)
-        ds.text((pad, pad), "STUDY SUMMARY  ·  PARAPHRASED", font=kfnt, fill=200)
+        ds.text((pad, pad), spec.get("kicker", "STUDY SUMMARY  ·  PARAPHRASED"), font=kfnt, fill=200)
         yy = pad + int(kfnt.size * 2.0)
         for ln in hlines:
             ds.text((pad, yy), ln, font=hfnt, fill=255)
