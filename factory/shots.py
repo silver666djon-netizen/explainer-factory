@@ -217,8 +217,9 @@ def _pixel_grid(W: int, H: int):
 class ImageShot(Shot):
     def __init__(self, start, duration, image: Image.Image, motion: str, size, cfg: dict,
                  marks: list[dict] | None = None, photo: bool = False, seed: int = 0, ad: dict | None = None,
-                 depth: np.ndarray | None = None):
+                 depth: np.ndarray | None = None, draw: dict | None = None):
         super().__init__(start, duration)
+        self.draw = dict(draw) if draw else None  # {"at": s, "dur": s} hand draws the picture on screen
         self.W, self.H = size
         # Shorts: a vertical slice of a wide picture is too macro, so the picture plays in a square window
         # (most of the scene stays readable) over a blurred, darkened copy of itself.
@@ -278,9 +279,15 @@ class ImageShot(Shot):
         if ad:
             base = draw_ad_overlay(base, ad, cfg)
         self.base = add_grain(base, float(cfg["style"].get("grain", 0)), seed)
+        if self.draw:
+            from .draw import LineDrawing
+            paper = hex_to_rgb(cfg["style"]["palette"]["paper"])
+            self._ld = LineDrawing(self.base, paper)
+            self.depth = None  # no parallax while a picture is being drawn
         if self.full:
             fw, fh = self.full
-            small = cover(image, max(8, fw // 10), max(8, fh // 10))
+            src_bg = Image.new("RGB", image.size, hex_to_rgb(cfg["style"]["palette"]["paper"])) if self.draw else image
+            small = cover(src_bg, max(8, fw // 10), max(8, fh // 10))  # drawn pictures: plain backdrop, no spoiler
             small = cv2.GaussianBlur(small, (0, 0), 2.5)
             self.bg = (cv2.resize(small, (fw, fh), interpolation=cv2.INTER_LINEAR) * 0.45).astype(np.uint8)
 
@@ -330,14 +337,42 @@ class ImageShot(Shot):
         if self.base is None:
             self._prepare()
         if not self.full:
-            return self._view(t)
-        out = self.bg.copy()
-        out[self.y0 : self.y0 + self.H] = self._view(t)
+            out = self._view(t)
+        else:
+            out = self.bg.copy()
+            out[self.y0 : self.y0 + self.H] = self._view(t)
+        self._hands(out, t)
         return out
+
+    def _screen(self, bx: float, by: float, t: float) -> tuple[float, float]:
+        _p, _s, M = self._matrix(t)
+        return float(M[0, 0] * bx + M[0, 2]), float(M[1, 1] * by + M[1, 2]) + (self.y0 if self.full else 0)
+
+    def _hands(self, out: np.ndarray, t: float) -> None:
+        from .draw import hand_path, mark_pen, paste_hand
+        FW, FH = out.shape[1], out.shape[0]
+        if self.draw:
+            at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 2.6))
+            tip = lambda tt: self._screen(*self._ld.tip((tt - at) / dur), tt)
+            pos = hand_path(tip, at, at + dur, t, FW, FH, mirrored=False)
+            if pos:
+                paste_hand(out, "pencil", pos[0], pos[1], mirrored=False)
+        if self.marks:
+            pen = mark_pen(self.marks, t, self.BW, self.BH)
+            if pen:
+                ftip, t0, t1 = pen
+                mirrored = ftip(t0)[0] < self.BW * 0.4
+                pos = hand_path(lambda tt: self._screen(*ftip(tt), tt), t0, t1, t, FW, FH, mirrored)
+                if pos:
+                    paste_hand(out, "red", pos[0], pos[1], mirrored)
 
     def _view(self, t: float) -> np.ndarray:
         p, s, M = self._matrix(t)
-        src = draw_marks(self.base, self.marks, t, self.red, self.cfg) if self.marks else self.base
+        src = self.base
+        if self.draw:
+            at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 2.6))
+            src = self._ld.state((t - at) / dur)
+        src = draw_marks(src, self.marks, t, self.red, self.cfg) if self.marks else src
         if self.depth is None:
             return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
         # inverse mapping: output pixel -> source pixel, then shift near pixels more than far ones

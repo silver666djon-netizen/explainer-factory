@@ -122,6 +122,16 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         d = int(0.12 * SR)
         out[d:] += (bell[: n - d] * 0.5).astype(np.float32)
         return out
+    if kind == "pencil":  # graphite on paper: short rough stroke (several in a row = fast drawing)
+        n = int(rnd.uniform(0.12, 0.22) * SR)
+        noise = rnd.standard_normal(n).astype(np.float32)
+        sos = butter(2, [2500, 9000], btype="band", fs=SR, output="sos")
+        out = sosfilt(sos, noise)
+        grain = sosfilt(butter(2, [300, 900], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * 0.5
+        t = np.arange(n) / SR
+        env = np.clip(np.sin(np.pi * t / t[-1]), 0, 1) ** 0.6 * (0.7 + 0.3 * np.sin(2 * np.pi * rnd.uniform(14, 22) * t))
+        out = (out + grain) * env
+        return (out / (np.abs(out).max() + 1e-9) * 0.55).astype(np.float32)
     if kind == "scratch":  # record scratch for comic stops
         n = int(0.35 * SR)
         t = np.arange(n) / SR
