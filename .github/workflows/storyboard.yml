@@ -54,7 +54,7 @@ jobs:
 
       - name: System packages and fonts
         run: |
-          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg fonts-dejavu-core
+          sudo apt-get update -q && sudo apt-get install -y -q ffmpeg fonts-dejavu-core poppler-utils
           mkdir -p assets/fonts
           base=https://github.com/google/fonts/raw/main
           for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf; do
