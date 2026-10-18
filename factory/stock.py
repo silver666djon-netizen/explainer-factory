@@ -25,12 +25,21 @@ def _name(kind: str, query: str, ext: str) -> str:
 
 
 def _download(url: str, dst: Path) -> None:
+    import time
     ARCHIVE_DIR.mkdir(parents=True, exist_ok=True)
-    with requests.get(url, stream=True, timeout=300) as d:
-        d.raise_for_status()
-        with open(dst, "wb") as fh:
-            for chunk in d.iter_content(1 << 16):
-                fh.write(chunk)
+    for attempt in range(6):
+        with requests.get(url, stream=True, timeout=300, headers={"User-Agent": "Mozilla/5.0 CoinSense/1.0"}) as d:
+            if d.status_code == 429 and attempt < 5:
+                time.sleep(4 * (attempt + 1))
+                continue
+            d.raise_for_status()
+            tmp = dst.with_suffix(dst.suffix + ".part")
+            with open(tmp, "wb") as fh:
+                for chunk in d.iter_content(1 << 16):
+                    fh.write(chunk)
+            tmp.rename(dst)
+            time.sleep(1.0)  # be gentle with the CDN
+            return
 
 
 def stock_video(query: str, orientation: str = "landscape", min_dur: float = 4.0, log=print, pick=None) -> Path | None:
@@ -117,6 +126,21 @@ def credit_for(path: Path) -> str | None:
 
 
 def resolve_stock(episode: dict, log=print) -> None:
+    try:
+        _resolve_stock(episode, log)
+    except Exception as exc:  # noqa: BLE001 — stock is decoration: never fail a render because of it
+        log(f"  stock: {exc}")
+
+
+def _safe(fn, *a, log=print):
+    try:
+        return fn(*a, log=log) if False else fn(*a)
+    except Exception as exc:  # noqa: BLE001
+        log(f"  stock skipped: {exc}")
+        return None
+
+
+def _resolve_stock(episode: dict, log=print) -> None:
     """Turn 'stock' / 'stock_photo' queries into archive 'file' names (downloading once). Missing stock
     falls back to the beat named in 'fallback' (a reuse) so the render never breaks."""
     all_beats = list(episode["beats"]) + [b for sh in episode.get("shorts") or [] for b in sh["beats"]]
@@ -124,14 +148,14 @@ def resolve_stock(episode: dict, log=print) -> None:
         v = beat["visual"]
         for ins in list(beat.get("inserts") or []):
             if ins.get("stock_photo") and not ins.get("file"):
-                p = stock_photo(ins["stock_photo"], ins.get("orientation", "landscape"), log, ins.get("pick"))
+                p = _safe(stock_photo, ins["stock_photo"], ins.get("orientation", "landscape"), log, ins.get("pick"), log=log)
                 if p:
                     ins["file"] = p.name
                     ins.setdefault("credit", credit_for(p))
                 else:
                     beat["inserts"].remove(ins)
         if v["type"] == "clip" and v.get("stock") and not v.get("file"):
-            p = stock_video(v["stock"], v.get("orientation", "landscape"), float(v.get("out", 0) or 4), log, v.get("pick"))
+            p = _safe(stock_video, v["stock"], v.get("orientation", "landscape"), float(v.get("out", 0) or 4), log, v.get("pick"), log=log)
             if p:
                 v["file"] = p.name
                 v.setdefault("credit", credit_for(p))
@@ -141,7 +165,7 @@ def resolve_stock(episode: dict, log=print) -> None:
             elif v.get("fallback"):
                 v["type"], v["beat"] = "reuse", v["fallback"]
         if v["type"] == "archive" and v.get("stock_photo") and not v.get("file"):
-            p = stock_photo(v["stock_photo"], v.get("orientation", "landscape"), log, v.get("pick"))
+            p = _safe(stock_photo, v["stock_photo"], v.get("orientation", "landscape"), log, v.get("pick"), log=log)
             if p:
                 v["file"] = p.name
                 v.setdefault("credit", credit_for(p))
