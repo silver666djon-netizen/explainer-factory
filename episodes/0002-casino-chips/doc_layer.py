@@ -3,7 +3,7 @@ import json
 from pathlib import Path
 
 P = Path(__file__).parent / "script.json"
-s = json.loads(P.read_text())
+s = json.loads((Path(__file__).parent / "script.base.json").read_text())  # layer always applied to the base script
 by = {b["id"]: b for b in s["beats"]}
 LOC = "Library of Congress, Prints & Photographs Division (no known restrictions)"
 
@@ -16,8 +16,14 @@ def ph(file, side, x, y, w, on, caption=None, kind="photo", **kw):
     return d
 
 
+PICKS = {'cash money stack hand': ('hundred dollar bills fan', 3950117), 'paying cash wallet': (None, 4843535), 'board game money': (None, 1538331), 'poker chips vintage': (None, 9815260), 'empty wallet': (None, 3548021), 'hundred dollar bill': (None, 6771234), 'brain scan mri': (None, 254866), 'exit sign': (None, 1773916), 'casino chips stacks': (None, 875287), 'mobile game smartphone': (None, 1869655), 'gift cards': (None, 421600), 'las vegas night casino': (None, 932708)}
+
+
 def st(q, side, x, y, w, on, **kw):
-    d = {"stock_photo": q, "kind": "photo", "from": side, "x": x, "y": y, "w": w, "on": on}
+    q2, pick = PICKS.get(q, (None, None))
+    d = {"stock_photo": q2 or q, "kind": "photo", "from": side, "x": x, "y": y, "w": w, "on": on}
+    if pick:
+        d["pick"] = pick
     d.update(kw)
     return d
 
@@ -54,15 +60,14 @@ for k, v in INS.items():
     by[k]["inserts"] = v
 
 STOCK = {  # full-frame stock film (keeps the illustration as a fallback)
-    "b21": ("casino chips table dealer", 10),
-    "e36": ("casino interior slot machines", 12),
-    "p50": ("contactless payment phone", 8),
+    "e36": ("casino interior slot machines", 136685, 14),
+    "p50": ("contactless payment phone", 202987, 10),
 }
-for k, (q, out) in STOCK.items():
+for k, (q, pick, out) in STOCK.items():
     v = by[k]["visual"]
     if v.get("type") == "image":
-        by[k]["visual"] = {"type": "clip", "stock": q, "in": 0, "out": out, "fallback_prompt": v.get("prompt") or (v.get("prompts") or [""])[0],
-                           "credit": "Stock footage / Pixabay"}
+        by[k]["visual"] = {"type": "clip", "stock": q, "pick": pick, "in": 0, "out": out,
+                           "fallback_prompt": v.get("prompt") or (v.get("prompts") or [""])[0], "credit": "Stock footage / Pixabay"}
 
 SHORT_INS = {
     ("s1", 1): [st("paying cash wallet", "right", 0.72, 0.45, 0.46, "hurts")],
