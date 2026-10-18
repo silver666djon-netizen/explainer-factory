@@ -62,6 +62,7 @@ class Bubble:
     x: float
     y: float
     tail: str
+    cur: tuple | None = None  # live screen centre (px), anchored to the picture under it
 
 
 @dataclass
@@ -371,8 +372,8 @@ class Overlay:
         self.cache: dict = {}
         short = plan.kind == "short"
         self.cap_size = int(self.H * (0.05 if short else 0.052))
-        self.cap_y = int(self.H * (0.68 if short else 0.86))
-        self.card_y = int(self.H * (0.11 if short else 0.06))
+        self.cap_y = int(self.H * (0.78 if short else 0.86))  # Shorts: under the square picture window
+        self.card_y = int(self.H * (0.035 if short else 0.06))  # Shorts: title band above the picture window
 
     def caption_img(self, cap: Caption, active: int) -> np.ndarray:
         key = ("c", id(cap), active)
@@ -398,7 +399,8 @@ class Overlay:
         """Retro price-label card: paper, ink text, thick red frame, slight tilt."""
         key = ("k", id(card))
         if key not in self.cache:
-            fnt, lines = fit_font(card.text.upper(), self.head, int(self.W * (0.4 if card.corner else 0.72)), int(self.H * 0.18), start=int(self.H * 0.08))
+            fnt, lines = fit_font(card.text.upper(), self.head, int(self.W * (0.4 if card.corner else 0.72)),
+                                   int(self.H * (0.1 if self.plan.kind == "short" else 0.18)), start=int(self.H * 0.08))
             blk = text_block(lines, fnt, fill=self.pal["ink"], pad=int(fnt.size * 0.4))
             h, w = blk.shape[:2]
             frame_w = max(6, fnt.size // 9)
@@ -533,14 +535,9 @@ class Overlay:
         cards = self.plan.cards
         if card_i < len(cards) and cards[card_i].start <= t < cards[card_i].end:
             card = cards[card_i]
-            if card.hook:  # Shorts opener: picture slides down under a paper title band, so no face is covered
+            if card.hook:  # Shorts opener: full card from frame 0 in the title band above the picture window
                 img = self.card_img(card)
-                top = int(self.H * 0.07)  # clear of the Shorts top bar
-                band = min(int(self.H * 0.34), top + img.shape[0] + int(self.H * 0.03))
-                frame[band:] = frame[:self.H - band].copy()
-                frame[:band] = self.pal["paper"]
-                frame[band - max(3, self.H // 240):band] = self.pal["red"]
-                blend(frame, img, (self.W - img.shape[1]) // 2, top + (band - top - img.shape[0]) // 2, opacity=1.0)
+                blend(frame, img, (self.W - img.shape[1]) // 2, self.card_y, opacity=min(1.0, (card.end - t) / 0.15))
             else:
                 img, op = self._pop(self.card_img(card), t - card.start)
                 op *= min(1.0, (card.end - t) / 0.15)
@@ -551,8 +548,10 @@ class Overlay:
             bub = bubs[bub_i]
             img, op = self._pop(self.bubble_img(bub), t - bub.start)
             op *= min(1.0, (bub.end - t) / 0.15)
-            x = int(bub.x * self.W - img.shape[1] / 2)
-            y = int(bub.y * self.H - img.shape[0] / 2)
+            cx, cy = bub.cur if bub.cur else (bub.x * self.W, bub.y * self.H)
+            m = int(self.W * 0.03)
+            x = int(min(max(cx - img.shape[1] / 2, m), self.W - img.shape[1] - m))
+            y = int(min(max(cy - img.shape[0] / 2, m), self.cap_y - img.shape[0] * 0.6 - img.shape[0] / 2))
             blend(frame, img, x, y, opacity=op)
         caps = self.plan.captions
         if cap_i < len(caps) and caps[cap_i].start <= t < caps[cap_i].end:
@@ -650,6 +649,9 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
                 frame = ((frame.astype(np.uint16) * vignette) >> 8).astype(np.uint8)
             elif not frame.flags.writeable or frame is getattr(shot, "base", None):
                 frame = frame.copy()
+            if bub_i < len(bubs) and bubs[bub_i].start <= t < bubs[bub_i].end:
+                b = bubs[bub_i]  # the bubble rides on the picture (camera moves never slide it onto a face)
+                b.cur = shot.to_screen(b.x, b.y, local) if hasattr(shot, "to_screen") and shot.start <= b.start + 0.05 else None
             overlay.apply(frame, t, cap_i, card_i, bub_i)
             proc.stdin.write(frame.tobytes())
             if f / n_frames >= next_report:

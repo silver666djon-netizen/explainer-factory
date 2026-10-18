@@ -58,7 +58,7 @@
         "type": "image",
         "prompts": [
           "a 1950s radio studio microphone on a desk under a glowing red on-air lamp, warm studio light",
-          "a nearly empty phone battery icon glowing red, one thin red sliver of charge, on a dark green background"
+          "a cream retro-styled smartphone standing upright in the centre, its screen filled by a large horizontal battery outline with only a thin red sliver of charge at the left end, a small paper taxi fare tag with a bold red upward arrow leaning against the phone, plain dark green background"
         ],
         "motion": "zoom_in"
       },
@@ -286,30 +286,30 @@
       "visual": {
         "type": "image",
         "prompt": "a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket",
-        "motion": "zoom_in",
+        "motion": "zoom_out",
         "marks": [
           {
             "type": "circle",
-            "x": 0.3,
-            "y": 0.19,
+            "x": 0.31,
+            "y": 0.22,
             "w": 0.1,
-            "h": 0.18,
+            "h": 0.2,
             "on": "Where"
           },
           {
             "type": "circle",
-            "x": 0.5,
-            "y": 0.11,
-            "w": 0.1,
-            "h": 0.18,
+            "x": 0.49,
+            "y": 0.13,
+            "w": 0.09,
+            "h": 0.19,
             "on": "doing."
           },
           {
             "type": "circle",
-            "x": 0.71,
-            "y": 0.19,
+            "x": 0.67,
+            "y": 0.23,
             "w": 0.1,
-            "h": 0.18,
+            "h": 0.2,
             "on": "badly"
           }
         ]
@@ -327,9 +327,9 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.3,
-            "y": 0.2,
-            "w": 0.14,
+            "x": 0.31,
+            "y": 0.22,
+            "w": 0.12,
             "h": 0.24,
             "on": "Exhibit"
           }
@@ -397,13 +397,13 @@
       "visual": {
         "type": "image",
         "prompt": "a cream retro-styled smartphone with a red map pin hovering above its screen, standing on a car dashboard",
-        "motion": "zoom_in",
+        "motion": "zoom_out",
         "marks": [
           {
             "type": "circle",
-            "x": 0.5,
-            "y": 0.35,
-            "w": 0.22,
+            "x": 0.47,
+            "y": 0.2,
+            "w": 0.15,
             "h": 0.3,
             "on": "quietly"
           }
@@ -436,10 +436,10 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.3,
-            "y": 0.19,
+            "x": 0.31,
+            "y": 0.22,
             "w": 0.12,
-            "h": 0.2,
+            "h": 0.24,
             "on": "where"
           }
         ]
@@ -606,13 +606,13 @@
         "type": "reuse",
         "beat": "s35",
         "index": 0,
-        "motion": "zoom_in",
+        "motion": "zoom_out",
         "marks": [
           {
             "type": "underline",
-            "x": 0.5,
-            "y": 0.42,
-            "w": 0.7,
+            "x": 0.48,
+            "y": 0.955,
+            "w": 0.86,
             "text": "all of them",
             "text_y": 0.62,
             "on": "five"
@@ -643,12 +643,12 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.5,
+            "x": 0.48,
             "y": 0.5,
-            "w": 0.42,
-            "h": 0.55,
+            "w": 0.44,
+            "h": 0.6,
             "text": "everyone: $3.99",
-            "text_y": 0.68,
+            "text_y": 0.74,
             "on": "same"
           }
         ]
@@ -780,12 +780,13 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.5,
-            "y": 0.48,
-            "w": 0.3,
-            "h": 0.4,
+            "x": 0.6,
+            "y": 0.6,
+            "w": 0.18,
+            "h": 0.3,
             "text": "one price",
-            "text_y": 0.7,
+            "text_x": 0.8,
+            "text_y": 0.5,
             "on": "same"
           }
         ]
@@ -1101,14 +1102,14 @@
         "type": "reuse",
         "beat": "a23",
         "index": 0,
-        "motion": "zoom_in",
+        "motion": "zoom_out",
         "marks": [
           {
             "type": "cross",
-            "x": 0.5,
-            "y": 0.35,
-            "w": 0.22,
-            "h": 0.3,
+            "x": 0.47,
+            "y": 0.2,
+            "w": 0.13,
+            "h": 0.26,
             "on": "off"
           }
         ]
@@ -1164,12 +1165,12 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.5,
-            "y": 0.45,
-            "w": 0.42,
-            "h": 0.5,
+            "x": 0.48,
+            "y": 0.5,
+            "w": 0.44,
+            "h": 0.6,
             "text": "next case",
-            "text_y": 0.7,
+            "text_y": 0.74,
             "on": "own"
           }
         ]

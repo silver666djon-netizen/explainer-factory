@@ -52,7 +52,7 @@ def doc(source, headline, body, highlight=None, at=1.6, seed=1):
 S = "The case"
 beat("c01", S, "In 2016, Uber's own head of economic research said something on a podcast that he may have come to regret.",
      img(prompts=["a 1950s radio studio microphone on a desk under a glowing red on-air lamp, warm studio light",
-                  "a nearly empty phone battery icon glowing red, one thin red sliver of charge, on a dark green background"], motion="zoom_in"),
+                  "a cream retro-styled smartphone standing upright in the centre, its screen filled by a large horizontal battery outline with only a thin red sliver of charge at the left end, a small paper taxi fare tag with a bold red upward arrow leaning against the phone, plain dark green background"], motion="zoom_in"),
      say="In twenty sixteen, Uber's own head of economic research said something on a podcast that he may have come to regret.")
 beat("c02", S, "People whose phone is about to die, he said, are more likely to accept a higher surge price.",
      reuse("c01", index=1, motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.36, "h": 0.5, "text": "3%", "text_y": 0.7, "on": "die"}]),
@@ -93,12 +93,12 @@ beat("d14b", S, "Surge pricing itself is real, of course. When lots of people wa
      img("a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight", motion="pan_left"))
 beat("b15", S, "Verdict: *not* *proven.*", kin("red"), sfx="thud")
 beat("b16", S, "But notice what the rumour got right. Your phone knows things about you. Where you are. What you're doing. How badly you need it.",
-     img("a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket", motion="zoom_in",
-         marks=[{"type": "circle", "x": 0.3, "y": 0.19, "w": 0.1, "h": 0.18, "on": "Where"},
-                {"type": "circle", "x": 0.5, "y": 0.11, "w": 0.1, "h": 0.18, "on": "doing."},
-                {"type": "circle", "x": 0.71, "y": 0.19, "w": 0.1, "h": 0.18, "on": "badly"}]))
+     img("a cream retro-styled smartphone on a table with dotted lines radiating from it to tiny icons of a map pin, a clock and a shopping basket", motion="zoom_out",
+         marks=[{"type": "circle", "x": 0.31, "y": 0.22, "w": 0.1, "h": 0.2, "on": "Where"},
+                {"type": "circle", "x": 0.49, "y": 0.13, "w": 0.09, "h": 0.19, "on": "doing."},
+                {"type": "circle", "x": 0.67, "y": 0.23, "w": 0.1, "h": 0.2, "on": "badly"}]))
 beat("b17", S, "And some apps really have changed the price because of one of those things. Exhibit A.",
-     reuse("b16", motion="static", marks=[{"type": "circle", "x": 0.3, "y": 0.2, "w": 0.14, "h": 0.24, "on": "Exhibit"}]), sfx="riser")
+     reuse("b16", motion="static", marks=[{"type": "circle", "x": 0.31, "y": 0.22, "w": 0.12, "h": 0.24, "on": "Exhibit"}]), sfx="riser")
 
 # ------------------------------------------------------------------ 8:02 AM
 S = "8:02 AM: The parking lot"
@@ -114,11 +114,11 @@ beat("a22", S, "Then the reporter drove to the store. In the parking lot, the sa
      counter={"from": 499.99, "to": 599.99, "prefix": "$", "decimals": 2, "label": "same TV · same app", "on": "said", "dur": 1.4},
      say="Then the reporter drove to the store. In the parking lot, the same TV, in the same app, said five ninety-nine ninety-nine.")
 beat("a23", S, "The app had quietly switched to the in-store price the moment the phone arrived near the store.",
-     img("a cream retro-styled smartphone with a red map pin hovering above its screen, standing on a car dashboard", motion="zoom_in",
-         marks=[{"type": "circle", "x": 0.5, "y": 0.35, "w": 0.22, "h": 0.3, "on": "quietly"}]))
+     img("a cream retro-styled smartphone with a red map pin hovering above its screen, standing on a car dashboard", motion="zoom_out",
+         marks=[{"type": "circle", "x": 0.47, "y": 0.2, "w": 0.15, "h": 0.3, "on": "quietly"}]))
 beat("a24", S, "A hundred dollars, for driving to the store.", kin("paper"), punch=["hundred"])
 beat("a25", S, "After the report, Target said changes were coming to the app. But the lesson stuck: the price on your screen can depend on where your screen is.",
-     reuse("b16", motion="zoom_out", marks=[{"type": "circle", "x": 0.3, "y": 0.19, "w": 0.12, "h": 0.2, "on": "where"}]))
+     reuse("b16", motion="zoom_out", marks=[{"type": "circle", "x": 0.31, "y": 0.22, "w": 0.12, "h": 0.24, "on": "where"}]))
 beat("a26", S, "Exhibit A. *Confirmed.*", kin("green"), sfx="thud")
 beat("k1", S, "If you enjoy catching prices red-handed, subscribe. The Inspector has more files.",
      reuse("c05", motion="zoom_in"), cta={"on": "subscribe", "click_on": "Inspector"})
@@ -149,12 +149,12 @@ beat("s35", S, "Quick game. Pause the video. Five price tags, one product. Which
      img("five blank paper price tags with red borders hanging on strings in a row in front of a single carton of eggs on a shop shelf", motion="static"),
      sfx="pop", bubble={"text": "Pause!", "x": 0.2, "y": 0.2, "tail": "right", "at": 0.6})
 beat("s36", S, "Trick question. In these tests, some items carried up to five different prices at the very same moment.",
-     reuse("s35", motion="zoom_in", marks=[{"type": "underline", "x": 0.5, "y": 0.42, "w": 0.7, "text": "all of them", "text_y": 0.62, "on": "five"}]))
+     reuse("s35", motion="zoom_out", marks=[{"type": "underline", "x": 0.48, "y": 0.955, "w": 0.86, "text": "all of them", "text_y": 0.62, "on": "five"}]))
 beat("s37", S, "Now look at these crackers. Shoppers were shown three different 'original' prices: five ninety-three, five ninety-nine, and six sixty-nine.",
      img("a box of premium saltine crackers on a cream shop shelf with a red sale ribbon across it, the box front plain and unlettered", motion="zoom_in"),
      on_screen="Was $5.93 · $5.99 · $6.69")
 beat("s38", S, "And every single one of them paid the same sale price: three ninety-nine.",
-     reuse("s37", motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.42, "h": 0.55, "text": "everyone: $3.99", "text_y": 0.68, "on": "same"}]))
+     reuse("s37", motion="static", marks=[{"type": "circle", "x": 0.48, "y": 0.5, "w": 0.44, "h": 0.6, "text": "everyone: $3.99", "text_y": 0.74, "on": "same"}]))
 beat("s39", S, "Same price. Different *feeling.*", kin("paper"))
 beat("s39b", S, "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
      reuse("s37", motion="static"), punch=["anchoring."])
@@ -176,7 +176,7 @@ beat("h41", S, "Then shops like Wanamaker's in Philadelphia championed a radical
      img("a single old-fashioned paper price tag on a string hanging from a folded shirt in a grand 1870s department store", motion="zoom_in",
          ad={"badge": "NEW!", "badge_x": 0.82, "badge_y": 0.2, "slogan": "One price. For everyone. Imagine that.", "slogan_y": 0.86}))
 beat("h42", S, "The price tag was a promise. The rich man and the poor widow paid the same.",
-     reuse("h41", motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.48, "w": 0.3, "h": 0.4, "text": "one price", "text_y": 0.7, "on": "same"}]))
+     reuse("h41", motion="static", marks=[{"type": "circle", "x": 0.6, "y": 0.6, "w": 0.18, "h": 0.3, "text": "one price", "text_x": 0.8, "text_y": 0.5, "on": "same"}]))
 beat("h43", S, "Personalised pricing quietly brings the haggling back.", reuse("h40", motion="static"))
 beat("h43b", S, "Except only *one* side knows the haggling is happening.", kin("paper"))
 beat("p40", S, "So who sets these prices now? Meet the machine. We'll call him Mister Price.",
@@ -239,14 +239,14 @@ beat("v72", S, "Before you pay, check the price somewhere else: another phone, l
      img(prompts=["two cream retro-styled smartphones side by side on a table showing the same plain shopping screen",
                   "a laptop on a kitchen table next to a phone, both showing a plain shop page"], motion="zoom_in"))
 beat("v73", S, "Switch off location for shopping apps when you don't need it.",
-     reuse("a23", motion="zoom_in", marks=[{"type": "cross", "x": 0.5, "y": 0.35, "w": 0.22, "h": 0.3, "on": "off"}]))
+     reuse("a23", motion="zoom_out", marks=[{"type": "cross", "x": 0.47, "y": 0.2, "w": 0.13, "h": 0.26, "on": "off"}]))
 beat("v74b", S, "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
      reuse("h41", motion="zoom_out", marks=[{"type": "circle", "x": 0.6, "y": 0.6, "w": 0.18, "h": 0.3, "on": "guess."}]))
 beat("v75", S, "Larry's phone is now at a hundred percent. He's still checking the price.",
      img("{larry} at home holding his fully charged phone at arm's length and squinting at it suspiciously, mid shot", motion="zoom_in"),
      bubble={"text": "Twice.", "x": 0.75, "y": 0.22, "tail": "left", "at": 2.4})
 beat("v76", S, "And that 'was' price on the crackers? It deserves a case file of its own.",
-     reuse("s37", motion="zoom_in", marks=[{"type": "circle", "x": 0.5, "y": 0.45, "w": 0.42, "h": 0.5, "text": "next case", "text_y": 0.7, "on": "own"}]))
+     reuse("s37", motion="zoom_in", marks=[{"type": "circle", "x": 0.48, "y": 0.5, "w": 0.44, "h": 0.6, "text": "next case", "text_y": 0.74, "on": "own"}]))
 beat("k2", S, "Larry's learning. You don't have to learn the hard way. Your next case is right here on screen.",
      reuse("v75", motion="static"), cta={"on": "next", "click_on": "screen"})
 beat("k3", S, "Case file zero zero three.", hold=14,

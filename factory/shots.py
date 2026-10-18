@@ -15,6 +15,7 @@ from .config import hex_to_rgb, resolve_font
 from .text import blend, fit_font, font, text_block
 
 MARGIN = 1.25  # source is prepared 25% larger than the frame so the camera can travel
+SHORT_VIEW_TOP = 0.17  # Shorts: top of the square picture window (title band above, captions below)
 
 
 def ease(p: float) -> float:
@@ -22,12 +23,19 @@ def ease(p: float) -> float:
     return p * p * (3 - 2 * p)
 
 
-def cover(img: Image.Image, w: int, h: int) -> np.ndarray:
-    src_w, src_h = img.size
+def cover_geometry(src_w: int, src_h: int, w: int, h: int, fx: float = 0.5, fy: float = 0.5):
+    """Scaled size and crop offset of a 'cover' fit; (fx, fy) = picture point to keep in the middle."""
     scale = max(w / src_w, h / src_h)
     nw, nh = math.ceil(src_w * scale), math.ceil(src_h * scale)
+    left = int(min(max(fx * nw - w / 2, 0), nw - w))
+    top = int(min(max(fy * nh - h / 2, 0), nh - h))
+    return nw, nh, left, top
+
+
+def cover(img: Image.Image, w: int, h: int, fx: float = 0.5, fy: float = 0.5) -> np.ndarray:
+    src_w, src_h = img.size
+    nw, nh, left, top = cover_geometry(src_w, src_h, w, h, fx, fy)
     resized = img.resize((nw, nh), Image.LANCZOS)
-    left, top = (nw - w) // 2, (nh - h) // 2
     return np.array(resized.crop((left, top, left + w, top + h)).convert("RGB"))
 
 
@@ -212,9 +220,37 @@ class ImageShot(Shot):
                  depth: np.ndarray | None = None):
         super().__init__(start, duration)
         self.W, self.H = size
+        # Shorts: a vertical slice of a wide picture is too macro, so the picture plays in a square window
+        # (most of the scene stays readable) over a blurred, darkened copy of itself.
+        self.full = None
+        self.zmax = MARGIN
+        if self.H > self.W:
+            self.full = (self.W, self.H)
+            self.y0 = int(self.H * SHORT_VIEW_TOP)
+            self.H = self.W
+            self.zmax = 1.12
         self.BW, self.BH = int(self.W * MARGIN), int(self.H * MARGIN)
         self.motion = motion
-        self.marks = [dict(m) for m in (marks or [])]
+        # marks and bubbles are given in fractions of the ORIGINAL picture; the shot may show a crop of it
+        # (Shorts show a vertical slice), so they are mapped into the cropped base here and follow the camera.
+        marks = [dict(m) for m in (marks or [])]
+        sw, sh = image.size
+        focus_x = float(np.mean([float(m.get("x", 0.5)) for m in marks])) if marks else 0.5
+        self.focus = (focus_x, 0.5)
+        self._geo = cover_geometry(sw, sh, self.BW, self.BH, *self.focus)
+        nw, nh, left, top = self._geo
+        for m in marks:
+            for k in ("x", "text_x", "from_x"):
+                if k in m:
+                    m[k] = (float(m[k]) * nw - left) / self.BW
+            for k in ("y", "text_y", "from_y"):
+                if k in m:
+                    m[k] = (float(m[k]) * nh - top) / self.BH
+            if "w" in m:
+                m["w"] = float(m["w"]) * nw / self.BW
+            if "h" in m:
+                m["h"] = float(m["h"]) * nh / self.BH
+        self.marks = marks
         self.red = tuple(int(c) for c in hex_to_rgb(cfg["style"]["palette"]["red"]))
         self.cfg = cfg
         # heavy pixel buffers are built on the first frame and freed by release() (keeps RAM flat on long videos)
@@ -238,18 +274,24 @@ class ImageShot(Shot):
         if photo:
             base = np.array(archival_print(image, cfg, self.BW, self.BH, seed))
         else:
-            base = cover(image, self.BW, self.BH)
+            base = cover(image, self.BW, self.BH, *self.focus)
         if ad:
             base = draw_ad_overlay(base, ad, cfg)
         self.base = add_grain(base, float(cfg["style"].get("grain", 0)), seed)
+        if self.full:
+            fw, fh = self.full
+            small = cover(image, max(8, fw // 10), max(8, fh // 10))
+            small = cv2.GaussianBlur(small, (0, 0), 2.5)
+            self.bg = (cv2.resize(small, (fw, fh), interpolation=cv2.INTER_LINEAR) * 0.45).astype(np.uint8)
 
     def release(self) -> None:
         self.base = None
         self.depth = None
+        self.bg = None
 
     def _camera(self, p: float):
         e = ease(p)
-        zmax = MARGIN
+        zmax = self.zmax
         m = self.motion
         if m == "zoom_in":
             z, dx, dy = 1.0 + (zmax * 0.98 - 1.0) * e, 0.0, 0.0
@@ -267,9 +309,7 @@ class ImageShot(Shot):
             z, dx, dy = 1.02 + 0.06 * p, 0.0, 0.0
         return z, dx, dy
 
-    def frame(self, t: float) -> np.ndarray:
-        if self.base is None:
-            self._prepare()
+    def _matrix(self, t: float):
         p = t / max(self.duration, 1e-6)
         z, dx, dy = self._camera(p)
         win_w, win_h = self.BW / z, self.BH / z
@@ -277,7 +317,26 @@ class ImageShot(Shot):
         cx = self.BW / 2 + dx * free_x * 0.95
         cy = self.BH / 2 + dy * free_y * 0.95
         s = self.W / win_w
-        M = np.float32([[s, 0, self.W / 2 - s * cx], [0, s, self.H / 2 - s * cy]])
+        return p, s, np.float32([[s, 0, self.W / 2 - s * cx], [0, s, self.H / 2 - s * cy]])
+
+    def to_screen(self, xf: float, yf: float, t: float) -> tuple[float, float]:
+        """Screen position (px) of a point given in fractions of the original picture, at shot time t."""
+        nw, nh, left, top = self._geo
+        _p, _s, M = self._matrix(t)
+        bx, by = xf * nw - left, yf * nh - top
+        return float(M[0, 0] * bx + M[0, 2]), float(M[1, 1] * by + M[1, 2]) + (self.y0 if self.full else 0)
+
+    def frame(self, t: float) -> np.ndarray:
+        if self.base is None:
+            self._prepare()
+        if not self.full:
+            return self._view(t)
+        out = self.bg.copy()
+        out[self.y0 : self.y0 + self.H] = self._view(t)
+        return out
+
+    def _view(self, t: float) -> np.ndarray:
+        p, s, M = self._matrix(t)
         src = draw_marks(self.base, self.marks, t, self.red, self.cfg) if self.marks else self.base
         if self.depth is None:
             return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
