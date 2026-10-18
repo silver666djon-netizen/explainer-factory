@@ -58,12 +58,12 @@ beat("c02", S, "People whose phone is about to die, he said, are more likely to 
      reuse("c01", index=1, motion="static", marks=[{"type": "circle", "x": 0.5, "y": 0.5, "w": 0.36, "h": 0.5, "text": "3%", "text_y": 0.7, "on": "die"}]),
      on_screen="Low battery = higher price?")
 beat("c03", S, "So, before we go any further, charge your phone.",
-     img("a chunky vintage power plug sliding into the charging port of a cream retro-styled smartphone, close up", motion="zoom_in"), sfx="tick")
+     img("a cream retro-styled smartphone lying flat on a wooden table, a coiled green charging cable plugged into the port on its short bottom edge, the screen showing one large red nearly-empty battery icon, close up", motion="zoom_in"), sfx="tick")
 beat("c04", S, "*Trust* me.", kin("ink"))
 beat("c05", S, "Because tonight, your phone is at three percent. You need a ride home.",
      img("{larry} standing alone under a street lamp at night in light rain, looking at the faint glow of his phone, mid shot", motion="zoom_in"))
 beat("c06", S, "And somewhere, an algorithm might know exactly what that's worth.",
-     img("{price} in silhouette behind a frosted glass office door, a warm light behind him, film-noir mood", motion="zoom_in"))
+     img("a frosted glass office door with a brass handle; behind the glass, the soft grey blurred outline of a round-headed retro robot with a small bow tie, lit from behind by warm amber light, no face visible, film-noir mood", motion="zoom_in"))
 beat("c07", S, "The battery story? A rumour. What we found next isn't.",
      reuse("c05", motion="static", marks=[{"type": "cross", "x": 0.5, "y": 0.45, "w": 0.3, "h": 0.36, "on": "rumour"}]), punch=["isn't."])
 beat("cf1", S, "Case file number two. Same basket, different price.", hold=1.0,

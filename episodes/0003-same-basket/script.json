@@ -94,7 +94,7 @@
       "text": "So, before we go any further, charge your phone.",
       "visual": {
         "type": "image",
-        "prompt": "a chunky vintage power plug sliding into the charging port of a cream retro-styled smartphone, close up",
+        "prompt": "a cream retro-styled smartphone lying flat on a wooden table, a coiled green charging cable plugged into the port on its short bottom edge, the screen showing one large red nearly-empty battery icon, close up",
         "motion": "zoom_in"
       },
       "sfx": "tick"
@@ -126,7 +126,7 @@
       "text": "And somewhere, an algorithm might know exactly what that's worth.",
       "visual": {
         "type": "image",
-        "prompt": "{price} in silhouette behind a frosted glass office door, a warm light behind him, film-noir mood",
+        "prompt": "a frosted glass office door with a brass handle; behind the glass, the soft grey blurred outline of a round-headed retro robot with a small bow tie, lit from behind by warm amber light, no face visible, film-noir mood",
         "motion": "zoom_in"
       }
     },
