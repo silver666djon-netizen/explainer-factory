@@ -11,7 +11,7 @@ FORMAT: YouTube thumbnail, 16:9, 1920x1080. Photorealistic cinematic still, like
 
 COMPOSITION: one clear main subject, 50–60% of the frame, centre or right of centre, strong silhouette, sharp focus. Maximum three objects in sharp focus; everything else soft and dark. Readable at the size of a matchbox on a phone screen.
 
-TEXT: 2–4 words only, ALL CAPS, along the top of the frame, one or two lines, text height about one fifth of the frame. Font: heavy condensed sans-serif (Anton / Bebas Neue / Impact style). First word(s) white #FFFFFF, the key word(s) bright yellow #FFE600. Thin dark shadow for contrast. Spell every word exactly as given. The text must NOT repeat the video title — it adds the missing emotion or question.
+TEXT: 2–4 words only, ALL CAPS, along the top of the frame, one or two lines, text height about one fifth of the frame. Font: heavy condensed sans-serif (Anton / Bebas Neue / Impact style). First word(s) white #FFFFFF, the key word(s) bright yellow #FFE600. Thin dark shadow for contrast. Spell every word exactly as given. No object overlaps or cuts the text; never use a single colour for all words. The text must NOT repeat the video title — it adds the missing emotion or question.
 
 SIGNATURE MARK: exactly one hand-drawn red marker circle or arrow (#E53935), slightly imperfect, around the single most important detail (a number, a price, an object).
 
