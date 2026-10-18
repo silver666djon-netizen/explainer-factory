@@ -262,7 +262,7 @@ def r(beat_id, text, motion="zoom_in", index=0, **kw):
 
 
 shorts = [
-    {"id": "s1", "title": "Does your ride cost more on low battery? #shorts", "beats": [
+    {"id": "s1", "hook": 'Low battery = higher price?', "title": "Does your ride cost more on low battery? #shorts", "beats": [
         r("c05", "Does your ride cost more when your battery is low?", punch=["low?"]),
         r("c01", "In 2016, Uber's own economist said riders with a dying phone were more willing to accept surge pricing.", index=1,
           say="In twenty sixteen, Uber's own economist said riders with a dying phone were more willing to accept surge pricing."),
@@ -271,8 +271,8 @@ shorts = [
         r("b16", "But your phone still knows where you are, and some apps have changed prices because of that."),
         r("a22", "That's the real case. And it starts with one question people keep asking:", motion="static"),
     ]},
-    {"id": "s2", "title": "The TV that got $100 dearer in the parking lot #shorts", "beats": [
-        r("a21", "This TV cost $499.99 in the app.", on_screen="$499.99", say="This TV cost four ninety-nine ninety-nine in the app."),
+    {"id": "s2", "hook": 'Same TV. +$100.', "title": "The TV that got $100 dearer in the parking lot #shorts", "beats": [
+        r("a21", "This TV cost $499.99 in the app.", say="This TV cost four ninety-nine ninety-nine in the app."),
         r("a22", "The reporter drove to the store. In the parking lot, same TV, same app: $599.99.", motion="static",
           counter={"from": 499.99, "to": 599.99, "prefix": "$", "decimals": 2, "label": "same TV · same app", "on": "same", "dur": 1.2},
           say="The reporter drove to the store. In the parking lot, same TV, same app: five ninety-nine ninety-nine."),
@@ -282,7 +282,7 @@ shorts = [
         r("a20", "So before you buy, check the price somewhere else. Because this TV cost $499.99 in the app.",
           say="So before you buy, check the price somewhere else. Because this TV cost four ninety-nine ninety-nine in the app."),
     ]},
-    {"id": "s3", "title": "Same groceries. Same store. $10 more. #shorts", "beats": [
+    {"id": "s3", "hook": 'Same cart. +$9.59', "title": "Same groceries. Same store. $10 more. #shorts", "beats": [
         r("s31", "Same groceries. Same store. Same minute. Different total.", motion="zoom_in"),
         {"text": "At one Seattle Safeway, the same basket cost from $114.34 to $123.93.",
          "say": "At one Seattle Safeway, the same basket cost from one fourteen thirty-four to one twenty-three ninety-three.",
@@ -294,7 +294,7 @@ shorts = [
           say="Instacart said they were price tests. It ended them in December twenty twenty-five."),
         r("s30", "So next time, compare. Because it can be the same groceries, same store, same minute.", index=1),
     ]},
-    {"id": "s4", "title": "Five price tags. One product. #shorts", "beats": [
+    {"id": "s4", "hook": '5 prices. 1 product.', "title": "Five price tags. One product. #shorts", "beats": [
         r("s35", "Five price tags. One product. Which one is real?", motion="static", sfx="pop"),
         r("s35", "All of them. In a 2025 test, some items had up to five prices at the same moment.",
           say="All of them. In a twenty twenty-five test, some items had up to five prices at the same moment."),
@@ -303,14 +303,14 @@ shorts = [
         r("s31", "Shoppers weren't told. They just saw a price and paid it."),
         r("v72", "So check on another phone before you pay. Then ask again: five price tags, one product?"),
     ]},
-    {"id": "s5", "title": "Everyone paid $3.99. Not everyone felt the same #shorts", "beats": [
-        r("s37", "These crackers had three different 'was' prices.", on_screen="Was $5.93 · $5.99 · $6.69"),
+    {"id": "s5", "hook": "The fake 'was' price", "title": "Everyone paid $3.99. Not everyone felt the same #shorts", "beats": [
+        r("s37", "These crackers had three different 'was' prices."),
         r("s37", "Five ninety-three. Five ninety-nine. Six sixty-nine. Everyone paid three ninety-nine.", motion="static"),
         {"text": "Same price. Different *feeling.*", "visual": kin("paper")},
         {"text": "The bigger the fake 'was', the better the bargain feels. That's *anchoring.*", "visual": kin("ink")},
         r("s37", "So ignore the 'was'. Look again at these crackers: three different 'was' prices."),
     ]},
-    {"id": "s6", "title": "What shops may know before you pay #shorts", "beats": [
+    {"id": "s6", "hook": 'What shops know about you', "title": "What shops may know before you pay #shorts", "beats": [
         r("p40", "Meet the machine. He'd like a word about your shopping."),
         r("p43", "Location. Device. Browsing. Even your mouse movements and abandoned carts.", motion="static",
           on_screen="Location · Device · Cart"),
@@ -319,7 +319,7 @@ shorts = [
         {"text": "Nothing personal. Just data.", "voice": "price", "visual": {"type": "reuse", "beat": "p40", "motion": "zoom_in"}},
         r("p40", "So, before you pay, meet the machine.", motion="static"),
     ]},
-    {"id": "s7", "title": "You weren't targeted. You were sampled. #shorts", "beats": [
+    {"id": "s7", "hook": "You're the test", "title": "You weren't targeted. You were sampled. #shorts", "beats": [
         r("w60", "Think the app picked on you?"),
         r("w62", "It didn't need to. It tested everyone, at random. Like mice in a supermarket."),
         r("w62", "The company's own material said: shoppers are not aware that they're in an experiment.", motion="static"),

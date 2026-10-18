@@ -51,6 +51,7 @@ class Card:
     end: float
     text: str
     corner: bool = False  # top-left instead of top-centre (keeps faces/subjects of pictures clear)
+    hook: bool = False  # Shorts opener: fully visible from the first frame
 
 
 @dataclass
@@ -320,12 +321,14 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         last_section = section or last_section
 
         if beat.get("on_screen") and vtype not in ("chart", "stat", "title"):  # those already fill the top
-            appear = start + 0.25
+            appear = start if beat.get("_hook") else start + 0.25
             bub = beat.get("bubble") or {}
             bubble_top_left = bool(bub) and float(bub.get("x", 0.5)) < 0.5 and float(bub.get("y", 0.5)) < 0.4
             corner = vtype in ("image", "reuse", "photo", "clip") and size[0] > size[1] and not bubble_top_left
-            plan.cards.append(Card(appear, start + dur, str(beat["on_screen"]), corner))
-            plan.timeline.add_sfx(appear, "pop", seed=i)
+            plan.cards.append(Card(appear, start + dur, str(beat["on_screen"]), corner and not beat.get("_hook"),
+                                   bool(beat.get("_hook"))))
+            if not beat.get("_hook"):
+                plan.timeline.add_sfx(appear, "pop", seed=i)
         if beat.get("counter"):
             c = beat["counter"]
             appear = start + _timed(c, v["words"], 0.5)
@@ -530,7 +533,7 @@ class Overlay:
         cards = self.plan.cards
         if card_i < len(cards) and cards[card_i].start <= t < cards[card_i].end:
             card = cards[card_i]
-            img, op = self._pop(self.card_img(card), t - card.start)
+            img, op = (self.card_img(card), 1.0) if card.hook else self._pop(self.card_img(card), t - card.start)
             op *= min(1.0, (card.end - t) / 0.15)
             x = int(self.W * 0.04) if card.corner else (self.W - img.shape[1]) // 2
             blend(frame, img, x, self.card_y, opacity=op)

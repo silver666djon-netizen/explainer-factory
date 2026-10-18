@@ -50,7 +50,8 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
 
     prompts = image_prompts(episode)
     thumb_spec = episode.get("thumbnail") or {}
-    if thumb_spec.get("prompt"):
+    ep_dir0 = Path(episode_path) if Path(episode_path).is_dir() else Path(episode_path).parent
+    if thumb_spec.get("prompt") and not any((ep_dir0 / f"thumbnail.{e}").exists() for e in ("png", "jpg")):
         prompts["thumbnail"] = {"prompt": thumb_spec["prompt"], "style": thumb_spec.get("style", "ad")}
     cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
     images = ensure_images(cfg, prompts, cache, offline, log)
@@ -84,6 +85,9 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         cue = short.get("music") or (max(votes, key=votes.get) if votes else mus.get("_shorts") or default_cue)
         for beat in short["beats"]:
             beat["_music"] = cue
+        if short.get("hook") and short["beats"]:  # Shorts have no thumbnail: frame 0 must carry the hook
+            short["beats"][0]["on_screen"] = short["hook"]
+            short["beats"][0]["_hook"] = True
 
     log("Narration…")
     voice = make_voice(cfg, offline, episode.get("voices"))

@@ -1153,6 +1153,7 @@
   "shorts": [
     {
       "id": "s1",
+      "hook": "Low battery = higher price?",
       "title": "Does your ride cost more on low battery? #shorts",
       "beats": [
         {
@@ -1224,6 +1225,7 @@
     },
     {
       "id": "s2",
+      "hook": "Same TV. +$100.",
       "title": "The TV that got $100 dearer in the parking lot #shorts",
       "beats": [
         {
@@ -1234,7 +1236,6 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "on_screen": "$499.99",
           "say": "This TV cost four ninety-nine ninety-nine in the app.",
           "id": "s2_0"
         },
@@ -1297,6 +1298,7 @@
     },
     {
       "id": "s3",
+      "hook": "Same cart. +$9.59",
       "title": "Same groceries. Same store. $10 more. #shorts",
       "beats": [
         {
@@ -1370,6 +1372,7 @@
     },
     {
       "id": "s4",
+      "hook": "5 prices. 1 product.",
       "title": "Five price tags. One product. #shorts",
       "beats": [
         {
@@ -1432,6 +1435,7 @@
     },
     {
       "id": "s5",
+      "hook": "The fake 'was' price",
       "title": "Everyone paid $3.99. Not everyone felt the same #shorts",
       "beats": [
         {
@@ -1442,7 +1446,6 @@
             "index": 0,
             "motion": "zoom_in"
           },
-          "on_screen": "Was $5.93 · $5.99 · $6.69",
           "id": "s5_0"
         },
         {
@@ -1489,6 +1492,7 @@
     },
     {
       "id": "s6",
+      "hook": "What shops know about you",
       "title": "What shops may know before you pay #shorts",
       "beats": [
         {
@@ -1557,6 +1561,7 @@
     },
     {
       "id": "s7",
+      "hook": "You're the test",
       "title": "You weren't targeted. You were sampled. #shorts",
       "beats": [
         {
