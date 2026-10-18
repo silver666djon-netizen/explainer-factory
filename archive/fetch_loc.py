@@ -36,10 +36,16 @@ def resolve_loc(url):
     for u, w, mt in acc:
         if not re.search(r"\.(jpg|jpeg)(\?|$)", u) and "default.jpg" not in u:
             continue
-        if "pct:" in u:
-            w = max(w, 4000 if "pct:100" in u else 2000 if "pct:50" in u else 1200)
-        if w == 0:
-            w = 640 if u.endswith("r.jpg") else 1024 if u.endswith("v.jpg") else 100
+        m = re.search(r"/full/pct:([\d.]+)/", u)
+        if m:  # IIIF: ask for half size (newspaper pages ~3000 px wide, enough to crop an ad)
+            u = re.sub(r"/full/pct:[\d.]+/", "/full/pct:50/", u)
+            w = 5000
+        elif u.endswith("_150px.jpg"):
+            w = 150
+        elif u.endswith("r.jpg"):
+            w = max(w, 640)
+        elif u.endswith("v.jpg"):
+            w = max(w, 1024)
         if w > score:
             best, score = u, w
     meta = j.get("item", {})
