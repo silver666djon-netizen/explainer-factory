@@ -713,7 +713,7 @@
           {
             "type": "underline",
             "x": 0.52,
-            "y": 0.5,
+            "y": 0.455,
             "w": 0.27,
             "on": "double"
           }
@@ -941,18 +941,18 @@
         "page": 6,
         "crop": [
           0.52,
-          0.06,
+          0.07,
           0.98,
-          0.52
+          0.31
         ],
         "caption": "FTC staff report, January 2025, p. 6",
         "hand_marks": true,
         "marks": [
           {
             "type": "underline",
-            "x": 0.47,
-            "y": 0.15,
-            "w": 0.3,
+            "x": 0.39,
+            "y": 0.245,
+            "w": 0.26,
             "on": "six."
           }
         ]

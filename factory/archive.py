@@ -79,7 +79,7 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
     gray = ImageOps.autocontrast(img.convert("L"), cutoff=0.5)
     gray = gray.filter(ImageFilter.UnsharpMask(radius=1.5, percent=60))
     aged = ImageOps.colorize(gray, black=(40, 36, 30), white=(241, 232, 206))
-    max_w, max_h = int(w * 0.80), int(h * (0.72 if caption else 0.82))
+    max_w, max_h = int(w * 0.84), int(h * (0.66 if caption else 0.82))
     scale = min(max_w / aged.width, max_h / aged.height)
     aged = aged.resize((max(1, int(aged.width * scale)), max(1, int(aged.height * scale))), Image.LANCZOS)
     pad = max(8, int(min(w, h) * 0.012))
@@ -91,7 +91,7 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
     shadow = Image.new("RGBA", piece.size, (0, 0, 0, 0))
     shadow.paste((0, 0, 0, 80), mask=piece.split()[3])
     shadow = shadow.filter(ImageFilter.GaussianBlur(pad))
-    x, y = (w - piece.width) // 2, (h - piece.height) // 2 - int(h * (0.05 if caption else 0.02))
+    x, y = (w - piece.width) // 2, (h - piece.height) // 2 - int(h * (0.08 if caption else 0.02))
     canvas.paste(shadow, (x + pad // 2, y + pad), shadow)
     canvas.paste(piece, (x, y), piece)
     if caption:
@@ -101,9 +101,9 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
 
 def print_photo(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: str | None) -> Image.Image:
     from .shots import archival_print
-    canvas = archival_print(img, cfg, w, h, seed, fit=0.72 if caption else 0.80, dy=-0.04 if caption else 0.0)
+    canvas = archival_print(img, cfg, w, h, seed, fit=0.66 if caption else 0.80, dy=-0.07 if caption else 0.0)
     if caption:
-        _caption(canvas, caption, cfg, int(h * 0.86))
+        _caption(canvas, caption, cfg, int(h * 0.76))
     return canvas
 
 
@@ -121,7 +121,7 @@ def _caption(canvas: Image.Image, text: str, cfg: dict, y: int) -> None:
     d = ImageDraw.Draw(canvas)
     tw = d.textlength(text, font=fnt)
     x = (canvas.width - tw) / 2
-    yy = min(y + int(canvas.height * 0.015), int(canvas.height * 0.93))
+    yy = min(y + int(canvas.height * 0.012), int(canvas.height * 0.775))
     d.text((x, yy), text, font=fnt, fill=pal["ink"])
 
 
@@ -179,7 +179,8 @@ def ensure_clips(episode: dict, cache: Path, log=print) -> None:
             cmd = ["ffmpeg", "-v", "error", "-y", "-ss", str(a), "-i", str(src)]
             if b > a:
                 cmd += ["-t", str(b - a)]
-            cmd += ["-an", "-vf", "scale=1280:-2", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", str(dst)]
+            cmd += ["-an", "-vf", "scale=1280:-2,normalize=smoothing=20:strength=0.8,eq=brightness=0.04:contrast=1.08",
+                    "-c:v", "libx264", "-preset", "veryfast", "-crf", "20", str(dst)]
             subprocess.run(cmd, check=True)
             log(f"  clip {beat['id']}: {v['file']} {a:.1f}-{b:.1f}s")
         v["_clip"] = str(dst)

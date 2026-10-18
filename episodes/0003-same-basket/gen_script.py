@@ -172,7 +172,7 @@ beat("s39b", S, "The bigger the fake 'was', the better the deal felt. Economists
 beat("s39c", S, "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
      arch("np_lottery_1887.jpg", look="clipping", credit="The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, " + LOC,
           crop=[0.045, 0.818, 0.232, 0.975], caption="The Daily Yellowstone Journal, Miles City, 15 October 1887", motion="static", hand_marks=True,
-          marks=[{"type": "underline", "x": 0.52, "y": 0.5, "w": 0.27, "on": "double"}]),
+          marks=[{"type": "underline", "x": 0.52, "y": 0.455, "w": 0.27, "on": "double"}]),
      say="That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only.")
 beat("s3a", S, "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
      img("a tidy corporate press statement on letterhead lying on a polished desk beside a fountain pen", motion="zoom_in",
@@ -209,10 +209,10 @@ beat("p42", S, "In January 2025, staff at the US Federal Trade Commission publis
          highlight="tailor prices for individual shoppers", at=6.0, seed=51),
      say="In January twenty twenty-five, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices.")
 beat("p42b", S, "Here's the document itself. Page six.",
-     arch("ftc_surveillance_pricing_2025.pdf", look="clipping", page=6, crop=[0.52, 0.06, 0.98, 0.52],
+     arch("ftc_surveillance_pricing_2025.pdf", look="clipping", page=6, crop=[0.52, 0.07, 0.98, 0.31],
           credit="US Federal Trade Commission staff, Surveillance Pricing 6(b) study research summaries, Jan 2025 (US government work, public domain)",
           caption="FTC staff report, January 2025, p. 6", motion="zoom_in", hand_marks=True,
-          marks=[{"type": "underline", "x": 0.47, "y": 0.15, "w": 0.3, "on": "six."}]))
+          marks=[{"type": "underline", "x": 0.39, "y": 0.245, "w": 0.26, "on": "six."}]))
 beat("p43", S, "The ingredients on the table: where you are, what device you use, what you browse, even how you move your mouse, and what you leave in your cart.",
      img("{price} examining a shopper's silhouette with a big brass magnifying glass held in one white-gloved cartoon hand, small floating labels around it", motion="static"),
      on_screen="Location · Device · Cart")
