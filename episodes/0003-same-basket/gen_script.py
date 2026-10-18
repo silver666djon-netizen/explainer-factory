@@ -287,6 +287,9 @@ for b in B:
 # ------------------------------------------------------------------ shorts
 def r(beat_id, text, motion="zoom_in", index=0, **kw):
     v = {"type": "reuse", "beat": beat_id, "index": index, "motion": motion}
+    for k in ("draw", "marks", "hand_marks"):  # visual-level keys
+        if k in kw:
+            v[k] = kw.pop(k)
     d = {"text": text, "visual": v}
     d.update(kw)
     return d
