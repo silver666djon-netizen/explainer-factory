@@ -19,20 +19,7 @@ jobs:
         if: ${{ github.event.inputs.list != 'archive/probe' }}
         run: |
           mkdir -p out/archive
-          python3 - "${{ github.event.inputs.list }}" <<'PY'
-          import json, sys, subprocess, pathlib
-          items = json.load(open(sys.argv[1]))
-          ok = []
-          for it in items:
-              dst = pathlib.Path("out/archive") / it["name"]
-              r = subprocess.run(["curl", "-sSL", "--max-time", "600", "-A", "Mozilla/5.0 (X11; Linux x86_64) CoinSense-archive-fetch/1.0",
-                                  "-o", str(dst), it["url"]])
-              size = dst.stat().st_size if dst.exists() else 0
-              print(f"{'OK ' if r.returncode == 0 and size > 2000 else 'ERR'} {size:>10} {it['name']}  <- {it['url']}")
-              if r.returncode == 0 and size > 2000: ok.append(it["name"])
-              else: dst.unlink(missing_ok=True)
-          print("fetched", len(ok), "of", len(items))
-          PY
+          python3 archive/fetch_loc.py "${{ github.event.inputs.list }}"
           ls -la out/archive
       - name: Probe (optional)
         if: ${{ github.event.inputs.list == 'archive/probe' }}
