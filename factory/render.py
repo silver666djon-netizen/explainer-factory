@@ -242,8 +242,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             keys = _image_keys(visual, beat_lookup)
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
-            if marks or beat.get("bubble"):
-                pieces = len(keys)  # marks / bubbles need a steady picture: no extra cuts
+            if marks or beat.get("bubble") or visual.get("draw"):
+                pieces = len(keys)  # marks / bubbles / hand drawing need a steady picture: no extra cuts
             else:
                 pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))
                 while pieces > len(keys) and span / pieces < min_shot:
