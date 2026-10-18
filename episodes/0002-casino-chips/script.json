@@ -45,12 +45,12 @@
       "section": "The case",
       "text": "Meet Larry. Larry is made up. His mistakes are not.",
       "visual": {
-        "type": "image",
-        "prompts": [
-          "a glowing 1950s Las Vegas casino neon sign against a deep blue night sky",
-          "{larry} walking through ornate casino doors at night, full figure"
-        ],
-        "motion": "zoom_in"
+        "type": "clip",
+        "file": "clip_lv_homemovie_1950s.mp4",
+        "in": 636.0,
+        "out": 652.0,
+        "newsreel": "Las Vegas, 1950s — home movie",
+        "credit": "Home movie 010112_001 (1950s Las Vegas), Prelinger Archives / Internet Archive (public domain)"
       }
     },
     {
@@ -60,8 +60,18 @@
       "on_screen": "$500",
       "visual": {
         "type": "image",
-        "prompt": "{larry} proudly patting a fat leather wallet in his jacket pocket, mid shot",
-        "motion": "zoom_in"
+        "prompt": "{larry} proudly patting a fat leather wallet in his jacket pocket, grinning, mid shot, plain cream background, no scenery",
+        "motion": "static",
+        "draw": {
+          "on": "Tonight",
+          "dur": 3.4,
+          "box": [
+            0.15,
+            0.0,
+            0.85,
+            1.0
+          ]
+        }
       }
     },
     {
@@ -114,7 +124,8 @@
             "text_y": 0.78,
             "on": "Same"
           }
-        ]
+        ],
+        "hand_marks": true
       }
     },
     {
@@ -145,7 +156,8 @@
             "text_y": 0.44,
             "on": "pocket"
           }
-        ]
+        ],
+        "hand_marks": true
       }
     },
     {
@@ -260,7 +272,18 @@
       "visual": {
         "type": "image",
         "prompt": "one round red and cream casino chip with a ridged edge, standing on its edge and spinning on green felt, small curved motion lines around it",
-        "motion": "zoom_in"
+        "motion": "static",
+        "draw": {
+          "on": "chip",
+          "dur": 2.8,
+          "box": [
+            0.2,
+            0.1,
+            0.8,
+            0.9
+          ],
+          "mode": "shape"
+        }
       }
     },
     {
@@ -315,10 +338,12 @@
       "text": "A quick history of not-quite-money.",
       "sfx": "projector",
       "visual": {
-        "type": "image",
-        "prompt": "a western saloon poker table with playing cards and coins under lantern light",
+        "type": "archive",
+        "file": "faro_bisbee_1900.jpg",
+        "look": "print",
+        "credit": "C. S. Fly, Orient Saloon, Bisbee, Arizona, c. 1900 — US National Archives 111-SC-93344 (no known restrictions)",
         "motion": "zoom_in",
-        "newsreel": true
+        "caption": "Faro game, Orient Saloon, Bisbee, Arizona, c. 1900"
       }
     },
     {
@@ -369,7 +394,8 @@
             "text_y": 0.8,
             "on": "track"
           }
-        ]
+        ],
+        "hand_marks": true
       }
     },
     {
@@ -537,6 +563,20 @@
         "beat": "h09",
         "motion": "zoom_in"
       }
+    },
+    {
+      "id": "r24b",
+      "section": "11 PM: The maths",
+      "text": "Las Vegas, 1940. The wheel hasn't changed since. Neither has the arithmetic.",
+      "visual": {
+        "type": "archive",
+        "file": "lv1940_roulette.jpg",
+        "look": "print",
+        "credit": "Arthur Rothstein / Farm Security Administration, Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Roulette players, Las Vegas, 1940 — Arthur Rothstein"
+      },
+      "say": "Las Vegas, nineteen forty. The wheel hasn't changed since. Neither has the arithmetic."
     },
     {
       "id": "r25",
@@ -720,9 +760,12 @@
       "section": "1 AM: Almost",
       "text": "Larry drifts over to the slot machines.",
       "visual": {
-        "type": "image",
-        "prompt": "{larry} wandering between rows of glowing slot machines",
-        "motion": "pan_right"
+        "type": "archive",
+        "file": "lv1940_slots.jpg",
+        "look": "print",
+        "credit": "Arthur Rothstein / Farm Security Administration, Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Slot machine players, Las Vegas, 1940 — Arthur Rothstein"
       }
     },
     {
@@ -830,9 +873,18 @@
         "accident."
       ],
       "visual": {
-        "type": "image",
-        "prompt": "the open back of a vintage slot machine revealing gears and a long paper reel strip",
-        "motion": "zoom_in"
+        "type": "archive",
+        "file": "caille_roulette_1900.jpg",
+        "look": "print",
+        "credit": "Detroit Publishing Co., c. 1900, Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Caille-Schiemer roulette slot machine, c. 1900",
+        "crop": [
+          0.22,
+          0.12,
+          0.78,
+          0.78
+        ]
       }
     },
     {
@@ -939,12 +991,12 @@
       "section": "2 AM: The building",
       "text": "The story comes from the boom years of the Las Vegas Strip, and it's repeated in almost every video about casinos.",
       "visual": {
-        "type": "image",
-        "prompts": [
-          "a wide view of a 1950s desert boulevard lined with glowing neon casino signs at dusk, vintage cars, palm trees, empty sidewalks",
-          "a vintage newsreel camera on a tripod pointed at a casino entrance"
-        ],
-        "newsreel": true
+        "type": "clip",
+        "file": "clip_lv_homemovie_1950s.mp4",
+        "in": 666.0,
+        "out": 684.0,
+        "newsreel": "Las Vegas Strip, 1950s — home movie",
+        "credit": "Home movie 010112_001 (1950s Las Vegas), Prelinger Archives / Internet Archive (public domain)"
       }
     },
     {
@@ -977,7 +1029,8 @@
             "text_y": 0.82,
             "on": "myth"
           }
-        ]
+        ],
+        "hand_marks": true
       }
     },
     {
@@ -1117,7 +1170,19 @@
         "prompts": [
           "a smartphone lying flat on a cream tabletop, a fountain of colourful cartoon gems spilling out of its glowing screen onto the table",
           "a hand trading a banknote for a handful of glowing gems"
-        ]
+        ],
+        "draw": {
+          "on": "gems",
+          "dur": 3.0,
+          "box": [
+            0.1,
+            0.05,
+            0.9,
+            0.95
+          ],
+          "mode": "shape"
+        },
+        "motion": "static"
       }
     },
     {
@@ -1142,7 +1207,8 @@
             "text_y": 0.8,
             "on": "Chips"
           }
-        ]
+        ],
+        "hand_marks": true
       }
     },
     {
@@ -1170,6 +1236,37 @@
         "prompt": "a smartphone whose glowing screen shows a green casino table, colourful chips spilling out of it",
         "motion": "zoom_in"
       }
+    },
+    {
+      "id": "p51b",
+      "section": "The twist: your phone",
+      "text": "One more exhibit. In 2025, US regulators described a tool for betting sites that spots a hesitating customer and pops up a nudge to stay.",
+      "visual": {
+        "type": "archive",
+        "file": "ftc_surveillance_pricing_2025.pdf",
+        "look": "clipping",
+        "credit": "US Federal Trade Commission staff, Surveillance Pricing 6(b) study research summaries, Jan 2025 (US government work, public domain)",
+        "motion": "static",
+        "page": 6,
+        "crop": [
+          0.04,
+          0.07,
+          0.5,
+          0.3
+        ],
+        "caption": "FTC staff report, January 2025, p. 6",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.47,
+            "w": 0.5,
+            "on": "hesitating"
+          }
+        ]
+      },
+      "say": "One more exhibit. In twenty twenty-five, US regulators described a tool for betting sites that spots a hesitating customer and pops up a nudge to stay."
     },
     {
       "id": "v52",
