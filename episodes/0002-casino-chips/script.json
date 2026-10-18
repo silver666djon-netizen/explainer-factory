@@ -89,7 +89,19 @@
           "a vintage roulette wheel seen from directly above on green felt, a small ivory ball resting in the track, gentle motion blur on the spinning wheel"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "hundred dollar bill",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.4,
+          "w": 0.28,
+          "on": "cash",
+          "pick": 6771234
+        }
+      ]
     },
     {
       "id": "c04",
@@ -286,7 +298,19 @@
           "a hand reluctantly letting go of a banknote that flies away like a bird",
           "a sad leather wallet with a single banknote leaving it"
         ]
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "paying cash wallet",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "hurts",
+          "pick": 4843535
+        }
+      ]
     },
     {
       "id": "b13",
@@ -343,7 +367,19 @@
         "type": "image",
         "prompt": "a fan of pastel toy play money on a cheerful game table",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "board game money",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "Monopoly",
+          "pick": 1538331
+        }
+      ]
     },
     {
       "id": "n17",
@@ -399,7 +435,19 @@
           "badge_x": 0.8,
           "badge_y": 0.27
         }
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "poker chips vintage",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "clay",
+          "pick": 9815260
+        }
+      ]
     },
     {
       "id": "n20",
@@ -589,7 +637,19 @@
         "prompt": "{larry} slumped at a casino table staring at an empty patch of green felt",
         "motion": "zoom_in",
         "style": "comic"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "empty wallet",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "gone",
+          "pick": 3548021
+        }
+      ]
     },
     {
       "id": "h24",
@@ -1344,7 +1404,19 @@
           "a hand trading a banknote for a handful of glowing gems"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "mobile game smartphone",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.84,
+          "y": 0.42,
+          "w": 0.26,
+          "on": "game",
+          "pick": 1869655
+        }
+      ]
     },
     {
       "id": "p49",
@@ -1370,7 +1442,19 @@
           }
         ],
         "hand_marks": true
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "gift cards",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.4,
+          "w": 0.26,
+          "on": "Gift",
+          "pick": 421600
+        }
+      ]
     },
     {
       "id": "p50",
@@ -1398,7 +1482,19 @@
         "type": "image",
         "prompt": "a smartphone whose glowing screen shows a green casino table, colourful chips spilling out of it",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "stock_photo": "las vegas night casino",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "building",
+          "pick": 932708
+        }
+      ]
     },
     {
       "id": "p51b",
@@ -1568,7 +1664,19 @@
           "visual": {
             "type": "reuse",
             "beat": "b12"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "paying cash wallet",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.72,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "hurts",
+              "pick": 4843535
+            }
+          ]
         },
         {
           "text": "A chip doesn't hurt. It's light, it's colourful, it clicks.",
@@ -1664,7 +1772,19 @@
           "visual": {
             "type": "reuse",
             "beat": "b30"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "hundred dollar bill",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "hundred",
+              "pick": 6771234
+            }
+          ]
         },
         {
           "text": "Still want to bet a hundred dollars, a hundred times?",
@@ -1743,7 +1863,19 @@
             "type": "reuse",
             "beat": "a07",
             "motion": "zoom_in"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "brain scan mri",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "brain",
+              "pick": 254866
+            }
+          ]
         }
       ],
       "id": "s5",
@@ -1863,14 +1995,38 @@
           "visual": {
             "type": "reuse",
             "beat": "p48"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "mobile game smartphone",
+              "kind": "photo",
+              "from": "right",
+              "x": 0.7,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "gems",
+              "pick": 1869655
+            }
+          ]
         },
         {
           "text": "Gift cards? Same trick.",
           "visual": {
             "type": "reuse",
             "beat": "p49"
-          }
+          },
+          "inserts": [
+            {
+              "stock_photo": "gift cards",
+              "kind": "photo",
+              "from": "left",
+              "x": 0.3,
+              "y": 0.45,
+              "w": 0.46,
+              "on": "Gift",
+              "pick": 421600
+            }
+          ]
         },
         {
           "text": "Tap to pay? The smoothest chip ever invented.",

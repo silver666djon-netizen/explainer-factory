@@ -29,11 +29,16 @@ def st(q, side, x, y, w, on, **kw):
 
 
 INS = {
+    "c03": [st("cash money stack hand", "right", 0.82, 0.4, 0.28, "cash")],
     "c04": [ph("montecarlo_roulette_1900.jpg", "left", 0.2, 0.42, 0.3, "these", "Monte Carlo, c. 1900")],
     "b08": [ph("montecarlo_hall_1896.jpg", "right", 0.82, 0.4, 0.3, "swaps", "Gaming hall, Monte Carlo, 1896")],
+    "b12": [st("paying cash wallet", "left", 0.2, 0.42, 0.28, "hurts")],
+    "b16": [st("board game money", "right", 0.82, 0.42, 0.28, "Monopoly")],
     "n18": [ph("rowlandson_gaming_1791.jpg", "right", 0.8, 0.42, 0.32, "poker", "A Gaming Table, Thomas Rowlandson, 1791", kind="clipping",
                credit="Thomas Rowlandson, 1791 — The Metropolitan Museum of Art (Open Access, public domain)")],
+    "n19": [st("poker chips vintage", "left", 0.2, 0.42, 0.28, "clay")],
     "b17": [ph("lv1940_wheel.jpg", "left", 0.2, 0.42, 0.3, "number", "Wheel of fortune, Las Vegas, 1940")],
+    "b23": [st("empty wallet", "right", 0.82, 0.42, 0.26, "gone")],
     "r27": [ph("human_roulette_1908.jpg", "right", 0.84, 0.4, 0.26, "business", "Human roulette wheel, 1908", kind="clipping")],
     "b29": [st("hundred dollar bill", "right", 0.82, 0.4, 0.28, "hundred")],
     "b33": [ph("lv1940_roulette.jpg", "left", 0.18, 0.42, 0.28, "behind", "Roulette, Las Vegas, 1940")],
@@ -45,6 +50,9 @@ INS = {
     "e43": [st("exit sign", "right", 0.84, 0.4, 0.24, "leaving")],
     "f44": [st("casino chips stacks", "left", 0.18, 0.42, 0.28, "count")],
     "p47": [ph("c02", "left", 0.14, 0.62, 0.26, "phone", kind="cutout")],
+    "p48": [st("mobile game smartphone", "right", 0.84, 0.42, 0.26, "game")],
+    "p49": [st("gift cards", "left", 0.18, 0.4, 0.26, "Gift")],
+    "p51": [st("las vegas night casino", "left", 0.18, 0.42, 0.28, "building")],
     "v54": [ph("c02", "right", 0.86, 0.62, 0.26, "real", kind="cutout")],
     "v55": [ph("lv1940_corner.jpg", "left", 0.18, 0.42, 0.28, "house", "Las Vegas, 1940")],
 }
@@ -62,9 +70,14 @@ for k, (q, pick, out) in STOCK.items():
                            "fallback_prompt": v.get("prompt") or (v.get("prompts") or [""])[0], "credit": "Stock footage / Pixabay"}
 
 SHORT_INS = {
+    ("s1", 1): [st("paying cash wallet", "right", 0.72, 0.45, 0.46, "hurts")],
     ("s1", 4): [ph("montecarlo_roulette_1900.jpg", "left", 0.3, 0.45, 0.48, "chip", "Monte Carlo, c. 1900")],
+    ("s3", 3): [st("hundred dollar bill", "right", 0.7, 0.45, 0.46, "hundred")],
     ("s3", 4): [ph("lv1940_roulette.jpg", "left", 0.3, 0.45, 0.48, "more", "Las Vegas, 1940")],
+    ("s5", 3): [st("brain scan mri", "right", 0.7, 0.45, 0.46, "brain")],
     ("s6", 2): [ph("slot_abandoned_1937.jpg", "left", 0.3, 0.45, 0.48, "machine", "Slot machine, 1937")],
+    ("s7", 2): [st("mobile game smartphone", "right", 0.7, 0.45, 0.46, "gems")],
+    ("s7", 3): [st("gift cards", "left", 0.3, 0.45, 0.46, "Gift")],
     ("s8", 0): [ph("lv1940_mainstreet.jpg", "right", 0.72, 0.45, 0.42, "clocks", "Las Vegas, 1940")],
     ("s8", 4): [ph("dude_slot_1939.jpg", "left", 0.3, 0.45, 0.48, "past", "Slot machine, 1939")],
 }
