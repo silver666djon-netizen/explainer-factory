@@ -43,6 +43,7 @@ def music_credits(episode: dict, cues: set[str] | None = None) -> list[str]:
     if cues is None:
         cues = set((episode.get("music") or {}).values())
         cues |= {b.get("sting") for b in episode.get("beats", []) if b.get("sting")}
+        cues |= {b.get("music") for b in episode.get("beats", []) if b.get("music")}  # beat-level cues (e.g. the tips)
         cues |= {s.get("music") for s in episode.get("shorts") or [] if s.get("music")}
     return [table[c] for c in sorted(c for c in cues if c in table)]
 

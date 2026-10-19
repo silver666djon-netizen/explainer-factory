@@ -1,0 +1,101 @@
+{
+  "title": "Why Your Groceries Cost More Than Your Neighbour's",
+  "description": "Does your ride really cost more when your battery is low? Case file #002 follows Larry (fictional) through one day: a viral battery rumour, a TV that got $100 dearer in a parking lot, and a real 2025 investigation in which hundreds of shoppers paid different prices for the same groceries at the same store, at the same moment.\n\nChapters:\n0:00 The case\n0:14 10:15 AM: Same basket\n2:24 11:47 PM: 3% battery\n3:18 8:02 AM: The parking lot\n4:17 1:30 PM: The machine\n5:55 In defence of the accused\n6:23 The twist\n7:07 Case closed\n\nSources:\n- Consumer Reports & Groundwork Collaborative (Dec 2025). Instacart's AI pricing experiment — same cart, different price. consumerreports.org\n- Instacart halts AI price-testing program (Dec 22, 2025) — e.g. SiliconANGLE, Anchorage Daily News.\n- NPR, Hidden Brain (2016): Uber's Keith Chen on low battery and surge pricing; Uber states battery level is not used in pricing.\n- KARE 11 (Feb 2019): Target app price switch near stores (TV $499.99 → $599.99 in the parking lot).\n- US Federal Trade Commission (Jan 17, 2025): Surveillance pricing 6(b) study — preliminary staff findings.\n- US Federal Trade Commission staff (Jan 2025). Surveillance Pricing 6(b) study research summaries, p. 6 (quoted).\n- Receipts in the opening are a reconstruction; the totals ($114.34 / $123.93) are from the Consumer Reports test at one Seattle Safeway.\n- Larry, Linda and Mister Price are fictional characters. Scenes marked 'Reconstruction' are illustrations.\n- Archive: The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, Library of Congress, Prints & Photographs Division (no known restrictions)\n- Archive: Walker Evans / Farm Security Administration, Library of Congress, Prints & Photographs Division (no known restrictions)\n- Archive: Alfred S. Campbell stereograph, 1896, Library of Congress, Prints & Photographs Division (no known restrictions)\n- Archive: Library of Congress, Prints & Photographs Division (no known restrictions)\n- Archive: \"The Supermarket\" (Ezra Baker Films) — Prelinger Archives / Internet Archive (public domain)\n- Archive: Stock footage / Pixabay\n- Archive: Stock photo: 422737 / Pixabay\n\nMusic: 'Clock Is Ticking' by Braden Deal on #Uppbeat https://uppbeat.io/c/braden-deal\nLicense code: GIFBZEYTY8BVRX4U\n\nMusic: 'Jazz Rumble' by Airstream on #Uppbeat https://uppbeat.io/c/airstream\nLicense code: F9CMAAAMFB7XLXWV\n\nMusic: 'Mechanisms Of Action' by Aaron Paul Low on #Uppbeat https://uppbeat.io/c/aaron-paul-low\nLicense code: KLWLY0JUFRTURNP5\n\nMusic: 'Private Detective' by Airstream on #Uppbeat https://uppbeat.io/c/airstream\nLicense code: V3GUOB1NLE68EDDJ\n\nMusic: 'Secret Report' by AVBE on #Uppbeat https://uppbeat.io/c/avbe\nLicense code: 8IDKESARJPRGJRUU\n\nSound effect: 'Brass suspense chord stab' by Swoop on #Uppbeat https://uppbeat.io/sfx/brass-suspense-chord-stab/163125/44111\n\nSound effect: 'Lone detective - muted trumpet sting' by Tomas Herudek on #Uppbeat https://uppbeat.io/sfx/lone-detective-muted-trumpet-sting/179348/80327\n\nMusic: 'Tunnel Vision' by AVBE on #Uppbeat https://uppbeat.io/c/avbe\nLicense code: ZZEM90UFEMXJLG6E\n\nMusic: 'The Usual Suspects' by Theo Gerard on #Uppbeat https://uppbeat.io/c/theo-gerard\nLicense code: HPTCQ3AQITPPEL2I\n\nMusic: 'Wells Street' by Airstream on #Uppbeat https://uppbeat.io/c/airstream\nLicense code: IY1NGXBNGMQ3ALTJ\n\n#personalizedpricing #surveillancepricing #instacartprices",
+  "tags": [
+    "personalized pricing",
+    "surveillance pricing",
+    "instacart prices",
+    "uber battery",
+    "dynamic pricing",
+    "anchoring",
+    "psychology of money",
+    "behavioral economics",
+    "price discrimination"
+  ],
+  "duration_seconds": 486.9,
+  "chapters": [
+    {
+      "time": "0:00",
+      "title": "The case"
+    },
+    {
+      "time": "0:14",
+      "title": "10:15 AM: Same basket"
+    },
+    {
+      "time": "2:24",
+      "title": "11:47 PM: 3% battery"
+    },
+    {
+      "time": "3:18",
+      "title": "8:02 AM: The parking lot"
+    },
+    {
+      "time": "4:17",
+      "title": "1:30 PM: The machine"
+    },
+    {
+      "time": "5:55",
+      "title": "In defence of the accused"
+    },
+    {
+      "time": "6:23",
+      "title": "The twist"
+    },
+    {
+      "time": "7:07",
+      "title": "Case closed"
+    }
+  ],
+  "shorts": [
+    {
+      "id": "s1",
+      "title": "Same basket. Two receipts. #shorts",
+      "file": "short_s1.mp4",
+      "duration_seconds": 27.3,
+      "music_credit": "Music: 'Wells Street' by Airstream on #Uppbeat https://uppbeat.io/c/airstream\nLicense code: IY1NGXBNGMQ3ALTJ"
+    },
+    {
+      "id": "s2",
+      "title": "$114.34 vs $123.93 — same store, same minute #shorts",
+      "file": "short_s2.mp4",
+      "duration_seconds": 50.8,
+      "music_credit": "Music: 'Wells Street' by Airstream on #Uppbeat https://uppbeat.io/c/airstream\nLicense code: IY1NGXBNGMQ3ALTJ"
+    },
+    {
+      "id": "s3",
+      "title": "The 3% battery rumour: alibi confirmed #shorts",
+      "file": "short_s3.mp4",
+      "duration_seconds": 37.7,
+      "music_credit": "Music: 'Mechanisms Of Action' by Aaron Paul Low on #Uppbeat https://uppbeat.io/c/aaron-paul-low\nLicense code: KLWLY0JUFRTURNP5"
+    },
+    {
+      "id": "s4",
+      "title": "Meet the machine: location, device, cart #shorts",
+      "file": "short_s4.mp4",
+      "duration_seconds": 45.8,
+      "music_credit": "Music: 'Clock Is Ticking' by Braden Deal on #Uppbeat https://uppbeat.io/c/braden-deal\nLicense code: GIFBZEYTY8BVRX4U"
+    },
+    {
+      "id": "s5",
+      "title": "You weren't targeted. You were tested. #shorts",
+      "file": "short_s5.mp4",
+      "duration_seconds": 34.3,
+      "music_credit": "Music: 'Clock Is Ticking' by Braden Deal on #Uppbeat https://uppbeat.io/c/braden-deal\nLicense code: GIFBZEYTY8BVRX4U"
+    },
+    {
+      "id": "s6",
+      "title": "The 'was' price that never was #shorts",
+      "file": "short_s6.mp4",
+      "duration_seconds": 39.3,
+      "music_credit": "Music: 'Wells Street' by Airstream on #Uppbeat https://uppbeat.io/c/airstream\nLicense code: IY1NGXBNGMQ3ALTJ"
+    },
+    {
+      "id": "s7",
+      "title": "Three things to do before you tap #shorts",
+      "file": "short_s7.mp4",
+      "duration_seconds": 28.0,
+      "music_credit": "Music: 'Secret Report' by AVBE on #Uppbeat https://uppbeat.io/c/avbe\nLicense code: 8IDKESARJPRGJRUU"
+    }
+  ]
+}

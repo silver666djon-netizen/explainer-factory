@@ -1,0 +1,24 @@
+name: Patch release text
+# Replaces text assets (description.txt, metadata.json, …) of a checked release with the files in
+# patches/<tag>/ and refreshes the release notes from description.txt. Started on purpose only.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "release tag, e.g. 0003-same-basket-r49"
+        required: true
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload patched files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          t="${{ github.event.inputs.tag }}"
+          test -d "patches/$t"
+          for f in patches/$t/*; do gh release upload "$t" "$f" --clobber; done
+          if [ -f "patches/$t/description.txt" ]; then gh release edit "$t" --notes-file "patches/$t/description.txt"; fi
