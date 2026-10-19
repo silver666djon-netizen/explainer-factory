@@ -430,7 +430,7 @@ class RouletteShot(Shot):
         self.red = tuple(int(x) for x in pal["red"])
         self.note = None
         if spec.get("note"):
-            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.05))
+            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.042))
             self.note = text_block([spec["note"]], mf, fill=pal["red"], stroke=3, stroke_fill=pal["paper"])
         self.strokes = None
 
@@ -556,6 +556,7 @@ class MazeShot(Shot):
         cs = min(gw / cols, gh / rows)
         ox, oy = (self.W - cs * cols) / 2, my
         self.cs, self.ox, self.oy = cs, ox, oy
+        self.maze_rect = (ox, oy, ox + cs * cols, oy + cs * rows)
         blue = _darker(pal["green"], 0.85)
         line = (236, 230, 210)
         img = Image.new("RGB", (self.W, self.H), blue)
@@ -605,7 +606,7 @@ class MazeShot(Shot):
         self.trace_dur = max(1.5, duration - lead_in - 1.6)
         self.note = None
         if spec.get("note"):
-            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.05))
+            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.042))
             self.note = text_block([spec["note"]], mf, fill=pal["accent"], stroke=3, stroke_fill=_darker(pal["green"], 0.5))
         self.mag_r = int(min(self.W, self.H) * 0.13)
 
@@ -638,7 +639,11 @@ class MazeShot(Shot):
                 cv2.line(out, (hx, hy), (hx + int(r * 0.6), hy + int(r * 0.6)), (90, 55, 30), max(10, r // 6), cv2.LINE_AA)
         if self.note is not None and t > self.trace_start + self.trace_dur:
             op = min(1.0, (t - self.trace_start - self.trace_dur) / 0.25)
-            blend(out, self.note, (self.W - self.note.shape[1]) // 2, int(self.H * 0.86), opacity=op)
+            x0, y0, x1, y1 = self.maze_rect
+            if self.H > self.W:  # Shorts: the caption zone is under the maze — no note
+                pass
+            else:  # bottom-right, under the maze's outer wall, clear of EXIT (bottom-left) and the subtitles
+                blend(out, self.note, int(x1 - self.note.shape[1]), int(y1 + self.cs * 0.12), opacity=op)
         z = 1.0 + 0.06 * ease(t / max(self.duration, 1e-6))
         if z > 1.001:
             cw, ch = int(self.W / z), int(self.H / z)
@@ -745,7 +750,7 @@ class SlotShot(Shot):
         self.mark_at = self.stops[-1] + 0.35
         self.note = None
         if spec.get("note"):
-            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.05))
+            mf = font(resolve_font(cfg["fonts"]["marker"]), int(self.H * 0.042))
             self.note = text_block([spec["note"]], mf, fill=pal["accent"], stroke=4, stroke_fill=pal["ink"])
         self.strokes = None
 

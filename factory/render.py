@@ -278,6 +278,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 cshot = NewsreelShot(cshot, cfg, label, seed=i)
                 for at in projector_sfx_times(shot_start, span):
                     plan.timeline.add_sfx(at, "projector", seed=i)
+            if visual.get("newsreel"):
+                plan.ledger_hide.append((shot_start, shot_end))  # archive film: Larry's tab steps aside
             if visual.get("exhibit"):  # live action presented as evidence (paper print, tag, grain)
                 from .devices import ExhibitShot
                 ex = visual["exhibit"]
@@ -339,7 +341,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 if visual.get("newsreel"):
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
+                shot._archive = vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive")
                 plan.shots.append(shot)
+            if visual.get("newsreel"):
+                plan.ledger_hide.append((shot_start, shot_end))
             if visual.get("newsreel"):
                 for at in projector_sfx_times(shot_start, span):
                     plan.timeline.add_sfx(at, "projector", seed=i)
@@ -803,7 +808,9 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
             # two framings of the same picture are cut, not dissolved (a dissolve looks like a doubled, torn image)
             same_pic = prev is not None and getattr(prev, "_src", (None,))[0] is not None \
                 and getattr(prev, "_src", (None,))[0] is getattr(shot, "_src", (None,))[0]
-            if prev is not None and local < xfade and not same_pic:
+            # dissolves only between two archive photos; everything else is a hard cut (no ghost images)
+            both_archive = prev is not None and getattr(prev, "_archive", False) and getattr(shot, "_archive", False)
+            if prev is not None and local < xfade and not same_pic and both_archive:
                 a = local / xfade
                 frame = cv2.addWeighted(prev.frame(t - prev.start), 1 - a, frame, a, 0)
             else:

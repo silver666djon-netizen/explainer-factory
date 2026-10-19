@@ -41,13 +41,13 @@ def _pal(cfg):
 class Writing:
     """Text that gets handwritten: revealed left to right with the pen tip on the ink."""
 
-    def __init__(self, text: str, fnt, color, stroke_fill=None):
+    def __init__(self, text: str, fnt, color, stroke_fill=None, stroke_w=None):
         w = int(fnt.getlength(text) + fnt.size * 0.6)
         h = int(fnt.size * 1.5)
         img = Image.new("RGBA", (w, h), (0, 0, 0, 0))
         d = ImageDraw.Draw(img)
         if stroke_fill:
-            d.text((fnt.size * 0.2, fnt.size * 0.1), text, font=fnt, fill=stroke_fill + (255,), stroke_width=max(2, fnt.size // 16),
+            d.text((fnt.size * 0.2, fnt.size * 0.1), text, font=fnt, fill=stroke_fill + (255,), stroke_width=stroke_w or max(2, fnt.size // 16),
                    stroke_fill=stroke_fill + (255,))
         d.text((fnt.size * 0.2, fnt.size * 0.1), text, font=fnt, fill=tuple(color) + (255,))
         self.img = np.array(img)

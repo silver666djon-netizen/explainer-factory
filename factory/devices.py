@@ -49,7 +49,7 @@ class Ledger:
         self.hide = sorted(hide or [])
         portrait = H > W
         cw = int(W * (0.31 if portrait else 0.20))
-        self.small_w = int(W * (0.22 if portrait else 0.12))
+        self.small_w = int(W * (0.26 if portrait else 0.145))
         self.margin = int(24 * W / 1920)
         self.row_h = rh = int(cw * 0.105)
         head_h = int(rh * 1.45)
@@ -68,7 +68,9 @@ class Ledger:
         lf = font(_typew(cfg), int(rh * 0.44))
         mf = font(resolve_font(cfg["fonts"]["marker"]), int(rh * 0.70))
         nf = font(resolve_font(cfg["fonts"]["marker"]), int(rh * 0.42))
+        bf = font(resolve_font(cfg["fonts"]["body"]), int(rh * 0.62))
         self.items = []  # (label rgba | None, Writing, x, y)
+        self.bold = {}
         for k, r in enumerate(self.rows):
             y = head_h + k * rh
             if r.get("note"):
@@ -79,6 +81,7 @@ class Ledger:
             ImageDraw.Draw(lab).text((int(cw * 0.06), int(rh * 0.30)), r["label"], font=lf, fill=pal["ink"] + (255,))
             col = pal["red"] if r.get("loss") else pal["ink"]
             self.items.append((np.array(lab), Writing(r["amount"], mf, col), int(cw * 0.62), y - int(rh * 0.12)))
+            self.bold[k] = Writing(r["amount"], bf, col)  # sleeping card: heavy print figures, readable on a phone  # thicker figures for the small card
         self.card = np.array(card.convert("RGB"))
         self.tape = np.array(tape_strip(int(cw * 0.30), int(rh * 0.55), 5).rotate(-4, expand=True))
         self._cache = {}
@@ -100,7 +103,7 @@ class Ledger:
                     best, cur = g, k
         return ease(max(0.0, best)), cur
 
-    def _render_card(self, t) -> np.ndarray:
+    def _render_card(self, t, bold: bool = False) -> np.ndarray:
         img = self.card.copy()
         hand = None
         for k, r in enumerate(self.rows):
@@ -110,6 +113,8 @@ class Ledger:
             if lab is not None:
                 blend(img, lab, 0, y + int(self.row_h * 0.12))
             p = (t - r["at"] - 0.15) / self.WRITE
+            if bold and k in self.bold and p >= 1:
+                wr = self.bold[k]
             if p > 0:
                 blend(img, wr.at(p), x, y)
                 if p < 1.3:
@@ -125,7 +130,7 @@ class Ledger:
         if not self.visible(t):
             return
         g, cur = self._state(t)
-        img, hand = self._render_card(t)
+        img, hand = self._render_card(t, bold=g < 0.5)
         if cur is None:
             hand = None
         # entrance: first appearance drops in (small)
@@ -359,6 +364,7 @@ class HouseEdgeShot(Shot):
 
 _DESKS: dict = {}
 LAST_TAG = (0.0, 0.0)
+LAST_CENTER = (0.0, 0.0)
 
 
 def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: int, label: str, tag: str,
@@ -369,7 +375,7 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
         _DESKS[(W, H)] = desk(W, H, pal, 6)
     out = _DESKS[(W, H)].copy()
     portrait = H > W
-    pw, ph = (int(W * 0.86), int(W * 0.86 * 0.75)) if portrait else (int(W * 0.74), int(H * 0.64))
+    pw, ph = (int(W * 0.81), int(W * 0.81 * 0.75)) if portrait else (int(W * 0.70), int(H * 0.60))  # 6 % smaller: border + tape stay in frame
     sh_, sw_ = rgb.shape[:2]
     if sw_ / sh_ > pw / ph:  # crop the clip to the print's shape (never stretch)
         cw_ = int(sh_ * pw / ph)
@@ -401,7 +407,7 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
         tf = font(tf.path, tf.size - 1)
     d.text((b + int(W * 0.01), b + ph + int(bb * 0.24)), label.upper(), font=tf, fill=pal["ink"])
     pr = np.array(pil.convert("RGBA").rotate(-1.2, resample=Image.BICUBIC, expand=True))
-    x, y = (W - pr.shape[1]) // 2, int(H * (0.17 if portrait else 0.03))
+    x, y = (W - pr.shape[1]) // 2, int(H * (0.19 if portrait else 0.075))
     sh = np.zeros_like(pr)
     sh[..., 3] = (pr[..., 3] * 0.5).astype(np.uint8)
     blend(out, cv2.GaussianBlur(sh, (0, 0), 12), x + 10, y + 16)
@@ -421,6 +427,8 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
     global LAST_TAG
     tw0 = int(W * 0.20 * 1.15)
     LAST_TAG = (x + pr.shape[1] - tw0 * 0.30, y + pr.shape[0] - tw0 * 0.20)
+    global LAST_CENTER
+    LAST_CENTER = (x + pr.shape[1] / 2, y + pr.shape[0] / 2)
     return out
 
 
@@ -444,7 +452,7 @@ class ExhibitShot(Shot):
             if tip:
                 paste_hand(out, "ink_under", tip[0], tip[1], False)
         z = 1 + 0.03 * ease(t / max(self.duration, 1e-6))
-        M = cv2.getRotationMatrix2D((W / 2, H * 0.45), 0, z)
+        M = cv2.getRotationMatrix2D(LAST_CENTER, 0, z)  # push in on the print itself: its border never leaves the frame
         return cv2.warpAffine(out, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:

@@ -158,7 +158,7 @@ class Clipping:
     """The clipping itself: aged paper, torn edges, sharp headline + key sentence, the rest out of focus.
     Knows where the highlight sits (spans in clipping pixels) and the marker strokes for it."""
 
-    def __init__(self, spec: dict, cfg: dict, width: int, seed: int, portrait: bool):
+    def __init__(self, spec: dict, cfg: dict, width: int, seed: int, portrait: bool, top: int = 0):
         pal = _pal(cfg)
         self.pal = pal
         pw = width
@@ -178,7 +178,7 @@ class Clipping:
         hl_start = keep[ki].find(target) if keep and target else -1
         hl_end = hl_start + len(target)
         lh = int(bfnt.size * 1.42)
-        y = pad + int(kfnt.size * 2.0) + int(len(hlines) * hfnt.size * 1.08) + int(pw * 0.05)
+        y = top + pad + int(kfnt.size * 2.0) + int(len(hlines) * hfnt.size * 1.08) + int(pw * 0.05)
         body_top = y
         x = pad
         space = bfnt.getlength(" ")
@@ -211,8 +211,8 @@ class Clipping:
         sharp = Image.new("L", (pw, ph), 0)
         soft = Image.new("L", (pw, ph), 0)
         ds, dsoft = ImageDraw.Draw(sharp), ImageDraw.Draw(soft)
-        ds.text((pad, pad), spec.get("kicker", "STUDY SUMMARY  ·  PARAPHRASED"), font=kfnt, fill=200)
-        yy = pad + int(kfnt.size * 2.0)
+        ds.text((pad, pad + top), spec.get("kicker", "STUDY SUMMARY  ·  PARAPHRASED"), font=kfnt, fill=200)
+        yy = top + pad + int(kfnt.size * 2.0)
         for ln in hlines:
             ds.text((pad, yy), ln, font=hfnt, fill=255)
             yy += int(hfnt.size * 1.08)
@@ -287,9 +287,13 @@ class EvidenceShot(Shot):
         self.BW, self.BH = BW, BH
         self.desk = desk(BW, BH, pal, seed % 7 + 2)
         cw = int(self.W * (0.90 if portrait else 0.60))
-        self.clip = Clipping(spec, cfg, cw, seed, portrait)
+        tw = int(cw * (0.45 if portrait else 0.42))
+        # nothing printed under the tag: the text starts below the tag's lower edge
+        self.tag_yc = int(cw * 0.035)
+        top = max(0, int(self.tag_yc + 0.27 * tw + cw * 0.012 - cw * 0.07))
+        self.clip = Clipping(spec, cfg, cw, seed, portrait, top=top)
         source = re.sub(r"^\s*summary\s*[·:\-]\s*", "", spec.get("source", ""), flags=re.I)
-        self.tag = evidence_tag(cfg, source, int(cw * (0.50 if portrait else 0.42)), seed)
+        self.tag = evidence_tag(cfg, source, tw, seed)
         self.angle = float(np.random.default_rng(seed).uniform(-1.8, 1.8))
         self.flash = bool(spec.get("flash"))
         self.mark_kind = spec.get("mark", "underline")
@@ -355,7 +359,7 @@ class EvidenceShot(Shot):
         layer = Image.new("RGBA", (self.BW, self.BH), (0, 0, 0, 0))
         layer.alpha_composite(cl, (int(self.cx - cl.width / 2), int(self.cy - cl.height / 2)))
         tag = self.tag.rotate(self.angle - 7, resample=Image.BICUBIC, expand=True)
-        tx, ty = self._clip_to_board(self.clip.w * (0.74 if self.portrait else 0.74), self.clip.h * 0.035)
+        tx, ty = self._clip_to_board(self.clip.w * 0.74, self.tag_yc)
         tsh = Image.new("RGBA", tag.size, (0, 0, 0, 0))
         tsh.paste((0, 0, 0, 90), mask=tag.split()[3])
         tsh = tsh.filter(ImageFilter.GaussianBlur(6))
