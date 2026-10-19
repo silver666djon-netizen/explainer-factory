@@ -89,6 +89,7 @@ class Plan:
     timeline: A.Timeline | None = None
     ledger: object | None = None  # factory.devices.Ledger (Larry's tab, top-right)
     stamps: list = field(default_factory=list)  # (start, end, text) rubber stamps over the picture
+    labels: list = field(default_factory=list)  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
     ledger_hide: list = field(default_factory=list)
 
 
@@ -362,7 +363,9 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             from . import scenes as SC
             sp = dict(visual.get(vtype) or {})
             if vtype == "split":
-                shot = SC.SplitShot(shot_start, span, pil(images[sp["left"]]), pil(images[sp["right"]]), sp, cfg, size, seed=i)
+                tm = lambda key, d: (_timed({"on": sp.get(key)}, v["words"], d) + lead_in) if sp.get(key) else None
+                shot = SC.SplitShot(shot_start, span, pil(images[sp["left"]]), pil(images[sp["right"]]), sp, cfg, size, seed=i,
+                                    light_at=tm("light_on", 0.3), tap_at=tm("tap_on", 1.2), stamp_at=tm("stamp_on", 0.25) or 0.25)
             elif vtype == "receipts":
                 ca = _timed({"on": sp.get("circle_on"), "at": sp.get("circle_at", 1.0)}, v["words"], 1.0) + lead_in
                 sa = (_timed({"on": sp.get("stamp_on"), "at": sp.get("stamp_at", 2.5)}, v["words"], 2.5) + lead_in) if sp.get("stamp") else None
@@ -393,7 +396,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             elif vtype == "slot":
                 prop = SlotShot(shot_start, span, visual.get("slot") or {}, cfg, size, lead_in)
             else:
-                prop = CaseFileShot(shot_start, span, visual["casefile"], cfg, size, lead_in)
+                cfs = dict(visual["casefile"])
+                if cfs.get("open_stamp_on"):
+                    cfs["open_stamp_at"] = _timed({"on": cfs["open_stamp_on"]}, v["words"], 2.5)
+                prop = CaseFileShot(shot_start, span, cfs, cfg, size, lead_in)
             plan.shots.append(prop)
             for at, kind_sfx in prop.sfx(shot_start):
                 plan.timeline.add_sfx(at, kind_sfx, seed=i)
@@ -544,6 +550,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.captions.extend(group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator")))
         if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
+        if beat.get("label"):
+            plan.labels.append((shot_start, shot_end, str(beat["label"])))
         if beat.get("ledger_hide"):
             plan.ledger_hide.append((shot_start, shot_end))
         if beat.get("stamp"):  # a quick verdict stamp over any picture
@@ -737,6 +745,15 @@ class Overlay:
                 ins.draw(frame, t)
         if self.plan.ledger is not None:
             self.plan.ledger.draw(frame, t)
+        for l0, l1, txt in self.plan.labels:
+            if l0 <= t < l1:
+                key = ("label", txt)
+                if key not in self.cache:
+                    fnt = font(self.body, max(14, int(self.H * 0.026)))
+                    self.cache[key] = text_block([txt.upper()], fnt, fill=self.pal["paper"], box_fill=self.pal["ink"] + (210,), pad=int(fnt.size * 0.4))
+                im = self.cache[key]
+                yb = self.H * (0.04 if self.H < self.W else 0.235)
+                blend(frame, im, self.W - im.shape[1] - int(self.W * 0.03), int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01))
         for s0, s1, txt in self.plan.stamps:
             if s0 <= t < s1:
                 key = ("stamp", txt)

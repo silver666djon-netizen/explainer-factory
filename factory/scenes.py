@@ -12,7 +12,7 @@ from .config import hex_to_rgb, resolve_font
 from .draw import COLOR_START, LINES_END, LineDrawing, hand_path, paste_hand
 from .endscreen import Writing, _stamp
 from .evidence import _aged_paper
-from .shots import Shot, add_grain, cover, ease
+from .shots import Shot, add_grain, cover, cover_geometry, ease
 from .text import blend, font
 
 
@@ -48,10 +48,13 @@ def _push(img, z, cx=None, cy=None):
 class SplitShot(Shot):
     """Two pictures at the same moment: left | right (stacked in Shorts), a torn-paper divider and a clock badge."""
 
-    def __init__(self, start, duration, left: Image.Image, right: Image.Image, spec: dict, cfg: dict, size, seed=0):
+    def __init__(self, start, duration, left: Image.Image, right: Image.Image, spec: dict, cfg: dict, size, seed=0,
+                 light_at=None, tap_at=None, stamp_at=0.25):
         super().__init__(start, duration)
         self.W, self.H = W, H = size
         pal = _pal(cfg)
+        self.pal = pal
+        self.light_at, self.tap_at, self.stamp_at = light_at, tap_at, stamp_at
         x0, y0, ww, wh = _window(W, H)
         self.win = (x0, y0, ww, wh)
         portrait = H > W
@@ -67,6 +70,30 @@ class SplitShot(Shot):
             b = cover(right, ww - pw, ph, fx[1], 0.5)
             board = np.concatenate([a, b], 1)
         board = add_grain(board, 0.02, seed)
+        # phone screens (quads in fractions of each source picture) -> board pixels, plus what may glow there
+        self.screens = []
+        for k, (img, fxk) in enumerate(((left, fx[0]), (right, fx[1]))):
+            q = (spec.get("screens") or [None, None])[k]
+            if not q:
+                continue
+            if portrait:
+                gw, gh, ox, oy = pw, ph, 0, k * ph
+                nw, nh, lft, top = cover_geometry(img.width, img.height, pw, ph, fxk, 0.32)
+            else:
+                gw, gh, ox, oy = (pw if k == 0 else ww - pw), ph, (0 if k == 0 else pw), 0
+                nw, nh, lft, top = cover_geometry(img.width, img.height, gw, gh, fxk, 0.5)
+            pts = np.array([(x * nw - lft + ox, y * nh - top + oy) for x, y in q["quad"]], np.float32)
+            m = np.zeros(board.shape[:2], np.uint8)
+            cv2.fillConvexPoly(m, pts.astype(np.int32), 1)
+            m = cv2.erode(m, np.ones((5, 5), np.uint8))
+            r_, g_, b_ = [board[..., c].astype(np.int16) for c in range(3)]
+            lum = (r_ + g_ + b_) / 3
+            skin = (r_ - b_ > 35) & (r_ > 120)
+            sel = (lum < 70) if q.get("mode", "dark") == "dark" else ((lum > 110) & ~skin)
+            glow = (m.astype(bool) & sel).astype(np.float32)
+            glow = cv2.GaussianBlur(glow, (0, 0), 1.2)
+            self.screens.append({"glow": glow, "c": pts.mean(0), "size": float(np.linalg.norm(pts[0] - pts[1]))})
+        self.glow_col = np.array((236, 248, 226), np.float32)
         pil = Image.fromarray(board).convert("RGBA")
         d = ImageDraw.Draw(pil)
         rnd = np.random.default_rng(seed)
@@ -91,24 +118,62 @@ class SplitShot(Shot):
             d.text((lx, ly), name, font=tf, fill=pal["ink"] + (255,))
         self.board = np.array(pil.convert("RGB"))
         # clock badge on the seam
-        r = int(min(ww, wh) * (0.085 if not portrait else 0.11))
+        r = int(min(ww, wh) * (0.11 if not portrait else 0.13))
         badge = Image.new("RGBA", (2 * r + 8, 2 * r + 8), (0, 0, 0, 0))
         bd = ImageDraw.Draw(badge)
         bd.ellipse((4, 4, 2 * r + 4, 2 * r + 4), fill=(250, 246, 236, 255), outline=pal["red"] + (255,), width=max(4, r // 10))
         hf = font(resolve_font(cfg["fonts"]["headline"]), int(r * 0.52))
         bd.text((r + 4, r + 4), spec.get("clock", "10:15"), font=hf, fill=pal["ink"] + (255,), anchor="mm")
-        sf = font(resolve_font(cfg["fonts"]["body"]), int(r * 0.22))
-        bd.text((r + 4, r + 4 + r * 0.48), spec.get("clock_sub", "SAME MINUTE"), font=sf, fill=pal["red"] + (255,), anchor="mm")
+        sub = spec.get("clock_sub", "SAME MINUTE")
+        fs = int(r * 0.22)
+        sf = font(resolve_font(cfg["fonts"]["body"]), fs)
+        while sf.getlength(sub) > r * 1.25 and fs > 8:  # fit inside the circle at that height
+            fs -= 1
+            sf = font(resolve_font(cfg["fonts"]["body"]), fs)
+        bd.text((r + 4, r + 4 + r * 0.45), sub, font=sf, fill=pal["red"] + (255,), anchor="mm")
         self.badge = np.array(badge)
         self.portrait = portrait
         self.bg = _paper_bg(W, H, pal, 5, 0.6) if portrait else None
 
+    def _icon(self, size):
+        """A tiny shopping-basket icon (app tile)."""
+        s = max(16, int(size))
+        im = Image.new("RGBA", (s, s), (0, 0, 0, 0))
+        d = ImageDraw.Draw(im)
+        red, ink = self.pal["red"] + (255,), self.pal["ink"] + (255,)
+        d.rounded_rectangle((0, 0, s - 1, s - 1), radius=s // 5, fill=(250, 246, 236, 255), outline=ink, width=max(2, s // 14))
+        d.polygon([(s * 0.18, s * 0.42), (s * 0.82, s * 0.42), (s * 0.72, s * 0.82), (s * 0.28, s * 0.82)], fill=red, outline=ink)
+        d.arc((s * 0.3, s * 0.18, s * 0.7, s * 0.62), 180, 360, fill=ink, width=max(2, s // 12))
+        return np.array(im)
+
     def frame(self, t):
         x0, y0, ww, wh = self.win
-        z = 1.0 + 0.04 * ease(t / max(self.duration, 1e-6))
-        pic = _push(self.board, z)
+        pic = self.board
+        if self.screens and self.light_at is not None and t >= self.light_at:  # the phone screens light up
+            q = min(1.0, (t - self.light_at) / 0.25)
+            pulse = 0.85 + 0.15 * math.sin((t - self.light_at) * 5)
+            pic = pic.astype(np.float32)
+            for sc in self.screens:
+                a = (sc["glow"] * q * pulse)[..., None]
+                pic = pic * (1 - a) + self.glow_col * a
+            pic = pic.astype(np.uint8)
+            if self.tap_at is not None and t >= self.tap_at:  # a tap, and a basket pops on each screen
+                pic = pic.copy()
+                for sc in self.screens:
+                    p2 = min(1.0, (t - self.tap_at) / 0.25)
+                    sz = sc["size"] * 0.55 * (0.6 + 0.4 * ease(p2) + 0.12 * math.sin(p2 * math.pi))
+                    ic = self._icon(sz)
+                    cx, cy = sc["c"]
+                    blend(pic, ic, int(cx - ic.shape[1] / 2), int(cy - ic.shape[0] / 2))
+                    age = t - self.tap_at
+                    if age < 0.5:  # tap ripple
+                        rr = int(sc["size"] * (0.25 + age * 1.2))
+                        cv2.circle(pic, (int(cx), int(cy)), rr, tuple(int(c) for c in self.pal["red"]), 2, cv2.LINE_AA)
+        za = self.stamp_at if self.stamp_at is not None else 0.0
+        z = 1.0 + 0.03 * ease(max(0.0, t - za) / max(0.5, self.duration - za))  # slow push from "Same minute."
+        pic = _push(pic, z)
         b = self.badge
-        p = min(1.0, max(0.0, (t - 0.25) / 0.25))
+        p = min(1.0, max(0.0, (t - za) / 0.14))
         if p > 0:
             s = 1.6 - 0.6 * ease(p)
             bb = cv2.resize(b, (int(b.shape[1] * s), int(b.shape[0] * s)))
@@ -121,7 +186,12 @@ class SplitShot(Shot):
         return out
 
     def sfx(self, start_abs):
-        return [(start_abs + 0.25, "stamp")]
+        out = [(start_abs + (self.stamp_at or 0.25), "stamp"), (start_abs + (self.stamp_at or 0.25) + 0.01, "thud")]
+        if self.light_at is not None:
+            out.append((start_abs + self.light_at, "pop"))
+        if self.tap_at is not None:
+            out += [(start_abs + self.tap_at, "tap"), (start_abs + self.tap_at + 0.12, "tap")]
+        return out
 
 
 # ------------------------------------------------------------------------------------------------ receipts
@@ -201,7 +271,7 @@ class ReceiptsShot(Shot):
             rx = bx * math.cos(a) - by * math.sin(a) + pil.width / 2
             ry = bx * math.sin(a) + by * math.cos(a) + pil.height / 2
             self.receipts.append({"img": np.array(pil), "cx": cx, "cy": cy, "tot": (cx - pil.width / 2 + rx, cy - pil.height / 2 + ry),
-                                  "tw": box[2] - box[0], "th": box[3] - box[1], "t0": 0.05 + 0.3 * i})
+                                  "tw": box[2] - box[0], "th": box[3] - box[1], "t0": (-0.22 if not self.portrait else -0.4) + 0.25 * i})  # falling on the cut (Shorts: first one already down)
         self.circle_at = circle_at
         self.stamp_at = stamp_at
         self.stamp = _stamp(spec.get("stamp", "Real totals"), cfg, int(ww * (0.42 if self.portrait else 0.14)), pal["red"], -8, seed + 4) \
@@ -261,7 +331,7 @@ class ReceiptsShot(Shot):
     def sfx(self, start_abs):
         out = []
         for r in self.receipts:
-            out += [(start_abs + r["t0"] - 0.05, "printer"), (start_abs + r["t0"] + 0.3, "paper")]
+            out += [(start_abs + max(0.0, r["t0"]), "printer"), (start_abs + r["t0"] + 0.3, "paper")]
         out += [(start_abs + self.circle_at, "marker"), (start_abs + self.circle_at + 0.45, "marker")]
         if self.stamp_at is not None:
             out.append((start_abs + self.stamp_at, "stamp"))

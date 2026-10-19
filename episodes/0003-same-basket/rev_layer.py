@@ -103,12 +103,15 @@ def title_beat(b):
 # ---------------------------------------------------------------- cold open (first 12 s)
 cold = [
     nb("o1", S_OPEN, "Same store. Same basket. Same minute.",
-       {"type": "split", "split": {"left": "s30", "right": "s30.1", "names": ["LARRY", "LINDA"], "clock": "10:15", "clock_sub": "SAME MINUTE"}},
+       {"type": "split", "split": {"left": "s30", "right": "s30.1", "names": ["LARRY", "LINDA"], "clock": "10:15", "clock_sub": "SAME MINUTE",
+                                "light_on": "store", "tap_on": "basket", "stamp_on": "minute",
+                                "screens": [{"quad": [[0.3436, 0.627], [0.3855, 0.630], [0.4364, 0.7734], [0.3927, 0.786]], "mode": "dark"},
+                                            {"quad": [[0.630, 0.640], [0.667, 0.638], [0.643, 0.702], [0.599, 0.751]], "mode": "light"}]}},
        sfx_at=[{"on": "Same", "kind": "tap"}, {"on": "minute", "kind": "tap"}]),
     nb("o2", S_OPEN, "Two prices. Larry is made up. His receipt is not.",
        {"type": "receipts", "receipts": {**RECEIPTS, "circle_on": "Two", "stamp_on": "receipt"}}),
     nb("cf1", S_OPEN, "Case file number two. Same basket, different price.",
-       {"type": "casefile", "casefile": {"mode": "open", "number": "002", "title": "Same basket", "typed": False,
+       {"type": "casefile", "casefile": {"mode": "open", "number": "002", "title": "Same basket", "typed": False, "open_stamp_on": "price",
                                           "inside": ["SUBJECT: Larry (fictional)", "WITNESS: Linda, his sister", "SUSPECTS: 2", "STATUS: open"]}}),
 ]
 
@@ -137,8 +140,8 @@ s33["visual"] = {"type": "baskets", "baskets": {"image": "d53", "title": "Same S
 s33["pause_at"] = {"word": "114", "sec": 1.2, "hit": "stamp"}
 basket.append(s33)
 s33b = copy.deepcopy(B["s33b"])
-s33b["ledger"] = [{"label": "BASKET A", "amount": "$114.34", "on": "Nearly"},
-                  {"label": "BASKET B", "amount": "$123.93", "on": "ordinary"},
+s33b["ledger"] = [{"label": "LARRY", "amount": "$123.93", "on": "Nearly"},
+                  {"label": "LINDA", "amount": "$114.34", "on": "ordinary"},
                   {"label": "DIFFERENCE", "amount": "-$9.59", "loss": True, "on": "luck"}]
 s33b["sfx_at"] = [{"on": "grocery", "kind": "cart"}]
 basket.append(s33b)
@@ -289,6 +292,7 @@ w61b["visual"]["marks"] = [
     {"type": "circle", "x": 0.74, "y": 0.7, "w": 0.4, "h": 0.5, "on": "B"},
     write("GROUP B · $4.79", on="B", x=0.73, y=0.22, **SIGN)]
 w61b["ledger_hide"] = True  # the tab would cover the GROUP B sign
+w61b["label"] = "Illustration"  # the A/B prices are illustrative, not from the study
 tw.append(w61b)
 w62 = copy.deepcopy(B["w62"])
 w62["sfx_at"] = [{"on": "running", "kind": "cart"}]
@@ -367,7 +371,7 @@ s["sources"] = [x for x in s["sources"] if "Larry" not in x] + [
 LONG = {b["id"]: b for b in s["beats"]}
 
 
-def L(bid, text=None, visual=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"), **kw):
+def L(bid, text=None, visual=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp", "label", "ledger_hide"), **kw):
     src = LONG[bid]
     v = src["visual"]
     if visual is None:
@@ -406,7 +410,7 @@ s["shorts"] = [
                L("s31", text="So next time, compare. Same store. Same basket. Same minute.", keep=())]},
     {"id": "s2", "title": "$114.34 vs $123.93 — same store, same minute #shorts", "hook": "$114.34 vs $123.93",
      "beats": [L("o2", text="One Seattle Safeway. One basket. Two receipts.", visual=copy.deepcopy(REC)),
-               L("s33", ledger=[{"label": "BASKET A", "amount": "$114.34", "on": "114"}, {"label": "BASKET B", "amount": "$123.93", "on": "123"}]),
+               L("s33", ledger=[{"label": "LARRY", "amount": "$123.93", "on": "123"}, {"label": "LINDA", "amount": "$114.34", "on": "114"}]),
                L("s33b", ledger=[{"label": "DIFFERENCE", "amount": "-$9.59", "loss": True, "on": "luck"}]),
                L("s3b", ledger=[{"label": "PER YEAR (CR est.)", "amount": "-$1,200", "loss": True, "circle": True, "on": "twelve"}]),
                L("s3c"),

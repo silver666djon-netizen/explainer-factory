@@ -237,6 +237,25 @@ class CaseFileShot(Shot):
         else:
             op, chars = 0.0, 0
         canvas = self._scene(op, chars).copy()
+        osa = self.spec.get("open_stamp_at")
+        if self.mode == "open" and osa is not None and self.inside_lines:  # the hand stamps "OPEN" next to STATUS
+            osa = float(osa) + self.lead_in
+            if not hasattr(self, "_ostamp"):
+                from .endscreen import _stamp
+                self._ostamp = _stamp(self.spec.get("open_stamp", "Open"), self.cfg, int(self.fw * 0.42), self.pal["red"], -9, 3)
+            lx, ly, txt = self.inside_lines[-1]
+            sx = int(self.BW // 2 + lx + self.ft.getlength(txt) + self.fw * 0.26)
+            sy = int(self.fy + ly + self.ft.size * 0.5)
+            if t >= osa:
+                p = min(1.0, (t - osa) / 0.14)
+                sc = 2.0 - 1.0 * p
+                st = cv2.resize(self._ostamp, (max(1, int(self._ostamp.shape[1] * sc)), max(1, int(self._ostamp.shape[0] * sc))))
+                blend(canvas, st, sx - st.shape[1] // 2, sy - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
+            if osa - 0.35 <= t <= osa + 0.4:
+                from .draw import hand_path, paste_hand
+                tip = hand_path(lambda q: (sx, sy), osa - 0.05, osa + 0.25, t, canvas.shape[1], canvas.shape[0], False, from_below=True)
+                if tip:
+                    paste_hand(canvas, "ink_under", tip[0], tip[1], False)
         if self.mode == "closed" and self.stamp is not None and t >= self.stamp_at:
             age = t - self.stamp_at
             p = min(1.0, age / 0.14)
@@ -258,7 +277,12 @@ class CaseFileShot(Shot):
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
         if self.mode == "open":
-            return [(start_abs + self.lead_in + 0.95, "whoosh"), (start_abs + self.lead_in + 1.7, "type")]
+            out = [(start_abs + self.lead_in + 0.95, "whoosh")]
+            if self.spec.get("typed") is not False:
+                out.append((start_abs + self.lead_in + 1.7, "type"))
+            if self.spec.get("open_stamp_at") is not None:
+                out.append((start_abs + self.lead_in + float(self.spec["open_stamp_at"]), "stamp"))
+            return out
         return [(start_abs + self.stamp_at, "thud"), (start_abs + self.stamp_at + 0.01, "hit")]
 
 

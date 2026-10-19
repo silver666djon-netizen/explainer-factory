@@ -33,4 +33,4 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release view archive >/dev/null 2>&1 || gh release create archive --title "Archive media" --notes "Public-domain photos, clips and documents used in episodes"
-          cd out/archive && for f in *; do gh release upload archive "$f" --clobber; done
+          cd out/archive && for f in *; do for k in 1 2 3 4; do gh release upload archive "$f" --clobber && break; sleep 6; done; done

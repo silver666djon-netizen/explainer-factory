@@ -66,7 +66,54 @@
             "LINDA"
           ],
           "clock": "10:15",
-          "clock_sub": "SAME MINUTE"
+          "clock_sub": "SAME MINUTE",
+          "light_on": "store",
+          "tap_on": "basket",
+          "stamp_on": "minute",
+          "screens": [
+            {
+              "quad": [
+                [
+                  0.3436,
+                  0.627
+                ],
+                [
+                  0.3855,
+                  0.63
+                ],
+                [
+                  0.4364,
+                  0.7734
+                ],
+                [
+                  0.3927,
+                  0.786
+                ]
+              ],
+              "mode": "dark"
+            },
+            {
+              "quad": [
+                [
+                  0.63,
+                  0.64
+                ],
+                [
+                  0.667,
+                  0.638
+                ],
+                [
+                  0.643,
+                  0.702
+                ],
+                [
+                  0.599,
+                  0.751
+                ]
+              ],
+              "mode": "light"
+            }
+          ]
         }
       },
       "sfx_at": [
@@ -232,6 +279,7 @@
           "number": "002",
           "title": "Same basket",
           "typed": false,
+          "open_stamp_on": "price",
           "inside": [
             "SUBJECT: Larry (fictional)",
             "WITNESS: Linda, his sister",
@@ -377,13 +425,13 @@
       ],
       "ledger": [
         {
-          "label": "BASKET A",
-          "amount": "$114.34",
+          "label": "LARRY",
+          "amount": "$123.93",
           "on": "Nearly"
         },
         {
-          "label": "BASKET B",
-          "amount": "$123.93",
+          "label": "LINDA",
+          "amount": "$114.34",
           "on": "ordinary"
         },
         {
@@ -1484,7 +1532,8 @@
           }
         ]
       },
-      "ledger_hide": true
+      "ledger_hide": true,
+      "label": "Illustration"
     },
     {
       "id": "w62",
@@ -1788,7 +1837,54 @@
                 "LINDA"
               ],
               "clock": "10:15",
-              "clock_sub": "SAME MINUTE"
+              "clock_sub": "SAME MINUTE",
+              "light_on": "store",
+              "tap_on": "basket",
+              "stamp_on": "minute",
+              "screens": [
+                {
+                  "quad": [
+                    [
+                      0.3436,
+                      0.627
+                    ],
+                    [
+                      0.3855,
+                      0.63
+                    ],
+                    [
+                      0.4364,
+                      0.7734
+                    ],
+                    [
+                      0.3927,
+                      0.786
+                    ]
+                  ],
+                  "mode": "dark"
+                },
+                {
+                  "quad": [
+                    [
+                      0.63,
+                      0.64
+                    ],
+                    [
+                      0.667,
+                      0.638
+                    ],
+                    [
+                      0.643,
+                      0.702
+                    ],
+                    [
+                      0.599,
+                      0.751
+                    ]
+                  ],
+                  "mode": "light"
+                }
+              ]
             }
           },
           "sfx_at": [
@@ -2158,14 +2254,14 @@
           "say": "At one Safeway in Seattle, the cheapest basket came to one hundred and fourteen dollars thirty-four. The most expensive: one hundred and twenty-three ninety-three.",
           "ledger": [
             {
-              "label": "BASKET A",
-              "amount": "$114.34",
-              "on": "114"
-            },
-            {
-              "label": "BASKET B",
+              "label": "LARRY",
               "amount": "$123.93",
               "on": "123"
+            },
+            {
+              "label": "LINDA",
+              "amount": "$114.34",
+              "on": "114"
             }
           ],
           "id": "s2_1"
@@ -2506,6 +2602,8 @@
             ],
             "hand_marks": true
           },
+          "label": "Illustration",
+          "ledger_hide": true,
           "id": "s5_1"
         },
         {
