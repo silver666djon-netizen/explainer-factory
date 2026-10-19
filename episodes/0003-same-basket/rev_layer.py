@@ -329,7 +329,7 @@ close[-1]["visual"]["marks"] = [write("WAS $6.69", at=0.0, x=0.52, y=0.505, w=0.
 ES = {"number": "002", "title": "Same basket", "stamp": "Case closed",
       "verdict": ["Guilty: the algorithm.", "Accomplice: your location."],
       "next": {"number": "003", "title": "The fake sale", "tagline": "The sale that never was.", "image_file": "next_tag.png",
-               "copies": 1, "prices": ["$3.99"], "strike": [0.30, 0.20, 0.92, 0.20]}}
+               "copies": 1, "prices": ["$3.99"], "strike": [0.40, 0.40, 0.88, 0.37]}}
 end = [
     nb("e1", S_CLOSE, "Case closed. Guilty: the algorithm. Accomplice: your location.", {"type": "endscreen", "endscreen": ES},
        block_start=True, sting="ub_sting_brass", sting_at=0.1),

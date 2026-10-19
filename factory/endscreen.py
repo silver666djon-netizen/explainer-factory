@@ -150,7 +150,10 @@ class EndScreenShot(Shot):
         self.folder = add_grain(np.array(folder), 0.0)
         self.stamp = _stamp(spec.get("stamp", "Case closed"), cfg, int(fw * 0.50), pal["red"], 8, seed + 3)
         self.stamp_pos = (self.fx + int(fw * 0.72), self.fy + int(fh * 0.25))
-        vf = font(marker, int(H * 0.10))
+        vsz = int(H * 0.10)
+        while vsz > 20 and max((font(marker, vsz).getlength(v) for v in (spec.get("verdict") or [""])), default=0) > fw * 0.86:
+            vsz -= 2  # long verdict lines shrink to stay on the folder
+        vf = font(marker, vsz)
         self.verdict = [Writing(v, vf, pal["ink"]) for v in (spec.get("verdict") or [])][:2]
         self.v_pos = [(self.fx + int(fw * 0.06), self.fy + int(fh * 0.47) + i * int(H * 0.15)) for i in range(len(self.verdict))]
         # ---- phase 2: next-case sheet with the subject drawn twice
