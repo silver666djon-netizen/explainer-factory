@@ -170,7 +170,8 @@ class SplitShot(Shot):
                         rr = int(sc["size"] * (0.25 + age * 1.2))
                         cv2.circle(pic, (int(cx), int(cy)), rr, tuple(int(c) for c in self.pal["red"]), 2, cv2.LINE_AA)
         za = self.stamp_at if self.stamp_at is not None else 0.0
-        z = 1.0 + 0.03 * ease(max(0.0, t - za) / max(0.5, self.duration - za))  # slow push from "Same minute."
+        z = 1.0 + 0.012 * min(1.0, t / max(0.5, za)) \
+            + 0.03 * ease(max(0.0, t - za) / max(0.5, self.duration - za))  # a drift from the first frame, the 3% push from "Same minute."
         pic = _push(pic, z)
         b = self.badge
         p = min(1.0, max(0.0, (t - za) / 0.14))

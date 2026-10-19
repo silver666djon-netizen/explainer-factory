@@ -789,6 +789,9 @@ class KineticShot(Shot):
                 x += ww + space
                 wi += 1
             y += lh
+        if self.items and self.items[0][3] > 0:  # no empty paper on the cut: the first word is already landing
+            img0, x0_, y0_, _a = self.items[0]
+            self.items[0] = (img0, x0_, y0_, 0.0)
 
     def frame(self, t: float) -> np.ndarray:
         out = self.bg.copy()
