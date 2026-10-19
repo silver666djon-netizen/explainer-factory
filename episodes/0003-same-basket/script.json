@@ -239,8 +239,7 @@
             "STATUS: open"
           ]
         }
-      },
-      "hold": 0.6
+      }
     },
     {
       "id": "t03",
@@ -710,26 +709,9 @@
       "sting_at": -1.0
     },
     {
-      "id": "b10",
-      "section": "11:47 PM: 3% battery",
-      "text": "Larry is back from Vegas. Broke, tired, and down to three percent.",
-      "visual": {
-        "type": "image",
-        "prompt": "{larry} slumped on a bus-stop bench at night holding his phone, an empty wallet on his knee",
-        "motion": "zoom_in"
-      },
-      "bubble": {
-        "text": "3%… and falling.",
-        "x": 0.83,
-        "y": 0.2,
-        "tail": "left",
-        "at": 1.8
-      }
-    },
-    {
       "id": "b11",
       "section": "11:47 PM: 3% battery",
-      "text": "He opens the ride app. The fare looks high. Is it the rain? The hour? Or the battery?",
+      "text": "Larry opens a ride app. The fare looks high. Is it the rain? The hour? Or the battery?",
       "visual": {
         "type": "battery",
         "battery": {
@@ -780,7 +762,7 @@
           "on": "willing",
           "mark": "underline",
           "seed": 31,
-          "pre": "b10"
+          "pre": "w60"
         }
       }
     },
@@ -1189,7 +1171,7 @@
         "prompt": "{price} standing proudly, arms open in welcome with white-gloved cartoon hands, full figure, plain cream background, no scenery",
         "motion": "static",
         "draw": {
-          "on": "Meet",
+          "on": "who",
           "dur": 3.4,
           "box": [
             0.1,
@@ -1254,7 +1236,8 @@
           "mark": "underline",
           "seed": 51,
           "kicker": "STAFF REPORT  ·  QUOTED, P. 6",
-          "pre": "p40"
+          "pre": "p40",
+          "lead": 1.2
         }
       },
       "say": "In January twenty twenty-five, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices."
@@ -1618,12 +1601,13 @@
           {
             "type": "cross",
             "x": 0.47,
-            "y": 0.2,
-            "w": 0.13,
-            "h": 0.26,
+            "y": 0.17,
+            "w": 0.22,
+            "h": 0.36,
             "on": "off"
           }
-        ]
+        ],
+        "hand_marks": true
       },
       "music": "ub_secret_report"
     },
@@ -2290,7 +2274,7 @@
               "on": "willing",
               "mark": "underline",
               "seed": 31,
-              "pre": "b10"
+              "pre": "w60"
             }
           },
           "id": "s3_1"
@@ -2356,9 +2340,16 @@
         {
           "text": "So, the next time you're down to three percent… does your ride cost more?",
           "visual": {
-            "type": "reuse",
-            "beat": "b10",
-            "motion": "zoom_in"
+            "type": "battery",
+            "battery": {
+              "fare": "$24.80",
+              "tag_label": "RIDE FARE",
+              "from": 0.42,
+              "to": 0.03,
+              "dur": 3.6,
+              "drain_on": "opens",
+              "note": "same fare"
+            }
           },
           "id": "s3_5"
         }
@@ -2406,7 +2397,8 @@
               "on": "where",
               "mark": "underline",
               "seed": 51,
-              "kicker": "STAFF REPORT  ·  QUOTED, P. 6"
+              "kicker": "STAFF REPORT  ·  QUOTED, P. 6",
+              "lead": 1.2
             }
           },
           "id": "s4_2"
@@ -2777,12 +2769,13 @@
               {
                 "type": "cross",
                 "x": 0.47,
-                "y": 0.2,
-                "w": 0.13,
-                "h": 0.26,
+                "y": 0.17,
+                "w": 0.22,
+                "h": 0.36,
                 "on": "off"
               }
-            ]
+            ],
+            "hand_marks": true
           },
           "id": "s7_2"
         },

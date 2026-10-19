@@ -109,8 +109,7 @@ cold = [
        {"type": "receipts", "receipts": {**RECEIPTS, "circle_on": "Two", "stamp_on": "receipt"}}),
     nb("cf1", S_OPEN, "Case file number two. Same basket, different price.",
        {"type": "casefile", "casefile": {"mode": "open", "number": "002", "title": "Same basket", "typed": False,
-                                          "inside": ["SUBJECT: Larry (fictional)", "WITNESS: Linda, his sister", "SUSPECTS: 2", "STATUS: open"]}},
-       hold=0.6),
+                                          "inside": ["SUBJECT: Larry (fictional)", "WITNESS: Linda, his sister", "SUSPECTS: 2", "STATUS: open"]}}),
 ]
 
 # ---------------------------------------------------------------- 10:15 AM — the evidence first
@@ -182,9 +181,8 @@ basket.append(copy.deepcopy(B["s3c"]))
 
 # ---------------------------------------------------------------- 11:47 PM — Suspect No. 1, alibi confirmed (~50 s)
 batt = [title_beat(copy.deepcopy(B["t01"]))]
-b10 = copy.deepcopy(B["b10"])
-batt.append(b10)
 b11 = copy.deepcopy(B["b11"])
+b11["text"] = "Larry opens a ride app. The fare looks high. Is it the rain? The hour? Or the battery?"
 b11["visual"] = {"type": "battery", "battery": {"fare": "$24.80", "tag_label": "RIDE FARE", "from": 0.42, "to": 0.03, "dur": 3.6,
                                                  "drain_on": "opens", "note": "same fare"}}
 b11.pop("punch", None)
@@ -193,7 +191,7 @@ batt.append(b11)
 batt.append(copy.deepcopy(B["m12"]))
 d13 = copy.deepcopy(B["d13"])
 NPR = B["d13"]["visual"]["doc"]
-d13["visual"] = doc(NPR["source"], NPR["headline"], NPR["body"], "more willing to accept surge pricing", on="willing", seed=31, pre="b10")
+d13["visual"] = doc(NPR["source"], NPR["headline"], NPR["body"], "more willing to accept surge pricing", on="willing", seed=31, pre="w60")
 batt.append(d13)
 d14 = copy.deepcopy(B["d14"])
 d14["visual"] = {"type": "reuse", "beat": "m12", "motion": "zoom_in"}
@@ -245,6 +243,7 @@ h43["visual"] = {"type": "archive", "file": "grocery_prices_savannah_1939.jpg", 
 mach.append(h43)
 mach.append(copy.deepcopy(B["h43b"]))
 p40 = copy.deepcopy(B["p40"])
+p40["visual"]["draw"]["on"] = "who"
 p40["sfx_at"] = [{"on": "Meet", "kind": "servo"}, {"on": "Price", "kind": "servo"}]
 mach.append(p40)
 p41 = copy.deepcopy(B["p41"])
@@ -257,7 +256,7 @@ FTC_Q = ("There are a number of variables that can impact what products a consum
 p42 = copy.deepcopy(B["p42"])
 p42["visual"] = doc("FTC staff report · Jan 2025", "Surveillance pricing", FTC_Q,
                     "where the consumer is, who the consumer is, what the consumer is doing", on="personalise",
-                    kicker="STAFF REPORT  ·  QUOTED, P. 6", seed=51, pre="p40")
+                    kicker="STAFF REPORT  ·  QUOTED, P. 6", seed=51, pre="p40", lead=1.2)
 mach.append(p42)
 p42b = copy.deepcopy(B["p42b"])
 p42b["visual"] = {"type": "continue"}
@@ -318,6 +317,9 @@ close.append(v71)
 for k in ("v72", "v73", "v74b", "v75", "v76"):
     b = copy.deepcopy(B[k])
     b["music"] = "ub_secret_report"
+    if k == "v73":
+        b["visual"]["marks"] = [{"type": "cross", "x": 0.47, "y": 0.17, "w": 0.22, "h": 0.36, "on": "off"}]
+        b["visual"]["hand_marks"] = True
     if k == "v74b":
         b["visual"]["marks"] = [write("$1.25", at=0.0, x=0.605, y=0.665, w=0.09, h=0.07, angle=-28, color="ink")] + b["visual"]["marks"]
     close.append(b)
@@ -412,7 +414,7 @@ s["shorts"] = [
     {"id": "s3", "title": "The 3% battery rumour: alibi confirmed #shorts", "hook": "3% battery = higher fare?",
      "beats": [L("b11", text="Does your ride cost more when your phone is at three percent?", keep=("sfx_at",)),
                L("d13"), L("d14"), L("b15"), L("b16"),
-               L("b10", text="So, the next time you're down to three percent… does your ride cost more?", keep=())]},
+               L("b11", text="So, the next time you're down to three percent… does your ride cost more?", keep=())]},
     {"id": "s4", "title": "Meet the machine: location, device, cart #shorts", "hook": "Location · Device · Cart",
      "beats": [L("p43", keep=()), L("p41", voice="price"),
                L("p42", text="The FTC's own staff wrote it down: where you are, who you are, what you're doing.",

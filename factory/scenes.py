@@ -112,7 +112,7 @@ class SplitShot(Shot):
         if p > 0:
             s = 1.6 - 0.6 * ease(p)
             bb = cv2.resize(b, (int(b.shape[1] * s), int(b.shape[0] * s)))
-            cx, cy = (int(ww * 0.86), wh // 2) if self.portrait else (ww // 2, int(wh * 0.14))
+            cx, cy = (int(ww * 0.86), wh // 2) if self.portrait else (ww // 2, int(wh * 0.30))
             blend(pic, bb, cx - bb.shape[1] // 2, cy - bb.shape[0] // 2, opacity=min(1.0, p * 1.5))
         if self.bg is None:
             return pic
