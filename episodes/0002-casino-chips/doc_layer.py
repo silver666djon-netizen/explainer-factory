@@ -154,6 +154,8 @@ by["b35"]["ledger"] = [{"label": "house keeps 5.26% of every bet", "note": True,
 by["a04"]["ledger"] = [{"label": "SLOTS", "amount": "-240", "loss": True, "on": "ordinary"}]
 by["e43"]["ledger"] = [{"label": "HOME", "amount": "$0", "loss": True, "circle": True, "on": "leaving"}]
 
+by["n19"]["ledger_hide"] = True  # the tab would cover the "1,000+ DESIGNS!" sticker (applies on the next rebuild)
+
 # foley pass: every on-screen action gets a sound
 SFX = {"c04": [("these", "chips")], "b08": [("plastic", "chips")], "b13": [("clicks", "chips")], "b17": [("profit", "cash")],
        "b21": [("pushed", "chips")], "b35": [("bigger", "chips")], "f44": [("stack", "chips")], "r24b": [("wheel", "whirr")],

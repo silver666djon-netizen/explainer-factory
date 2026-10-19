@@ -81,7 +81,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     mus = episode.get("music") or {}
     default_cue = mus.get("_default", "noir")
     for beat in episode["beats"]:
-        beat["_music"] = mus.get(beat.get("section") or "", default_cue)
+        beat["_music"] = beat.get("music") or mus.get(beat.get("section") or "", default_cue)
     by_id = {b["id"]: b for b in episode["beats"]}
     for short in episode.get("shorts") or []:
         # a Short keeps one mood: the chapter most of its pictures come from (or its own "music")

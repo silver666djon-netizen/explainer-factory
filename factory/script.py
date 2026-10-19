@@ -6,12 +6,12 @@ import re
 from pathlib import Path
 
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "drift", "static"}
-VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive", "houseedge", "endscreen", "continue"}
+VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive", "houseedge", "endscreen", "continue", "split", "receipts", "baskets", "battery"}
 IMAGE_BEARING = {"image", "photo", "mugshot", "clip", "archive"}
-MARK_TYPES = {"circle", "underline", "arrow", "cross", "check"}
+MARK_TYPES = {"circle", "underline", "arrow", "cross", "check", "write"}
 STYLES = {"ad", "comic"}
 CHART_KINDS = {"bar", "line"}
-SFX = {"whoosh", "pop", "tick", "thud", "hit", "riser", "ding", "cash", "scratch", "scribble", "shutter", "type", "whirr", "projector", "none"}
+SFX = {"whoosh", "pop", "tick", "thud", "hit", "riser", "ding", "cash", "scratch", "scribble", "shutter", "type", "whirr", "projector", "none", "stamp", "paper", "chips", "printer", "servo", "tap", "cart", "marker", "pencil"}
 
 
 class ScriptError(ValueError):

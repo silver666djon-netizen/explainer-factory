@@ -115,6 +115,12 @@ def mark_strokes(mark: dict, W: int, H: int, seed: int) -> list[np.ndarray]:
         xs = np.linspace(x - w / 2, x + w / 2, n)
         ys = y + _jitter(n, amp * 1.2, seed) + np.linspace(0, h * 0.08, n)
         return [np.stack([xs, ys], 1)]
+    if kind == "write":  # the pen travels left to right through the text box (handwriting)
+        n = 50
+        xs = np.linspace(x - w / 2, x + w / 2, n)
+        ang = math.radians(-float(mark.get("angle", 0)))
+        ys = y + (xs - x) * math.tan(ang) + np.sin(np.linspace(0, 18, n)) * h * 0.18
+        return [np.stack([xs, ys], 1)]
     if kind == "cross":
         a = np.stack([np.linspace(x - w / 2, x + w / 2, 30), np.linspace(y - h / 2, y + h / 2, 30) + _jitter(30, amp, seed)], 1)
         b = np.stack([np.linspace(x + w / 2, x - w / 2, 30), np.linspace(y - h / 2, y + h / 2, 30) + _jitter(30, amp, seed + 1)], 1)
@@ -152,11 +158,14 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
     for i, mark in enumerate(marks):
         at, dur = float(mark.get("at", 0.6)), float(mark.get("dur", 0.45))
         p = (t - at) / max(dur, 1e-3)
-        if p <= 0:
+        if p <= 0 or (mark.get("until") is not None and t >= float(mark["until"])):
             continue
         if out is None:
             out = base.copy()
         p = min(1.0, p)
+        if mark.get("type") == "write":
+            _draw_write(out, mark, p, W, H, red, cfg)
+            continue
         strokes = mark.get("_strokes")
         if strokes is None:
             strokes = mark_strokes(mark, W, H, seed=17 + i)
@@ -187,6 +196,46 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
             nx = min(max(nx, W * 0.1), W * 0.9 - note.shape[1])
             blend(out, note, int(nx), int(ny), opacity=min(1.0, max(0.0, age)))
     return base if out is None else out
+
+
+def _draw_write(out: np.ndarray, mark: dict, p: float, W: int, H: int, red, cfg: dict) -> None:
+    """Handwritten (or printed) text in a box of the picture, revealed left to right as the pen moves.
+    mark: text, x, y, w, h (box centre/size, picture fractions), angle (deg), color ('red'|'ink'|'paper'|hex),
+          font ('marker'|'headline'|'body'|'typewriter'), bg (fill colour painted under the text, e.g. a ribbon)."""
+    img = mark.get("_img")
+    if img is None:
+        pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+        col = mark.get("color", "red")
+        col = pal.get(col) or (hex_to_rgb(col) if str(col).startswith("#") else red)
+        bw, bh = max(8, int(float(mark.get("w", 0.2)) * W)), max(8, int(float(mark.get("h", 0.08)) * H))
+        fkey = mark.get("font", "marker")
+        path = resolve_font(cfg["fonts"].get(fkey) or cfg["fonts"]["marker"])
+        size = int(bh * 0.92)
+        txt = str(mark["text"])
+        while size > 8 and font(path, size).getlength(txt) > bw * 0.94:
+            size -= 1
+        fnt = font(path, size)
+        pil = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+        d = ImageDraw.Draw(pil)
+        if mark.get("bg"):
+            bgc = pal.get(mark["bg"]) or hex_to_rgb(mark["bg"])
+            d.rounded_rectangle((0, 0, bw - 1, bh - 1), radius=bh // 6, fill=tuple(bgc) + (255,))
+        tw = fnt.getlength(txt)
+        d.text(((bw - tw) / 2, bh / 2), txt, font=fnt, fill=tuple(col) + (255,), anchor="lm")
+        img = np.array(pil)
+        mark["_img"] = img
+        mark["_ink"] = np.array(pil.split()[3])
+    h, w = img.shape[:2]
+    sub = img.copy()
+    if not mark.get("bg"):  # handwriting appears left to right
+        xs = np.arange(w, dtype=np.float32)
+        a = np.clip((p * w * 1.05 - xs) / 6.0, 0, 1)
+        sub[..., 3] = (sub[..., 3] * a[None, :]).astype(np.uint8)
+    else:  # a label flips in at once (the pen then signs over it)
+        sub[..., 3] = (sub[..., 3] * min(1.0, p * 4)).astype(np.uint8)
+    rot = Image.fromarray(sub).rotate(float(mark.get("angle", 0)), resample=Image.BICUBIC, expand=True)
+    cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
+    blend(out, np.array(rot), int(cx - rot.width / 2), int(cy - rot.height / 2))
 
 
 # ---------------------------------------------------------------- shots

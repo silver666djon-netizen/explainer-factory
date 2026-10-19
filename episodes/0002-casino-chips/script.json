@@ -480,6 +480,7 @@
           "pick": 9815260
         }
       ],
+      "ledger_hide": true,
       "sfx_at": [
         {
           "on": "clay",

@@ -88,6 +88,7 @@ class Plan:
     beat_starts: dict[str, float] = field(default_factory=dict)
     timeline: A.Timeline | None = None
     ledger: object | None = None  # factory.devices.Ledger (Larry's tab, top-right)
+    stamps: list = field(default_factory=list)  # (start, end, text) rubber stamps over the picture
     ledger_hide: list = field(default_factory=list)
 
 
@@ -293,6 +294,11 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             if vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive"):
                 visual["motion"] = "static"  # captioned archive prints: a big push would slide the caption into the subtitles
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
+            for m in marks:  # a label that is replaced when another word is spoken
+                if m.get("until_on"):
+                    wt = word_time(v["words"], m["until_on"])
+                    if wt is not None:
+                        m["until"] = wt + lead_in
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
             if marks or beat.get("bubble") or visual.get("draw"):
                 pieces = len(keys)  # marks / bubbles / hand drawing need a steady picture: no extra cuts
@@ -352,6 +358,31 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
         elif vtype == "title":
             plan.shots.append(TitleShot(shot_start, span, visual["text"], cfg, size))
+        elif vtype in ("split", "receipts", "baskets", "battery"):
+            from . import scenes as SC
+            sp = dict(visual.get(vtype) or {})
+            if vtype == "split":
+                shot = SC.SplitShot(shot_start, span, pil(images[sp["left"]]), pil(images[sp["right"]]), sp, cfg, size, seed=i)
+            elif vtype == "receipts":
+                ca = _timed({"on": sp.get("circle_on"), "at": sp.get("circle_at", 1.0)}, v["words"], 1.0) + lead_in
+                sa = (_timed({"on": sp.get("stamp_on"), "at": sp.get("stamp_at", 2.5)}, v["words"], 2.5) + lead_in) if sp.get("stamp") else None
+                shot = SC.ReceiptsShot(shot_start, span, sp, cfg, size, circle_at=ca, stamp_at=sa, seed=i)
+            elif vtype == "baskets":
+                fp = Path(beat.get("_episode_dir") or ".") / sp["image_file"] if sp.get("image_file") else None
+                subj = Image.open(fp).convert("RGB") if fp and fp.exists() else pil(images[sp["image"]])
+                wa = tuple(_timed({"on": w}, v["words"], 2.0 + k) + lead_in for k, w in enumerate(sp.get("write_on") or [None, None]))
+                ga = (_timed({"on": sp["gap_on"]}, v["words"], 4.0) + lead_in) if sp.get("gap_on") else \
+                    ((wa[-1] + 1.0) if sp.get("gap") else None)  # the gap is drawn once both totals are written
+                shot = SC.BasketsShot(shot_start, span, sp, subj, cfg, size, draw_at=float(sp.get("draw_at", 0.2)) + lead_in,
+                                      write_at=wa, gap_at=ga, seed=i)
+            else:
+                da = _timed({"on": sp.get("drain_on"), "at": sp.get("drain_at", 0.4)}, v["words"], 0.4) + lead_in
+                shot = SC.BatteryShot(shot_start, span, sp, cfg, size, drain_at=da, seed=i)
+            plan.shots.append(shot)
+            for at, k_ in shot.sfx(shot_start):
+                plan.timeline.add_sfx(at, k_, seed=i)
+            if vtype in ("baskets",):
+                plan.ledger_hide.append((shot_start, shot_end))
         elif vtype in ("mugshot", "roulette", "maze", "casefile", "slot"):
             if vtype == "mugshot":
                 prop = MugshotShot(shot_start, span, pil(images[beat["id"]]), visual["suspect"], cfg, size, lead_in, seed=i)
@@ -513,6 +544,13 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.captions.extend(group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator")))
         if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
+        if beat.get("ledger_hide"):
+            plan.ledger_hide.append((shot_start, shot_end))
+        if beat.get("stamp"):  # a quick verdict stamp over any picture
+            stp = beat["stamp"]
+            sat = start + _timed(stp, v["words"], 0.3)
+            plan.stamps.append((sat, shot_end, str(stp["text"])))
+            plan.timeline.add_sfx(sat, "stamp", seed=i + 41)
         for row in beat.get("ledger") or []:
             ledger_rows.append({**row, "at": start + _timed(row, v["words"], 0.5)})
         for ev in beat.get("sfx_at") or []:  # extra foley synced to words (chips, roulette ball, register…)
@@ -699,6 +737,18 @@ class Overlay:
                 ins.draw(frame, t)
         if self.plan.ledger is not None:
             self.plan.ledger.draw(frame, t)
+        for s0, s1, txt in self.plan.stamps:
+            if s0 <= t < s1:
+                key = ("stamp", txt)
+                if key not in self.cache:
+                    from .endscreen import _stamp
+                    self.cache[key] = _stamp(txt, self.cfg, int(min(self.W, self.H) * 0.62), self.pal["red"], -10, 7)
+                st = self.cache[key]
+                p = min(1.0, (t - s0) / 0.14)
+                sc = 2.2 - 1.2 * p
+                im = cv2.resize(st, (max(1, int(st.shape[1] * sc)), max(1, int(st.shape[0] * sc))))
+                cy = int(self.H * (0.42 if self.H < self.W else 0.45))
+                blend(frame, im, (self.W - im.shape[1]) // 2, cy - im.shape[0] // 2, opacity=min(1.0, 0.3 + p))
         if self.plan.ctas:
             self._draw_ctas(frame, t)
         for c in self.plan.counters:

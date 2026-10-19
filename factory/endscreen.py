@@ -208,6 +208,11 @@ class EndScreenShot(Shot):
                     mask[py:py + ch, px:px + cw] = np.maximum(mask[py:py + ch, px:px + cw], mcrop)
                     self.slots.append((px, py, cw, ch))
                 self.draw = LineDrawing(base, paper_rgb, mask)
+                self.strike = None
+                if nx.get("strike"):  # a red marker line through a printed price on the subject (fractions of it)
+                    a0, b0, a1, b1 = nx["strike"]
+                    px, py, cw0, ch0 = self.slots[0]
+                    self.strike = (sx0 + px + a0 * cw0, sy0 + py + b0 * ch0, sx0 + px + a1 * cw0, sy0 + py + b1 * ch0)
                 prices = nx.get("prices") or []
                 for i, p in enumerate(prices[: len(self.slots)]):
                     px, py, cw, ch = self.slots[i]
@@ -366,6 +371,16 @@ class EndScreenShot(Shot):
                     tip = hand_path(lambda _q: (hx, hy), c0, c0 + 0.55, t, W, H, False, from_below=True)
                     if tip:
                         hand = ("marker_under", tip[0], tip[1], False)
+            if getattr(self, "strike", None) and t >= tt["p2"]:  # the "WAS" price gets struck out
+                q = min(1.0, (t - tt["p2"]) / 0.5)
+                x0s, y0s, x1s, y1s = self.strike
+                xe, ye = x0s + (x1s - x0s) * q, y0s + (y1s - y0s) * q
+                cv2.line(out, (int(x0s), int(y0s)), (int(xe), int(ye)), tuple(int(c) for c in self.pal["red"]), max(6, H // 110), cv2.LINE_AA)
+                cv2.line(out, (int(x0s), int(y0s + H * 0.012)), (int(xe), int(ye + H * 0.012)), tuple(int(c) for c in self.pal["red"]), max(4, H // 160), cv2.LINE_AA)
+                if q < 1:
+                    tip = hand_path(lambda _q: (xe, ye), tt["p2"], tt["p2"] + 0.5, t, W, H, False, from_below=True)
+                    if tip:
+                        hand = ("marker_under", tip[0], tip[1], False)
             if self.tagline is not None and t >= tt["tagline"]:
                 p = min(1.0, (t - tt["tagline"]) / 0.14)
                 sc = 2.0 - 1.0 * p
@@ -471,6 +486,8 @@ class EndScreenShot(Shot):
             out += [(start_abs + t0, "marker"), (start_abs + t0 + 0.4, "marker")]
         if len(self.tags) >= 2:
             out.append((start_abs + tt["p2"] + tt["pdur"] + 0.1, "scribble"))
+        if getattr(self, "strike", None):
+            out.append((start_abs + tt["p2"], "scribble"))
         if self.tagline is not None:
             out.append((start_abs + tt["tagline"], "stamp"))
         out += [(start_abs + tt["zone"], "marker")]

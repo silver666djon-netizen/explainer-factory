@@ -232,6 +232,8 @@ class CaseFileShot(Shot):
             op = ease((t - self.lead_in - 0.8) / 1.1)
             total_chars = sum(len(x[2]) for x in self.inside_lines)
             chars = int(total_chars * min(1.0, max(0.0, (t - self.lead_in - 1.7) / 1.6)))
+            if self.spec.get("typed") is False:  # pre-written file: the page is already filled in when it opens
+                chars = total_chars if op > 0.2 else 0
         else:
             op, chars = 0.0, 0
         canvas = self._scene(op, chars).copy()

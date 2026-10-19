@@ -179,6 +179,32 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
             out[i:i + m] += click[: max(0, min(m, n - i))] * rnd.uniform(0.5, 1.0)
             t0 += rnd.uniform(0.04, 0.09)
         return (out / (np.abs(out).max() + 1e-9) * 0.6).astype(np.float32)
+    if kind == "printer":  # receipt printer: fast dot-matrix buzz with paper feed
+        n = int(0.7 * SR)
+        t = np.arange(n) / SR
+        buzz = np.sign(np.sin(2 * np.pi * 180 * t)) * 0.5 + sosfilt(butter(2, [1500, 6000], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * 0.6
+        gate = (np.sin(2 * np.pi * 9 * t) > -0.2).astype(np.float32)
+        env = np.clip(np.sin(np.pi * t / t[-1]), 0, 1) ** 0.4
+        out = sosfilt(butter(2, [300, 7000], btype="band", fs=SR, output="sos"), buzz * gate * env)
+        return (out / (np.abs(out).max() + 1e-9) * 0.5).astype(np.float32)
+    if kind == "servo":  # little robot servo whirr + click
+        n = int(0.35 * SR)
+        t = np.arange(n) / SR
+        whirr = np.sin(2 * np.pi * (900 + 500 * t / t[-1]) * t) * np.exp(-((t - 0.15) ** 2) / 0.006)
+        click = np.zeros(n)
+        k = int(0.3 * SR)
+        click[k:k + 300] = rnd.standard_normal(300) * np.exp(-np.arange(300) / 40)
+        return ((whirr * 0.4 + click * 0.6)).astype(np.float32)
+    if kind == "tap":  # finger tap on a phone screen
+        n = int(0.06 * SR)
+        t = np.arange(n) / SR
+        return (sosfilt(butter(2, [800, 3000], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * np.exp(-t * 120) * 0.8).astype(np.float32)
+    if kind == "cart":  # shopping-cart wheels rattling past
+        n = int(0.8 * SR)
+        t = np.arange(n) / SR
+        rattle = sosfilt(butter(2, [400, 2500], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * (0.6 + 0.4 * np.sin(2 * np.pi * 23 * t))
+        env = np.sin(np.pi * t / t[-1]) ** 1.5
+        return (rattle * env / (np.abs(rattle).max() + 1e-9) * 0.5).astype(np.float32)
     if kind == "thud":
         n = int(0.35 * SR)
         t = np.arange(n) / SR

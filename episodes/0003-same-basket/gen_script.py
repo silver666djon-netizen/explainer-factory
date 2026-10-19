@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-OUT = Path("/home/claude/explainer-factory/episodes/0003-same-basket/script.json")
+OUT = Path(__file__).resolve().parent / "script.base.json"  # rev_layer.py turns this into script.json
 
 B = []
 

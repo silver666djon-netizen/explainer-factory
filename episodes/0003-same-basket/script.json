@@ -26,16 +26,16 @@
     }
   },
   "music": {
-    "_default": "ub_comic_detective",
-    "_shorts": "ub_jump_around",
-    "The case": "ub_comic_detective",
-    "11:47 PM: 3% battery": "ub_frostfall",
-    "8:02 AM: The parking lot": "ub_comic_detective",
-    "10:15 AM: Same basket": "ub_night_spot",
-    "1:30 PM: The machine": "ub_ticking_tension",
-    "In defence of the accused": "ub_mystery_theatre",
-    "The twist": "ub_ticking_tension",
-    "Case closed": "ub_jump_around"
+    "_default": "ub_private_detective",
+    "_shorts": "ub_wells_street",
+    "The case": "ub_private_detective",
+    "10:15 AM: Same basket": "ub_wells_street",
+    "11:47 PM: 3% battery": "ub_mechanisms_of_action",
+    "8:02 AM: The parking lot": "ub_tunnel_vision",
+    "1:30 PM: The machine": "ub_clock_is_ticking",
+    "In defence of the accused": "ub_usual_suspects",
+    "The twist": "ub_clock_is_ticking",
+    "Case closed": "ub_jazz_rumble"
   },
   "thumbnail": {
     "text": "Same basket. Different price.",
@@ -47,157 +47,179 @@
     "NPR, Hidden Brain (2016): Uber's Keith Chen on low battery and surge pricing; Uber states battery level is not used in pricing.",
     "KARE 11 (Feb 2019): Target app price switch near stores (TV $499.99 → $599.99 in the parking lot).",
     "US Federal Trade Commission (Jan 17, 2025): Surveillance pricing 6(b) study — preliminary staff findings.",
+    "US Federal Trade Commission staff (Jan 2025). Surveillance Pricing 6(b) study research summaries, p. 6 (quoted).",
+    "Receipts in the opening are a reconstruction; the totals ($114.34 / $123.93) are from the Consumer Reports test at one Seattle Safeway.",
     "Larry, Linda and Mister Price are fictional characters. Scenes marked 'Reconstruction' are illustrations."
   ],
   "beats": [
     {
-      "id": "c01",
+      "id": "o1",
       "section": "The case",
-      "text": "In 2016, Uber's own head of economic research said something on a podcast that he may have come to regret.",
+      "text": "Same store. Same basket. Same minute.",
       "visual": {
-        "type": "image",
-        "prompts": [
-          "a 1950s radio studio microphone on a desk under a glowing red on-air lamp, warm studio light",
-          "a cream retro-styled smartphone standing upright in the centre, its screen filled by a large horizontal battery outline with only a thin red sliver of charge at the left end, nothing else in the picture, plain dark green background"
-        ],
-        "motion": "zoom_in"
+        "type": "split",
+        "split": {
+          "left": "s30",
+          "right": "s30.1",
+          "names": [
+            "LARRY",
+            "LINDA"
+          ],
+          "clock": "10:15",
+          "clock_sub": "SAME MINUTE"
+        }
       },
-      "say": "In twenty sixteen, Uber's own head of economic research said something on a podcast that he may have come to regret.",
-      "inserts": [
+      "sfx_at": [
         {
-          "file": "lv1940_corner.jpg",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.3,
-          "on": "2016",
-          "caption": "Main street corner, Las Vegas, 1940"
+          "on": "Same",
+          "kind": "tap"
+        },
+        {
+          "on": "minute",
+          "kind": "tap"
         }
       ]
     },
     {
-      "id": "c02",
+      "id": "o2",
       "section": "The case",
-      "text": "People whose phone is about to die, he said, are more likely to accept a higher surge price.",
+      "text": "Two prices. Larry is made up. His receipt is not.",
       "visual": {
-        "type": "reuse",
-        "beat": "c01",
-        "index": 1,
-        "motion": "static",
-        "marks": [
-          {
-            "type": "circle",
-            "x": 0.5,
-            "y": 0.5,
-            "w": 0.22,
-            "h": 0.3,
-            "text": "3%",
-            "text_x": 0.5,
-            "text_y": 0.66,
-            "on": "die"
-          }
-        ]
-      },
-      "on_screen": "Low battery = higher price?",
-      "inserts": [
-        {
-          "file": "c05",
-          "kind": "cutout",
-          "from": "right",
-          "x": 0.86,
-          "y": 0.6,
-          "w": 0.26,
-          "on": "People"
-        }
-      ]
-    },
-    {
-      "id": "c03",
-      "section": "The case",
-      "text": "So, before we go any further, charge your phone.",
-      "visual": {
-        "type": "image",
-        "prompt": "a cream retro-styled smartphone lying on a table and an oversized ordinary household two-prong wall plug, clearly bigger than the phone, being pushed against its tiny charging port — a comically wrong fit, the phone screen showing a red nearly-empty battery icon, close up",
-        "motion": "zoom_in"
-      },
-      "sfx": "tick"
-    },
-    {
-      "id": "c04",
-      "section": "The case",
-      "text": "*Trust* me.",
-      "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "ink"
+        "type": "receipts",
+        "receipts": {
+          "store": "SAME STORE · SEATTLE",
+          "when": "10:15 AM",
+          "stamp": "Real totals",
+          "receipts": [
+            {
+              "name": "LARRY",
+              "total": "$123.93",
+              "items": [
+                [
+                  "WHOLE MILK 1 GAL",
+                  "5.57"
+                ],
+                [
+                  "EGGS LARGE x12",
+                  "6.38"
+                ],
+                [
+                  "SOURDOUGH LOAF",
+                  "7.64"
+                ],
+                [
+                  "COFFEE 12 OZ",
+                  "13.39"
+                ],
+                [
+                  "CHEDDAR 8 OZ",
+                  "6.27"
+                ],
+                [
+                  "BANANAS 2 LB",
+                  "1.87"
+                ],
+                [
+                  "CHICKEN THIGHS",
+                  "13.36"
+                ],
+                [
+                  "OLIVE OIL 500ML",
+                  "14.03"
+                ],
+                [
+                  "CEREAL",
+                  "7.06"
+                ],
+                [
+                  "PASTA x3",
+                  "6.64"
+                ],
+                [
+                  "APPLES 3 LB",
+                  "7.41"
+                ],
+                [
+                  "BUTTER",
+                  "6.66"
+                ],
+                [
+                  "TOMATOES",
+                  "5.51"
+                ],
+                [
+                  "SALMON FILLET",
+                  "22.14"
+                ]
+              ]
+            },
+            {
+              "name": "LINDA",
+              "total": "$114.34",
+              "items": [
+                [
+                  "WHOLE MILK 1 GAL",
+                  "5.07"
+                ],
+                [
+                  "EGGS LARGE x12",
+                  "5.85"
+                ],
+                [
+                  "SOURDOUGH LOAF",
+                  "7.02"
+                ],
+                [
+                  "COFFEE 12 OZ",
+                  "12.69"
+                ],
+                [
+                  "CHEDDAR 8 OZ",
+                  "5.59"
+                ],
+                [
+                  "BANANAS 2 LB",
+                  "1.69"
+                ],
+                [
+                  "CHICKEN THIGHS",
+                  "12.51"
+                ],
+                [
+                  "OLIVE OIL 500ML",
+                  "12.99"
+                ],
+                [
+                  "CEREAL",
+                  "6.67"
+                ],
+                [
+                  "PASTA x3",
+                  "5.91"
+                ],
+                [
+                  "APPLES 3 LB",
+                  "6.75"
+                ],
+                [
+                  "BUTTER",
+                  "6.27"
+                ],
+                [
+                  "TOMATOES",
+                  "5.07"
+                ],
+                [
+                  "SALMON FILLET",
+                  "20.26"
+                ]
+              ]
+            }
+          ],
+          "circle_on": "Two",
+          "stamp_on": "receipt"
         }
       }
-    },
-    {
-      "id": "c05",
-      "section": "The case",
-      "text": "Because tonight, your phone is at three percent. You need a ride home.",
-      "visual": {
-        "type": "image",
-        "prompt": "{larry} standing alone, looking at the faint glow of his phone with a hopeful half-smile, mid shot, plain cream background, no scenery",
-        "motion": "static",
-        "draw": {
-          "on": "tonight",
-          "dur": 3.4,
-          "box": [
-            0.15,
-            0.0,
-            0.85,
-            1.0
-          ]
-        }
-      }
-    },
-    {
-      "id": "c06",
-      "section": "The case",
-      "text": "And somewhere, an algorithm might know exactly what that's worth.",
-      "visual": {
-        "type": "image",
-        "prompt": "a frosted glass office door with a brass handle; behind the glass, the soft grey blurred outline of a round-headed retro robot with a small bow tie, lit from behind by warm amber light, no face visible, film-noir mood",
-        "motion": "zoom_in"
-      },
-      "inserts": [
-        {
-          "file": "p40",
-          "kind": "cutout",
-          "from": "left",
-          "x": 0.14,
-          "y": 0.6,
-          "w": 0.24,
-          "on": "somewhere"
-        }
-      ]
-    },
-    {
-      "id": "c07",
-      "section": "The case",
-      "text": "The battery story? A rumour. What we found next isn't.",
-      "visual": {
-        "type": "reuse",
-        "beat": "c05",
-        "index": 0,
-        "motion": "static",
-        "marks": [
-          {
-            "type": "cross",
-            "x": 0.5,
-            "y": 0.45,
-            "w": 0.3,
-            "h": 0.36,
-            "on": "rumour"
-          }
-        ]
-      },
-      "punch": [
-        "isn't."
-      ]
     },
     {
       "id": "cf1",
@@ -209,6 +231,7 @@
           "mode": "open",
           "number": "002",
           "title": "Same basket",
+          "typed": false,
           "inside": [
             "SUBJECT: Larry (fictional)",
             "WITNESS: Linda, his sister",
@@ -217,7 +240,462 @@
           ]
         }
       },
-      "hold": 1.0
+      "hold": 0.6
+    },
+    {
+      "id": "t03",
+      "section": "10:15 AM: Same basket",
+      "text": "Ten fifteen a.m.",
+      "visual": {
+        "type": "title",
+        "text": "10:15 AM — Same basket"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "s30",
+      "section": "10:15 AM: Same basket",
+      "text": "Larry orders his groceries on a delivery app. Across town, his sister Linda orders the exact same basket.",
+      "visual": {
+        "type": "image",
+        "prompts": [
+          "{larry} at a small kitchen table tapping on his phone, a coffee cup beside him, mid shot",
+          "{linda} at her own kitchen table tapping on her phone, a neat shopping list beside her, mid shot"
+        ],
+        "motion": "zoom_in"
+      },
+      "sfx_at": [
+        {
+          "on": "orders",
+          "kind": "tap"
+        },
+        {
+          "on": "exact",
+          "kind": "tap"
+        }
+      ]
+    },
+    {
+      "id": "s31",
+      "section": "10:15 AM: Same basket",
+      "text": "Then they compare receipts.",
+      "visual": {
+        "type": "image",
+        "prompt": "two long paper shop receipts lying side by side on a kitchen table, their totals hidden under a pencil",
+        "motion": "zoom_in"
+      },
+      "bubble": {
+        "text": "Why is YOURS cheaper?",
+        "x": 0.75,
+        "y": 0.22,
+        "tail": "left",
+        "at": 0.6
+      },
+      "sfx_at": [
+        {
+          "on": "receipts",
+          "kind": "printer"
+        }
+      ]
+    },
+    {
+      "id": "s32",
+      "section": "10:15 AM: Same basket",
+      "text": "That's not a made-up scene. In 2025, Consumer Reports and the Groundwork Collaborative had hundreds of volunteers buy the same basket, at the same store, at the same time.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Summary · Consumer Reports & Groundwork Collaborative · Dec 2025",
+          "headline": "Same cart, different price",
+          "body": "437 volunteers shopped identical baskets through Instacart at the same stores at the same moment. About three-quarters of the products checked were offered at different prices, by up to 23% per item.",
+          "highlight": "offered at different prices",
+          "on": "same basket",
+          "mark": "underline",
+          "seed": 41,
+          "pre": "s30"
+        }
+      },
+      "say": "That's not a made-up scene. In twenty twenty-five, Consumer Reports and the Groundwork Collaborative had hundreds of volunteers buy the same basket, at the same store, at the same time."
+    },
+    {
+      "id": "s33",
+      "section": "10:15 AM: Same basket",
+      "text": "At one Safeway in Seattle, the cheapest basket came to 114 dollars 34. The most expensive: 123 dollars 93.",
+      "visual": {
+        "type": "baskets",
+        "baskets": {
+          "image": "d53",
+          "title": "Same Safeway basket · Seattle",
+          "sub": "cheapest vs most expensive total · same store, same minute",
+          "labels": [
+            "Cheapest basket",
+            "Most expensive"
+          ],
+          "values": [
+            114.34,
+            123.93
+          ],
+          "write_on": [
+            "114",
+            "123"
+          ],
+          "gap": "+$9.59"
+        }
+      },
+      "say": "At one Safeway in Seattle, the cheapest basket came to one hundred and fourteen dollars thirty-four. The most expensive: one hundred and twenty-three ninety-three.",
+      "pause_at": {
+        "word": "114",
+        "sec": 1.2,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "s33b",
+      "section": "10:15 AM: Same basket",
+      "text": "Nearly ten dollars of difference. On one ordinary grocery run. For nothing but luck.",
+      "visual": {
+        "type": "reuse",
+        "beat": "s31",
+        "index": 0,
+        "motion": "zoom_in"
+      },
+      "punch": [
+        "luck."
+      ],
+      "inserts": [
+        {
+          "file": "grocery_lincoln_1942.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.42,
+          "w": 0.28,
+          "on": "ordinary",
+          "caption": "Grand Grocery, Lincoln, 1942"
+        }
+      ],
+      "ledger": [
+        {
+          "label": "BASKET A",
+          "amount": "$114.34",
+          "on": "Nearly"
+        },
+        {
+          "label": "BASKET B",
+          "amount": "$123.93",
+          "on": "ordinary"
+        },
+        {
+          "label": "DIFFERENCE",
+          "amount": "-$9.59",
+          "loss": true,
+          "on": "luck"
+        }
+      ],
+      "sfx_at": [
+        {
+          "on": "grocery",
+          "kind": "cart"
+        }
+      ]
+    },
+    {
+      "id": "s34",
+      "section": "10:15 AM: Same basket",
+      "text": "Only eight percent of shoppers got the lowest total.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 8,
+          "suffix": "%",
+          "label": "got the cheapest basket",
+          "decimals": 0
+        }
+      },
+      "pause_at": {
+        "word": "eight",
+        "sec": 1.2,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "s35",
+      "section": "10:15 AM: Same basket",
+      "text": "Quick game. Pause the video. Five price tags, one product. Which one is real?",
+      "visual": {
+        "type": "image",
+        "prompt": "five blank paper price tags with red borders hanging on strings in a row in front of a single carton of eggs on a shop shelf",
+        "motion": "static"
+      },
+      "sfx": "pop",
+      "bubble": {
+        "text": "Pause!",
+        "x": 0.2,
+        "y": 0.2,
+        "tail": "right",
+        "at": 0.6
+      }
+    },
+    {
+      "id": "s36",
+      "section": "10:15 AM: Same basket",
+      "text": "Trick question. In these tests, some items carried up to five different prices at the very same moment.",
+      "visual": {
+        "type": "reuse",
+        "beat": "s35",
+        "index": 0,
+        "motion": "zoom_out",
+        "marks": [
+          {
+            "type": "underline",
+            "x": 0.48,
+            "y": 0.955,
+            "w": 0.86,
+            "text": "all of them",
+            "text_y": 0.62,
+            "on": "five"
+          }
+        ]
+      },
+      "inserts": [
+        {
+          "file": "piggly_aisle_1918.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.2,
+          "y": 0.4,
+          "w": 0.3,
+          "on": "tests",
+          "caption": "Piggly Wiggly, 1918 — the first self-service store"
+        }
+      ],
+      "ledger": [
+        {
+          "label": "up to 23% per item",
+          "note": true,
+          "on": "five"
+        }
+      ]
+    },
+    {
+      "id": "s37",
+      "section": "10:15 AM: Same basket",
+      "text": "Now look at these crackers. Shoppers were shown three different 'original' prices: five ninety-three, five ninety-nine, and six sixty-nine.",
+      "visual": {
+        "type": "image",
+        "prompt": "a box of premium saltine crackers on a cream shop shelf with a red sale ribbon across it, the box front plain and unlettered",
+        "motion": "static",
+        "marks": [
+          {
+            "type": "write",
+            "text": "WAS $5.93",
+            "x": 0.52,
+            "y": 0.505,
+            "w": 0.27,
+            "h": 0.1,
+            "angle": 10,
+            "color": "paper",
+            "font": "headline",
+            "on": "five ninety-three",
+            "dur": 0.7,
+            "until_on": "five ninety-nine"
+          },
+          {
+            "type": "write",
+            "text": "WAS $5.99",
+            "x": 0.52,
+            "y": 0.505,
+            "w": 0.27,
+            "h": 0.1,
+            "angle": 10,
+            "color": "paper",
+            "font": "headline",
+            "on": "five ninety-nine",
+            "dur": 0.7,
+            "until_on": "six"
+          },
+          {
+            "type": "write",
+            "text": "WAS $6.69",
+            "x": 0.52,
+            "y": 0.505,
+            "w": 0.27,
+            "h": 0.1,
+            "angle": 10,
+            "color": "paper",
+            "font": "headline",
+            "on": "six",
+            "dur": 0.7
+          }
+        ]
+      }
+    },
+    {
+      "id": "s38",
+      "section": "10:15 AM: Same basket",
+      "text": "And every single one of them paid the same sale price: three ninety-nine.",
+      "visual": {
+        "type": "reuse",
+        "beat": "s37",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "WAS $6.69",
+            "x": 0.52,
+            "y": 0.505,
+            "w": 0.27,
+            "h": 0.1,
+            "angle": 10,
+            "color": "paper",
+            "font": "headline",
+            "dur": 0.01,
+            "at": 0.0,
+            "until_on": "three",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "EVERYONE: $3.99",
+            "x": 0.52,
+            "y": 0.505,
+            "w": 0.3,
+            "h": 0.11,
+            "angle": 10,
+            "color": "paper",
+            "font": "marker",
+            "on": "three",
+            "dur": 0.7
+          },
+          {
+            "type": "circle",
+            "x": 0.5,
+            "y": 0.5,
+            "w": 0.6,
+            "h": 0.74,
+            "on": "sale"
+          }
+        ]
+      }
+    },
+    {
+      "id": "s39",
+      "section": "10:15 AM: Same basket",
+      "text": "Same price. Different *feeling.*",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "s39b",
+      "section": "10:15 AM: Same basket",
+      "text": "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        },
+        "text": "The bigger the fake 'was', the better the deal felt. Economists call it *anchoring.*"
+      },
+      "punch": [
+        "anchoring."
+      ]
+    },
+    {
+      "id": "s39c",
+      "section": "10:15 AM: Same basket",
+      "text": "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
+      "visual": {
+        "type": "archive",
+        "file": "np_lottery_1887.jpg",
+        "look": "clipping",
+        "credit": "The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "static",
+        "crop": [
+          0.045,
+          0.818,
+          0.232,
+          0.975
+        ],
+        "caption": "The Daily Yellowstone Journal, Miles City, 15 October 1887",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "underline",
+            "x": 0.52,
+            "y": 0.49,
+            "w": 0.27,
+            "on": "double"
+          }
+        ]
+      },
+      "say": "That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only."
+    },
+    {
+      "id": "s3a",
+      "section": "10:15 AM: Same basket",
+      "text": "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
+      "visual": {
+        "type": "image",
+        "prompt": "a tidy corporate press statement on letterhead lying on a polished desk beside a fountain pen",
+        "motion": "zoom_in",
+        "marks": [
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.55,
+            "w": 0.4,
+            "text": "negligible?",
+            "text_y": 0.7,
+            "on": "negligible"
+          }
+        ]
+      }
+    },
+    {
+      "id": "s3b",
+      "section": "10:15 AM: Same basket",
+      "text": "Negligible, by Consumer Reports' estimate, could add up to about twelve hundred dollars a year for a family of four.",
+      "visual": {
+        "type": "reuse",
+        "beat": "s30",
+        "index": 1,
+        "motion": "zoom_in"
+      },
+      "pause_at": {
+        "word": "twelve",
+        "sec": 1.2,
+        "hit": "stamp"
+      },
+      "ledger": [
+        {
+          "label": "PER YEAR (CR est.)",
+          "amount": "-$1,200",
+          "loss": true,
+          "circle": true,
+          "on": "twelve"
+        }
+      ]
+    },
+    {
+      "id": "s3c",
+      "section": "10:15 AM: Same basket",
+      "text": "Within two weeks of the report, Instacart ended the experiments. But the method is not Instacart's alone. And the tests were only the visible part.",
+      "visual": {
+        "type": "clip",
+        "file": "clip_supermarket_1950s.mp4",
+        "in": 96.0,
+        "out": 112.0,
+        "newsreel": "Supermarket film, 1960s",
+        "credit": "\"The Supermarket\" (Ezra Baker Films) — Prelinger Archives / Internet Archive (public domain)"
+      }
     },
     {
       "id": "t01",
@@ -226,7 +704,10 @@
       "visual": {
         "type": "title",
         "text": "11:47 PM — 3% battery"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "b10",
@@ -250,12 +731,22 @@
       "section": "11:47 PM: 3% battery",
       "text": "He opens the ride app. The fare looks high. Is it the rain? The hour? Or the battery?",
       "visual": {
-        "type": "image",
-        "prompt": "a retro-styled taxi ordering screen glowing on a phone, a yellow 1950s taxi cab waiting in the rain behind it",
-        "motion": "zoom_in"
+        "type": "battery",
+        "battery": {
+          "fare": "$24.80",
+          "tag_label": "RIDE FARE",
+          "from": 0.42,
+          "to": 0.03,
+          "dur": 3.6,
+          "drain_on": "opens",
+          "note": "same fare"
+        }
       },
-      "punch": [
-        "battery?"
+      "sfx_at": [
+        {
+          "on": "opens",
+          "kind": "tap"
+        }
       ]
     },
     {
@@ -285,9 +776,11 @@
           "source": "Summary · NPR, Hidden Brain · 2016",
           "headline": "Uber's economist on dying phones",
           "body": "Uber's head of economic research said riders whose phones were nearly out of battery seemed more willing to accept surge pricing. He also said Uber does not use battery level to set prices.",
+          "highlight": "more willing to accept surge pricing",
+          "on": "willing",
+          "mark": "underline",
           "seed": 31,
-          "at": 4.0,
-          "highlight": "more willing to accept surge pricing"
+          "pre": "b10"
         }
       }
     },
@@ -297,36 +790,23 @@
       "text": "But he also said Uber does not use your battery to set the price. And nobody has shown that it does.",
       "visual": {
         "type": "reuse",
-        "beat": "c01",
-        "index": 1,
-        "motion": "zoom_out"
-      }
-    },
-    {
-      "id": "d14b",
-      "section": "11:47 PM: 3% battery",
-      "text": "Surge pricing itself is real, of course. When lots of people want rides and few drivers are around, the price goes up for everyone in the area. That's demand. Not your battery.",
-      "visual": {
-        "type": "clip",
-        "stock": "city street night rain traffic",
-        "pick": 11067,
-        "in": 0,
-        "out": 12,
-        "fallback_prompt": "a 1950s city street at night in the rain with many people waiting at the kerb and only one yellow taxi in sight",
-        "credit": "Stock footage / Pixabay"
+        "beat": "m12",
+        "motion": "zoom_in"
       }
     },
     {
       "id": "b15",
       "section": "11:47 PM: 3% battery",
-      "text": "Verdict: *not* *proven.*",
+      "text": "Verdict: not proven.",
       "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "red"
-        }
+        "type": "reuse",
+        "beat": "m12",
+        "motion": "static"
       },
-      "sfx": "thud"
+      "stamp": {
+        "text": "Not proven",
+        "on": "not"
+      }
     },
     {
       "id": "b16",
@@ -394,7 +874,10 @@
       "visual": {
         "type": "title",
         "text": "8:02 AM — The parking lot"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "a20",
@@ -415,9 +898,32 @@
       "visual": {
         "type": "image",
         "prompt": "a sleek modern flat television on a stand in a cosy 1950s-style living room, a phone on the sofa",
-        "motion": "zoom_in"
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.465,
+            "y": 0.43,
+            "w": 0.3,
+            "h": 0.42,
+            "on": "TV"
+          },
+          {
+            "type": "write",
+            "text": "$499.99",
+            "x": 0.465,
+            "y": 0.43,
+            "w": 0.19,
+            "h": 0.11,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "on": "499",
+            "dur": 0.7
+          }
+        ]
       },
-      "on_screen": "$499.99",
       "say": "At home, a fifty-five inch Samsung TV showed up in the app at four ninety-nine ninety-nine."
     },
     {
@@ -431,7 +937,11 @@
         "in": 0,
         "out": 12,
         "fallback_prompt": "a top-down view of a big store parking lot with painted bays, one small red car pulling into a space, flat graphic style",
-        "credit": "Stock footage / Pixabay"
+        "credit": "Stock footage / Pixabay",
+        "exhibit": {
+          "label": "Evidence · store parking lot · present day · reconstruction",
+          "tag": "Parking lot · 2020s"
+        }
       },
       "counter": {
         "from": 499.99,
@@ -517,7 +1027,7 @@
       "text": "If you enjoy catching prices red-handed, subscribe. The Inspector has more files.",
       "visual": {
         "type": "reuse",
-        "beat": "c05",
+        "beat": "s30",
         "index": 0,
         "motion": "zoom_in"
       },
@@ -527,352 +1037,16 @@
       }
     },
     {
-      "id": "t03",
-      "section": "10:15 AM: Same basket",
-      "text": "Ten fifteen a.m.",
-      "visual": {
-        "type": "title",
-        "text": "10:15 AM — Same basket"
-      }
-    },
-    {
-      "id": "s30",
-      "section": "10:15 AM: Same basket",
-      "text": "Larry orders his groceries on a delivery app. Across town, his sister Linda orders the exact same basket.",
-      "visual": {
-        "type": "image",
-        "prompts": [
-          "{larry} at a small kitchen table tapping on his phone, a coffee cup beside him, mid shot",
-          "{linda} at her own kitchen table tapping on her phone, a neat shopping list beside her, mid shot"
-        ],
-        "motion": "zoom_in"
-      }
-    },
-    {
-      "id": "s31",
-      "section": "10:15 AM: Same basket",
-      "text": "Same store. Same items. Same minute. Then they compare receipts.",
-      "visual": {
-        "type": "image",
-        "prompt": "two long paper shop receipts lying side by side on a kitchen table, their totals hidden under a pencil",
-        "motion": "zoom_in"
-      },
-      "bubble": {
-        "text": "Why is YOURS cheaper?",
-        "x": 0.75,
-        "y": 0.22,
-        "tail": "left",
-        "at": 1.6
-      }
-    },
-    {
-      "id": "s32",
-      "section": "10:15 AM: Same basket",
-      "text": "That's not a made-up scene. In 2025, Consumer Reports and the Groundwork Collaborative had hundreds of volunteers buy the same basket, at the same store, at the same time.",
-      "visual": {
-        "type": "doc",
-        "doc": {
-          "source": "Summary · Consumer Reports & Groundwork Collaborative · Dec 2025",
-          "headline": "Same cart, different price",
-          "body": "437 volunteers shopped identical baskets through Instacart at the same stores at the same moment. About three-quarters of the products checked were offered at different prices, by up to 23% per item.",
-          "seed": 41,
-          "at": 6.5,
-          "highlight": "offered at different prices"
-        }
-      },
-      "say": "That's not a made-up scene. In twenty twenty-five, Consumer Reports and the Groundwork Collaborative had hundreds of volunteers buy the same basket, at the same store, at the same time.",
-      "inserts": [
-        {
-          "file": "supermarket_1957_a.jpg",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.45,
-          "w": 0.3,
-          "on": "volunteers",
-          "caption": "Shopping in a supermarket, 1957"
-        }
-      ]
-    },
-    {
-      "id": "s33",
-      "section": "10:15 AM: Same basket",
-      "text": "At one Safeway in Seattle, the cheapest basket came to 114 dollars 34. The most expensive: 123 dollars 93.",
-      "visual": {
-        "type": "chart",
-        "chart": {
-          "kind": "bar",
-          "title": "Same Safeway basket, Seattle",
-          "labels": [
-            "Cheapest",
-            "Most expensive"
-          ],
-          "values": [
-            114.34,
-            123.93
-          ],
-          "unit": "$",
-          "decimals": 2,
-          "highlight": 1
-        }
-      },
-      "say": "At one Safeway in Seattle, the cheapest basket came to one hundred and fourteen dollars thirty-four. The most expensive: one hundred and twenty-three ninety-three."
-    },
-    {
-      "id": "s33b",
-      "section": "10:15 AM: Same basket",
-      "text": "Nearly ten dollars of difference. On one ordinary grocery run. For nothing but luck.",
-      "visual": {
-        "type": "reuse",
-        "beat": "s31",
-        "index": 0,
-        "motion": "zoom_in"
-      },
-      "punch": [
-        "luck."
-      ],
-      "inserts": [
-        {
-          "file": "grocery_lincoln_1942.jpg",
-          "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.42,
-          "w": 0.28,
-          "on": "ordinary",
-          "caption": "Grand Grocery, Lincoln, 1942"
-        }
-      ]
-    },
-    {
-      "id": "s34",
-      "section": "10:15 AM: Same basket",
-      "text": "Only eight percent of shoppers got the lowest total.",
-      "visual": {
-        "type": "stat",
-        "stat": {
-          "value": 8,
-          "suffix": "%",
-          "label": "got the cheapest basket",
-          "decimals": 0
-        }
-      }
-    },
-    {
-      "id": "s35",
-      "section": "10:15 AM: Same basket",
-      "text": "Quick game. Pause the video. Five price tags, one product. Which one is real?",
-      "visual": {
-        "type": "image",
-        "prompt": "five blank paper price tags with red borders hanging on strings in a row in front of a single carton of eggs on a shop shelf",
-        "motion": "static"
-      },
-      "sfx": "pop",
-      "bubble": {
-        "text": "Pause!",
-        "x": 0.2,
-        "y": 0.2,
-        "tail": "right",
-        "at": 0.6
-      }
-    },
-    {
-      "id": "s36",
-      "section": "10:15 AM: Same basket",
-      "text": "Trick question. In these tests, some items carried up to five different prices at the very same moment.",
-      "visual": {
-        "type": "reuse",
-        "beat": "s35",
-        "index": 0,
-        "motion": "zoom_out",
-        "marks": [
-          {
-            "type": "underline",
-            "x": 0.48,
-            "y": 0.955,
-            "w": 0.86,
-            "text": "all of them",
-            "text_y": 0.62,
-            "on": "five"
-          }
-        ]
-      },
-      "inserts": [
-        {
-          "file": "piggly_aisle_1918.jpg",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.4,
-          "w": 0.3,
-          "on": "tests",
-          "caption": "Piggly Wiggly, 1918 — the first self-service store"
-        }
-      ]
-    },
-    {
-      "id": "s37",
-      "section": "10:15 AM: Same basket",
-      "text": "Now look at these crackers. Shoppers were shown three different 'original' prices: five ninety-three, five ninety-nine, and six sixty-nine.",
-      "visual": {
-        "type": "image",
-        "prompt": "a box of premium saltine crackers on a cream shop shelf with a red sale ribbon across it, the box front plain and unlettered",
-        "motion": "zoom_in"
-      },
-      "on_screen": "Was $5.93 · $5.99 · $6.69"
-    },
-    {
-      "id": "s38",
-      "section": "10:15 AM: Same basket",
-      "text": "And every single one of them paid the same sale price: three ninety-nine.",
-      "visual": {
-        "type": "reuse",
-        "beat": "s37",
-        "index": 0,
-        "motion": "static",
-        "marks": [
-          {
-            "type": "circle",
-            "x": 0.48,
-            "y": 0.5,
-            "w": 0.44,
-            "h": 0.6,
-            "text": "everyone: $3.99",
-            "text_y": 0.74,
-            "on": "same"
-          }
-        ]
-      }
-    },
-    {
-      "id": "s39",
-      "section": "10:15 AM: Same basket",
-      "text": "Same price. Different *feeling.*",
-      "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "paper"
-        }
-      }
-    },
-    {
-      "id": "s39b",
-      "section": "10:15 AM: Same basket",
-      "text": "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
-      "visual": {
-        "type": "reuse",
-        "beat": "s37",
-        "index": 0,
-        "motion": "static"
-      },
-      "punch": [
-        "anchoring."
-      ]
-    },
-    {
-      "id": "s39c",
-      "section": "10:15 AM: Same basket",
-      "text": "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
-      "visual": {
-        "type": "archive",
-        "file": "np_lottery_1887.jpg",
-        "look": "clipping",
-        "credit": "The Daily Yellowstone Journal, 15 Oct 1887 — Chronicling America, Library of Congress, Prints & Photographs Division (no known restrictions)",
-        "motion": "static",
-        "crop": [
-          0.045,
-          0.818,
-          0.232,
-          0.975
-        ],
-        "caption": "The Daily Yellowstone Journal, Miles City, 15 October 1887",
-        "hand_marks": true,
-        "marks": [
-          {
-            "type": "underline",
-            "x": 0.52,
-            "y": 0.49,
-            "w": 0.27,
-            "on": "double"
-          }
-        ]
-      },
-      "say": "That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only."
-    },
-    {
-      "id": "s3a",
-      "section": "10:15 AM: Same basket",
-      "text": "Instacart confirmed the findings reflected its own price tests, running at ten retailers. It called the differences negligible.",
-      "visual": {
-        "type": "image",
-        "prompt": "a tidy corporate press statement on letterhead lying on a polished desk beside a fountain pen",
-        "motion": "zoom_in",
-        "marks": [
-          {
-            "type": "underline",
-            "x": 0.5,
-            "y": 0.55,
-            "w": 0.4,
-            "text": "negligible?",
-            "text_y": 0.7,
-            "on": "negligible"
-          }
-        ]
-      }
-    },
-    {
-      "id": "s3b",
-      "section": "10:15 AM: Same basket",
-      "text": "Negligible, by Consumer Reports' estimate, could add up to about twelve hundred dollars a year for a family of four.",
-      "visual": {
-        "type": "reuse",
-        "beat": "s30",
-        "index": 1,
-        "motion": "zoom_in"
-      },
-      "counter": {
-        "from": 0,
-        "to": 1200,
-        "prefix": "$",
-        "decimals": 0,
-        "label": "a year · family of four (CR estimate)",
-        "on": "twelve",
-        "dur": 1.6
-      },
-      "inserts": [
-        {
-          "file": "supermarket_carts_1958.jpg",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.3,
-          "on": "family",
-          "caption": "Supermarket, 1958"
-        }
-      ]
-    },
-    {
-      "id": "s3c",
-      "section": "10:15 AM: Same basket",
-      "text": "Within two weeks of the report, Instacart ended the experiments. But the method is not Instacart's alone. And the tests were only the visible part.",
-      "visual": {
-        "type": "clip",
-        "file": "clip_supermarket_1950s.mp4",
-        "in": 96.0,
-        "out": 112.0,
-        "newsreel": "Supermarket film, 1960s",
-        "credit": "\"The Supermarket\" (Ezra Baker Films) — Prelinger Archives / Internet Archive (public domain)"
-      }
-    },
-    {
       "id": "t04",
       "section": "1:30 PM: The machine",
       "text": "One thirty p.m.",
       "visual": {
         "type": "title",
         "text": "1:30 PM — The machine"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "h40",
@@ -913,14 +1087,23 @@
       "visual": {
         "type": "image",
         "prompt": "a single old-fashioned paper price tag on a string hanging from a folded shirt in a grand 1870s department store",
-        "motion": "zoom_in",
-        "ad": {
-          "badge": "NEW!",
-          "badge_x": 0.82,
-          "badge_y": 0.2,
-          "slogan": "One price. For everyone. Imagine that.",
-          "slogan_y": 0.86
-        }
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$1.25",
+            "x": 0.605,
+            "y": 0.665,
+            "w": 0.09,
+            "h": 0.07,
+            "angle": -28,
+            "color": "ink",
+            "font": "marker",
+            "on": "written",
+            "dur": 0.7
+          }
+        ]
       },
       "inserts": [
         {
@@ -946,6 +1129,20 @@
         "motion": "static",
         "marks": [
           {
+            "type": "write",
+            "text": "$1.25",
+            "x": 0.605,
+            "y": 0.665,
+            "w": 0.09,
+            "h": 0.07,
+            "angle": -28,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
             "type": "circle",
             "x": 0.6,
             "y": 0.6,
@@ -964,10 +1161,12 @@
       "section": "1:30 PM: The machine",
       "text": "Personalised pricing quietly brings the haggling back.",
       "visual": {
-        "type": "reuse",
-        "beat": "h40",
-        "index": 0,
-        "motion": "zoom_out"
+        "type": "archive",
+        "file": "grocery_prices_savannah_1939.jpg",
+        "look": "print",
+        "motion": "zoom_in",
+        "credit": "Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "caption": "Prices chalked outside a grocery, Savannah, 1939"
       }
     },
     {
@@ -999,7 +1198,17 @@
             1.0
           ]
         }
-      }
+      },
+      "sfx_at": [
+        {
+          "on": "Meet",
+          "kind": "servo"
+        },
+        {
+          "on": "Price",
+          "kind": "servo"
+        }
+      ]
     },
     {
       "id": "p41",
@@ -1014,13 +1223,19 @@
       "voice": "price",
       "inserts": [
         {
-          "file": "c05",
+          "file": "s30",
           "kind": "cutout",
           "from": "left",
           "x": 0.14,
           "y": 0.62,
           "w": 0.24,
           "on": "Shopping"
+        }
+      ],
+      "sfx_at": [
+        {
+          "on": "Good",
+          "kind": "servo"
         }
       ]
     },
@@ -1031,12 +1246,15 @@
       "visual": {
         "type": "doc",
         "doc": {
-          "source": "Summary · US Federal Trade Commission · Jan 2025",
-          "headline": "Surveillance pricing: initial findings",
-          "body": "Intermediary firms said they could use details such as location, device, browsing, mouse movements and items left in a cart to tailor prices for individual shoppers. The staff called the findings preliminary.",
+          "source": "FTC staff report · Jan 2025",
+          "headline": "Surveillance pricing",
+          "body": "There are a number of variables that can impact what products a consumer is shown or what prices (including promotions or discounts) a consumer might be offered. These include where the consumer is, who the consumer is, what the consumer is doing, and prior actions a consumer has taken.",
+          "highlight": "where the consumer is, who the consumer is, what the consumer is doing",
+          "on": "personalise",
+          "mark": "underline",
           "seed": 51,
-          "at": 6.0,
-          "highlight": "tailor prices for individual shoppers"
+          "kicker": "STAFF REPORT  ·  QUOTED, P. 6",
+          "pre": "p40"
         }
       },
       "say": "In January twenty twenty-five, staff at the US Federal Trade Commission published early findings from a study of companies that help sellers personalise prices."
@@ -1046,29 +1264,7 @@
       "section": "1:30 PM: The machine",
       "text": "Here's the document itself. Page six.",
       "visual": {
-        "type": "archive",
-        "file": "ftc_surveillance_pricing_2025.pdf",
-        "look": "clipping",
-        "credit": "US Federal Trade Commission staff, Surveillance Pricing 6(b) study research summaries, Jan 2025 (US government work, public domain)",
-        "motion": "zoom_in",
-        "page": 6,
-        "crop": [
-          0.52,
-          0.07,
-          0.98,
-          0.31
-        ],
-        "caption": "FTC staff report, January 2025, p. 6",
-        "hand_marks": true,
-        "marks": [
-          {
-            "type": "underline",
-            "x": 0.39,
-            "y": 0.245,
-            "w": 0.26,
-            "on": "six."
-          }
-        ]
+        "type": "continue"
       }
     },
     {
@@ -1145,7 +1341,10 @@
       "visual": {
         "type": "title",
         "text": "In defence of the accused"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "d50",
@@ -1157,19 +1356,7 @@
         "index": 0,
         "motion": "static"
       },
-      "voice": "price",
-      "inserts": [
-        {
-          "file": "grocery_salem_1940.jpg",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.3,
-          "on": "change",
-          "caption": "Grocery store, Salem, Illinois, 1940"
-        }
-      ]
+      "voice": "price"
     },
     {
       "id": "d51",
@@ -1182,40 +1369,22 @@
       }
     },
     {
-      "id": "d51b",
-      "section": "In defence of the accused",
-      "text": "Airlines have charged different fares for the same seat for decades, and most of us accept it, because at least we know the game.",
-      "visual": {
-        "type": "clip",
-        "stock": "airplane passengers boarding",
-        "pick": 4732,
-        "in": 0,
-        "out": 14,
-        "fallback_prompt": "a 1950s airliner parked on a sunny runway with passengers climbing a boarding stair",
-        "credit": "Stock footage / Pixabay"
-      },
-      "inserts": [
-        {
-          "stock_photo": "airport departure board",
-          "pick": 4865665,
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.4,
-          "w": 0.3,
-          "on": "fares"
-        }
-      ]
-    },
-    {
       "id": "d52",
       "section": "In defence of the accused",
       "text": "And Instacart said shoppers were put into test groups at random, by product and location. Not by who they are.",
       "visual": {
-        "type": "reuse",
-        "beat": "s3a",
-        "index": 0,
-        "motion": "zoom_out"
+        "type": "doc",
+        "doc": {
+          "source": "Instacart statement · Dec 2025 · as reported",
+          "headline": "Random test groups",
+          "body": "Instacart said shoppers were put into test groups at random, by product and location, and not by personal or demographic data.",
+          "highlight": "at random",
+          "on": "random",
+          "mark": "circle",
+          "seed": 71,
+          "kicker": "COMPANY STATEMENT  ·  PARAPHRASED",
+          "pre": "p40"
+        }
       }
     },
     {
@@ -1241,7 +1410,10 @@
       "visual": {
         "type": "title",
         "text": "The twist"
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
     },
     {
       "id": "w60",
@@ -1291,10 +1463,20 @@
             "y": 0.7,
             "w": 0.4,
             "h": 0.5,
-            "text": "A",
-            "text_x": 0.27,
-            "text_y": 0.35,
             "on": "Group"
+          },
+          {
+            "type": "write",
+            "text": "GROUP A · $4.19",
+            "x": 0.27,
+            "y": 0.22,
+            "w": 0.26,
+            "h": 0.12,
+            "angle": 0,
+            "color": "paper",
+            "font": "headline",
+            "on": "Group",
+            "dur": 0.7
           },
           {
             "type": "circle",
@@ -1302,13 +1484,24 @@
             "y": 0.7,
             "w": 0.4,
             "h": 0.5,
-            "text": "B",
-            "text_x": 0.74,
-            "text_y": 0.35,
             "on": "B"
+          },
+          {
+            "type": "write",
+            "text": "GROUP B · $4.79",
+            "x": 0.73,
+            "y": 0.22,
+            "w": 0.26,
+            "h": 0.12,
+            "angle": 0,
+            "color": "paper",
+            "font": "headline",
+            "on": "B",
+            "dur": 0.7
           }
         ]
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "w62",
@@ -1326,7 +1519,13 @@
         "y": 0.22,
         "tail": "left",
         "at": 1.6
-      }
+      },
+      "sfx_at": [
+        {
+          "on": "running",
+          "kind": "cart"
+        }
+      ]
     },
     {
       "id": "w63",
@@ -1338,9 +1537,12 @@
           "source": "Instacart marketing & investor material · as reported by Consumer Reports",
           "headline": "“Shoppers are not aware”",
           "body": "The company's materials describing its pricing tools said that shoppers are not aware that they're in an experiment.",
+          "highlight": "shoppers are not aware that they're in an experiment",
+          "on": "aware",
+          "mark": "underline",
           "seed": 61,
-          "at": 3.0,
-          "highlight": "shoppers are not aware that they're in an experiment"
+          "kicker": "COMPANY MATERIAL  ·  QUOTED",
+          "pre": "w62"
         }
       }
     },
@@ -1354,7 +1556,8 @@
           "bg": "red"
         }
       },
-      "sfx": "thud"
+      "sfx": "stamp",
+      "pause_before": 1.2
     },
     {
       "id": "v70",
@@ -1367,24 +1570,26 @@
           "number": "002",
           "title": "Same basket",
           "stamp": "Case closed",
-          "lines": [
-            "Battery rumour: not proven",
-            "Price tests: confirmed"
-          ],
-          "stamp_at": 0.4
+          "stamp_at": -0.9
         }
-      }
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_brass",
+      "sting_at": -1.0,
+      "hold": 0.8
     },
     {
       "id": "v71",
       "section": "Case closed",
       "text": "And the ten-second defence.",
       "visual": {
-        "type": "reuse",
-        "beat": "c03",
-        "index": 0,
-        "motion": "zoom_in"
-      }
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "ink"
+        },
+        "text": "And the *ten-second* defence."
+      },
+      "music": "ub_secret_report"
     },
     {
       "id": "v72",
@@ -1397,7 +1602,8 @@
           "a laptop on a kitchen table next to a phone, both showing a plain shop page"
         ],
         "motion": "zoom_in"
-      }
+      },
+      "music": "ub_secret_report"
     },
     {
       "id": "v73",
@@ -1418,7 +1624,8 @@
             "on": "off"
           }
         ]
-      }
+      },
+      "music": "ub_secret_report"
     },
     {
       "id": "v74b",
@@ -1431,6 +1638,20 @@
         "motion": "zoom_out",
         "marks": [
           {
+            "type": "write",
+            "text": "$1.25",
+            "x": 0.605,
+            "y": 0.665,
+            "w": 0.09,
+            "h": 0.07,
+            "angle": -28,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
             "type": "circle",
             "x": 0.6,
             "y": 0.6,
@@ -1442,16 +1663,17 @@
       },
       "inserts": [
         {
-          "file": "grocery_prices_savannah_1939.jpg",
+          "file": "supermarket_1957_a.jpg",
           "kind": "photo",
           "from": "right",
           "x": 0.82,
           "y": 0.42,
           "w": 0.3,
           "on": "fact.",
-          "caption": "Prices posted outside a grocery, Savannah, 1939"
+          "caption": "Shopping in a supermarket, 1957"
         }
-      ]
+      ],
+      "music": "ub_secret_report"
     },
     {
       "id": "v75",
@@ -1469,18 +1691,7 @@
         "tail": "left",
         "at": 2.4
       },
-      "inserts": [
-        {
-          "file": "general_store_1936.jpg",
-          "kind": "photo",
-          "from": "left",
-          "x": 0.2,
-          "y": 0.42,
-          "w": 0.28,
-          "on": "checking",
-          "caption": "Moundville, 1936"
-        }
-      ]
+      "music": "ub_secret_report"
     },
     {
       "id": "v76",
@@ -1494,277 +1705,272 @@
         "hand_marks": true,
         "marks": [
           {
+            "type": "write",
+            "text": "WAS $6.69",
+            "x": 0.52,
+            "y": 0.505,
+            "w": 0.27,
+            "h": 0.1,
+            "angle": 10,
+            "color": "paper",
+            "font": "headline",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
             "type": "circle",
             "x": 0.48,
             "y": 0.5,
-            "w": 0.44,
-            "h": 0.6,
-            "text": "next case",
-            "text_y": 0.74,
+            "w": 0.6,
+            "h": 0.74,
             "on": "own"
           }
         ]
-      }
-    },
-    {
-      "id": "k2",
-      "section": "Case closed",
-      "text": "Larry's learning. You don't have to learn the hard way. Your next case is right here on screen.",
-      "visual": {
-        "type": "reuse",
-        "beat": "v75",
-        "index": 0,
-        "motion": "static"
       },
-      "cta": {
-        "on": "next",
-        "click_on": "screen"
-      }
+      "music": "ub_secret_report"
     },
     {
-      "id": "k3",
+      "id": "e1",
       "section": "Case closed",
-      "text": "Case file zero zero three.",
+      "text": "Case closed. Guilty: the algorithm. Accomplice: your location.",
       "visual": {
-        "type": "casefile",
-        "casefile": {
-          "mode": "open",
-          "number": "003",
-          "title": "The fake sale",
-          "inside": [
-            "NEXT CASE: the sale that never was",
-            "SUSPECT: the 'was' price",
-            "STATUS: open"
-          ]
+        "type": "endscreen",
+        "endscreen": {
+          "number": "002",
+          "title": "Same basket",
+          "stamp": "Case closed",
+          "verdict": [
+            "Guilty: the algorithm.",
+            "Accomplice: your location."
+          ],
+          "next": {
+            "number": "003",
+            "title": "The fake sale",
+            "tagline": "The sale that never was.",
+            "image_file": "next_tag.png",
+            "copies": 1,
+            "prices": [
+              "$3.99"
+            ],
+            "strike": [
+              0.3,
+              0.2,
+              0.92,
+              0.2
+            ]
+          }
         }
       },
-      "hold": 14,
-      "cta": {
-        "at": 0.2,
-        "click_at": 1.4,
-        "hold": 14
-      }
+      "block_start": true,
+      "sting": "ub_sting_brass",
+      "sting_at": 0.1
+    },
+    {
+      "id": "e2",
+      "section": "Case closed",
+      "text": "Next case: the sale that never was.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 7.0
+    },
+    {
+      "id": "e3",
+      "section": "Case closed",
+      "text": "Subscribe, so the next case file finds you. And your next case is right here.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 14.3,
+      "block_end": 20.0
     }
   ],
   "shorts": [
     {
       "id": "s1",
-      "hook": "Low battery = higher price?",
-      "title": "Does your ride cost more on low battery? #shorts",
+      "title": "Same basket. Two receipts. #shorts",
+      "hook": "Same basket. 2 receipts.",
       "beats": [
         {
-          "text": "Does your ride cost more when your battery is low?",
+          "text": "Same store. Same basket. Same minute.",
           "visual": {
-            "type": "reuse",
-            "beat": "c05",
-            "index": 0,
-            "motion": "static",
-            "draw": {
-              "at": 0.1,
-              "dur": 2.8,
-              "box": [
-                0.15,
-                0.0,
-                0.85,
-                1.0
-              ]
+            "type": "split",
+            "split": {
+              "left": "s30",
+              "right": "s30.1",
+              "names": [
+                "LARRY",
+                "LINDA"
+              ],
+              "clock": "10:15",
+              "clock_sub": "SAME MINUTE"
             }
           },
-          "punch": [
-            "low?"
+          "sfx_at": [
+            {
+              "on": "Same",
+              "kind": "tap"
+            },
+            {
+              "on": "minute",
+              "kind": "tap"
+            }
           ],
           "id": "s1_0"
         },
         {
-          "text": "In 2016, Uber's own economist said riders with a dying phone were more willing to accept surge pricing.",
+          "text": "Two prices. Larry is made up. His receipt is not.",
           "visual": {
-            "type": "reuse",
-            "beat": "c01",
-            "index": 1,
-            "motion": "zoom_in"
+            "type": "receipts",
+            "receipts": {
+              "store": "SAME STORE · SEATTLE",
+              "when": "10:15 AM",
+              "stamp": "Real totals",
+              "receipts": [
+                {
+                  "name": "LARRY",
+                  "total": "$123.93",
+                  "items": [
+                    [
+                      "WHOLE MILK 1 GAL",
+                      "5.57"
+                    ],
+                    [
+                      "EGGS LARGE x12",
+                      "6.38"
+                    ],
+                    [
+                      "SOURDOUGH LOAF",
+                      "7.64"
+                    ],
+                    [
+                      "COFFEE 12 OZ",
+                      "13.39"
+                    ],
+                    [
+                      "CHEDDAR 8 OZ",
+                      "6.27"
+                    ],
+                    [
+                      "BANANAS 2 LB",
+                      "1.87"
+                    ],
+                    [
+                      "CHICKEN THIGHS",
+                      "13.36"
+                    ],
+                    [
+                      "OLIVE OIL 500ML",
+                      "14.03"
+                    ],
+                    [
+                      "CEREAL",
+                      "7.06"
+                    ],
+                    [
+                      "PASTA x3",
+                      "6.64"
+                    ],
+                    [
+                      "APPLES 3 LB",
+                      "7.41"
+                    ],
+                    [
+                      "BUTTER",
+                      "6.66"
+                    ],
+                    [
+                      "TOMATOES",
+                      "5.51"
+                    ],
+                    [
+                      "SALMON FILLET",
+                      "22.14"
+                    ]
+                  ]
+                },
+                {
+                  "name": "LINDA",
+                  "total": "$114.34",
+                  "items": [
+                    [
+                      "WHOLE MILK 1 GAL",
+                      "5.07"
+                    ],
+                    [
+                      "EGGS LARGE x12",
+                      "5.85"
+                    ],
+                    [
+                      "SOURDOUGH LOAF",
+                      "7.02"
+                    ],
+                    [
+                      "COFFEE 12 OZ",
+                      "12.69"
+                    ],
+                    [
+                      "CHEDDAR 8 OZ",
+                      "5.59"
+                    ],
+                    [
+                      "BANANAS 2 LB",
+                      "1.69"
+                    ],
+                    [
+                      "CHICKEN THIGHS",
+                      "12.51"
+                    ],
+                    [
+                      "OLIVE OIL 500ML",
+                      "12.99"
+                    ],
+                    [
+                      "CEREAL",
+                      "6.67"
+                    ],
+                    [
+                      "PASTA x3",
+                      "5.91"
+                    ],
+                    [
+                      "APPLES 3 LB",
+                      "6.75"
+                    ],
+                    [
+                      "BUTTER",
+                      "6.27"
+                    ],
+                    [
+                      "TOMATOES",
+                      "5.07"
+                    ],
+                    [
+                      "SALMON FILLET",
+                      "20.26"
+                    ]
+                  ]
+                }
+              ],
+              "circle_on": "Two",
+              "stamp_on": "receipt"
+            }
           },
-          "say": "In twenty sixteen, Uber's own economist said riders with a dying phone were more willing to accept surge pricing.",
           "id": "s1_1"
         },
         {
-          "text": "But he also said Uber doesn't use battery to set prices. Nobody has shown it does.",
-          "visual": {
-            "type": "reuse",
-            "beat": "c01",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "id": "s1_2"
-        },
-        {
-          "text": "Verdict: *not* *proven.*",
-          "visual": {
-            "type": "kinetic",
-            "kinetic": {
-              "bg": "red"
-            }
-          },
-          "sfx": "thud",
-          "id": "s1_3"
-        },
-        {
-          "text": "But your phone still knows where you are, and some apps have changed prices because of that.",
-          "visual": {
-            "type": "reuse",
-            "beat": "b16",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "id": "s1_4"
-        },
-        {
-          "text": "That's the real case. And it starts with one question people keep asking:",
-          "visual": {
-            "type": "reuse",
-            "beat": "a22",
-            "index": 0,
-            "motion": "static"
-          },
-          "id": "s1_5"
-        }
-      ]
-    },
-    {
-      "id": "s2",
-      "hook": "Same TV. +$100.",
-      "title": "The TV that got $100 dearer in the parking lot #shorts",
-      "beats": [
-        {
-          "text": "This TV cost $499.99 in the app.",
-          "visual": {
-            "type": "reuse",
-            "beat": "a21",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "say": "This TV cost four ninety-nine ninety-nine in the app.",
-          "id": "s2_0"
-        },
-        {
-          "text": "The reporter drove to the store. In the parking lot, same TV, same app: $599.99.",
-          "visual": {
-            "type": "reuse",
-            "beat": "a22",
-            "index": 0,
-            "motion": "static"
-          },
-          "counter": {
-            "from": 499.99,
-            "to": 599.99,
-            "prefix": "$",
-            "decimals": 2,
-            "label": "same TV · same app",
-            "on": "same",
-            "dur": 1.2
-          },
-          "say": "The reporter drove to the store. In the parking lot, same TV, same app: five ninety-nine ninety-nine.",
-          "id": "s2_1"
-        },
-        {
-          "text": "The Target app had switched to the in-store price as the phone got close. KARE 11 found it in 2019.",
-          "visual": {
-            "type": "reuse",
-            "beat": "a23",
-            "index": 0,
-            "motion": "static",
-            "marks": [
-              {
-                "type": "circle",
-                "x": 0.47,
-                "y": 0.2,
-                "w": 0.15,
-                "h": 0.3,
-                "on": "close"
-              }
-            ],
-            "hand_marks": true
-          },
-          "say": "The Target app had switched to the in-store price as the phone got close. Kare Eleven found it in twenty nineteen.",
-          "id": "s2_2"
-        },
-        {
-          "text": "A hundred dollars, for driving closer.",
-          "visual": {
-            "type": "kinetic",
-            "kinetic": {
-              "bg": "paper"
-            }
-          },
-          "punch": [
-            "hundred"
-          ],
-          "id": "s2_3"
-        },
-        {
-          "text": "So before you buy, check the price somewhere else. Because this TV cost $499.99 in the app.",
-          "visual": {
-            "type": "reuse",
-            "beat": "a20",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "say": "So before you buy, check the price somewhere else. Because this TV cost four ninety-nine ninety-nine in the app.",
-          "id": "s2_4"
-        }
-      ]
-    },
-    {
-      "id": "s3",
-      "hook": "Same cart. +$9.59",
-      "title": "Same groceries. Same store. $10 more. #shorts",
-      "beats": [
-        {
-          "text": "Same groceries. Same store. Same minute. Different total.",
+          "text": "In 2025, hundreds of volunteers tested it. Same basket, same store, same moment.",
           "visual": {
             "type": "reuse",
             "beat": "s31",
-            "index": 0,
             "motion": "zoom_in"
           },
-          "inserts": [
-            {
-              "file": "supermarket_1957_a.jpg",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.48,
-              "caption": "Supermarket, 1957",
-              "at": 0.8
-            }
-          ],
-          "id": "s3_0"
+          "say": "In twenty twenty-five, hundreds of volunteers tested it. Same basket, same store, same moment.",
+          "id": "s1_2"
         },
         {
-          "text": "At one Seattle Safeway, the same basket cost from $114.34 to $123.93.",
-          "say": "At one Seattle Safeway, the same basket cost from one fourteen thirty-four to one twenty-three ninety-three.",
-          "visual": {
-            "type": "chart",
-            "chart": {
-              "kind": "bar",
-              "title": "Same Safeway basket",
-              "labels": [
-                "Cheapest",
-                "Most expensive"
-              ],
-              "values": [
-                114.34,
-                123.93
-              ],
-              "unit": "$",
-              "decimals": 2,
-              "highlight": 1
-            }
-          },
-          "id": "s3_1"
-        },
-        {
-          "text": "Only eight percent of shoppers got the cheapest one.",
+          "text": "Only eight percent of shoppers got the lowest total.",
           "visual": {
             "type": "stat",
             "stat": {
@@ -1774,354 +1980,493 @@
               "decimals": 0
             }
           },
-          "id": "s3_2"
+          "pause_at": {
+            "word": "eight",
+            "sec": 1.2,
+            "hit": "stamp"
+          },
+          "id": "s1_3"
         },
         {
-          "text": "Instacart said they were price tests. It ended them in December 2025.",
+          "text": "So next time, compare. Same store. Same basket. Same minute.",
           "visual": {
             "type": "reuse",
-            "beat": "s3c",
-            "index": 0,
+            "beat": "s31",
             "motion": "zoom_in"
           },
-          "say": "Instacart said they were price tests. It ended them in December twenty twenty-five.",
-          "id": "s3_3"
-        },
-        {
-          "text": "So next time, compare. Because it can be the same groceries, same store, same minute.",
-          "visual": {
-            "type": "reuse",
-            "beat": "s30",
-            "index": 1,
-            "motion": "zoom_in"
-          },
-          "id": "s3_4"
+          "id": "s1_4"
         }
       ]
     },
     {
-      "id": "s4",
-      "hook": "5 prices. 1 product.",
-      "title": "Five price tags. One product. #shorts",
+      "id": "s2",
+      "title": "$114.34 vs $123.93 — same store, same minute #shorts",
+      "hook": "$114.34 vs $123.93",
       "beats": [
         {
-          "text": "Five price tags. One product. Which one is real?",
+          "text": "One Seattle Safeway. One basket. Two receipts.",
           "visual": {
-            "type": "reuse",
-            "beat": "s35",
-            "index": 0,
-            "motion": "static",
-            "marks": [
-              {
-                "type": "underline",
-                "x": 0.48,
-                "y": 0.955,
-                "w": 0.86,
-                "on": "real?"
-              }
-            ],
-            "hand_marks": true
-          },
-          "sfx": "pop",
-          "id": "s4_0"
-        },
-        {
-          "text": "All of them. In a 2025 test, some items had up to five prices at the same moment.",
-          "visual": {
-            "type": "reuse",
-            "beat": "s35",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "say": "All of them. In a twenty twenty-five test, some items had up to five prices at the same moment.",
-          "id": "s4_1"
-        },
-        {
-          "text": "The gap on a single item reached 23 percent.",
-          "say": "The gap on a single item reached twenty-three percent.",
-          "visual": {
-            "type": "stat",
-            "stat": {
-              "value": 23,
-              "suffix": "%",
-              "label": "max gap, same item",
-              "decimals": 0
+            "type": "receipts",
+            "receipts": {
+              "store": "SAME STORE · SEATTLE",
+              "when": "10:15 AM",
+              "stamp": "Real totals",
+              "receipts": [
+                {
+                  "name": "LARRY",
+                  "total": "$123.93",
+                  "items": [
+                    [
+                      "WHOLE MILK 1 GAL",
+                      "5.57"
+                    ],
+                    [
+                      "EGGS LARGE x12",
+                      "6.38"
+                    ],
+                    [
+                      "SOURDOUGH LOAF",
+                      "7.64"
+                    ],
+                    [
+                      "COFFEE 12 OZ",
+                      "13.39"
+                    ],
+                    [
+                      "CHEDDAR 8 OZ",
+                      "6.27"
+                    ],
+                    [
+                      "BANANAS 2 LB",
+                      "1.87"
+                    ],
+                    [
+                      "CHICKEN THIGHS",
+                      "13.36"
+                    ],
+                    [
+                      "OLIVE OIL 500ML",
+                      "14.03"
+                    ],
+                    [
+                      "CEREAL",
+                      "7.06"
+                    ],
+                    [
+                      "PASTA x3",
+                      "6.64"
+                    ],
+                    [
+                      "APPLES 3 LB",
+                      "7.41"
+                    ],
+                    [
+                      "BUTTER",
+                      "6.66"
+                    ],
+                    [
+                      "TOMATOES",
+                      "5.51"
+                    ],
+                    [
+                      "SALMON FILLET",
+                      "22.14"
+                    ]
+                  ]
+                },
+                {
+                  "name": "LINDA",
+                  "total": "$114.34",
+                  "items": [
+                    [
+                      "WHOLE MILK 1 GAL",
+                      "5.07"
+                    ],
+                    [
+                      "EGGS LARGE x12",
+                      "5.85"
+                    ],
+                    [
+                      "SOURDOUGH LOAF",
+                      "7.02"
+                    ],
+                    [
+                      "COFFEE 12 OZ",
+                      "12.69"
+                    ],
+                    [
+                      "CHEDDAR 8 OZ",
+                      "5.59"
+                    ],
+                    [
+                      "BANANAS 2 LB",
+                      "1.69"
+                    ],
+                    [
+                      "CHICKEN THIGHS",
+                      "12.51"
+                    ],
+                    [
+                      "OLIVE OIL 500ML",
+                      "12.99"
+                    ],
+                    [
+                      "CEREAL",
+                      "6.67"
+                    ],
+                    [
+                      "PASTA x3",
+                      "5.91"
+                    ],
+                    [
+                      "APPLES 3 LB",
+                      "6.75"
+                    ],
+                    [
+                      "BUTTER",
+                      "6.27"
+                    ],
+                    [
+                      "TOMATOES",
+                      "5.07"
+                    ],
+                    [
+                      "SALMON FILLET",
+                      "20.26"
+                    ]
+                  ]
+                }
+              ],
+              "circle_on": "Two",
+              "stamp_on": "receipt"
             }
           },
-          "id": "s4_2"
+          "id": "s2_0"
         },
         {
-          "text": "Shoppers weren't told. They just saw a price and paid it.",
+          "text": "At one Safeway in Seattle, the cheapest basket came to 114 dollars 34. The most expensive: 123 dollars 93.",
+          "visual": {
+            "type": "baskets",
+            "baskets": {
+              "image": "d53",
+              "title": "Same Safeway basket · Seattle",
+              "sub": "cheapest vs most expensive total · same store, same minute",
+              "labels": [
+                "Cheapest basket",
+                "Most expensive"
+              ],
+              "values": [
+                114.34,
+                123.93
+              ],
+              "write_on": [
+                "114",
+                "123"
+              ],
+              "gap": "+$9.59"
+            }
+          },
+          "pause_at": {
+            "word": "114",
+            "sec": 1.2,
+            "hit": "stamp"
+          },
+          "say": "At one Safeway in Seattle, the cheapest basket came to one hundred and fourteen dollars thirty-four. The most expensive: one hundred and twenty-three ninety-three.",
+          "ledger": [
+            {
+              "label": "BASKET A",
+              "amount": "$114.34",
+              "on": "114"
+            },
+            {
+              "label": "BASKET B",
+              "amount": "$123.93",
+              "on": "123"
+            }
+          ],
+          "id": "s2_1"
+        },
+        {
+          "text": "Nearly ten dollars of difference. On one ordinary grocery run. For nothing but luck.",
           "visual": {
             "type": "reuse",
             "beat": "s31",
             "index": 0,
             "motion": "zoom_in"
           },
-          "inserts": [
+          "punch": [
+            "luck."
+          ],
+          "sfx_at": [
             {
-              "file": "piggly_aisle_1918.jpg",
-              "kind": "photo",
-              "from": "right",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.48,
-              "caption": "Piggly Wiggly, 1918"
+              "on": "grocery",
+              "kind": "cart"
             }
           ],
+          "ledger": [
+            {
+              "label": "DIFFERENCE",
+              "amount": "-$9.59",
+              "loss": true,
+              "on": "luck"
+            }
+          ],
+          "id": "s2_2"
+        },
+        {
+          "text": "Negligible, by Consumer Reports' estimate, could add up to about twelve hundred dollars a year for a family of four.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s30",
+            "index": 1,
+            "motion": "zoom_in"
+          },
+          "pause_at": {
+            "word": "twelve",
+            "sec": 1.2,
+            "hit": "stamp"
+          },
+          "ledger": [
+            {
+              "label": "PER YEAR (CR est.)",
+              "amount": "-$1,200",
+              "loss": true,
+              "circle": true,
+              "on": "twelve"
+            }
+          ],
+          "id": "s2_3"
+        },
+        {
+          "text": "Within two weeks of the report, Instacart ended the experiments. But the method is not Instacart's alone. And the tests were only the visible part.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s3c",
+            "motion": "zoom_in"
+          },
+          "id": "s2_4"
+        },
+        {
+          "text": "So check your receipt: one hundred and fourteen, or one hundred and twenty-three?",
+          "visual": {
+            "type": "reuse",
+            "beat": "s31",
+            "motion": "zoom_in"
+          },
+          "id": "s2_5"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "The 3% battery rumour: alibi confirmed #shorts",
+      "hook": "3% battery = higher fare?",
+      "beats": [
+        {
+          "text": "Does your ride cost more when your phone is at three percent?",
+          "visual": {
+            "type": "battery",
+            "battery": {
+              "fare": "$24.80",
+              "tag_label": "RIDE FARE",
+              "from": 0.42,
+              "to": 0.03,
+              "dur": 3.6,
+              "drain_on": "opens",
+              "note": "same fare"
+            }
+          },
+          "id": "s3_0"
+        },
+        {
+          "text": "Here's what was actually said. Uber had noticed that riders with a nearly dead phone seemed more willing to accept surge pricing.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "Summary · NPR, Hidden Brain · 2016",
+              "headline": "Uber's economist on dying phones",
+              "body": "Uber's head of economic research said riders whose phones were nearly out of battery seemed more willing to accept surge pricing. He also said Uber does not use battery level to set prices.",
+              "highlight": "more willing to accept surge pricing",
+              "on": "willing",
+              "mark": "underline",
+              "seed": 31,
+              "pre": "b10"
+            }
+          },
+          "id": "s3_1"
+        },
+        {
+          "text": "But he also said Uber does not use your battery to set the price. And nobody has shown that it does.",
+          "visual": {
+            "type": "reuse",
+            "beat": "m12",
+            "motion": "zoom_in"
+          },
+          "id": "s3_2"
+        },
+        {
+          "text": "Verdict: not proven.",
+          "visual": {
+            "type": "reuse",
+            "beat": "m12",
+            "motion": "static"
+          },
+          "stamp": {
+            "text": "Not proven",
+            "on": "not"
+          },
+          "id": "s3_3"
+        },
+        {
+          "text": "But notice what the rumour got right. Your phone knows things about you. Where you are. What you're doing. How badly you need it.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b16",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "circle",
+                "x": 0.31,
+                "y": 0.22,
+                "w": 0.1,
+                "h": 0.2,
+                "on": "Where"
+              },
+              {
+                "type": "circle",
+                "x": 0.49,
+                "y": 0.13,
+                "w": 0.09,
+                "h": 0.19,
+                "on": "doing."
+              },
+              {
+                "type": "circle",
+                "x": 0.67,
+                "y": 0.23,
+                "w": 0.1,
+                "h": 0.2,
+                "on": "badly"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s3_4"
+        },
+        {
+          "text": "So, the next time you're down to three percent… does your ride cost more?",
+          "visual": {
+            "type": "reuse",
+            "beat": "b10",
+            "motion": "zoom_in"
+          },
+          "id": "s3_5"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "Meet the machine: location, device, cart #shorts",
+      "hook": "Location · Device · Cart",
+      "beats": [
+        {
+          "text": "The ingredients on the table: where you are, what device you use, what you browse, even how you move your mouse, and what you leave in your cart.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p43",
+            "motion": "zoom_in"
+          },
+          "id": "s4_0"
+        },
+        {
+          "text": "Good afternoon! Shopping on a phone, I see. Sorting by price, low to high. Lovely.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p41",
+            "motion": "zoom_in"
+          },
+          "sfx_at": [
+            {
+              "on": "Good",
+              "kind": "servo"
+            }
+          ],
+          "voice": "price",
+          "id": "s4_1"
+        },
+        {
+          "text": "The FTC's own staff wrote it down: where you are, who you are, what you're doing.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "FTC staff report · Jan 2025",
+              "headline": "Surveillance pricing",
+              "body": "There are a number of variables that can impact what products a consumer is shown or what prices (including promotions or discounts) a consumer might be offered. These include where the consumer is, who the consumer is, what the consumer is doing, and prior actions a consumer has taken.",
+              "highlight": "where the consumer is, who the consumer is, what the consumer is doing",
+              "on": "where",
+              "mark": "underline",
+              "seed": 51,
+              "kicker": "STAFF REPORT  ·  QUOTED, P. 6"
+            }
+          },
+          "id": "s4_2"
+        },
+        {
+          "text": "One illustration in the report: a seller spots a new parent from baby purchases and recent searches, and offers a fast-delivery baby thermometer at a premium.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p44",
+            "motion": "zoom_in"
+          },
           "id": "s4_3"
         },
         {
-          "text": "So check on another phone before you pay. Then ask again: five price tags, one product?",
+          "text": "The FTC staff stressed it was preliminary, and that no law had been found broken. But the toolbox exists.",
           "visual": {
             "type": "reuse",
-            "beat": "v72",
-            "index": 0,
+            "beat": "p45",
             "motion": "zoom_in"
           },
           "id": "s4_4"
+        },
+        {
+          "text": "Nothing personal. Just your location, your device, your cart.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p40",
+            "index": 0,
+            "motion": "zoom_in"
+          },
+          "voice": "price",
+          "id": "s4_5"
         }
       ]
     },
     {
       "id": "s5",
-      "hook": "The fake 'was' price",
-      "title": "Everyone paid $3.99. Not everyone felt the same #shorts",
+      "title": "You weren't targeted. You were tested. #shorts",
+      "hook": "You're the test",
       "beats": [
         {
-          "text": "These crackers had three different 'was' prices.",
+          "text": "It tested everyone. At random. Like mice running through a supermarket.",
           "visual": {
             "type": "reuse",
-            "beat": "s37",
-            "index": 0,
+            "beat": "w62",
             "motion": "zoom_in"
           },
-          "inserts": [
+          "sfx_at": [
             {
-              "file": "grocery_lincoln_1942.jpg",
-              "kind": "photo",
-              "from": "left",
-              "x": 0.3,
-              "y": 0.42,
-              "w": 0.48,
-              "caption": "Grocery, 1942",
-              "at": 1.0
+              "on": "running",
+              "kind": "cart"
             }
           ],
           "id": "s5_0"
         },
         {
-          "text": "Five ninety-three. Five ninety-nine. Six sixty-nine. Everyone paid three ninety-nine.",
-          "visual": {
-            "type": "reuse",
-            "beat": "s37",
-            "index": 0,
-            "motion": "static"
-          },
-          "id": "s5_1"
-        },
-        {
-          "text": "Same price. Different *feeling.*",
-          "visual": {
-            "type": "kinetic",
-            "kinetic": {
-              "bg": "paper"
-            }
-          },
-          "id": "s5_2"
-        },
-        {
-          "text": "The bigger the fake 'was', the better the bargain feels. That's *anchoring.*",
-          "visual": {
-            "type": "kinetic",
-            "kinetic": {
-              "bg": "ink"
-            }
-          },
-          "id": "s5_3"
-        },
-        {
-          "text": "Montana, 1887. 'These shoes sell for double the price.' One week only. Same trick.",
-          "visual": {
-            "type": "reuse",
-            "beat": "s39c",
-            "index": 0,
-            "motion": "static",
-            "marks": [
-              {
-                "type": "underline",
-                "x": 0.52,
-                "y": 0.455,
-                "w": 0.27,
-                "on": "double"
-              }
-            ],
-            "hand_marks": true
-          },
-          "say": "Montana, eighteen eighty-seven. These shoes sell for double the price. One week only. Same trick.",
-          "id": "s5_4"
-        },
-        {
-          "text": "So ignore the 'was'. Look again at these crackers: three different 'was' prices.",
-          "visual": {
-            "type": "reuse",
-            "beat": "s37",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "id": "s5_5"
-        }
-      ]
-    },
-    {
-      "id": "s6",
-      "hook": "What shops know about you",
-      "title": "What shops may know before you pay #shorts",
-      "beats": [
-        {
-          "text": "Meet the machine. He'd like a word about your shopping.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p40",
-            "index": 0,
-            "motion": "static",
-            "draw": {
-              "at": 0.1,
-              "dur": 2.8,
-              "box": [
-                0.1,
-                0.0,
-                0.9,
-                1.0
-              ]
-            }
-          },
-          "id": "s6_0"
-        },
-        {
-          "text": "Location. Device. Browsing. Even your mouse movements and abandoned carts.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p43",
-            "index": 0,
-            "motion": "static"
-          },
-          "id": "s6_1"
-        },
-        {
-          "text": "It's in the regulator's own report: where you are, who you are, what you're doing.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p42b",
-            "index": 0,
-            "motion": "static",
-            "marks": [
-              {
-                "type": "underline",
-                "x": 0.39,
-                "y": 0.245,
-                "w": 0.26,
-                "on": "where"
-              }
-            ],
-            "hand_marks": true
-          },
-          "id": "s6_2"
-        },
-        {
-          "text": "An FTC example: spot a new parent, offer a baby thermometer at a premium.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p44",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "on_screen": "FTC example",
-          "id": "s6_3"
-        },
-        {
-          "text": "The FTC said the findings were preliminary. But the toolbox exists.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p45",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "inserts": [
-            {
-              "file": "c05",
-              "kind": "cutout",
-              "from": "left",
-              "x": 0.24,
-              "y": 0.6,
-              "w": 0.4
-            }
-          ],
-          "id": "s6_4"
-        },
-        {
-          "text": "Nothing personal. Just data.",
-          "voice": "price",
-          "visual": {
-            "type": "reuse",
-            "beat": "p40",
-            "motion": "zoom_in"
-          },
-          "id": "s6_5"
-        },
-        {
-          "text": "So, before you pay, meet the machine.",
-          "visual": {
-            "type": "reuse",
-            "beat": "p40",
-            "index": 0,
-            "motion": "static"
-          },
-          "id": "s6_6"
-        }
-      ]
-    },
-    {
-      "id": "s7",
-      "hook": "You're the test",
-      "title": "You weren't targeted. You were sampled. #shorts",
-      "beats": [
-        {
-          "text": "Think the app picked on you?",
-          "visual": {
-            "type": "reuse",
-            "beat": "w60",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "inserts": [
-            {
-              "file": "p40",
-              "kind": "cutout",
-              "from": "right",
-              "x": 0.78,
-              "y": 0.62,
-              "w": 0.4
-            }
-          ],
-          "id": "s7_0"
-        },
-        {
-          "text": "It didn't need to. It tested everyone, at random. Like mice in a supermarket.",
-          "visual": {
-            "type": "reuse",
-            "beat": "w62",
-            "index": 0,
-            "motion": "zoom_in"
-          },
-          "id": "s7_1"
-        },
-        {
-          "text": "Group A sees one price. Group B sees another.",
+          "text": "A test doesn't need to know who you are. It just needs enough people. Group A sees one price. Group B sees another. And the machine learns which one people will put up with.",
           "visual": {
             "type": "reuse",
             "beat": "w61b",
-            "index": 0,
             "motion": "static",
             "marks": [
               {
@@ -2130,10 +2475,20 @@
                 "y": 0.7,
                 "w": 0.4,
                 "h": 0.5,
-                "text": "A",
-                "text_x": 0.27,
-                "text_y": 0.35,
                 "on": "Group"
+              },
+              {
+                "type": "write",
+                "text": "GROUP A · $4.19",
+                "x": 0.27,
+                "y": 0.22,
+                "w": 0.26,
+                "h": 0.12,
+                "angle": 0,
+                "color": "paper",
+                "font": "headline",
+                "on": "Group",
+                "dur": 0.7
               },
               {
                 "type": "circle",
@@ -2141,25 +2496,43 @@
                 "y": 0.7,
                 "w": 0.4,
                 "h": 0.5,
-                "text": "B",
-                "text_x": 0.74,
-                "text_y": 0.35,
                 "on": "B"
+              },
+              {
+                "type": "write",
+                "text": "GROUP B · $4.79",
+                "x": 0.73,
+                "y": 0.22,
+                "w": 0.26,
+                "h": 0.12,
+                "angle": 0,
+                "color": "paper",
+                "font": "headline",
+                "on": "B",
+                "dur": 0.7
               }
             ],
             "hand_marks": true
           },
-          "id": "s7_2"
+          "id": "s5_1"
         },
         {
-          "text": "The company's own material said: shoppers are not aware that they're in an experiment.",
+          "text": "Instacart's own marketing material put it plainly: shoppers are not aware that they're in an experiment.",
           "visual": {
-            "type": "reuse",
-            "beat": "w62",
-            "index": 0,
-            "motion": "static"
+            "type": "doc",
+            "doc": {
+              "source": "Instacart marketing & investor material · as reported by Consumer Reports",
+              "headline": "“Shoppers are not aware”",
+              "body": "The company's materials describing its pricing tools said that shoppers are not aware that they're in an experiment.",
+              "highlight": "shoppers are not aware that they're in an experiment",
+              "on": "aware",
+              "mark": "underline",
+              "seed": 61,
+              "kicker": "COMPANY MATERIAL  ·  QUOTED",
+              "pre": "w62"
+            }
           },
-          "id": "s7_3"
+          "id": "s5_2"
         },
         {
           "text": "You weren't *targeted.* You were *sampled.*",
@@ -2169,18 +2542,292 @@
               "bg": "red"
             }
           },
-          "sfx": "thud",
-          "id": "s7_4"
+          "sfx": "stamp",
+          "id": "s5_3"
         },
         {
-          "text": "Check the price on another phone. Because next time, ask yourself: think the app picked on you?",
+          "text": "So the next time a price looks odd… remember the mice.",
+          "visual": {
+            "type": "reuse",
+            "beat": "w62",
+            "motion": "zoom_in"
+          },
+          "id": "s5_4"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "The 'was' price that never was #shorts",
+      "hook": "WAS $6.69?",
+      "beats": [
+        {
+          "text": "Now look at these crackers. Shoppers were shown three different 'original' prices: five ninety-three, five ninety-nine, and six sixty-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s37",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "WAS $5.93",
+                "x": 0.52,
+                "y": 0.505,
+                "w": 0.27,
+                "h": 0.1,
+                "angle": 10,
+                "color": "paper",
+                "font": "headline",
+                "on": "five ninety-three",
+                "dur": 0.7,
+                "until_on": "five ninety-nine"
+              },
+              {
+                "type": "write",
+                "text": "WAS $5.99",
+                "x": 0.52,
+                "y": 0.505,
+                "w": 0.27,
+                "h": 0.1,
+                "angle": 10,
+                "color": "paper",
+                "font": "headline",
+                "on": "five ninety-nine",
+                "dur": 0.7,
+                "until_on": "six"
+              },
+              {
+                "type": "write",
+                "text": "WAS $6.69",
+                "x": 0.52,
+                "y": 0.505,
+                "w": 0.27,
+                "h": 0.1,
+                "angle": 10,
+                "color": "paper",
+                "font": "headline",
+                "on": "six",
+                "dur": 0.7
+              }
+            ]
+          },
+          "id": "s6_0"
+        },
+        {
+          "text": "And every single one of them paid the same sale price: three ninety-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s37",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "WAS $6.69",
+                "x": 0.52,
+                "y": 0.505,
+                "w": 0.27,
+                "h": 0.1,
+                "angle": 10,
+                "color": "paper",
+                "font": "headline",
+                "dur": 0.01,
+                "at": 0.0,
+                "until_on": "three",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "EVERYONE: $3.99",
+                "x": 0.52,
+                "y": 0.505,
+                "w": 0.3,
+                "h": 0.11,
+                "angle": 10,
+                "color": "paper",
+                "font": "marker",
+                "on": "three",
+                "dur": 0.7
+              },
+              {
+                "type": "circle",
+                "x": 0.5,
+                "y": 0.5,
+                "w": 0.6,
+                "h": 0.74,
+                "on": "sale"
+              }
+            ]
+          },
+          "id": "s6_1"
+        },
+        {
+          "text": "Same price. Different *feeling.*",
+          "visual": {
+            "type": "kinetic",
+            "kinetic": {
+              "bg": "paper"
+            }
+          },
+          "id": "s6_2"
+        },
+        {
+          "text": "The bigger the fake 'was', the better the deal felt. Economists call it anchoring.",
+          "visual": {
+            "type": "kinetic",
+            "kinetic": {
+              "bg": "paper"
+            },
+            "text": "The bigger the fake 'was', the better the deal felt. Economists call it *anchoring.*"
+          },
+          "punch": [
+            "anchoring."
+          ],
+          "id": "s6_3"
+        },
+        {
+          "text": "That trick is older than the phone. Montana, 1887: these shoes sell for double the price. One week only.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s39c",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "underline",
+                "x": 0.52,
+                "y": 0.49,
+                "w": 0.27,
+                "on": "double"
+              }
+            ],
+            "hand_marks": true
+          },
+          "say": "That trick is older than the phone. Montana, eighteen eighty-seven: these shoes sell for double the price. One week only.",
+          "id": "s6_4"
+        },
+        {
+          "text": "Next case: the sale that never was. Like these three 'was' prices.",
+          "visual": {
+            "type": "reuse",
+            "beat": "s37",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "WAS $6.69",
+                "x": 0.52,
+                "y": 0.505,
+                "w": 0.27,
+                "h": 0.1,
+                "angle": 10,
+                "color": "paper",
+                "font": "headline",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "circle",
+                "x": 0.48,
+                "y": 0.5,
+                "w": 0.6,
+                "h": 0.74,
+                "on": "own"
+              }
+            ]
+          },
+          "id": "s6_5"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "Three things to do before you tap #shorts",
+      "hook": "3 checks before you pay",
+      "beats": [
+        {
+          "text": "Three things to do before you tap pay.",
+          "visual": {
+            "type": "reuse",
+            "beat": "v75",
+            "motion": "zoom_in"
+          },
+          "id": "s7_0"
+        },
+        {
+          "text": "Before you pay, check the price somewhere else: another phone, logged out, or the store's own website.",
           "visual": {
             "type": "reuse",
             "beat": "v72",
-            "index": 0,
             "motion": "zoom_in"
           },
-          "id": "s7_5"
+          "id": "s7_1"
+        },
+        {
+          "text": "Switch off location for shopping apps when you don't need it.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a23",
+            "index": 0,
+            "motion": "static",
+            "marks": [
+              {
+                "type": "cross",
+                "x": 0.47,
+                "y": 0.2,
+                "w": 0.13,
+                "h": 0.26,
+                "on": "off"
+              }
+            ]
+          },
+          "id": "s7_2"
+        },
+        {
+          "text": "None of this means every price is a trick. It means a price on a screen is no longer a fact. It's a guess. And you're allowed to check it.",
+          "visual": {
+            "type": "reuse",
+            "beat": "h41",
+            "index": 0,
+            "motion": "zoom_out",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$1.25",
+                "x": 0.605,
+                "y": 0.665,
+                "w": 0.09,
+                "h": 0.07,
+                "angle": -28,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "circle",
+                "x": 0.6,
+                "y": 0.6,
+                "w": 0.18,
+                "h": 0.3,
+                "on": "guess."
+              }
+            ]
+          },
+          "id": "s7_3"
+        },
+        {
+          "text": "Larry does all three now. Twice.",
+          "visual": {
+            "type": "reuse",
+            "beat": "v75",
+            "motion": "zoom_in"
+          },
+          "id": "s7_4"
         }
       ]
     }
