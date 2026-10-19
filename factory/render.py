@@ -766,7 +766,7 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
         "-map", "0:v", "-map", "1:a",
         "-c:v", "libx264", "-preset", cfg["video"].get("x264_preset", "veryfast"),
         "-crf", str(cfg["video"].get("crf", 21)), "-pix_fmt", "yuv420p",
-        "-af", loud_af + ",alimiter=limit=0.83:attack=3:release=60:level=false", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+        "-af", loud_af + ",alimiter=limit=0.78:attack=2:release=60:level=false", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
         "-shortest", "-movflags", "+faststart", str(out_path),
     ]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)

@@ -785,7 +785,7 @@ class SlotShot(Shot):
                 cy = (wy + 0.5 * s) / self.H
                 self.strokes = mark_strokes({"type": "circle", "x": cx, "y": cy, "w": s * 1.05 / self.W, "h": s * 1.05 / self.H}, self.W, self.H, seed=77)
             _draw_marker(out, self.strokes, (t - self.mark_at) / 0.45, self.red, max(6, self.H // 120))
-            if self.note is not None and t >= self.mark_at + 0.6:
+            if self.note is not None and t >= self.mark_at + 0.6 and not self.portrait:  # Shorts: the caption zone is below
                 if self.portrait:
                     nx, ny = (self.W - self.note.shape[1]) // 2, wy + wh + int(s * 0.9)
                 else:

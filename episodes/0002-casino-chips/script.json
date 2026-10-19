@@ -1713,7 +1713,7 @@
       "id": "v52",
       "section": "Case closed",
       "text": "So, the verdict.",
-      "hold": 2.8,
+      "hold": 0.8,
       "visual": {
         "type": "casefile",
         "casefile": {
@@ -2142,7 +2142,8 @@
           "text": "Bill Friedman, a former Las Vegas casino manager who wrote a six-hundred-page book on casino design, called the clock story a myth.",
           "visual": {
             "type": "reuse",
-            "beat": "e38"
+            "beat": "e37",
+            "newsreel": "Las Vegas Strip, 1950s — home movie"
           }
         },
         {
@@ -2186,7 +2187,11 @@
           "text": "So the next time someone tells you there are no clocks in casinos…",
           "visual": {
             "type": "reuse",
-            "beat": "e36"
+            "beat": "e36",
+            "exhibit": {
+              "label": "Evidence · slot floor · present day · reconstruction",
+              "tag": "Slot floor · 2020s"
+            }
           }
         }
       ]
@@ -2290,8 +2295,20 @@
           "text": "Before you tap, before you buy the gems, before you swap money for anything shiny, ask one question: how many real dollars is this?",
           "visual": {
             "type": "reuse",
-            "beat": "c04"
-          }
+            "beat": "p48",
+            "motion": "zoom_in"
+          },
+          "inserts": [
+            {
+              "file": "c02",
+              "kind": "cutout",
+              "from": "right",
+              "x": 0.8,
+              "y": 0.62,
+              "w": 0.4,
+              "on": "shiny"
+            }
+          ]
         },
         {
           "text": "Because the house doesn't need you to lose. It just needs you to stop counting.",
@@ -2324,14 +2341,7 @@
             "type": "reuse",
             "beat": "c02",
             "motion": "zoom_in"
-          },
-          "ledger": [
-            {
-              "label": "CASH IN",
-              "amount": "$500",
-              "on": "five"
-            }
-          ]
+          }
         },
         {
           "text": "He swaps it for a neat little stack of plastic.",
@@ -2342,9 +2352,14 @@
           },
           "ledger": [
             {
+              "label": "CASH IN",
+              "amount": "$500",
+              "on": "swaps"
+            },
+            {
               "label": "CHIPS",
               "amount": "500",
-              "on": "stack"
+              "on": "plastic"
             }
           ]
         },

@@ -71,7 +71,7 @@ audio:
   music_gap_db: -8             # music level vs the narration in the gaps
   music_under_voice_db: -14    # music level vs the narration while he speaks (smooth, no pumping)
   sting_db: -6                 # musical hits on chapter titles and reveals (peak vs voice peaks)
-  target_lufs: -14
+  target_lufs: -13.6            # lands at ~-14 LUFS after the true-peak limiter
 
 images:
   provider: auto               # auto = OpenRouter (OPENROUTER_API_KEY) → Gemini (GEMINI_API_KEY) → Cloudflare

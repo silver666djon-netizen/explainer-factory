@@ -48,7 +48,7 @@ class Ledger:
         self.pal = pal = _pal(cfg)
         self.hide = sorted(hide or [])
         portrait = H > W
-        cw = int(W * (0.40 if portrait else 0.20))
+        cw = int(W * (0.31 if portrait else 0.20))
         self.small_w = int(W * (0.22 if portrait else 0.12))
         self.margin = int(24 * W / 1920)
         self.row_h = rh = int(cw * 0.105)
@@ -135,8 +135,7 @@ class Ledger:
         h = int(self.ch * k)
         small = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
         x = self.W - self.margin - w
-        top = int(self.H * 0.175) if self.H > self.W else 0  # Shorts: inside the picture window, under the title band
-        y = top + self.margin + int((1 - ease(a)) * -h * 0.5)
+        y = self.margin + int((1 - ease(a)) * -h * 0.5)  # Shorts: in the title band, above the picture (never on a face)
         sh = np.zeros((h, w, 4), np.uint8)
         sh[..., 3] = 115
         blend(frame, cv2.GaussianBlur(sh, (0, 0), 6), x + 5, y + 7)
@@ -224,7 +223,7 @@ class HouseEdgeShot(Shot):
         pt = H > W  # Shorts: everything sits in the picture window under the title band
         U = min(W, H)  # sizes follow the short side
         tf, tl = fit_font(spec.get("title", "House edge").upper(), head, int(W * 0.8), int(U * 0.12), start=int(U * 0.11))
-        ty0 = int(H * 0.22) if pt else int(H * 0.085)
+        ty0 = int(H * 0.27) if pt else int(H * 0.085)
         off_x, off_y = (BW - W) // 2, (BH - H) // 2
         d.text((BW // 2, off_y + ty0), " ".join(tl), font=tf, fill=cream + (255,), anchor="mm")
         sf = font(_typew(cfg), int(U * 0.034))
@@ -238,7 +237,7 @@ class HouseEdgeShot(Shot):
         base = np.array(img.convert("RGB"))
         self.labels = []
         cw = int(W * (0.24 if pt else 0.13))
-        floor = off_y + int(H * (0.60 if pt else 0.66))
+        floor = off_y + int(H * (0.63 if pt else 0.66))
         xs = [off_x + int(W * (0.28 if pt else 0.34)), off_x + int(W * (0.72 if pt else 0.66))] if len(bars) == 2 else [off_x + int(W * (i + 1) / (len(bars) + 1)) for i in range(len(bars))]
         nf = font(head, int(U * (0.042 if pt else 0.048)))
         notef = font(_typew(cfg), int(U * 0.03))
@@ -398,6 +397,8 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
     pil = Image.fromarray(pr)
     d = ImageDraw.Draw(pil)
     tf = font(_typew(cfg), int(bb * 0.42))
+    while tf.getlength(label.upper()) > pw * 0.70 and tf.size > 10:  # leave room for the EXHIBIT tag
+        tf = font(tf.path, tf.size - 1)
     d.text((b + int(W * 0.01), b + ph + int(bb * 0.24)), label.upper(), font=tf, fill=pal["ink"])
     pr = np.array(pil.convert("RGBA").rotate(-1.2, resample=Image.BICUBIC, expand=True))
     x, y = (W - pr.shape[1]) // 2, int(H * (0.17 if portrait else 0.03))

@@ -172,6 +172,7 @@ for ins in by["e36"].get("inserts") or []:  # then-vs-now photo comes in from th
 cf = by["v52"]["visual"]["casefile"]
 cf.pop("lines", None)
 cf["stamp_at"] = -0.9
+by["v52"]["hold"] = 0.8  # no verdict lines here any more: the stamped folder doesn't linger
 by["v52"].update({"pause_before": 1.0, "sting": "ub_sting_brass", "sting_at": -1.0})
 
 # 20 s end sequence replaces k2 + k3
@@ -241,21 +242,24 @@ s["shorts"] = [
                L("d06", visual=_copy.deepcopy(by["d06"]["visual"])), L("a07", keep=("on_screen",)),
                L("h12", text="And Larry? He's sure the next one is a win.")]},
     {"id": "s4", "title": "No clocks, no windows? The real casino trick #shorts", "hook": "The no-clock myth",
-     "beats": [L("e36", visual={"type": "reuse", "beat": "e39", "motion": "zoom_in"}), L("e38"), L("e39", visual={"type": "reuse", "beat": "e38"}),
+     "beats": [L("e36", visual={"type": "reuse", "beat": "e39", "motion": "zoom_in"}), L("e38"), L("e39", visual={"type": "reuse", "beat": "e37", "newsreel": "Las Vegas Strip, 1950s \u2014 home movie"}),
                L("e40", keep=()), L("e41"), L("e42"), L("e43", keep=()),
-               L("e37", text="So the next time someone tells you there are no clocks in casinos…", visual={"type": "reuse", "beat": "e36"})]},
+               L("e37", text="So the next time someone tells you there are no clocks in casinos…",
+                 visual={"type": "reuse", "beat": "e36", "exhibit": _copy.deepcopy(LONG["e36"]["visual"]["exhibit"])})]},
     {"id": "s5", "title": "Your phone is a casino chip #shorts", "hook": "Your phone is a chip",
      "beats": [L("p51", text="Your phone is a casino chip."), L("p48"), L("p49"), L("p50", keep=("sfx",)),
                L("p51b", visual=_copy.deepcopy(by["p51b"]["visual"])),
                L("p47", text="Take a look at your screen.", keep=())]},
     {"id": "s6", "title": "One question before you tap #shorts", "hook": "How many real dollars?",
      "beats": [L("v54", text="How many real dollars is this?", visual={"type": "reuse", "beat": "c04", "motion": "zoom_in"}),
-               L("v54", keep=("sfx_at",)), L("v55"),
+               L("v54", keep=("sfx_at",), visual={"type": "reuse", "beat": "p48", "motion": "zoom_in"},
+                 inserts=[{"file": "c02", "kind": "cutout", "from": "right", "x": 0.80, "y": 0.62, "w": 0.40, "on": "shiny"}]),
+               L("v55"),
                L("h09", text="So before you tap, ask yourself.")]},
     {"id": "s7", "title": "Larry's tab: $500 to $0 in one night #shorts", "hook": "$500 → $0",
-     "beats": [L("c02", text="Tonight, Larry walks into a casino with five hundred dollars.", keep=(),
-                 ledger=[{"label": "CASH IN", "amount": "$500", "on": "five"}]),
-               L("b08", text="He swaps it for a neat little stack of plastic.", ledger=[{"label": "CHIPS", "amount": "500", "on": "stack"}]),
+     "beats": [L("c02", text="Tonight, Larry walks into a casino with five hundred dollars.", keep=()),
+               L("b08", text="He swaps it for a neat little stack of plastic.",
+                 ledger=[{"label": "CASH IN", "amount": "$500", "on": "swaps"}, {"label": "CHIPS", "amount": "500", "on": "plastic"}]),
                L("b17", text="His number comes up. One hundred dollars, profit.", keep=(), ledger=[{"label": "WIN", "amount": "+100", "on": "hundred"}]),
                L("b23", text="Then he bets bigger to win it back. Gone.", ledger=[{"label": "TILT BET", "amount": "-360", "loss": True, "on": "Gone"}]),
                L("a03", text="The slots take the rest.", keep=(), ledger=[{"label": "SLOTS", "amount": "-240", "loss": True, "on": "rest"}]),
