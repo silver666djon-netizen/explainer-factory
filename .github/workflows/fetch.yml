@@ -16,14 +16,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Download
-        if: ${{ github.event.inputs.list != 'archive/probe' }}
+        if: ${{ !startsWith(github.event.inputs.list, 'archive/probe') }}
         run: |
           mkdir -p out/archive
           python3 archive/fetch_loc.py "${{ github.event.inputs.list }}"
           ls -la out/archive
       - name: Probe (optional)
-        if: ${{ github.event.inputs.list == 'archive/probe' }}
-        run: mkdir -p out/archive && python3 archive/loc_probe.py
+        if: ${{ startsWith(github.event.inputs.list, 'archive/probe') }}
+        run: |
+          mkdir -p out/archive
+          l="${{ github.event.inputs.list }}"
+          python3 "archive/loc_${l#archive/}.py"
+          ls out/archive | head -100
       - name: Publish
         env:
           GH_TOKEN: ${{ github.token }}
