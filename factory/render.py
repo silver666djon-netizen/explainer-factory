@@ -425,7 +425,23 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 path = images[keys[0]]
                 plan.shots.append(ImageShot(a, b - a, pil(path), motion, size, cfg, photo=is_archive_photo(path), seed=i * 7 + 3,
                                             depth=depth_of(path)))
-            if c0 > shot_start:
+            pe = doc.get("pre_exhibit")  # an archive photo as EXHIBIT before the card (instead of a repeated still)
+            if c0 > shot_start and pe:
+                from .devices import ExhibitShot, StillInner
+                from .archive import _source
+                from .config import ROOT as _ROOT
+                src = np.array(_source(pe, _ROOT / ".cache" / "archive"))
+                tap = None
+                if pe.get("tap"):
+                    tat = (_timed({"on": pe["tap_on"]}, v["words"], 2.0) + start - shot_start) if pe.get("tap_on") else 2.0
+                    tap = (float(pe["tap"][0]), float(pe["tap"][1]), max(1.0, min(tat, c0 - shot_start - 0.8)))
+                ex = ExhibitShot(StillInner(shot_start, c0 - shot_start, src), cfg, size, pe.get("label", "Evidence"),
+                                 pe.get("tag", ""), seed=i, tap=tap)
+                plan.shots.append(ex)
+                for at, k_ in ex.sfx(shot_start):
+                    plan.timeline.add_sfx(at, k_, seed=i)
+                plan.ledger_hide.append((shot_start, c0))
+            elif c0 > shot_start:
                 _still(doc.get("pre"), shot_start, c0, "zoom_in")
             plan.shots.append(EvidenceShot(c0, c1 - c0, doc, cfg, size, mark_at=mark_abs - c0, seed=i))
             for at, k_ in plan.shots[-1].sfx(c0):

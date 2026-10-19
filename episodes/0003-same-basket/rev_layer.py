@@ -264,6 +264,10 @@ p42 = copy.deepcopy(B["p42"])
 p42["visual"] = doc("FTC staff report · Jan 2025", "Surveillance pricing", FTC_Q,
                     "where the consumer is, who the consumer is, what the consumer is doing", on="personalise",
                     kicker="STAFF REPORT  ·  QUOTED, P. 6", seed=51, pre="p40", lead=1.2)
+p42["visual"]["doc"].pop("pre", None)  # no 4th robot still: the cash-register photo goes up as an exhibit, the pen taps the register
+p42["visual"]["doc"]["pre_exhibit"] = {"file": "register_babbitt_1937.jpg", "crop": [0.11, 0.19, 0.97, 0.75],
+                                       "label": "Evidence · store counter · 1937 · Library of Congress", "tag": "Cash register · 1937",
+                                       "tap": [0.35, 0.52], "tap_on": "findings"}
 mach.append(p42)
 p42b = copy.deepcopy(B["p42b"])
 p42b["visual"] = {"type": "continue"}
@@ -277,8 +281,8 @@ d50 = copy.deepcopy(B["d50"])
 d50.pop("inserts", None)
 dfn.append(d50)
 d51 = copy.deepcopy(B["d51"])
-d51["inserts"] = [{"file": "register_babbitt_1937.jpg", "kind": "photo", "from": "right", "x": 0.85, "y": 0.80, "w": 0.24,
-                   "on": "always", "crop": [0.11, 0.05, 0.97, 0.90], "caption": "Store counter and cash register, 1937"}]
+d51["inserts"] = [{"file": "grocery_window_dubuque_1940.jpg", "kind": "photo", "from": "right", "x": 0.85, "y": 0.80, "w": 0.24,
+                   "on": "always", "crop": [0.0, 0.07, 1.0, 0.86], "caption": "Grocery store window, Dubuque, Iowa, 1940"}]
 dfn.append(d51)
 d52 = copy.deepcopy(B["d52"])
 d52["visual"] = doc("Instacart statement · Dec 2025 · as reported", "Random test groups",
@@ -429,7 +433,7 @@ s["shorts"] = [
     {"id": "s4", "title": "Meet the machine: location, device, cart #shorts", "hook": "Location · Device · Cart",
      "beats": [L("p43", keep=()), L("p41", voice="price"),
                L("p42", text="The FTC's own staff wrote it down: where you are, who you are, what you're doing.",
-                 visual=copy.deepcopy(LONG["p42"]["visual"]) | {"doc": {**LONG["p42"]["visual"]["doc"], "on": "where", "pre": None}}),
+                 visual=copy.deepcopy(LONG["p42"]["visual"]) | {"doc": {**LONG["p42"]["visual"]["doc"], "on": "where", "pre": None, "pre_exhibit": None}}),
                L("p44", keep=()), L("p45"),
                L("p46", voice="price", text="Nothing personal. Just your location, your device, your cart.")]},
     {"id": "s5", "title": "You weren't targeted. You were tested. #shorts", "hook": "You're the test",

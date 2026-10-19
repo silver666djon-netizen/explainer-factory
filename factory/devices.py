@@ -365,6 +365,7 @@ class HouseEdgeShot(Shot):
 _DESKS: dict = {}
 LAST_TAG = (0.0, 0.0)
 LAST_CENTER = (0.0, 0.0)
+LAST_PRINT = (0, 0, 1, 1)
 
 
 def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: int, label: str, tag: str,
@@ -429,6 +430,8 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
     LAST_TAG = (x + pr.shape[1] - tw0 * 0.30, y + pr.shape[0] - tw0 * 0.20)
     global LAST_CENTER
     LAST_CENTER = (x + pr.shape[1] / 2, y + pr.shape[0] / 2)
+    global LAST_PRINT
+    LAST_PRINT = (x + b, y + b, pw, ph)  # the picture area inside the border (before the slight tilt)
     return out
 
 
@@ -436,10 +439,11 @@ class ExhibitShot(Shot):
     """Live clip as evidence: keeps playing inside the paper print, slow 3 % push-in, the hand slaps the red
     EXHIBIT tag on at the start."""
 
-    def __init__(self, inner: Shot, cfg: dict, size, label: str, tag: str, seed: int = 0):
+    def __init__(self, inner: Shot, cfg: dict, size, label: str, tag: str, seed: int = 0, tap: tuple | None = None):
         super().__init__(inner.start, inner.duration)
         self.inner, self.cfg, self.label, self.tag, self.seed = inner, cfg, label, tag, seed
         self.W, self.H = size
+        self.tap = tap  # (fx, fy, at): the pen taps that spot of the picture twice at `at` (shot-relative s)
 
     def frame(self, t: float) -> np.ndarray:
         W, H = self.W, self.H
@@ -451,9 +455,31 @@ class ExhibitShot(Shot):
             tip = hand_path(lambda q: (tx, ty), 0.2, 0.45, t, W, H, False, from_below=True)
             if tip:
                 paste_hand(out, "ink_under", tip[0], tip[1], False)
+        if self.tap is not None:
+            fx, fy, at = self.tap
+            px, py, pw, ph = LAST_PRINT
+            tx, ty = px + fx * pw, py + fy * ph
+            dip = lambda q: abs(math.sin(math.pi * max(0.0, q - at) / 0.22)) if q < at + 0.44 else 0.0
+            tip = hand_path(lambda q: (tx, ty - H * 0.025 * (1 - dip(q))), at - 0.05, at + 0.5, t, W, H, False, from_below=True)
+            if tip:
+                paste_hand(out, "ink_under", tip[0], tip[1], False)
         z = 1 + 0.03 * ease(t / max(self.duration, 1e-6))
         M = cv2.getRotationMatrix2D(LAST_CENTER, 0, z)  # push in on the print itself: its border never leaves the frame
         return cv2.warpAffine(out, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
-        return [(start_abs + 0.05, "paper"), (start_abs + 0.42, "stamp")]
+        out = [(start_abs + 0.05, "paper"), (start_abs + 0.42, "stamp")]
+        if self.tap is not None:
+            out += [(start_abs + self.tap[2] + 0.1, "tap"), (start_abs + self.tap[2] + 0.32, "tap")]
+        return out
+
+
+class StillInner(Shot):
+    """A fixed picture handed to ExhibitShot (an archive photo shown as evidence)."""
+
+    def __init__(self, start, duration, rgb: np.ndarray):
+        super().__init__(start, duration)
+        self.rgb = rgb
+
+    def frame(self, t: float) -> np.ndarray:
+        return self.rgb
