@@ -1002,7 +1002,25 @@
             "on": "quietly"
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "file": "grocery_sign_painter_1937.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.8,
+          "y": 0.55,
+          "w": 0.3,
+          "on": "switched",
+          "crop": [
+            0.09,
+            0.03,
+            0.97,
+            0.96
+          ],
+          "caption": "Painting the prices on a grocery window, 1937"
+        }
+      ]
     },
     {
       "id": "a24",
@@ -1184,7 +1202,25 @@
             "on": "same"
           }
         ]
-      }
+      },
+      "inserts": [
+        {
+          "file": "sears_catalogue_pietown_1940.jpg",
+          "kind": "photo",
+          "from": "left",
+          "x": 0.21,
+          "y": 0.45,
+          "w": 0.3,
+          "on": "rich",
+          "crop": [
+            0.04,
+            0.04,
+            0.96,
+            0.93
+          ],
+          "caption": "Ordering from the Sears catalogue, 1940"
+        }
+      ]
     },
     {
       "id": "h43",
@@ -1397,7 +1433,25 @@
         "type": "image",
         "prompt": "brass balance scales with a small red discount coupon on one pan and a price tag on the other, evenly balanced",
         "motion": "zoom_in"
-      }
+      },
+      "inserts": [
+        {
+          "file": "register_babbitt_1937.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.85,
+          "y": 0.8,
+          "w": 0.24,
+          "on": "always",
+          "crop": [
+            0.11,
+            0.05,
+            0.97,
+            0.9
+          ],
+          "caption": "Store counter and cash register, 1937"
+        }
+      ]
     },
     {
       "id": "d52",

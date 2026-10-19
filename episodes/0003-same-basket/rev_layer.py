@@ -222,6 +222,8 @@ a22["visual"]["exhibit"] = {"label": "Evidence · store parking lot · present d
 lot.append(a22)
 for k in ("a23", "a24", "a25", "a26"):
     lot.append(copy.deepcopy(B[k]))
+lot[-4]["inserts"] = [{"file": "grocery_sign_painter_1937.jpg", "kind": "photo", "from": "right", "x": 0.80, "y": 0.55, "w": 0.30,
+                       "on": "switched", "crop": [0.09, 0.03, 0.97, 0.96], "caption": "Painting the prices on a grocery window, 1937"}]  # a23
 k1 = copy.deepcopy(B["k1"])
 k1["visual"] = {"type": "reuse", "beat": "s30", "index": 0, "motion": "zoom_in"}
 lot.append(k1)
@@ -238,6 +240,8 @@ h41["visual"].pop("ad", None)
 mach.append(h41)
 h42 = copy.deepcopy(B["h42"])
 h42["visual"]["marks"] = [write("$1.25", at=0.0, x=0.605, y=0.665, w=0.09, h=0.07, angle=-28, color="ink")] + h42["visual"]["marks"]
+h42["inserts"] = [{"file": "sears_catalogue_pietown_1940.jpg", "kind": "photo", "from": "left", "x": 0.21, "y": 0.45, "w": 0.30,
+                   "on": "rich", "crop": [0.04, 0.04, 0.96, 0.93], "caption": "Ordering from the Sears catalogue, 1940"}]
 mach.append(h42)
 h43 = copy.deepcopy(B["h43"])
 h43["visual"] = {"type": "archive", "file": "grocery_prices_savannah_1939.jpg", "look": "print", "motion": "zoom_in",
@@ -272,7 +276,10 @@ dfn = [title_beat(copy.deepcopy(B["t05"]))]
 d50 = copy.deepcopy(B["d50"])
 d50.pop("inserts", None)
 dfn.append(d50)
-dfn.append(copy.deepcopy(B["d51"]))
+d51 = copy.deepcopy(B["d51"])
+d51["inserts"] = [{"file": "register_babbitt_1937.jpg", "kind": "photo", "from": "right", "x": 0.85, "y": 0.80, "w": 0.24,
+                   "on": "always", "crop": [0.11, 0.05, 0.97, 0.90], "caption": "Store counter and cash register, 1937"}]
+dfn.append(d51)
 d52 = copy.deepcopy(B["d52"])
 d52["visual"] = doc("Instacart statement · Dec 2025 · as reported", "Random test groups",
                     "Instacart said shoppers were put into test groups at random, by product and location, and not by personal or demographic data.",
