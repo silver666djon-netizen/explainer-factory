@@ -34,8 +34,8 @@ new session needs. Do not ask Klot to re-explain the project; continue from "Cur
 - `episodes/<slug>/gen_script.py` → writes `script.json` (always edit gen_script.py, then run it).
   Helpers there: `write()`, `circle()`, `cross()`, `strike()`, `plate()`, `closeup()`, `doc()`, `L()` (Shorts).
 - `channel/channel.yaml` (style, audio targets: `target_lufs -13.6` → ≈ −14 LUFS, `true_peak_max -1.0`).
-- `docs/PRODUCTION_RULES.md` — rules 1–15 (handwriting, stamps, ledger safe zone, max 8 s still, audio gate,
-  marks never written outside the frame). Add every new rule there.
+- `docs/PRODUCTION_RULES.md` — rules 1–16 (handwriting, stamps, ledger safe zone, max 8 s still, audio gate,
+  marks never written outside the frame or under a subtitle). Add every new rule there.
 - QC tools: `tools/qc/mark_audit.py`, `tools/qc/handcheck.py`, `tools/qc/audio_gate.py`,
   `tools/qc/qc_sheets.py`; release download helper `tools/release_dl.sh`.
 

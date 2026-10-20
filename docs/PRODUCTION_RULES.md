@@ -99,3 +99,6 @@ must report zero before a final render.
     inside the visible picture by the engine; a push-in that needs a mark pulls back first ("closeup":
     {"back": s, "back_marks": [...]}: written only on the full frame). The mark audit checks every frame of
     every hand action (check 4) - zero exceptions before a final render.
+16. A mark is never written while a subtitle covers its target (or the mark itself): place the mark above the
+    caption band or time it after the line's subtitle has cleared. Mark audit check 5 — zero exceptions before
+    a final render.
