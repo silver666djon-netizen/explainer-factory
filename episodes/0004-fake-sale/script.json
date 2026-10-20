@@ -2085,7 +2085,7 @@
           "seed": 91,
           "kicker": "US RULEBOOK  ·  QUOTED",
           "lead": 1.6,
-          "post": "o1"
+          "post": "p5"
         }
       }
     },
@@ -4027,8 +4027,8 @@
               {
                 "type": "write",
                 "text": "US · Amazon",
-                "x": 0.17,
-                "y": 0.4,
+                "x": 0.38,
+                "y": 0.1,
                 "w": 0.15,
                 "h": 0.05,
                 "angle": 0,
@@ -4040,8 +4040,8 @@
               {
                 "type": "write",
                 "text": "UK · EU",
-                "x": 0.17,
-                "y": 0.58,
+                "x": 0.6,
+                "y": 0.1,
                 "w": 0.11,
                 "h": 0.05,
                 "angle": 0,

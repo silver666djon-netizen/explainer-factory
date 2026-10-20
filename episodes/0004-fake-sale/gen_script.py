@@ -383,7 +383,7 @@ beat("e9", S_CLOCK, "The clock resets. Your decision doesn't.", kin())
 beat("e10", S_CLOCK, "So what makes a was price real? America's rulebook says: a price you really offered, regularly, for a reasonably substantial time.",
      doc("FTC Guides Against Deceptive Pricing · 16 CFR 233.1 · 1964", "Former price comparisons",
          "The former price must be the actual, bona fide price at which the article was offered to the public on a regular basis for a reasonably substantial period of time.",
-         "offered to the public on a regular basis", on="regularly,", kicker="US RULEBOOK  ·  QUOTED", seed=91, lead=1.6, post="o1"))
+         "offered to the public on a regular basis", on="regularly,", kicker="US RULEBOOK  ·  QUOTED", seed=91, lead=1.6, post="p5"))
 beat("e11", S_CLOCK, "Its own example is a pen tagged ten dollars for a few days, just so seven-fifty can look like a bargain.",
      img("a 1950s fountain pen lying on a velvet display stand with a large blank cream paper price tag, plain background", motion="static", hand_marks=True,
          marks=[write("$10", on="ten", x=0.21, y=0.62, w=0.08, h=0.07, angle=-14, **TAG_W)],
@@ -497,6 +497,12 @@ SHORTS = [
     {"id": "s7", "title": "3 checks before you pay #shorts", "hook": "3 checks before you pay",
      "beats": [L("x1"), L("x3"), L("x4"), L("x6"), L("x7"), L("x8")]},
 ]
+for b in SHORTS[6]["beats"]:  # s7: the square Shorts window crops the left edge: region labels go above the cards
+    for m in b["visual"].get("marks") or []:
+        if m.get("text") == "US · Amazon":
+            m.update(x=0.38, y=0.10)
+        if m.get("text") == "UK · EU":
+            m.update(x=0.60, y=0.10)
 for sh in SHORTS:
     for k, b in enumerate(sh["beats"]):
         b["id"] = f"{sh['id']}_{k}"

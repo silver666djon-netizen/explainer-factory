@@ -339,10 +339,10 @@ class MugshotShot(Shot):
             if i % 2 == 0:
                 d.text((int(BW * 0.02), y - 4), f"{3 + i // 2}'0\"", font=nf, fill=pal["ink"], anchor="lb")
         # photo
-        ph = int(BH * (0.36 if portrait else 0.5))
+        ph = int(BH * (0.24 if portrait else 0.5))  # Shorts: photo + card stay above the caption line
         pw = int(ph * 0.8)
         px = int(BW * (0.5 if portrait else 0.31)) - pw // 2
-        py = int(BH * (0.16 if portrait else 0.17))
+        py = int(BH * (0.12 if portrait else 0.17))
         photo = Image.fromarray(cover(image, pw, ph))
         border = max(8, pw // 40)
         framed = Image.new("RGB", (pw + 2 * border, ph + 2 * border), (250, 246, 236))
@@ -360,12 +360,12 @@ class MugshotShot(Shot):
         # index card (typed lines appear one by one)
         cw = int(BW * (0.78 if portrait else 0.38))
         cx = int(BW * (0.5 if portrait else 0.73)) - cw // 2
-        cy = int(BH * (0.62 if portrait else 0.2))
+        cy = int(BH * (0.43 if portrait else 0.2))
         rows = [(k, v) for k, v in (("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")),
                                     ("LAST SEEN", spec.get("last_seen", ""))) if str(v).strip()]
         if spec.get("notes"):
             rows.append(("NOTES", spec["notes"]))
-        lf = font(typew, int(BH * (0.022 if portrait else 0.03)))
+        lf = font(typew, int(BH * (0.017 if portrait else 0.03)))
         vf_path = head
         self.rows = []
         y = 0
@@ -373,13 +373,13 @@ class MugshotShot(Shot):
         self.row_type = []
         for label, value in rows:
             lab = text_block([label + ":"], lf, fill=pal["red"], align="left")
-            vfnt, vlines = fit_font(str(value).upper(), vf_path, int(cw * 0.86), int(BH * 0.16), start=int(BH * (0.045 if portrait else 0.055)))
+            vfnt, vlines = fit_font(str(value).upper(), vf_path, int(cw * 0.86), int(BH * (0.09 if portrait else 0.16)), start=int(BH * (0.032 if portrait else 0.055)))
             val = text_block(vlines, vfnt, fill=pal["ink"], align="left")
             row_imgs.append((lab, val))
             self.row_type.append((vfnt, vlines))
             y += lab.shape[0] + val.shape[0] + int(BH * 0.015)
         self._typed = {}
-        card_h = y + int(BH * 0.06)
+        card_h = y + int(BH * (0.03 if portrait else 0.06))
         card = Image.new("RGBA", (cw, card_h), (250, 246, 236, 255))
         cd = ImageDraw.Draw(card)
         for ly in range(int(BH * 0.05), card_h, int(BH * 0.045)):
