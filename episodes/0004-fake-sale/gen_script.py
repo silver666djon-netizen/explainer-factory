@@ -446,6 +446,63 @@ beat("z1", S_CLOSE, "Case closed. The verdict. Guilty: the was price. Accomplice
 beat("z4", S_CLOSE, "Next case: the thirty-dollar ticket that costs forty-eight. Fee by fee.", {"type": "continue"}, block_at=6.0)
 beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=16.0, block_end=21.0)
 
+# ------------------------------------------------------------------ 7 Shorts (cut against the real narration timings)
+import copy  # noqa: E402
+LONG = {b["id"]: b for b in B}
+
+
+def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp", "label", "ledger"), **kw):
+    src = LONG[bid]
+    v = src["visual"]
+    if v["type"] in ("image", "archive", "clip"):
+        vis = {"type": "reuse", "beat": bid, "motion": v.get("motion", "zoom_in")}
+        for k in ("marks", "hand_marks", "closeup", "push", "newsreel"):
+            if v.get(k) is not None:
+                vis[k] = copy.deepcopy(v[k])
+    else:
+        vis = copy.deepcopy(v)
+    b = {"text": text or src["text"], "visual": vis}
+    if text is None:
+        for k in keep:
+            if k in src:
+                b[k] = copy.deepcopy(src[k])
+    b.update(kw)
+    return b
+
+
+SHORTS = [
+    {"id": "s1", "title": "Was £49.99. It never cost £49.99. #shorts", "hook": "WAS £49.99?",
+     "beats": [L("o1"), L("o2"), L("o3"), L("k2"), L("k2b"),
+               L("o2", text="So before you trust a 'was'… remember the hair dryer at Boots.", keep=())]},
+    {"id": "s2", "title": "The store that stopped lying — and lost $985 million #shorts", "hook": "The store that stopped lying",
+     "beats": [L("p2"), L("p3"), L("p4", text="So in 2012 a new boss tore it all up."), L("p5"), L("p8"), L("p9"),
+               L("p13", text="The store that stopped lying nearly went broke. And went straight back to the promotions.", keep=())]},
+    {"id": "s3", "title": "On sale 86% of the time #shorts", "hook": "On sale 86% of the time",
+     "beats": [L("k3", text="Larry's mixer, on sale for four eighty-nine ninety-nine.", keep=("pause_at", "ledger")),
+               L("k4"), L("k5"), L("k6"), L("k7"), L("k8"), L("k9")]},
+    {"id": "s4", "title": "A random number sets your price #shorts", "hook": "A random number sets your price",
+     "beats": [L("n1"), L("n2"), L("n3"), L("n4"), L("n5"),
+               L("n2", text="So the next number you see on a tag… ask who chose it.", keep=())]},
+    {"id": "s5", "title": "Sale ends in 02:59:59. Again. #shorts", "hook": "SALE ENDS IN 02:59:59",
+     "beats": [L("c1"), L("m2"), L("m2b"), L("e8"), L("e9")]},
+    {"id": "s6", "title": "98.2% of sales had a 'was' price #shorts", "hook": "98.2% \"on sale\"",
+     "beats": [L("e2", text="Mattress-maker Emma: ninety-eight point two percent of its sales were products shown with a struck-through was price.",
+                 keep=("pause_before",)),
+               L("e3"), L("e4", text="One model sold just zero point zero two percent at full price.", keep=("pause_at",)) | {"_nocloseup": True},
+               L("e5"), L("e6"), L("e7")]},
+    {"id": "s7", "title": "3 checks before you pay #shorts", "hook": "3 checks before you pay",
+     "beats": [L("x1"), L("x3"), L("x4"), L("x6"), L("x7"), L("x8")]},
+]
+for sh in SHORTS:
+    for k, b in enumerate(sh["beats"]):
+        b["id"] = f"{sh['id']}_{k}"
+        b.pop("inserts", None)
+        if b.pop("_nocloseup", False):
+            b["visual"].pop("closeup", None)
+        if b["visual"].get("type") == "doc":
+            b["visual"]["doc"].pop("pre", None)
+            b["visual"]["doc"].pop("post", None)
+
 ep = {
     "slug": "0004-fake-sale",
     "title": "The Sale That Never Was",
@@ -476,7 +533,7 @@ ep = {
         "Larry is a fictional character. Scenes marked 'Illustration' are illustrations.",
     ],
     "beats": B,
-    "shorts": [],
+    "shorts": SHORTS,
 }
 OUT.write_text(json.dumps(ep, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(len(B), "beats,", sum(len(b["text"].split()) for b in B), "words")

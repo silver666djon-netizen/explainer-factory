@@ -2597,5 +2597,1427 @@
       "block_end": 21.0
     }
   ],
-  "shorts": []
+  "shorts": [
+    {
+      "id": "s1",
+      "title": "Was £49.99. It never cost £49.99. #shorts",
+      "hook": "WAS £49.99?",
+      "beats": [
+        {
+          "text": "A hair dryer at Boots. Was forty-nine ninety-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "BRITAIN · 2024",
+                "x": 0.365,
+                "y": 0.555,
+                "w": 0.15,
+                "h": 0.035,
+                "angle": 0,
+                "color": "ink",
+                "font": "body",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "WAS £49.99",
+                "x": 0.365,
+                "y": 0.635,
+                "w": 0.2,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Was"
+              }
+            ],
+            "hand_marks": true
+          },
+          "pause_at": {
+            "word": "forty-nine",
+            "sec": 0.45,
+            "hit": "stamp"
+          },
+          "id": "s1_0"
+        },
+        {
+          "text": "Now eighteen ninety-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "BRITAIN · 2024",
+                "x": 0.365,
+                "y": 0.555,
+                "w": 0.15,
+                "h": 0.035,
+                "angle": 0,
+                "color": "ink",
+                "font": "body",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "WAS £49.99",
+                "x": 0.365,
+                "y": 0.635,
+                "w": 0.2,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "cross",
+                "x": 0.365,
+                "y": 0.635,
+                "w": 0.22,
+                "h": 0.08,
+                "on": "Now"
+              },
+              {
+                "type": "write",
+                "text": "NOW £18.99",
+                "x": 0.365,
+                "y": 0.725,
+                "w": 0.22,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "eighteen"
+              }
+            ]
+          },
+          "pause_at": {
+            "word": "eighteen",
+            "sec": 0.45,
+            "hit": "stamp"
+          },
+          "id": "s1_1"
+        },
+        {
+          "text": "In the twelve months before, it had never cost forty-nine ninety-nine there. Not once.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "Which? · price check · Nov 2024",
+              "headline": "The £49.99 that wasn't",
+              "body": "A hair dryer was £18.99 on Black Friday, marked down from £49.99. It had never been £49.99 at Boots in the preceding 12 months.",
+              "highlight": "never been £49.99",
+              "on": "never",
+              "mark": "underline",
+              "seed": 11,
+              "kicker": "CONSUMER GROUP  ·  QUOTED",
+              "lead": 0.6
+            }
+          },
+          "id": "s1_2"
+        },
+        {
+          "text": "First, the evidence. Britain's Which? checked two hundred and twenty-seven Black Friday deals.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 227,
+              "label": "Black Friday deals checked · Which?, Britain, 2024"
+            }
+          },
+          "pause_at": {
+            "word": "two",
+            "sec": 0.8,
+            "hit": "stamp"
+          },
+          "id": "s1_3"
+        },
+        {
+          "text": "Nine in ten were the same price, or cheaper, at other times of the year.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "Which? · Nov 2024",
+              "headline": "Black Friday deals",
+              "body": "Of 227 Black Friday deals at eight big retailers, 92% were the same price or cheaper at other times of the year.",
+              "highlight": "92% were the same price or cheaper",
+              "on": "Nine",
+              "mark": "underline",
+              "seed": 31,
+              "kicker": "CONSUMER GROUP  ·  PARAPHRASED",
+              "lead": 0.3
+            }
+          },
+          "id": "s1_4"
+        },
+        {
+          "text": "So before you trust a 'was'… remember the hair dryer at Boots.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "BRITAIN · 2024",
+                "x": 0.365,
+                "y": 0.555,
+                "w": 0.15,
+                "h": 0.035,
+                "angle": 0,
+                "color": "ink",
+                "font": "body",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "WAS £49.99",
+                "x": 0.365,
+                "y": 0.635,
+                "w": 0.2,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "cross",
+                "x": 0.365,
+                "y": 0.635,
+                "w": 0.22,
+                "h": 0.08,
+                "on": "Now"
+              },
+              {
+                "type": "write",
+                "text": "NOW £18.99",
+                "x": 0.365,
+                "y": 0.725,
+                "w": 0.22,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "eighteen"
+              }
+            ]
+          },
+          "id": "s1_5"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "The store that stopped lying — and lost $985 million #shorts",
+      "hook": "The store that stopped lying",
+      "beats": [
+        {
+          "text": "In 2011, J.C. Penney ran five hundred and ninety different promotions.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p2",
+            "motion": "zoom_in"
+          },
+          "pause_at": {
+            "word": "five",
+            "sec": 0.8,
+            "hit": "stamp"
+          },
+          "stamp": {
+            "text": "590 promotions",
+            "on": "promotions"
+          },
+          "label": "J.C. Penney · 2011",
+          "id": "s2_0"
+        },
+        {
+          "text": "Only zero point two percent of its revenue came from full-price sales.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 0.2,
+              "decimals": 1,
+              "suffix": "%",
+              "label": "of revenue at full price · J.C. Penney, 2011"
+            }
+          },
+          "pause_at": {
+            "word": "zero",
+            "sec": 0.7,
+            "hit": "stamp"
+          },
+          "id": "s2_1"
+        },
+        {
+          "text": "So in 2012 a new boss tore it all up.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p4",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "cross",
+                "x": 0.5,
+                "y": 0.5,
+                "w": 0.62,
+                "h": 0.62,
+                "on": "tore"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s2_2"
+        },
+        {
+          "text": "No fake markdowns. No coupons. One honest price on every tag. He called it Fair and Square.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p5",
+            "motion": "zoom_in"
+          },
+          "stamp": {
+            "text": "Fair and square",
+            "on": "Fair"
+          },
+          "id": "s2_3"
+        },
+        {
+          "text": "That year, sales fell by a quarter.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "J.C. Penney sales",
+              "labels": [
+                "2011",
+                "2012"
+              ],
+              "values": [
+                17.26,
+                12.99
+              ],
+              "unit": "$bn",
+              "highlight": 1,
+              "note": "−24.8 % · annual results, Feb 2013"
+            }
+          },
+          "pause_at": {
+            "word": "quarter.",
+            "sec": 0.7,
+            "hit": "stamp"
+          },
+          "id": "s2_4"
+        },
+        {
+          "text": "The company lost nine hundred and eighty-five million dollars.",
+          "visual": {
+            "type": "reuse",
+            "beat": "p9",
+            "motion": "zoom_in"
+          },
+          "pause_at": {
+            "word": "nine",
+            "sec": 0.8,
+            "hit": "stamp"
+          },
+          "stamp": {
+            "text": "−$985,000,000",
+            "on": "dollars."
+          },
+          "id": "s2_5"
+        },
+        {
+          "text": "The store that stopped lying nearly went broke. And went straight back to the promotions.",
+          "visual": {
+            "type": "reuse",
+            "beat": "m1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "WAS $—",
+                "x": 0.5,
+                "y": 0.52,
+                "w": 0.16,
+                "h": 0.09,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "underline",
+                "x": 0.5,
+                "y": 0.52,
+                "w": 0.19,
+                "h": 0.02,
+                "at": 0.0,
+                "dur": 0.01,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ ?",
+                "x": 0.78,
+                "y": 0.45,
+                "w": 0.12,
+                "h": 0.12,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "alone."
+              }
+            ]
+          },
+          "id": "s2_6"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "On sale 86% of the time #shorts",
+      "hook": "On sale 86% of the time",
+      "beats": [
+        {
+          "text": "Larry's mixer, on sale for four eighty-nine ninety-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k3",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "SALE $489.99",
+                "x": 0.81,
+                "y": 0.6,
+                "w": 0.15,
+                "h": 0.06,
+                "angle": -12,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "four"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s3_0"
+        },
+        {
+          "text": "\"Regular\" price: five forty-nine ninety-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k3",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "push": {
+              "center": [
+                0.8,
+                0.57
+              ],
+              "zoom": 2.2
+            },
+            "marks": [
+              {
+                "type": "write",
+                "text": "SALE $489.99",
+                "x": 0.81,
+                "y": 0.6,
+                "w": 0.15,
+                "h": 0.06,
+                "angle": -12,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "REG. $549.99",
+                "x": 0.8,
+                "y": 0.51,
+                "w": 0.15,
+                "h": 0.06,
+                "angle": -12,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "five"
+              }
+            ]
+          },
+          "label": "Consumer Reports · checked 2012",
+          "ledger": [
+            {
+              "label": "\"WAS\"",
+              "amount": "$549.99",
+              "on": "five"
+            }
+          ],
+          "id": "s3_1"
+        },
+        {
+          "text": "On Amazon, the same mixer: three ninety-nine ninety-nine.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k5",
+            "motion": "zoom_in"
+          },
+          "pause_at": {
+            "word": "three",
+            "sec": 0.7,
+            "hit": "stamp"
+          },
+          "label": "Consumer Reports · checked 2012",
+          "ledger": [
+            {
+              "label": "ELSEWHERE",
+              "amount": "$399.99",
+              "on": "three"
+            }
+          ],
+          "id": "s3_2"
+        },
+        {
+          "text": "Larry's saving: sixty dollars. His real overpay: ninety.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k6",
+            "motion": "zoom_in"
+          },
+          "pause_at": {
+            "word": "ninety.",
+            "sec": 0.7,
+            "hit": "stamp"
+          },
+          "ledger": [
+            {
+              "label": "OVERPAID",
+              "amount": "$90.00",
+              "loss": true,
+              "circle": true,
+              "on": "ninety."
+            }
+          ],
+          "id": "s3_3"
+        },
+        {
+          "text": "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k7",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "circle",
+                "x": 0.37,
+                "y": 0.35,
+                "w": 0.38,
+                "h": 0.58,
+                "on": "tracked"
+              },
+              {
+                "type": "write",
+                "text": "103 DAYS",
+                "x": 0.73,
+                "y": 0.3,
+                "w": 0.2,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "hundred"
+              }
+            ],
+            "hand_marks": true
+          },
+          "label": "tracked 2003",
+          "id": "s3_4"
+        },
+        {
+          "text": "They were on sale eighty-six percent of the time.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 86,
+              "suffix": "%",
+              "label": "of the time on sale · tracked 2003"
+            }
+          },
+          "pause_at": {
+            "word": "eighty-six",
+            "sec": 0.8,
+            "hit": "stamp"
+          },
+          "id": "s3_5"
+        },
+        {
+          "text": "One in four never sold at its regular price at all. Regular price: the thing that happens on the other fourteen percent of days.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k9",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "circle",
+                "x": 0.79,
+                "y": 0.58,
+                "w": 0.12,
+                "h": 0.26,
+                "on": "never"
+              },
+              {
+                "type": "write",
+                "text": "REG.",
+                "x": 0.79,
+                "y": 0.585,
+                "w": 0.05,
+                "h": 0.04,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "regular"
+              }
+            ],
+            "hand_marks": true,
+            "closeup": {
+              "on": "Regular",
+              "center": [
+                0.8,
+                0.55
+              ],
+              "zoom": 2.2,
+              "marks": [
+                {
+                  "type": "circle",
+                  "x": 0.79,
+                  "y": 0.58,
+                  "w": 0.12,
+                  "h": 0.26,
+                  "on": null,
+                  "at": 0.0,
+                  "hand": false,
+                  "dur": 0.01
+                },
+                {
+                  "type": "write",
+                  "text": "REG.",
+                  "x": 0.79,
+                  "y": 0.585,
+                  "w": 0.05,
+                  "h": 0.04,
+                  "angle": 0,
+                  "color": "ink",
+                  "font": "marker",
+                  "dur": 0.01,
+                  "at": 0.0,
+                  "hand": false
+                },
+                {
+                  "type": "write",
+                  "text": "14 %",
+                  "x": 0.66,
+                  "y": 0.36,
+                  "w": 0.07,
+                  "h": 0.06,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.7,
+                  "on": "fourteen"
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "label": "tracked 2003",
+          "id": "s3_6"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "A random number sets your price #shorts",
+      "hook": "A random number sets your price",
+      "beats": [
+        {
+          "text": "Why does a made-up number work? Psychologists once spun a rigged wheel that stopped on ten or sixty-five, then asked people to guess a percentage.",
+          "visual": {
+            "type": "reuse",
+            "beat": "n1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "10",
+                "x": 0.455,
+                "y": 0.2,
+                "w": 0.04,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "ten"
+              },
+              {
+                "type": "write",
+                "text": "65",
+                "x": 0.375,
+                "y": 0.2,
+                "w": 0.04,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "sixty-five,"
+              }
+            ],
+            "hand_marks": true,
+            "closeup": {
+              "on": "then",
+              "center": [
+                0.42,
+                0.35
+              ],
+              "zoom": 2.0,
+              "marks": [
+                {
+                  "type": "write",
+                  "text": "10",
+                  "x": 0.455,
+                  "y": 0.2,
+                  "w": 0.04,
+                  "h": 0.07,
+                  "angle": 0,
+                  "color": "ink",
+                  "font": "marker",
+                  "dur": 0.01,
+                  "at": 0.0,
+                  "hand": false
+                },
+                {
+                  "type": "write",
+                  "text": "65",
+                  "x": 0.375,
+                  "y": 0.2,
+                  "w": 0.04,
+                  "h": 0.07,
+                  "angle": 0,
+                  "color": "ink",
+                  "font": "marker",
+                  "dur": 0.01,
+                  "at": 0.0,
+                  "hand": false
+                },
+                {
+                  "type": "circle",
+                  "x": 0.42,
+                  "y": 0.15,
+                  "w": 0.06,
+                  "h": 0.1,
+                  "on": "guess"
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "label": "Experiment · 1974",
+          "id": "s4_0"
+        },
+        {
+          "text": "The sixty-five group guessed almost twice as high.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "Median guess",
+              "labels": [
+                "Wheel: 10",
+                "Wheel: 65"
+              ],
+              "values": [
+                25,
+                45
+              ],
+              "unit": "%",
+              "highlight": 1,
+              "note": "Tversky & Kahneman, 1974"
+            }
+          },
+          "id": "s4_1"
+        },
+        {
+          "text": "At MIT, students wrote down the last digits of their social security number, then bid on a keyboard.",
+          "visual": {
+            "type": "reuse",
+            "beat": "n3",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "circle",
+                "x": 0.5,
+                "y": 0.78,
+                "w": 0.3,
+                "h": 0.16,
+                "on": "keyboard."
+              }
+            ],
+            "hand_marks": true
+          },
+          "label": "MIT · 2003",
+          "id": "s4_2"
+        },
+        {
+          "text": "High numbers bid fifty-six dollars. Low numbers, sixteen.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "Bid for the same keyboard",
+              "labels": [
+                "Low numbers",
+                "High numbers"
+              ],
+              "values": [
+                16,
+                56
+              ],
+              "unit": "$",
+              "highlight": 1,
+              "note": "Ariely, Loewenstein & Prelec, 2003"
+            }
+          },
+          "pause_at": {
+            "word": "fifty-six",
+            "sec": 0.7,
+            "hit": "stamp"
+          },
+          "id": "s4_3"
+        },
+        {
+          "text": "A later replication found the effect much weaker. Weaker, but not zero.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "Fudenberg, Levine & Maniadis · AEJ: Micro · 2012",
+              "headline": "Replication 2012: effect much weaker",
+              "body": "Repeating the experiment, the authors found very weak anchoring effects on what people were willing to pay.",
+              "highlight": "very weak anchoring effects",
+              "on": "weaker.",
+              "mark": "underline",
+              "seed": 51,
+              "kicker": "REPLICATION  ·  PARAPHRASED",
+              "lead": 0.4
+            }
+          },
+          "id": "s4_4"
+        },
+        {
+          "text": "So the next number you see on a tag… ask who chose it.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "Median guess",
+              "labels": [
+                "Wheel: 10",
+                "Wheel: 65"
+              ],
+              "values": [
+                25,
+                45
+              ],
+              "unit": "%",
+              "highlight": 1,
+              "note": "Tversky & Kahneman, 1974"
+            }
+          },
+          "id": "s4_5"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "Sale ends in 02:59:59. Again. #shorts",
+      "hook": "SALE ENDS IN 02:59:59",
+      "beats": [
+        {
+          "text": "Larry is buying a mattress. Sale ends in two minutes.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c1",
+            "motion": "zoom_in",
+            "marks": [
+              {
+                "type": "led",
+                "text": "00:02:00",
+                "label": "Sale ends in",
+                "x": 0.22,
+                "y": 0.25,
+                "w": 0.27,
+                "on": "Sale"
+              }
+            ]
+          },
+          "id": "s5_0"
+        },
+        {
+          "text": "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine.",
+          "visual": {
+            "type": "mugshot",
+            "prompt": "a digital countdown timer (hand-made frame: images/m2.png)",
+            "suspect": {
+              "number": 2,
+              "name": "The countdown clock",
+              "alias": "'Sale ends in 02:59:59' · 'Only 3 left'",
+              "last_seen": "Checkout, 11:58 PM",
+              "tag": "SUSPECT"
+            }
+          },
+          "id": "s5_1"
+        },
+        {
+          "text": "Only three left.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "push": {
+              "center": [
+                0.42,
+                0.45
+              ],
+              "zoom": 1.3
+            },
+            "marks": [
+              {
+                "type": "led",
+                "text": "00:01:58",
+                "label": "Sale ends in",
+                "x": 0.22,
+                "y": 0.25,
+                "w": 0.27,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "ONLY 3 LEFT!",
+                "x": 0.22,
+                "y": 0.4,
+                "w": 0.2,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "three"
+              }
+            ]
+          },
+          "id": "s5_2"
+        },
+        {
+          "text": "The clock lost anyway. In May, Emma agreed its countdown timers must end when the sale really ends, and can't be reused on a similar deal within four weeks.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "CMA v Emma · consent order · 22 May 2026",
+              "headline": "Countdown timers",
+              "body": "Countdown timers must conclude at the same time as the sales promotion they apply to, and are not used on any substantially similar promotion within 28 days.",
+              "highlight": "conclude at the same time as the sales promotion",
+              "on": "end",
+              "mark": "underline",
+              "seed": 81,
+              "kicker": "COURT ORDER  ·  PARAPHRASED",
+              "lead": 1.0
+            }
+          },
+          "id": "s5_3"
+        },
+        {
+          "text": "The clock resets. Your decision doesn't.",
+          "visual": {
+            "type": "kinetic",
+            "kinetic": {
+              "bg": "paper"
+            }
+          },
+          "id": "s5_4"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "98.2% of sales had a 'was' price #shorts",
+      "hook": "98.2% \"on sale\"",
+      "beats": [
+        {
+          "text": "Mattress-maker Emma: ninety-eight point two percent of its sales were products shown with a struck-through was price.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 98.2,
+              "decimals": 1,
+              "suffix": "%",
+              "label": "of sales had a struck-through 'was' price · High Court, 2026"
+            }
+          },
+          "id": "s6_0"
+        },
+        {
+          "text": "In 2024 it sold seven discounted mattresses for every one at full price.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e3",
+            "motion": "zoom_in",
+            "marks": [
+              {
+                "type": "write",
+                "text": "7 : 1",
+                "x": 0.86,
+                "y": 0.2,
+                "w": 0.12,
+                "h": 0.09,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "seven"
+              }
+            ]
+          },
+          "id": "s6_1"
+        },
+        {
+          "text": "One model sold just zero point zero two percent at full price.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e4",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "0.02 %",
+                "x": 0.5,
+                "y": 0.32,
+                "w": 0.16,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "zero"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s6_2"
+        },
+        {
+          "text": "The watchdog wanted a simple rule: for every two sold on sale, one at full price.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e5",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "1 : 2",
+                "x": 0.14,
+                "y": 0.2,
+                "w": 0.12,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "rule:"
+              },
+              {
+                "type": "write",
+                "text": "2 ON SALE",
+                "x": 0.3,
+                "y": 0.75,
+                "w": 0.17,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "two"
+              },
+              {
+                "type": "write",
+                "text": "1 FULL PRICE",
+                "x": 0.71,
+                "y": 0.62,
+                "w": 0.19,
+                "h": 0.06,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "full"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s6_3"
+        },
+        {
+          "text": "In July 2026, the High Court found Emma had broken the law in places, but refused the ratio.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "CMA v Emma · [2026] EWHC 1995 (Ch) · 30 July 2026",
+              "headline": "No fixed ratio",
+              "body": "\"I do not consider that I should make an enforcement order that imposes a 1:2 FVR.\"",
+              "highlight": "I do not consider that I should make an enforcement order that imposes a 1:2 FVR",
+              "on": "refused",
+              "mark": "underline",
+              "seed": 71,
+              "kicker": "HIGH COURT  ·  QUOTED",
+              "lead": 1.2
+            }
+          },
+          "stamp": {
+            "text": "1:2 refused",
+            "on": "ratio."
+          },
+          "id": "s6_4"
+        },
+        {
+          "text": "A fixed rule, the judge said, risked drawing the line in the wrong place.",
+          "visual": {
+            "type": "reuse",
+            "beat": "e5",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "1 : 2",
+                "x": 0.14,
+                "y": 0.2,
+                "w": 0.12,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "2 ON SALE",
+                "x": 0.3,
+                "y": 0.75,
+                "w": 0.17,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "1 FULL PRICE",
+                "x": 0.71,
+                "y": 0.62,
+                "w": 0.19,
+                "h": 0.06,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "cross",
+                "x": 0.14,
+                "y": 0.2,
+                "w": 0.15,
+                "h": 0.11,
+                "on": "wrong"
+              }
+            ]
+          },
+          "id": "s6_5"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "3 checks before you pay #shorts",
+      "hook": "3 checks before you pay",
+      "beats": [
+        {
+          "text": "Three checks before you pay. One. Was it ever that price here? Look for a date.",
+          "visual": {
+            "type": "reuse",
+            "beat": "x1",
+            "motion": "zoom_in"
+          },
+          "id": "s7_0"
+        },
+        {
+          "text": "Two. Check the price history. Free trackers show what a product really cost, week by week:",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "line",
+              "title": "Price history (illustration)",
+              "labels": [
+                "Jan",
+                "Mar",
+                "May",
+                "Jul",
+                "Sep",
+                "Nov"
+              ],
+              "values": [
+                399,
+                399,
+                405,
+                399,
+                399,
+                489
+              ],
+              "unit": "$",
+              "highlight": 5,
+              "note": "the 'was' price never appears"
+            }
+          },
+          "label": "Illustration",
+          "id": "s7_1"
+        },
+        {
+          "text": "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",
+          "visual": {
+            "type": "reuse",
+            "beat": "x4",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "Keepa",
+                "x": 0.53,
+                "y": 0.36,
+                "w": 0.12,
+                "h": 0.05,
+                "angle": -6,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 0.7,
+                "on": "Keepa"
+              },
+              {
+                "type": "write",
+                "text": "camelcamelcamel",
+                "x": 0.53,
+                "y": 0.44,
+                "w": 0.22,
+                "h": 0.05,
+                "angle": -6,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 0.7,
+                "on": "camelcamelcamel"
+              },
+              {
+                "type": "write",
+                "text": "PriceSpy",
+                "x": 0.54,
+                "y": 0.54,
+                "w": 0.14,
+                "h": 0.05,
+                "angle": -6,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 0.7,
+                "on": "PriceSpy"
+              },
+              {
+                "type": "write",
+                "text": "idealo",
+                "x": 0.54,
+                "y": 0.62,
+                "w": 0.11,
+                "h": 0.05,
+                "angle": -6,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 0.7,
+                "on": "idealo"
+              },
+              {
+                "type": "write",
+                "text": "US · Amazon",
+                "x": 0.17,
+                "y": 0.4,
+                "w": 0.15,
+                "h": 0.05,
+                "angle": 0,
+                "color": "red",
+                "font": "body",
+                "dur": 0.7,
+                "on": "Keepa"
+              },
+              {
+                "type": "write",
+                "text": "UK · EU",
+                "x": 0.17,
+                "y": 0.58,
+                "w": 0.11,
+                "h": 0.05,
+                "angle": 0,
+                "color": "red",
+                "font": "body",
+                "dur": 0.7,
+                "on": "PriceSpy"
+              }
+            ]
+          },
+          "say": "Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",
+          "id": "s7_2"
+        },
+        {
+          "text": "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",
+          "visual": {
+            "type": "reuse",
+            "beat": "x6",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "30-DAY LOW?",
+                "x": 0.2,
+                "y": 0.1,
+                "w": 0.2,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "thirty-day"
+              }
+            ],
+            "hand_marks": true,
+            "closeup": {
+              "on": "Everywhere",
+              "center": [
+                0.6,
+                0.84
+              ],
+              "zoom": 2.2,
+              "marks": [
+                {
+                  "type": "circle",
+                  "x": 0.48,
+                  "y": 0.89,
+                  "w": 0.18,
+                  "h": 0.07,
+                  "on": "model"
+                },
+                {
+                  "type": "write",
+                  "text": "MODEL No.",
+                  "x": 0.7,
+                  "y": 0.8,
+                  "w": 0.12,
+                  "h": 0.045,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.7,
+                  "on": "number."
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "id": "s7_3"
+        },
+        {
+          "text": "Larry's mixer: ninety dollars cheaper, one click away.",
+          "visual": {
+            "type": "reuse",
+            "beat": "k5",
+            "index": 0,
+            "motion": "zoom_in"
+          },
+          "id": "s7_4"
+        },
+        {
+          "text": "Forget the percentage. Compare the price you'd pay with the price you could pay.",
+          "visual": {
+            "type": "reuse",
+            "beat": "x1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "COULD PAY?",
+                "x": 0.2,
+                "y": 0.22,
+                "w": 0.2,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "could"
+              }
+            ]
+          },
+          "id": "s7_5"
+        }
+      ]
+    }
+  ]
 }
