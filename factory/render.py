@@ -1049,7 +1049,7 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
         "-map", "0:v", "-map", "1:a",
         "-c:v", "libx264", "-preset", cfg["video"].get("x264_preset", "veryfast"),
         "-crf", str(cfg["video"].get("crf", 21)), "-pix_fmt", "yuv420p",
-        "-af", loud_af + ",alimiter=limit=0.78:attack=2:release=60:level=false", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+        "-af", loud_af + ",aresample=192000,alimiter=limit=0.78:attack=2:release=60:level=false,aresample=48000", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
         "-shortest", "-movflags", "+faststart", str(out_path),
     ]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
@@ -1122,4 +1122,29 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     if code != 0:
         raise RuntimeError(f"ffmpeg failed with exit code {code}")
     log(f"Rendered {out_path.name}: {plan.total:.1f}s in {time.time() - t0:.0f}s")
+    audio_gate(out_path, cfg, log)
     return out_path
+
+
+def measure_audio(path: Path) -> tuple[float, float]:
+    """(integrated loudness LUFS, true peak dBTP) of a rendered file, ITU-R BS.1770 meter (ffmpeg ebur128)."""
+    import re as _re
+    res = subprocess.run(["ffmpeg", "-nostats", "-i", str(path), "-map", "0:a", "-af", "ebur128=peak=true", "-f", "null", "-"],
+                         capture_output=True, text=True)
+    tail = res.stderr[res.stderr.rfind("Summary:"):]
+    i = float(_re.search(r"I:\s+(-?[\d.]+|-inf) LUFS", tail).group(1))
+    tp = float(_re.search(r"Peak:\s+(-?[\d.]+|-inf) dBFS", tail).group(1))
+    return i, tp
+
+
+class AudioGateError(RuntimeError):
+    pass
+
+
+def audio_gate(path: Path, cfg: dict, log=print) -> None:
+    """QC gate: true peak above audio.true_peak_max (default -1.0 dBTP) fails the build."""
+    ceiling = float(cfg.get("audio", {}).get("true_peak_max", -1.0))
+    i, tp = measure_audio(path)
+    log(f"  audio {path.name}: {i:.1f} LUFS, true peak {tp:.1f} dBTP (ceiling {ceiling:.1f})")
+    if tp > ceiling:
+        raise AudioGateError(f"QC FAIL {path.name}: true peak {tp:.1f} dBTP above {ceiling:.1f} dBTP")

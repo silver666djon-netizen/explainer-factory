@@ -90,3 +90,6 @@ must report zero before a final render.
     print). Chart bars carry their value labels. A push-in that ends on a detail returns to the full frame before
     the cut when the next shot needs context ("closeup": {..., "back": s}).
 13. Subscribe bell: red with a cream outline, placed clear of the character (cta "pos").
+14. Audio gate: every rendered file is metered after encoding (BS.1770, ffmpeg ebur128). True peak above
+    -1.0 dBTP (`audio.true_peak_max`) fails the build. The master limiter runs 4x oversampled so inter-sample
+    peaks are caught before the AAC encode. Spot-check any file with `python tools/qc/audio_gate.py <files>`.
