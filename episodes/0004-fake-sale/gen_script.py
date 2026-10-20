@@ -144,7 +144,7 @@ beat("cf1", S_OPEN, "Larry is made up. The forty-nine ninety-nine was too. Case 
      {"type": "casefile", "casefile": {"mode": "open", "number": "003", "title": "The fake sale", "typed": False, "open_stamp_on": "never",
                                         "inside": ["SUBJECT: Larry (fictional)", "EXHIBIT: one hair dryer", "SUSPECTS: 2", "STATUS: open"]}})
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at. Last seen: every Black Friday.",
-     {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string, a bold black line struck through its upper half, plain light grey background, studio lighting",
+     {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "last_seen": "Every Black Friday", "tag": "SUSPECT"}})
 beat("m1b", S_OPEN, "It never touches your money. It just tells you how much you're saving.",
      img("{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background",
@@ -164,7 +164,7 @@ beat("p3", S_PEN, "Only zero point two percent of its revenue came from full-pri
 beat("p3b", S_PEN, "Almost three-quarters came from things marked half off or more.",
      {"type": "stat", "stat": {"value": 73, "prefix": "≈", "suffix": "%", "label": "of revenue at 50 % off or more · LA Times, Jan 2012"}})
 beat("p4", S_PEN, "So in 2012 a new boss, Ron Johnson, the man behind the Apple Store, tore it all up.",
-     img("a shop wall covered from edge to edge with rows of pinned red and cream paper sale tags of different sizes, flat front view, plain light",
+     img("a shop wall covered from edge to edge with rows of pinned red and cream paper sale tags of different sizes, flat front view, no people, nothing in front of the wall",
          motion="static", hand_marks=True, marks=[cross(0.5, 0.5, 0.62, 0.62, "tore")]))
 beat("p5", S_PEN, "No fake markdowns. No coupons. One honest price on every tag. He called it Fair and Square.",
      img("a neatly folded white shirt on a shop counter with one clean cream price tag on a string, warm light, simple composition", motion="zoom_in"),
@@ -193,8 +193,7 @@ beat("p12", S_PEN, "The T-shirt did not change. The tag got promoted.",
      img("a cream paper price tag on a string wearing a tiny gold crown and a small red sash, proud, plain cream background", motion="zoom_in"),
      stamp={"text": "Promoted", "on": "promoted."})
 beat("p13", S_PEN, "The store that stopped lying nearly went broke. Our suspect doesn't work alone.",
-     img("a police line-up wall with black height lines: a paper price tag on a string hangs on the left, and on the right an empty space with a chalk-drawn question mark",
-         motion="zoom_in"))
+     reuse("m1", hand_marks=True, marks=[write("+ ?", on="alone.", x=0.78, y=0.45, w=0.12, h=0.12)]))
 
 # ------------------------------------------------------------------ Tuesday 7:40 PM — Always on sale (Kohl's)
 chapter("t2", S_KOHL, "Tuesday, seven-forty p.m.", "Tuesday 7:40 PM — Always on sale")
@@ -267,7 +266,7 @@ beat("n2", S_BRAIN, "The sixty-five group guessed almost twice as high.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Median guess", "labels": ["Wheel: 10", "Wheel: 65"], "values": [25, 45],
                                  "unit": "%", "highlight": 1, "note": "Tversky & Kahneman, 1974"}})
 beat("n3", S_BRAIN, "At MIT, students wrote down the last digits of their social security number, then bid on a keyboard.",
-     img("a 1950s university lecture room, students writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk", motion="zoom_in"),
+     img("a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk", motion="zoom_in"),
      label="MIT · 2003")
 beat("n4", S_BRAIN, "High numbers bid fifty-six dollars. Low numbers, sixteen.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Bid for the same keyboard", "labels": ["Low numbers", "High numbers"], "values": [16, 56],
@@ -278,7 +277,8 @@ beat("n5", S_BRAIN, "A later replication found the effect much weaker. Weaker, b
          "Repeating the experiment, the authors found very weak anchoring effects on what people were willing to pay.",
          "very weak anchoring effects", on="weaker.", kicker="REPLICATION  ·  PARAPHRASED", seed=51, lead=0.4))
 beat("n6", S_BRAIN, "And Harvard researchers found outlet shoppers paid about seventy-seven cents more for every extra dollar of original price.",
-     img("a factory outlet store clothing rail, each garment wearing a large paper tag with a crossed-out original price and a lower price below", motion="zoom_in"),
+     img("a factory outlet store clothing rail, each garment wearing a large blank cream paper price tag with a red border, nothing written on the tags", motion="static",
+         hand_marks=True, marks=[write("ORIGINAL?", on="original", x=0.5, y=0.5, w=0.14, h=0.05)]),
      label="HBS · 2018", ledger=[{"label": "each fake $1 → +77¢ paid (HBS 2018)", "note": True, "on": "seventy-seven"}])
 beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Inspector has more files.",
      reuse("k1", motion="zoom_in"), cta={"on": "subscribe.", "click_on": "Inspector"})
@@ -306,7 +306,7 @@ beat("c1", S_CLOCK, "Larry is buying a mattress. Sale ends in two minutes.",
      img("{larry} in striped pyjamas sitting up in bed at night, his face lit by a glowing laptop showing a big mattress, wide-eyed", motion="zoom_in",
          marks=[write("SALE ENDS IN 00:02:00", on="Sale", x=0.5, y=0.12, w=0.36, h=0.07)]))
 beat("m2", S_CLOCK, "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine. Only three left.",
-     {"type": "mugshot", "prompt": "a single chrome 1950s twin-bell alarm clock with a red face, plain light grey background, studio lighting",
+     {"type": "mugshot", "prompt": "a single chrome 1950s twin-bell alarm clock with a red face standing alone on a plain light grey background, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The countdown clock", "alias": "'Sale ends in 02:59:59' · 'Only 3 left'", "last_seen": "Checkout, 11:58 PM", "tag": "SUSPECT"}})
 beat("e1", S_CLOCK, "In Britain, the competition watchdog took mattress-maker Emma to court. The judgment has the numbers.",
      arch("furniture_windows_shenandoah_1938.jpg", "Furniture store windows at night, Pennsylvania, 1938", motion="zoom_in", crop=[0.0, 0.0, 1.0, 0.94]), label="High Court · July 2026")

@@ -209,7 +209,7 @@
       "text": "Suspect number one. Name: the was price. Aliases: original, regular, compare at. Last seen: every Black Friday.",
       "visual": {
         "type": "mugshot",
-        "prompt": "a single cream paper price tag with a thick red border hanging on a string, a bold black line struck through its upper half, plain light grey background, studio lighting",
+        "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
         "suspect": {
           "number": 1,
           "name": "The WAS price",
@@ -320,7 +320,7 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a shop wall covered from edge to edge with rows of pinned red and cream paper sale tags of different sizes, flat front view, plain light",
+        "prompt": "a shop wall covered from edge to edge with rows of pinned red and cream paper sale tags of different sizes, flat front view, no people, nothing in front of the wall",
         "hand_marks": true,
         "marks": [
           {
@@ -523,9 +523,26 @@
       "section": "Monday 9:00 AM: Fair and square",
       "text": "The store that stopped lying nearly went broke. Our suspect doesn't work alone.",
       "visual": {
-        "type": "image",
-        "motion": "zoom_in",
-        "prompt": "a police line-up wall with black height lines: a paper price tag on a string hangs on the left, and on the right an empty space with a chalk-drawn question mark"
+        "type": "reuse",
+        "beat": "m1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "+ ?",
+            "x": 0.78,
+            "y": 0.45,
+            "w": 0.12,
+            "h": 0.12,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "alone."
+          }
+        ]
       }
     },
     {
@@ -987,7 +1004,7 @@
       "visual": {
         "type": "image",
         "motion": "zoom_in",
-        "prompt": "a 1950s university lecture room, students writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk"
+        "prompt": "a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk"
       },
       "label": "MIT · 2003"
     },
@@ -1044,8 +1061,24 @@
       "text": "And Harvard researchers found outlet shoppers paid about seventy-seven cents more for every extra dollar of original price.",
       "visual": {
         "type": "image",
-        "motion": "zoom_in",
-        "prompt": "a factory outlet store clothing rail, each garment wearing a large paper tag with a crossed-out original price and a lower price below"
+        "motion": "static",
+        "prompt": "a factory outlet store clothing rail, each garment wearing a large blank cream paper price tag with a red border, nothing written on the tags",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "ORIGINAL?",
+            "x": 0.5,
+            "y": 0.5,
+            "w": 0.14,
+            "h": 0.05,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "original"
+          }
+        ]
       },
       "label": "HBS · 2018",
       "ledger": [
@@ -1235,7 +1268,7 @@
       "text": "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine. Only three left.",
       "visual": {
         "type": "mugshot",
-        "prompt": "a single chrome 1950s twin-bell alarm clock with a red face, plain light grey background, studio lighting",
+        "prompt": "a single chrome 1950s twin-bell alarm clock with a red face standing alone on a plain light grey background, nothing else in the picture, studio lighting",
         "suspect": {
           "number": 2,
           "name": "The countdown clock",
