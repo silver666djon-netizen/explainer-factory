@@ -91,8 +91,10 @@ must report zero before a final render.
     the cut when the next shot needs context ("closeup": {..., "back": s}).
 13. Subscribe bell: red with a cream outline, placed clear of the character (cta "pos").
 14. Audio gate: every rendered file is metered after encoding (BS.1770, ffmpeg ebur128). True peak above
-    -1.0 dBTP (`audio.true_peak_max`) fails the build. The master limiter runs 4x oversampled so inter-sample
-    peaks are caught before the AAC encode. Spot-check any file with `python tools/qc/audio_gate.py <files>`.
+    -1.0 dBTP (`audio.true_peak_max`) fails the build. Master: 4x oversampled limiter (ceiling 0.72), 48 kHz,
+    AAC 192k with an 18 kHz cutoff (the native AAC encoder overshoots up to +5 dB on the scribble/stamp top end).
+    A file over the ceiling is remastered automatically (audio only, video copied) at 0.66 / 0.60 / 0.54
+    before the build fails. Spot-check any file with `python tools/qc/audio_gate.py <files>`.
 15. A mark is never written while its target or the mark itself is outside the frame. Written labels are kept
     inside the visible picture by the engine; a push-in that needs a mark pulls back first ("closeup":
     {"back": s, "back_marks": [...]}: written only on the full frame). The mark audit checks every frame of

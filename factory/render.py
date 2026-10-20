@@ -1059,7 +1059,7 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
         "-map", "0:v", "-map", "1:a",
         "-c:v", "libx264", "-preset", cfg["video"].get("x264_preset", "veryfast"),
         "-crf", str(cfg["video"].get("crf", 21)), "-pix_fmt", "yuv420p",
-        "-af", loud_af + ",aresample=192000,alimiter=limit=0.78:attack=2:release=60:level=false,aresample=48000", "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+        "-af", _master_af(loud_af, LIMIT0), *AAC_ARGS,
         "-shortest", "-movflags", "+faststart", str(out_path),
     ]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
@@ -1132,8 +1132,36 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     if code != 0:
         raise RuntimeError(f"ffmpeg failed with exit code {code}")
     log(f"Rendered {out_path.name}: {plan.total:.1f}s in {time.time() - t0:.0f}s")
-    audio_gate(out_path, cfg, log)
+    _gate_with_remaster(out_path, wav_path, loud_af, cfg, log)
     return out_path
+
+
+# Master: loudnorm (linear) -> 4x oversampled limiter -> 48 kHz -> AAC with an 18 kHz cutoff (the native AAC
+# encoder overshoots on the scribble/stamp transients' top end; capping it keeps true peaks predictable).
+LIMIT0 = 0.72
+AAC_ARGS = ["-c:a", "aac", "-b:a", "192k", "-cutoff", "18000", "-ar", "48000"]
+
+
+def _master_af(loud_af: str, limit: float) -> str:
+    return loud_af + f",aresample=192000,alimiter=limit={limit}:attack=1:release=60:level=false,aresample=48000"
+
+
+def _gate_with_remaster(out_path: Path, wav_path: Path, loud_af: str, cfg: dict, log=print) -> None:
+    """True-peak gate. A file over the ceiling gets its audio remastered with a lower limiter ceiling (video stream
+    copied untouched), up to three times; if it still fails, the build fails."""
+    ceiling = float(cfg.get("audio", {}).get("true_peak_max", -1.0))
+    _i, tp = measure_audio(out_path)
+    for limit in (0.66, 0.60, 0.54):
+        if tp <= ceiling or not Path(wav_path).exists():
+            break
+        log(f"  audio {out_path.name}: true peak {tp:.1f} dBTP over {ceiling:.1f} - remastering at limit {limit}")
+        tmp = out_path.with_suffix(".remaster.mp4")
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(out_path), "-i", str(wav_path), "-map", "0:v", "-map", "1:a",
+                        "-c:v", "copy", "-af", _master_af(loud_af, limit), *AAC_ARGS, "-shortest", "-movflags", "+faststart",
+                        str(tmp)], check=True)
+        tmp.replace(out_path)
+        _i, tp = measure_audio(out_path)
+    audio_gate(out_path, cfg, log)
 
 
 def measure_audio(path: Path) -> tuple[float, float]:

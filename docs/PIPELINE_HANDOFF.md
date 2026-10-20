@@ -96,7 +96,9 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   needs a `target` box.
 
 ## 8. Known pitfalls (already hit once)
-- AAC encoding adds inter-sample peaks → master limiter is 4× oversampled; gate measures after encoding.
+- The native AAC encoder overshoots (up to +5 dB) on high-frequency transients → AAC cutoff 18 kHz, limiter
+  0.72, gate measures the encoded file and remasters audio-only up to 3× before failing (r61's first render
+  failed the gate at +1.6 dBTP — that is how this was found).
 - Hand must leave the frame before the cut (HAND_OUT 0.32 s) → give the last hand action time (`hold`).
 - Square Shorts window crops wide pictures; the audit catches marks written outside the frame.
 - Strike-through must cross every line; stamps on paper are pressed by the stamp hand, never a pen hand.
@@ -113,7 +115,7 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   5. 4:16–4:22 replication card: slow 10 % push from the underline to the end of the beat.
   Also: engine/audit rule 15 (never write outside the frame) fixed n1 closeup, Shorts s2/s3/s4/s6 marks;
   Short 3 k7 hides the ledger.
-- **r61 render**: run id 39483687135 (dispatched 19:28 UTC, `send=no`). NEXT: when it completes →
+- **r61 render**: first run 39483687135 failed the true-peak gate (+1.6 dBTP, long.mp4) → master fixed, re-dispatched (see `gh run list`). NEXT: when it completes →
   download → mark_audit + handcheck (long + shorts) + audio_gate on all 8 files → frame sheet at 4:16–4:22,
   5:57, 6:09, 7:41, 7:50–8:01 (timecodes shift ≈ +0.4 s after x6) → report → Notify `0004-fake-sale-r61` →
   in the SAME message send the Episode 4 angle options below.
