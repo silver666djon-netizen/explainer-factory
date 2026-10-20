@@ -144,6 +144,16 @@ class CaseFileShot(Shot):
             y += int(fs * 0.55)
         self.page = page
         self.ft = ft
+        self.writes = []
+        if spec.get("writes"):
+            from .endscreen import Writing
+            wf = font(marker, int(fs * 1.05))
+            for w_ in spec["writes"]:
+                lx, ly, txt = self.inside_lines[int(w_["line"])]
+                gap = int(fs * 0.5) if txt.strip() else 0
+                col = pal.get(w_.get("color", "ink"), pal["ink"])
+                self.writes.append((Writing(str(w_["text"]), wf, col), lx + int(ft.getlength(txt)) + gap, ly - int(fs * 0.12),
+                                    float(w_.get("at", 2.5)) + lead_in, float(w_.get("dur", 0.9)), w_.get("color", "ink")))
         # stamp
         self.stamp = None
         if spec.get("stamp"):
@@ -256,6 +266,20 @@ class CaseFileShot(Shot):
                 tip = hand_path(lambda q: (sx, sy), osa - 0.05, osa + 0.25, t, canvas.shape[1], canvas.shape[0], False, from_below=True)
                 if tip:
                     paste_hand(canvas, "ink_under", tip[0], tip[1], False)
+        if self.mode == "open" and self.writes and op >= 0.999:
+            from .draw import hand_path, paste_hand
+            px0 = self.BW // 2
+            for wr, wx, wy, w0, wd, wc in self.writes:
+                q = (t - w0) / wd
+                if q <= 0:
+                    continue
+                X, Y = px0 + wx, self.fy + wy
+                blend(canvas, wr.at(min(1.0, q)), X, Y)
+                if q < 1.25:
+                    tip = hand_path(lambda qq, wr=wr, X=X, Y=Y, w0=w0, wd=wd: (X + wr.tip((qq - w0) / wd)[0], Y + wr.tip((qq - w0) / wd)[1]),
+                                    w0, w0 + wd, t, canvas.shape[1], canvas.shape[0], False, from_below=True)
+                    if tip:
+                        paste_hand(canvas, "marker_under" if wc == "red" else "ink_under", tip[0], tip[1], False)
         if self.mode == "closed" and self.stamp is not None and t >= self.stamp_at:
             age = t - self.stamp_at
             p = min(1.0, age / 0.14)
@@ -282,6 +306,8 @@ class CaseFileShot(Shot):
                 out.append((start_abs + self.lead_in + 1.7, "type"))
             if self.spec.get("open_stamp_at") is not None:
                 out.append((start_abs + self.lead_in + float(self.spec["open_stamp_at"]), "stamp"))
+            for w_ in self.writes:
+                out += [(start_abs + w_[3], "marker"), (start_abs + w_[3] + w_[4] * 0.5, "marker")]
             return out
         return [(start_abs + self.stamp_at, "thud"), (start_abs + self.stamp_at + 0.01, "hit")]
 
@@ -324,6 +350,8 @@ class MugshotShot(Shot):
         framed = Image.new("RGB", (pw + 2 * border, ph + 2 * border), (250, 246, 236))
         framed.paste(photo, (border, border))
         wall.paste(framed, (px - border, py - border))
+        self.photo_box = (px, py, pw, ph)
+        self.photo_marks = [dict(m) for m in (spec.get("photo_marks") or [])]
         # booking plate under the photo
         plate_w, plate_h = pw, int(ph * 0.16)
         pyp = py + ph + border * 2
@@ -378,6 +406,18 @@ class MugshotShot(Shot):
                 blend(canvas, lab, cx + int(self.BW * 0.03), y, opacity=op)
                 blend(canvas, val, cx + int(self.BW * 0.03), y + lab.shape[0], opacity=op)
             y += lab.shape[0] + val.shape[0] + int(self.BH * 0.015)
+        if self.photo_marks:  # the hand writes / strikes on the booking photo (marks in photo fractions)
+            from .shots import draw_marks
+            from .draw import mark_pen, hand_path, paste_hand
+            px, py, pw, ph = self.photo_box
+            reg = np.ascontiguousarray(canvas[py:py + ph, px:px + pw])
+            canvas[py:py + ph, px:px + pw] = draw_marks(reg, self.photo_marks, t, tuple(int(c) for c in self.pal["red"]), self.cfg)
+            pen = mark_pen(self.photo_marks, t, pw, ph)
+            if pen:
+                ftip, t0, t1, kind = pen
+                pos = hand_path(lambda tt: (px + ftip(tt)[0], py + ftip(tt)[1]), t0, t1, t, self.BW, self.BH, False)
+                if pos:
+                    paste_hand(canvas, kind, pos[0], pos[1], False)
         tag_at = 0.35 + len(self.row_imgs) * 0.9
         if tl >= tag_at:
             blend(canvas, self.tag, *self.tag_xy, opacity=min(1.0, (tl - tag_at) / 0.15))

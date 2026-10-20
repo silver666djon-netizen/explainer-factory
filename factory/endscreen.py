@@ -423,7 +423,7 @@ class EndScreenShot(Shot):
                         tip = hand_path(lambda q, wr=wr, fx=fx, fy=fy, t0=t0: (fx + wr.tip((q - t0) / tt["fdur"])[0], fy + wr.tip((q - t0) / tt["fdur"])[1]),
                                         t0, t0 + tt["fdur"], t, W, H, False, from_below=True)
                         if tip:
-                            hand = ("ink_under", tip[0], tip[1], False)
+                            hand = ("marker_under" if k == len(self.fees) - 1 else "ink_under", tip[0], tip[1], False)
             if self.fees:  # ring the final price
                 wr, (fx, fy) = self.fees[-1]
                 c0 = tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.15

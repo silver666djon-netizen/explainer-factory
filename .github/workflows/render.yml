@@ -15,6 +15,10 @@ on:
         description: "yes = fast low-res draft for Claude's QC (release <slug>-preview, nothing sent to Telegram)"
         required: false
         default: "no"
+      upto:
+        description: "preview only: render the opening up to and including this beat id (empty = whole video)"
+        required: false
+        default: ""
       send:
         description: "no = publish the release but don't send to Telegram yet (send after QC with the Notify workflow)"
         required: false
@@ -139,7 +143,7 @@ jobs:
           set -o pipefail
           only="${{ github.event.inputs.only }}"
           for ep in ${{ steps.pick.outputs.list }}; do
-            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} ${{ github.event.inputs.preview == 'yes' && '--preview' || '' }} 2>&1 | tee -a build.log
+            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} ${{ github.event.inputs.preview == 'yes' && '--preview' || '' }} ${{ github.event.inputs.upto && format('--upto {0}', github.event.inputs.upto) || '' }} 2>&1 | tee -a build.log
           done
 
       - name: Save generated images (even if the render failed)
@@ -172,7 +176,7 @@ jobs:
           if [ "${{ github.event.inputs.preview }}" = "yes" ]; then
             for ep in ${{ steps.pick.outputs.list }}; do
               gh release delete "$ep-preview" -y --cleanup-tag 2>/dev/null || true
-              gh release create "$ep-preview" out/$ep/*.mp4 --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease
+              gh release create "$ep-preview" out/$ep/*.mp4 $(ls out/$ep/timings.json 2>/dev/null) --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease
             done
             exit 0
           fi

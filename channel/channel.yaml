@@ -21,6 +21,10 @@ video:
   hook_max_shot_seconds: 1.8
   x264_preset: veryfast
 
+# Long-video thumbnails for this channel are made separately (photoreal), outside the pipeline:
+# the build never generates or uploads one unless episodes/<slug>/thumbnail.png|jpg is put there by hand.
+make_thumbnail: false
+
 style:
   # Look: 1950s print advertising + flat infographics + red investigator marker + 50s comics + archive photos.
   prompt_prefix: "Single clear subject centered in the frame, simple stylized shapes, plain unlabeled surfaces, "

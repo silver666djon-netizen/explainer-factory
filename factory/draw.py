@@ -311,7 +311,7 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
     """Pencil tip (base px) of the mark being drawn at time t, with the hand's in/out timing."""
     from .shots import mark_strokes
     for i, m in enumerate(marks):
-        if not m.get("hand"):
+        if not m.get("hand") or m.get("type") == "led":
             continue
         at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))
         strokes = m.get("_strokes")
@@ -325,5 +325,13 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
             x, y = pts[min(len(pts) - 1, int(q * (len(pts) - 1)))]
             return float(x), float(y)
         if at - 0.3 <= t <= at + dur + 0.35:
-            return tip, at, at + dur
+            return tip, at, at + dur, pen_for(m)
     return None
+
+
+def pen_for(mark: dict) -> str:
+    """Ink colour = pen colour: red marks -> red pencil hand, black ink -> graphite pencil, paper-white -> white paint pen."""
+    col = str(mark.get("color", "red"))
+    if mark.get("type", "circle") != "write":
+        col = str(mark.get("color", "red"))
+    return {"ink": "pencil", "paper": "white"}.get(col, "red")

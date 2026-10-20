@@ -28,10 +28,6 @@
     "Saturday 10:00 AM: Three checks": "ub_secret_report",
     "Case closed": "ub_jazz_rumble"
   },
-  "thumbnail": {
-    "text": "The sale that never was.",
-    "prompt": "a large cream paper price tag with a red border hanging on the right side of the frame, its higher price struck through in red, plain cream background"
-  },
   "sources": [
     "Which? (26 Nov 2024). Nine in 10 Black Friday deals cheaper or same price at other times of the year (227 deals, 8 retailers; Boots hair dryer £49.99/£18.99).",
     "J.C. Penney Form 8-K, 27 Feb 2013 (fiscal 2012: net loss $985M; total sales −24.8%; comparable sales −25.2%).",
@@ -185,7 +181,7 @@
     {
       "id": "cf1",
       "section": "The case",
-      "text": "Larry is made up. The forty-nine ninety-nine was too. Case file number three. The sale that never was.",
+      "text": "Case file number three. The sale that never was. Larry is made up. The forty-nine ninety-nine was too.",
       "visual": {
         "type": "casefile",
         "casefile": {
@@ -195,10 +191,23 @@
           "typed": false,
           "open_stamp_on": "never",
           "inside": [
-            "SUBJECT: Larry (fictional)",
+            "SUBJECT: Larry",
             "EXHIBIT: one hair dryer",
+            "",
             "SUSPECTS: 2",
             "STATUS: open"
+          ],
+          "writes": [
+            {
+              "line": 0,
+              "text": "(fictional)",
+              "on": "made"
+            },
+            {
+              "line": 2,
+              "text": "£49.99 — also fictional",
+              "on": "forty-nine"
+            }
           ]
         }
       }
@@ -216,7 +225,30 @@
           "alias": "Original · Regular · Compare at",
           "last_seen": "Every Black Friday",
           "tag": "SUSPECT"
-        }
+        },
+        "photo_marks": [
+          {
+            "type": "write",
+            "text": "WAS $—",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.36,
+            "h": 0.12,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "was"
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.42,
+            "h": 0.02,
+            "on": "Aliases:"
+          }
+        ]
       }
     },
     {
@@ -282,8 +314,24 @@
       "text": "It never touches your money. It just tells you how much you're saving.",
       "visual": {
         "type": "image",
-        "motion": "zoom_in",
-        "prompt": "{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background"
+        "motion": "static",
+        "prompt": "{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "YOU SAVE £31",
+            "x": 0.28,
+            "y": 0.55,
+            "w": 0.19,
+            "h": 0.07,
+            "angle": 27,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "saving."
+          }
+        ]
       }
     },
     {
@@ -318,7 +366,7 @@
         "look": "print",
         "credit": "Library of Congress, Prints & Photographs Division (no known restrictions)",
         "motion": "zoom_in",
-        "caption": "Sale signs on a department store, Montgomery, Alabama, 1939",
+        "caption": "Sale signs, Montgomery, Alabama, 1939 · Library of Congress",
         "crop": [
           0.05,
           0.0,
@@ -588,6 +636,30 @@
         "marks": [
           {
             "type": "write",
+            "text": "WAS $—",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.16,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.19,
+            "h": 0.02,
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "write",
             "text": "+ ?",
             "x": 0.78,
             "y": 0.45,
@@ -620,8 +692,24 @@
       "text": "Larry wants a stand mixer. And it's on sale. Of course it is.",
       "visual": {
         "type": "image",
-        "motion": "zoom_in",
-        "prompt": "{larry} in a department store aisle gazing lovingly at a shiny cream stand mixer on a pedestal under a spotlight, a big blank red sign hanging above it"
+        "motion": "static",
+        "prompt": "{larry} in a department store aisle gazing lovingly at a shiny cream stand mixer on a pedestal under a spotlight, a big blank red sign hanging above it",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "SALE",
+            "x": 0.495,
+            "y": 0.145,
+            "w": 0.15,
+            "h": 0.12,
+            "angle": 0,
+            "color": "paper",
+            "font": "headline",
+            "dur": 0.7,
+            "at": 0.3
+          }
+        ]
       }
     },
     {
@@ -868,6 +956,19 @@
             "w": 0.12,
             "h": 0.26,
             "on": "never"
+          },
+          {
+            "type": "write",
+            "text": "REG.",
+            "x": 0.79,
+            "y": 0.585,
+            "w": 0.05,
+            "h": 0.04,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "regular"
           }
         ],
         "closeup": {
@@ -888,6 +989,20 @@
               "at": 0.0,
               "hand": false,
               "dur": 0.01
+            },
+            {
+              "type": "write",
+              "text": "REG.",
+              "x": 0.79,
+              "y": 0.585,
+              "w": 0.05,
+              "h": 0.04,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
             },
             {
               "type": "write",
@@ -1020,6 +1135,34 @@
         "motion": "static",
         "prompt": "a 1950s fairground wheel of fortune in a psychology lab, a scientist in a white coat holding a clipboard beside it",
         "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "10",
+            "x": 0.455,
+            "y": 0.2,
+            "w": 0.04,
+            "h": 0.07,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "ten"
+          },
+          {
+            "type": "write",
+            "text": "65",
+            "x": 0.375,
+            "y": 0.2,
+            "w": 0.04,
+            "h": 0.07,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "sixty-five,"
+          }
+        ],
         "closeup": {
           "on": "then",
           "center": [
@@ -1028,6 +1171,34 @@
           ],
           "zoom": 2.0,
           "marks": [
+            {
+              "type": "write",
+              "text": "10",
+              "x": 0.455,
+              "y": 0.2,
+              "w": 0.04,
+              "h": 0.07,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "write",
+              "text": "65",
+              "x": 0.375,
+              "y": 0.2,
+              "w": 0.04,
+              "h": 0.07,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
             {
               "type": "circle",
               "x": 0.42,
@@ -1173,7 +1344,23 @@
         "type": "reuse",
         "beat": "k1",
         "index": 0,
-        "motion": "zoom_in"
+        "motion": "zoom_in",
+        "marks": [
+          {
+            "type": "write",
+            "text": "SALE",
+            "x": 0.495,
+            "y": 0.145,
+            "w": 0.15,
+            "h": 0.12,
+            "angle": 0,
+            "color": "paper",
+            "font": "headline",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          }
+        ]
       },
       "cta": {
         "on": "subscribe.",
@@ -1268,6 +1455,30 @@
         "marks": [
           {
             "type": "write",
+            "text": "WAS $—",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.16,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.19,
+            "h": 0.02,
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "write",
             "text": "FICTION",
             "x": 0.5,
             "y": 0.66,
@@ -1288,6 +1499,30 @@
           ],
           "zoom": 1.8,
           "marks": [
+            {
+              "type": "write",
+              "text": "WAS $—",
+              "x": 0.5,
+              "y": 0.52,
+              "w": 0.16,
+              "h": 0.09,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "underline",
+              "x": 0.5,
+              "y": 0.52,
+              "w": 0.19,
+              "h": 0.02,
+              "at": 0.0,
+              "dur": 0.01,
+              "hand": false
+            },
             {
               "type": "write",
               "text": "FICTION",
@@ -1342,16 +1577,12 @@
         "prompt": "{larry} in striped pyjamas sitting up in bed at night, his face lit by a glowing laptop showing a big mattress, wide-eyed",
         "marks": [
           {
-            "type": "write",
-            "text": "SALE ENDS IN 00:02:00",
-            "x": 0.25,
-            "y": 0.24,
-            "w": 0.26,
-            "h": 0.06,
-            "angle": 0,
-            "color": "paper",
-            "font": "headline",
-            "dur": 0.7,
+            "type": "led",
+            "text": "00:02:00",
+            "label": "Sale ends in",
+            "x": 0.22,
+            "y": 0.25,
+            "w": 0.27,
             "on": "Sale"
           }
         ]
@@ -1363,7 +1594,7 @@
       "text": "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine.",
       "visual": {
         "type": "mugshot",
-        "prompt": "a single chrome 1950s twin-bell alarm clock with a red face standing alone on a plain light grey background, nothing else in the picture, studio lighting",
+        "prompt": "a digital countdown timer (hand-made frame: images/m2.png)",
         "suspect": {
           "number": 2,
           "name": "The countdown clock",
@@ -1392,24 +1623,20 @@
         },
         "marks": [
           {
-            "type": "write",
-            "text": "SALE ENDS IN 00:01:58",
-            "x": 0.25,
-            "y": 0.24,
-            "w": 0.26,
-            "h": 0.06,
-            "angle": 0,
-            "color": "paper",
-            "font": "headline",
-            "dur": 0.01,
+            "type": "led",
+            "text": "00:01:58",
+            "label": "Sale ends in",
+            "x": 0.22,
+            "y": 0.25,
+            "w": 0.27,
             "at": 0.0,
             "hand": false
           },
           {
             "type": "write",
             "text": "ONLY 3 LEFT!",
-            "x": 0.25,
-            "y": 0.36,
+            "x": 0.22,
+            "y": 0.4,
             "w": 0.2,
             "h": 0.06,
             "angle": 0,
@@ -1543,21 +1770,47 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background",
+        "prompt": "a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background (edited: images/e5.png)",
         "hand_marks": true,
         "marks": [
           {
             "type": "write",
             "text": "1 : 2",
-            "x": 0.8,
-            "y": 0.74,
+            "x": 0.14,
+            "y": 0.2,
             "w": 0.12,
             "h": 0.08,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
+            "on": "rule:"
+          },
+          {
+            "type": "write",
+            "text": "2 ON SALE",
+            "x": 0.3,
+            "y": 0.75,
+            "w": 0.17,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
             "on": "two"
+          },
+          {
+            "type": "write",
+            "text": "1 FULL PRICE",
+            "x": 0.71,
+            "y": 0.62,
+            "w": 0.19,
+            "h": 0.06,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "full"
           }
         ]
       }
@@ -1600,8 +1853,8 @@
           {
             "type": "write",
             "text": "1 : 2",
-            "x": 0.8,
-            "y": 0.74,
+            "x": 0.14,
+            "y": 0.2,
             "w": 0.12,
             "h": 0.08,
             "angle": 0,
@@ -1612,9 +1865,37 @@
             "hand": false
           },
           {
+            "type": "write",
+            "text": "2 ON SALE",
+            "x": 0.3,
+            "y": 0.75,
+            "w": 0.17,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "1 FULL PRICE",
+            "x": 0.71,
+            "y": 0.62,
+            "w": 0.19,
+            "h": 0.06,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
             "type": "cross",
-            "x": 0.8,
-            "y": 0.74,
+            "x": 0.14,
+            "y": 0.2,
             "w": 0.15,
             "h": 0.11,
             "on": "wrong"
@@ -1999,7 +2280,33 @@
         "type": "reuse",
         "beat": "m1",
         "index": 0,
-        "motion": "zoom_in"
+        "motion": "static",
+        "marks": [
+          {
+            "type": "write",
+            "text": "WAS $—",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.16,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.52,
+            "w": 0.19,
+            "h": 0.02,
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          }
+        ]
       },
       "music": "ub_secret_report"
     },
@@ -2030,26 +2337,26 @@
         "closeup": {
           "on": "Everywhere",
           "center": [
-            0.47,
-            0.82
+            0.6,
+            0.84
           ],
-          "zoom": 2.4,
+          "zoom": 2.2,
           "marks": [
             {
               "type": "circle",
-              "x": 0.47,
+              "x": 0.48,
               "y": 0.89,
-              "w": 0.08,
-              "h": 0.05,
+              "w": 0.18,
+              "h": 0.07,
               "on": "model"
             },
             {
               "type": "write",
               "text": "MODEL No.",
-              "x": 0.47,
+              "x": 0.7,
               "y": 0.8,
-              "w": 0.1,
-              "h": 0.04,
+              "w": 0.12,
+              "h": 0.045,
               "angle": 0,
               "color": "red",
               "font": "marker",

@@ -166,6 +166,20 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
         if mark.get("type") == "write":
             _draw_write(out, mark, p, W, H, red, cfg)
             continue
+        if mark.get("type") == "led":  # digital countdown panel (factory.led), pops on
+            from .led import led_panel
+            key = ("_led", mark.get("text"), mark.get("label"), W)
+            img = mark.get("_img")
+            if img is None or mark.get("_key") != key:
+                pan = led_panel(str(mark.get("text", "02:59:59")), mark.get("label"))
+                tw = max(8, int(float(mark.get("w", 0.3)) * W))
+                img = cv2.resize(pan, (tw, max(4, int(pan.shape[0] * tw / pan.shape[1]))), interpolation=cv2.INTER_AREA)
+                mark["_img"], mark["_key"] = img, key
+            s_ = 1.25 - 0.25 * ease(p)
+            im = cv2.resize(img, (max(2, int(img.shape[1] * s_)), max(2, int(img.shape[0] * s_))))
+            cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
+            blend(out, im, int(cx - im.shape[1] / 2), int(cy - im.shape[0] / 2), opacity=min(1.0, p * 2))
+            continue
         strokes = mark.get("_strokes")
         if strokes is None:
             strokes = mark_strokes(mark, W, H, seed=17 + i)
@@ -427,11 +441,11 @@ class ImageShot(Shot):
         if self.marks:
             pen = mark_pen(self.marks, t, self.BW, self.BH)
             if pen:
-                ftip, t0, t1 = pen
+                ftip, t0, t1, kind = pen
                 mirrored = ftip(t0)[0] < self.BW * 0.4
                 pos = hand_path(lambda tt: self._screen(*ftip(tt), tt), t0, t1, t, FW, FH, mirrored)
                 if pos:
-                    paste_hand(out, "red", pos[0], pos[1], mirrored)
+                    paste_hand(out, kind, pos[0], pos[1], mirrored)
 
     def _view(self, t: float) -> np.ndarray:
         p, s, M = self._matrix(t)

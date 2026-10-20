@@ -486,7 +486,13 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 plan.ledger_hide.append((shot_start, shot_end))
         elif vtype in ("mugshot", "roulette", "maze", "casefile", "slot"):
             if vtype == "mugshot":
-                prop = MugshotShot(shot_start, span, pil(images[beat["id"]]), visual["suspect"], cfg, size, lead_in, seed=i)
+                sus = dict(visual["suspect"])
+                sus["photo_marks"] = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("photo_marks") or [])]
+                for m in sus["photo_marks"]:
+                    m.setdefault("hand", True)
+                    plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
+                    plan.hand_cuts.append(shot_start + m["at"])
+                prop = MugshotShot(shot_start, span, pil(images[beat["id"]]), sus, cfg, size, lead_in, seed=i)
             elif vtype == "roulette":
                 prop = RouletteShot(shot_start, span, visual.get("roulette") or {}, cfg, size, lead_in)
             elif vtype == "maze":
@@ -497,6 +503,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 cfs = dict(visual["casefile"])
                 if cfs.get("open_stamp_on"):
                     cfs["open_stamp_at"] = _timed({"on": cfs["open_stamp_on"]}, v["words"], 2.5)
+                for wr_ in cfs.get("writes") or []:  # handwritten additions on the open page
+                    wr_["at"] = _timed(wr_, v["words"], 2.5)
                 prop = CaseFileShot(shot_start, span, cfs, cfg, size, lead_in)
             plan.shots.append(prop)
             for at, kind_sfx in prop.sfx(shot_start):

@@ -32,7 +32,8 @@ def voice_beats(voice, beats: list[dict]) -> list[dict]:
     return out
 
 
-def build(episode_path: str, out_dir: str | None, offline: bool, only: str | None, preview: bool = False) -> Path:
+def build(episode_path: str, out_dir: str | None, offline: bool, only: str | None, preview: bool = False,
+          upto: str | None = None) -> Path:
     started = time.time()
     episode = load_episode(episode_path)
     cfg = load_config(episode.get("config"))
@@ -56,7 +57,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     prompts = image_prompts(episode)
     thumb_spec = episode.get("thumbnail") or {}
     ep_dir0 = Path(episode_path) if Path(episode_path).is_dir() else Path(episode_path).parent
-    if thumb_spec.get("prompt") and not any((ep_dir0 / f"thumbnail.{e}").exists() for e in ("png", "jpg")):
+    if cfg.get("make_thumbnail", True) and thumb_spec.get("prompt") and not any((ep_dir0 / f"thumbnail.{e}").exists() for e in ("png", "jpg")):
         prompts["thumbnail"] = {"prompt": thumb_spec["prompt"], "style": thumb_spec.get("style", "ad")}
     cache = ROOT / ".cache" / ("images-offline" if offline else "images") / slug
     images = ensure_images(cfg, prompts, cache, offline, log)
@@ -105,6 +106,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     plan_long = build_plan(episode["beats"], long_voiced, images, cfg,
                            (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup)
     target = float(cfg["video"].get("long_min_seconds", 0))
+    extra = 0.0
     if target and plan_long.total < target:
         # stretch breathing room between beats (max +0.45 s each) to reach the mid-roll threshold
         extra = min(0.45, (target - plan_long.total) / max(1, len(episode["beats"])) + 0.01)
@@ -114,8 +116,27 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     log(f"Long video: {plan_long.total / 60:.2f} min, {len(plan_long.shots)} shots")
     from .render import still_runs
     lim = float(cfg["video"].get("max_still_seconds", 8.0))
+    warns = []
     for a, b, name in still_runs(plan_long, lim):
+        warns.append({"start": a, "end": b, "picture": name})
         log(f"WARNING max-still: {name} on screen {b - a:.1f}s ({a // 60:.0f}:{a % 60:04.1f}–{b // 60:.0f}:{b % 60:04.1f}) > {lim:.0f}s — add an angle, insert or card")
+    import json as _json
+    ids = [b["id"] for b in episode["beats"]]
+    (out / "timings.json").write_text(_json.dumps({  # real narration timings: Shorts are cut against these
+        "total": plan_long.total, "max_still_warnings": warns,
+        "beats": [{"id": bid, "start": plan_long.beat_starts.get(bid), "voice": round(v["duration"], 3),
+                   "text": b["text"], "words": [[w, round(s0, 3), round(e0, 3)] for w, s0, e0 in v["words"]]}
+                  for bid, b, v in zip(ids, episode["beats"], long_voiced)]}, indent=1))
+    if upto:  # preview of the opening only: beats up to and including `upto`, timed exactly as in the full cut
+        k = ids.index(upto) + 1
+        sub = episode["beats"][:k]
+        plan_long = build_plan(sub, long_voiced[:k], images, cfg,
+                               (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup,
+                               extra)
+        log(f"Preview cut up to {upto}: {plan_long.total:.1f}s")
+        render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
+        (out / "long.wav").unlink(missing_ok=True)
+        return out
     if only in (None, "long"):
         render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
         (out / "long.wav").unlink(missing_ok=True)
@@ -147,6 +168,10 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         ImageOps.fit(Image.open(custom).convert("RGB"), (1280, 720), Image.LANCZOS).save(out / "thumbnail.jpg", quality=92)
         write_meta(out, episode, plan_long, shorts_info)
         log(f"Done in {(time.time() - started) / 60:.1f} min -> {out}")
+        return out
+    if not cfg.get("make_thumbnail", True):  # channel makes its thumbnails separately
+        write_meta(out, episode, plan_long, shorts_info)
+        log(f"Done in {(time.time() - started) / 60:.1f} min -> {out} (no thumbnail: made separately)")
         return out
     first_image = next((b["id"] for b in episode["beats"] if b["visual"]["type"] in ("image", "photo", "mugshot")), None)
     if "thumbnail" in images:
@@ -214,6 +239,7 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--offline", action="store_true", help="placeholder images and voice (no APIs)")
     b.add_argument("--only", choices=["long", "shorts"])
     b.add_argument("--preview", action="store_true", help="fast half-size 15 fps draft for checking")
+    b.add_argument("--upto", help="render only the beats up to and including this id (opening preview)")
     c = sub.add_parser("check", help="validate a script without rendering")
     c.add_argument("episode")
     args = ap.parse_args(argv)
@@ -226,7 +252,7 @@ def main(argv: list[str] | None = None) -> int:
                               "approx_minutes": round(words / 150, 1), "shorts": len(ep.get("shorts") or []),
                               "warnings": lint(ep)}, indent=2, ensure_ascii=False))
             return 0
-        build(args.episode, args.out, args.offline, args.only, args.preview)
+        build(args.episode, args.out, args.offline, args.only, args.preview, args.upto)
         return 0
     except ScriptError as exc:
         print(f"Script error:\n{exc}", file=sys.stderr)

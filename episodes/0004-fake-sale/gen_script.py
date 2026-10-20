@@ -112,6 +112,18 @@ def closeup(on, center, zoom=2.0, marks=None, motion="zoom_in"):
     return {"on": on, "center": center, "zoom": zoom, "marks": marks or [], "motion": motion}
 
 
+def strike(x, y, w, on, **kw):
+    """A red line struck through a written price."""
+    m = {"type": "underline", "x": x, "y": y, "w": w, "h": 0.02, **kw}
+    if on is not None:
+        m["on"] = on
+    return m
+
+
+WAS_DASH = [write("WAS $—", at=0.0, x=0.50, y=0.52, w=0.16, h=0.09, color="ink"),
+            strike(0.50, 0.52, 0.19, None, at=0.0, dur=0.01, hand=False)]
+
+
 def chapter(id, section, spoken, card):
     return beat(id, section, spoken, title(card), pause_before=1.0, sting="ub_sting_trumpet", sting_at=-1.0)
 
@@ -140,12 +152,16 @@ beat("o3", S_OPEN, "In the twelve months before, it had never cost forty-nine ni
      doc("Which? · price check · Nov 2024", "The £49.99 that wasn't",
          "A hair dryer was £18.99 on Black Friday, marked down from £49.99. It had never been £49.99 at Boots in the preceding 12 months.",
          "never been £49.99", on="never", kicker="CONSUMER GROUP  ·  QUOTED", seed=11, lead=0.6))
-beat("cf1", S_OPEN, "Larry is made up. The forty-nine ninety-nine was too. Case file number three. The sale that never was.",  # the gag lands on "SUBJECT: Larry (fictional)"
+beat("cf1", S_OPEN, "Case file number three. The sale that never was. Larry is made up. The forty-nine ninety-nine was too.",
      {"type": "casefile", "casefile": {"mode": "open", "number": "003", "title": "The fake sale", "typed": False, "open_stamp_on": "never",
-                                        "inside": ["SUBJECT: Larry (fictional)", "EXHIBIT: one hair dryer", "SUSPECTS: 2", "STATUS: open"]}})
+                                        "inside": ["SUBJECT: Larry", "EXHIBIT: one hair dryer", "", "SUSPECTS: 2", "STATUS: open"],
+                                        "writes": [{"line": 0, "text": "(fictional)", "on": "made"},
+                                                   {"line": 2, "text": "£49.99 — also fictional", "on": "forty-nine"}]}})
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at.",
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
-      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "last_seen": "Every Black Friday", "tag": "SUSPECT"}})
+      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "last_seen": "Every Black Friday", "tag": "SUSPECT"},
+      "photo_marks": [write("WAS $—", on="was", x=0.5, y=0.52, w=0.36, h=0.12, color="ink"),
+                      strike(0.5, 0.52, 0.42, "Aliases:")]})
 beat("m1c", S_OPEN, "Last seen: every Black Friday.",
      reuse("o1", hand_marks=True, push={"center": [0.40, 0.62], "zoom": 1.6},
            marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
@@ -153,14 +169,14 @@ beat("m1c", S_OPEN, "Last seen: every Black Friday.",
                   circle(0.365, 0.635, 0.26, 0.14, "Black")]))
 beat("m1b", S_OPEN, "It never touches your money. It just tells you how much you're saving.",
      img("{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background",
-         motion="zoom_in"))
+         motion="static", hand_marks=True, marks=[write("YOU SAVE £31", on="saving.", x=0.28, y=0.55, w=0.19, h=0.07, angle=27)]))
 
 # ------------------------------------------------------------------ Monday 9:00 AM — Fair and square (J.C. Penney spine, ≥ 10 pictures)
 chapter("t1", S_PEN, "Monday, nine a.m.", "Monday 9:00 AM — Fair and square")
 beat("p1", S_PEN, "Larry reads about a store that tried to arrest this suspect.",
      img("{larry} at a sunny breakfast table reading a folded newspaper with a coffee cup, mid shot", motion="zoom_in"))
 beat("p2", S_PEN, "In 2011, J.C. Penney ran five hundred and ninety different promotions.",
-     arch("sale_signs_montgomery_1939.jpg", "Sale signs on a department store, Montgomery, Alabama, 1939", motion="zoom_in", crop=[0.05, 0.0, 0.95, 1.0]),
+     arch("sale_signs_montgomery_1939.jpg", "Sale signs, Montgomery, Alabama, 1939 · Library of Congress", motion="zoom_in", crop=[0.05, 0.0, 0.95, 1.0]),
      pause_at={"word": "five", "sec": 0.8, "hit": "stamp"}, stamp={"text": "590 promotions", "on": "promotions"},
      label="J.C. Penney · 2011")
 beat("p3", S_PEN, "Only zero point two percent of its revenue came from full-price sales.",
@@ -198,13 +214,13 @@ beat("p12", S_PEN, "The T-shirt did not change. The tag got promoted.",
      img("a cream paper price tag on a string wearing a tiny gold crown and a small red sash, proud, plain cream background", motion="zoom_in"),
      stamp={"text": "Promoted", "on": "promoted."})
 beat("p13", S_PEN, "The store that stopped lying nearly went broke. Our suspect doesn't work alone.",
-     reuse("m1", hand_marks=True, marks=[write("+ ?", on="alone.", x=0.78, y=0.45, w=0.12, h=0.12)]))
+     reuse("m1", hand_marks=True, marks=WAS_DASH + [write("+ ?", on="alone.", x=0.78, y=0.45, w=0.12, h=0.12)]))
 
 # ------------------------------------------------------------------ Tuesday 7:40 PM — Always on sale (Kohl's)
 chapter("t2", S_KOHL, "Tuesday, seven-forty p.m.", "Tuesday 7:40 PM — Always on sale")
 beat("k1", S_KOHL, "Larry wants a stand mixer. And it's on sale. Of course it is.",
      img("{larry} in a department store aisle gazing lovingly at a shiny cream stand mixer on a pedestal under a spotlight, a big blank red sign hanging above it",
-         motion="zoom_in"))
+         motion="static", hand_marks=True, marks=[write("SALE", at=0.3, x=0.495, y=0.145, w=0.15, h=0.12, color="paper", fnt="headline")]))
 beat("k2", S_KOHL, "First, the evidence. Britain's Which? checked two hundred and twenty-seven Black Friday deals.",
      {"type": "stat", "stat": {"value": 227, "label": "Black Friday deals checked · Which?, Britain, 2024"}},
      pause_at={"word": "two", "sec": 0.8, "hit": "stamp"})
@@ -243,8 +259,10 @@ beat("k8", S_KOHL, "They were on sale eighty-six percent of the time.",
      pause_at={"word": "eighty-six", "sec": 0.8, "hit": "stamp"})
 beat("k9", S_KOHL, "One in four never sold at its regular price at all. Regular price: the thing that happens on the other fourteen percent of days.",
      img("four identical white shirts on hangers on a rail, three wearing bright red sale tags and the fourth wearing a plain tag covered in dust and cobwebs",
-         motion="static", hand_marks=True, marks=[circle(0.79, 0.58, 0.12, 0.26, "never")],
+         motion="static", hand_marks=True, marks=[circle(0.79, 0.58, 0.12, 0.26, "never"),
+                                                 write("REG.", on="regular", x=0.79, y=0.585, w=0.05, h=0.04, color="ink")],
          closeup=closeup("Regular", [0.80, 0.55], 2.2, [circle(0.79, 0.58, 0.12, 0.26, None, at=0.0, hand=False, dur=0.01),
+                                                        write("REG.", at=0.0, x=0.79, y=0.585, w=0.05, h=0.04, color="ink"),
                                                         write("14 %", on="fourteen", x=0.66, y=0.36, w=0.07, h=0.06)])),
      label="tracked 2003")
 beat("k10", S_KOHL, "Years later, Checkbook magazine tracked nineteen big retailers. Most of the time, the sale price simply was the price.",
@@ -266,7 +284,11 @@ beat("k14", S_KOHL, "Turns out, proving a price was never real is harder than fa
 # ------------------------------------------------------------------ Why your brain says yes (insert, ~27 s)
 beat("n1", S_BRAIN, "Why does a made-up number work? Psychologists once spun a rigged wheel that stopped on ten or sixty-five, then asked people to guess a percentage.",
      img("a 1950s fairground wheel of fortune in a psychology lab, a scientist in a white coat holding a clipboard beside it", motion="static",
-         hand_marks=True, closeup=closeup("then", [0.42, 0.35], 2.0, [circle(0.42, 0.15, 0.06, 0.10, "guess")])),
+         hand_marks=True, marks=[write("10", on="ten", x=0.455, y=0.20, w=0.04, h=0.07, color="ink"),
+                                 write("65", on="sixty-five,", x=0.375, y=0.20, w=0.04, h=0.07, color="ink")],
+         closeup=closeup("then", [0.42, 0.35], 2.0, [write("10", at=0.0, x=0.455, y=0.20, w=0.04, h=0.07, color="ink"),
+                                                     write("65", at=0.0, x=0.375, y=0.20, w=0.04, h=0.07, color="ink"),
+                                                     circle(0.42, 0.15, 0.06, 0.10, "guess")])),
      label="Experiment · 1974")
 beat("n2", S_BRAIN, "The sixty-five group guessed almost twice as high.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Median guess", "labels": ["Wheel: 10", "Wheel: 65"], "values": [25, 45],
@@ -287,7 +309,8 @@ beat("n6", S_BRAIN, "And Harvard researchers found outlet shoppers paid about se
          hand_marks=True, marks=[write("ORIGINAL?", on="original", x=0.5, y=0.15, w=0.16, h=0.06), circle(0.49, 0.50, 0.08, 0.17, "original")]),
      label="HBS · 2018", ledger=[{"label": "each fake $1 → +77¢ paid (HBS 2018)", "note": True, "on": "seventy-seven"}])
 beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Inspector has more files.",
-     reuse("k1", motion="zoom_in"), cta={"on": "subscribe.", "click_on": "Inspector"})
+     reuse("k1", motion="zoom_in", marks=[write("SALE", at=0.0, x=0.495, y=0.145, w=0.15, h=0.12, color="paper", fnt="headline")]),
+     cta={"on": "subscribe.", "click_on": "Inspector"})
 
 # ------------------------------------------------------------------ In defence of the accused
 chapter("t3", S_DEF, "In defence of the accused.", "In defence of the accused")
@@ -303,22 +326,22 @@ beat("f3", S_DEF, "Twelve were higher than any rival charged. Yet the sale price
 beat("f4", S_DEF, "Three: nobody buys a mattress every month. Waiting for a sale is smart.",
      img("{larry} lying on his back on a showroom mattress with his eyes closed and hands folded, a tiny wall calendar propped on his chest, plain cream background", motion="zoom_in"))
 beat("f5", S_DEF, "The was price may be fiction. The saving isn't always. And the accomplice nobody arrests? Our love of a bargain.",
-     reuse("m1", hand_marks=True, marks=[write("FICTION", on="fiction.", x=0.5, y=0.66, w=0.13, h=0.055, color="ink")],
-           closeup=closeup("accomplice", [0.5, 0.66], 1.8, [write("FICTION", at=0.0, x=0.5, y=0.66, w=0.13, h=0.055, color="ink"),
+     reuse("m1", hand_marks=True, marks=WAS_DASH + [write("FICTION", on="fiction.", x=0.5, y=0.66, w=0.13, h=0.055, color="ink")],
+           closeup=closeup("accomplice", [0.5, 0.66], 1.8, WAS_DASH + [write("FICTION", at=0.0, x=0.5, y=0.66, w=0.13, h=0.055, color="ink"),
                                                              write("BARGAIN!", on="bargain.", x=0.5, y=0.77, w=0.14, h=0.055)])))
 
 # ------------------------------------------------------------------ Friday 11:58 PM — The clock that resets (Emma)
 chapter("t4", S_CLOCK, "Friday, eleven fifty-eight p.m.", "Friday 11:58 PM — The clock that resets")
 beat("c1", S_CLOCK, "Larry is buying a mattress. Sale ends in two minutes.",
      img("{larry} in striped pyjamas sitting up in bed at night, his face lit by a glowing laptop showing a big mattress, wide-eyed", motion="zoom_in",
-         marks=[write("SALE ENDS IN 00:02:00", on="Sale", x=0.25, y=0.24, w=0.26, h=0.06, color="paper", fnt="headline")]))
+         marks=[{"type": "led", "text": "00:02:00", "label": "Sale ends in", "x": 0.22, "y": 0.25, "w": 0.27, "on": "Sale"}]))
 beat("m2", S_CLOCK, "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine.",
-     {"type": "mugshot", "prompt": "a single chrome 1950s twin-bell alarm clock with a red face standing alone on a plain light grey background, nothing else in the picture, studio lighting",
+     {"type": "mugshot", "prompt": "a digital countdown timer (hand-made frame: images/m2.png)",
       "suspect": {"number": 2, "name": "The countdown clock", "alias": "'Sale ends in 02:59:59' · 'Only 3 left'", "last_seen": "Checkout, 11:58 PM", "tag": "SUSPECT"}})
 beat("m2b", S_CLOCK, "Only three left.",
      reuse("c1", hand_marks=True, push={"center": [0.42, 0.45], "zoom": 1.3},
-           marks=[write("SALE ENDS IN 00:01:58", at=0.0, x=0.25, y=0.24, w=0.26, h=0.06, color="paper", fnt="headline"),
-                  write("ONLY 3 LEFT!", on="three", x=0.25, y=0.36, w=0.20, h=0.06)]))
+           marks=[{"type": "led", "text": "00:01:58", "label": "Sale ends in", "x": 0.22, "y": 0.25, "w": 0.27, "at": 0.0, "hand": False},
+                  write("ONLY 3 LEFT!", on="three", x=0.22, y=0.40, w=0.20, h=0.06)]))
 beat("e1", S_CLOCK, "In Britain, the competition watchdog took mattress-maker Emma to court. The judgment has the numbers.",
      arch("furniture_windows_shenandoah_1938.jpg", "Furniture store windows at night, Pennsylvania, 1938", motion="zoom_in", crop=[0.0, 0.0, 1.0, 0.94]), label="High Court · July 2026")
 beat("e2", S_CLOCK, "Ninety-eight point two percent of Emma's sales were products shown with a struck-through was price.",
@@ -333,15 +356,20 @@ beat("e4", S_CLOCK, "One model, in one test period, sold just zero point zero tw
          closeup=closeup("At", [0.505, 0.78], 2.2, [write("RARE", on="rarer", x=0.505, y=0.815, w=0.08, h=0.045, color="ink")])),
      pause_at={"word": "zero", "sec": 0.7, "hit": "stamp"})
 beat("e5", S_CLOCK, "The watchdog wanted a simple rule: for every two sold on sale, one at full price.",
-     img("a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background", motion="static", hand_marks=True,
-         marks=[write("1 : 2", on="two", x=0.80, y=0.74, w=0.12, h=0.08)]))
+     img("a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background (edited: images/e5.png)", motion="static", hand_marks=True,
+         marks=[write("1 : 2", on="rule:", x=0.14, y=0.20, w=0.12, h=0.08),
+                write("2 ON SALE", on="two", x=0.30, y=0.75, w=0.17, h=0.06),
+                write("1 FULL PRICE", on="full", x=0.71, y=0.62, w=0.19, h=0.06, color="ink")]))
 beat("e6", S_CLOCK, "In July 2026, the High Court found Emma had broken the law in places, but refused the ratio.",
      doc("CMA v Emma · [2026] EWHC 1995 (Ch) · 30 July 2026", "No fixed ratio",
          "\"I do not consider that I should make an enforcement order that imposes a 1:2 FVR.\"",
          "I do not consider that I should make an enforcement order that imposes a 1:2 FVR", on="refused", kicker="HIGH COURT  ·  QUOTED", seed=71, lead=1.2, post="e5"),
      stamp={"text": "1:2 refused", "on": "ratio."})
 beat("e7", S_CLOCK, "A fixed rule, the judge said, risked drawing the line in the wrong place.",
-     reuse("e5", hand_marks=True, marks=[write("1 : 2", at=0.0, x=0.80, y=0.74, w=0.12, h=0.08), cross(0.80, 0.74, 0.15, 0.11, "wrong")]))
+     reuse("e5", hand_marks=True, marks=[write("1 : 2", at=0.0, x=0.14, y=0.20, w=0.12, h=0.08),
+                                         write("2 ON SALE", at=0.0, x=0.30, y=0.75, w=0.17, h=0.06),
+                                         write("1 FULL PRICE", at=0.0, x=0.71, y=0.62, w=0.19, h=0.06, color="ink"),
+                                         cross(0.14, 0.20, 0.15, 0.11, "wrong")]))
 beat("e8", S_CLOCK, "The clock lost anyway. In May, Emma agreed its countdown timers must end when the sale really ends, and can't be reused on a similar deal within four weeks.",
      doc("CMA v Emma · consent order · 22 May 2026", "Countdown timers",
          "Countdown timers must conclude at the same time as the sales promotion they apply to, and are not used on any substantially similar promotion within 28 days.",
@@ -387,11 +415,11 @@ beat("x4", S_CHECK, "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or 
                 write("US · Amazon", on="Keepa", x=0.17, y=0.40, w=0.15, h=0.05, color="red", fnt="body"),
                 write("UK · EU", on="PriceSpy", x=0.17, y=0.58, w=0.11, h=0.05, color="red", fnt="body")]),
      music="ub_secret_report", say="Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.")
-beat("x5", S_CHECK, "A was price that never shows up on the chart is a suspect.", reuse("m1", motion="zoom_in"), music="ub_secret_report")
+beat("x5", S_CHECK, "A was price that never shows up on the chart is a suspect.", reuse("m1", marks=WAS_DASH), music="ub_secret_report")
 beat("x6", S_CHECK, "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",
      img("the shiny cream stand mixer seen from the side, a small blank metal model plate on its base, plain background", motion="static", hand_marks=True,
          marks=[write("30-DAY LOW?", on="thirty-day", x=0.20, y=0.10, w=0.20, h=0.07)],
-         closeup=closeup("Everywhere", [0.47, 0.82], 2.4, [circle(0.47, 0.89, 0.08, 0.05, "model"), write("MODEL No.", on="number.", x=0.47, y=0.80, w=0.10, h=0.04)])),
+         closeup=closeup("Everywhere", [0.60, 0.84], 2.2, [circle(0.48, 0.89, 0.18, 0.07, "model"), write("MODEL No.", on="number.", x=0.70, y=0.80, w=0.12, h=0.045)])),
      music="ub_secret_report")
 beat("x7", S_CHECK, "Larry's mixer: ninety dollars cheaper, one click away.", reuse("k5", motion="zoom_in"), music="ub_secret_report")
 beat("x8", S_CHECK, "Forget the percentage. Compare the price you'd pay with the price you could pay.",
@@ -427,8 +455,6 @@ ep = {
     "music": {"_default": "ub_private_detective", "_shorts": "ub_wells_street",
               S_OPEN: "ub_private_detective", S_PEN: "ub_tunnel_vision", S_KOHL: "ub_wells_street", S_BRAIN: "ub_mechanisms_of_action",
               S_DEF: "ub_usual_suspects", S_CLOCK: "ub_clock_is_ticking", S_CHECK: "ub_secret_report", S_CLOSE: "ub_jazz_rumble"},
-    "thumbnail": {"text": "The sale that never was.",
-                  "prompt": "a large cream paper price tag with a red border hanging on the right side of the frame, its higher price struck through in red, plain cream background"},
     "sources": [
         "Which? (26 Nov 2024). Nine in 10 Black Friday deals cheaper or same price at other times of the year (227 deals, 8 retailers; Boots hair dryer £49.99/£18.99).",
         "J.C. Penney Form 8-K, 27 Feb 2013 (fiscal 2012: net loss $985M; total sales −24.8%; comparable sales −25.2%).",
