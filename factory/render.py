@@ -199,6 +199,36 @@ def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
     return {**v, "audio": audio, "words": words, "duration": v["duration"] + sec}, wt + sec
 
 
+def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]:
+    """Stretches where ONE illustration stays on screen longer than `limit` s with nothing cutting in
+    (a new picture, an archive photo, a card, or an insert sliding over it). Channel rule from Ep. 3 on."""
+    runs, cur = [], None
+    cuts = sorted(ins.start for ins in plan.inserts)
+    for sh in sorted(plan.shots, key=lambda x: x.start):
+        src = getattr(sh, "_src", None)
+        if src is None or getattr(sh, "_archive", False) or is_archive_photo(src):
+            if cur:
+                runs.append(cur)
+            cur = None
+            continue
+        if cur and cur[2] == src and abs(cur[1] - sh.start) < 0.05:
+            cur = (cur[0], sh.start + sh.duration, src)
+        else:
+            if cur:
+                runs.append(cur)
+            cur = (sh.start, sh.start + sh.duration, src)
+    if cur:
+        runs.append(cur)
+    out = []
+    for a, b, src in runs:  # an insert landing on the picture splits the run
+        pts = [a] + [c for c in cuts if a + 0.05 < c < b - 0.05] + [b]
+        longest = max(pts[k + 1] - pts[k] for k in range(len(pts) - 1))
+        if longest > limit + 1e-3:
+            k = max(range(len(pts) - 1), key=lambda k: pts[k + 1] - pts[k])
+            out.append((pts[k], pts[k + 1], Path(src).stem))
+    return out
+
+
 def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause: float = 0.0) -> Plan:
     vcfg = cfg["video"]
     reveal_hits = []  # (beat index, word time, sfx) after inserted pauses
@@ -349,6 +379,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
                 shot._archive = vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive")
+                shot._src = str(path)  # for the max-still check (one illustration on screen too long)
                 plan.shots.append(shot)
             if visual.get("newsreel"):
                 plan.ledger_hide.append((shot_start, shot_end))
@@ -425,6 +456,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 path = images[keys[0]]
                 plan.shots.append(ImageShot(a, b - a, pil(path), motion, size, cfg, photo=is_archive_photo(path), seed=i * 7 + 3,
                                             depth=depth_of(path)))
+                plan.shots[-1]._src = str(path)
             pe = doc.get("pre_exhibit")  # an archive photo as EXHIBIT before the card (instead of a repeated still)
             if c0 > shot_start and pe:
                 from .devices import ExhibitShot, StillInner

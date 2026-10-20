@@ -16,6 +16,7 @@ video:
   max_shot_seconds: 3.2        # longer shots are split so something changes every 1–3 s
   crf: 21                      # video quality (lower = better/bigger)
   long_min_seconds: 482        # mid-roll ads need 8:00+; pauses stretch slightly if the narration is shorter
+  max_still_seconds: 8         # from Ep. 3 on: one illustration never stays > 8 s — cut to a new angle, an archive insert or a card
   hook_seconds: 30             # the first 30 s cut faster: attention is won or lost here
   hook_max_shot_seconds: 1.8
   x264_preset: veryfast

@@ -26,6 +26,10 @@ no paid generation or Actions minute is spent twice on the same thing.
 6. **One final render** (`preview=no`) → Telegram. Claude spot-checks the final, then reports.
 
 ## Claude's QC checklist (every preview)
+- **Max still (from Ep. 3): no single illustration on screen longer than 8 s.** After 8 s cut to a new
+  angle (second prompt / reuse with another framing), an archive insert or a card. Planned at the script
+  stage (scene list shows each picture's seconds); the build logs `WARNING max-still` for any run > 8 s
+  (`video.max_still_seconds` in channel.yaml) — a final render goes out only with zero warnings.
 - Camera: no tearing on pans (parallax only on zoom/static), no double image between framings of one picture.
 - Overlays: price cards never on a face (pictures → top-left), marker notes above the caption zone,
   doc cards above captions, prop notes (roulette, slots) not over numbers.

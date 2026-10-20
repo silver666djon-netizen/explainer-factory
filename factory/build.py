@@ -112,6 +112,10 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
                                (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup, extra)
         log(f"Stretched pauses by +{extra:.2f}s per beat to reach {target:.0f}s")
     log(f"Long video: {plan_long.total / 60:.2f} min, {len(plan_long.shots)} shots")
+    from .render import still_runs
+    lim = float(cfg["video"].get("max_still_seconds", 8.0))
+    for a, b, name in still_runs(plan_long, lim):
+        log(f"WARNING max-still: {name} on screen {b - a:.1f}s ({a // 60:.0f}:{a % 60:04.1f}–{b // 60:.0f}:{b % 60:04.1f}) > {lim:.0f}s — add an angle, insert or card")
     if only in (None, "long"):
         render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
         (out / "long.wav").unlink(missing_ok=True)
@@ -123,6 +127,8 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         plan = build_plan(short["beats"], voiced, images, cfg, size_short, "short", beat_lookup)
         name = f"short_{short['id']}.mp4"
         log(f"Short {short['id']}: {plan.total:.1f}s")
+        for a, b, nm in still_runs(plan, lim):
+            log(f"WARNING max-still: short {short['id']} {nm} on screen {b - a:.1f}s at {a:.1f}s > {lim:.0f}s")
         if plan.total > 60:
             log(f"  warning: {plan.total:.0f}s is longer than 60 s")
         if only in (None, "shorts"):
