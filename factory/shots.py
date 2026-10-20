@@ -113,9 +113,11 @@ def mark_strokes(mark: dict, W: int, H: int, seed: int) -> list[np.ndarray]:
     if kind == "underline":
         n = 60
         xs = np.linspace(x - w / 2, x + w / 2, n)
-        ys = y + _jitter(n, amp * 1.2, seed) + np.linspace(0, h * 0.08, n)
+        ys = y + _jitter(n, amp * 1.2, seed) + np.linspace(0, h * 0.08, n) + np.linspace(-0.5, 0.5, n) * float(mark.get("slant", 0)) * H
         return [np.stack([xs, ys], 1)]
-    if kind == "write":  # the pen travels left to right through the text box (handwriting)
+    if kind == "write" and mark.get("_lay") is not None and mark["_lay"].get("WH") == (W, H):
+        return [write_path(mark, mark["_lay"], W, H)]
+    if kind == "write":  # fallback before the text is laid out (not cached by mark_pen)
         n = 50
         xs = np.linspace(x - w / 2, x + w / 2, n)
         ang = math.radians(-float(mark.get("angle", 0)))
@@ -156,6 +158,8 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
     H, W = base.shape[:2]
     thick = max(4, int(min(W, H) * 0.007))
     for i, mark in enumerate(marks):
+        if mark.get("type") == "write":
+            write_layout(mark, W, H, red, cfg)
         at, dur = float(mark.get("at", 0.6)), float(mark.get("dur", 0.45))
         p = (t - at) / max(dur, 1e-3)
         if p <= 0 or (mark.get("until") is not None and t >= float(mark["until"])):
@@ -212,39 +216,76 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
     return base if out is None else out
 
 
+def write_layout(mark: dict, W: int, H: int, red, cfg: dict) -> dict:
+    """Render a written mark once: text image in its box, the ink's left/right edge and the pen height per column."""
+    lay = mark.get("_lay")
+    if lay is not None and lay.get("WH") == (W, H):
+        return lay
+    pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+    col = mark.get("color", "red")
+    col = pal.get(col) or (hex_to_rgb(col) if str(col).startswith("#") else red)
+    bw, bh = max(8, int(float(mark.get("w", 0.2)) * W)), max(8, int(float(mark.get("h", 0.08)) * H))
+    fkey = mark.get("font", "marker")
+    path = resolve_font(cfg["fonts"].get(fkey) or cfg["fonts"]["marker"])
+    size = int(bh * 0.92)
+    txt = str(mark["text"])
+    while size > 8 and font(path, size).getlength(txt) > bw * 0.94:
+        size -= 1
+    fnt = font(path, size)
+    pil = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
+    d = ImageDraw.Draw(pil)
+    if mark.get("bg"):
+        bgc = pal.get(mark["bg"]) or hex_to_rgb(mark["bg"])
+        d.rounded_rectangle((0, 0, bw - 1, bh - 1), radius=bh // 6, fill=tuple(bgc) + (255,))
+    tw = fnt.getlength(txt)
+    ink = Image.new("L", (bw, bh), 0)
+    ImageDraw.Draw(ink).text(((bw - tw) / 2, bh / 2), txt, font=fnt, fill=255, anchor="lm")
+    d.text(((bw - tw) / 2, bh / 2), txt, font=fnt, fill=tuple(col) + (255,), anchor="lm")
+    a = np.array(ink)
+    cols = np.where(a.max(0) > 40)[0]
+    x0, x1 = (int(cols.min()), int(cols.max()) + 1) if len(cols) else (0, bw)
+    ys = np.arange(bh, dtype=np.float32)[:, None]
+    wsum = a.astype(np.float32).sum(0)
+    cy = np.where(wsum > 0, (a * ys).sum(0) / np.maximum(wsum, 1), bh * 0.5)
+    peny = np.convolve(cy, np.ones(7) / 7, mode="same")
+    lay = {"img": np.array(pil), "x0": x0, "x1": x1, "peny": peny, "bw": bw, "bh": bh, "WH": (W, H)}
+    mark["_lay"] = lay
+    return lay
+
+
+def write_reveal_x(lay: dict, p: float) -> float:
+    """Box x of the pen tip (= the revealed edge) at progress p. Reveal speed = pen speed."""
+    return lay["x0"] + (lay["x1"] - lay["x0"]) * min(1.0, max(0.0, p))
+
+
+def write_path(mark: dict, lay: dict, W: int, H: int, n: int = 60) -> np.ndarray:
+    """Pen tip path in picture px: along the ink, left to right, rotated exactly like the text image."""
+    xs = np.linspace(lay["x0"], lay["x1"], n)
+    ys = lay["peny"][np.clip(xs.astype(int), 0, lay["bw"] - 1)]
+    u, v = xs - lay["bw"] / 2, ys - lay["bh"] / 2
+    a = math.radians(float(mark.get("angle", 0)))
+    cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
+    return np.stack([cx + u * math.cos(a) + v * math.sin(a), cy - u * math.sin(a) + v * math.cos(a)], 1)
+
+
 def _draw_write(out: np.ndarray, mark: dict, p: float, W: int, H: int, red, cfg: dict) -> None:
-    """Handwritten (or printed) text in a box of the picture, revealed left to right as the pen moves.
+    """Handwritten (or printed) text in a box of the picture. The text is revealed by a mask that follows the
+    pen tip exactly: nothing to the right of the tip exists yet.
     mark: text, x, y, w, h (box centre/size, picture fractions), angle (deg), color ('red'|'ink'|'paper'|hex),
           font ('marker'|'headline'|'body'|'typewriter'), bg (fill colour painted under the text, e.g. a ribbon)."""
-    img = mark.get("_img")
-    if img is None:
-        pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
-        col = mark.get("color", "red")
-        col = pal.get(col) or (hex_to_rgb(col) if str(col).startswith("#") else red)
-        bw, bh = max(8, int(float(mark.get("w", 0.2)) * W)), max(8, int(float(mark.get("h", 0.08)) * H))
-        fkey = mark.get("font", "marker")
-        path = resolve_font(cfg["fonts"].get(fkey) or cfg["fonts"]["marker"])
-        size = int(bh * 0.92)
-        txt = str(mark["text"])
-        while size > 8 and font(path, size).getlength(txt) > bw * 0.94:
-            size -= 1
-        fnt = font(path, size)
-        pil = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
-        d = ImageDraw.Draw(pil)
-        if mark.get("bg"):
-            bgc = pal.get(mark["bg"]) or hex_to_rgb(mark["bg"])
-            d.rounded_rectangle((0, 0, bw - 1, bh - 1), radius=bh // 6, fill=tuple(bgc) + (255,))
-        tw = fnt.getlength(txt)
-        d.text(((bw - tw) / 2, bh / 2), txt, font=fnt, fill=tuple(col) + (255,), anchor="lm")
-        img = np.array(pil)
-        mark["_img"] = img
-        mark["_ink"] = np.array(pil.split()[3])
+    lay = write_layout(mark, W, H, red, cfg)
+    img = lay["img"]
     h, w = img.shape[:2]
     sub = img.copy()
-    if not mark.get("bg"):  # handwriting appears left to right
-        xs = np.arange(w, dtype=np.float32)
-        a = np.clip((p * w * 1.05 - xs) / 6.0, 0, 1)
-        sub[..., 3] = (sub[..., 3] * a[None, :]).astype(np.uint8)
+    if not mark.get("bg"):
+        if p < 1 and mark.get("font") == "typewriter" and not mark.get("hand"):
+            n = max(1, len(str(mark.get("text", ""))))
+            p = math.floor(p * n) / n  # typed: letter by letter, no pen
+        if p < 1:
+            xr = write_reveal_x(lay, p)
+            xs = np.arange(w, dtype=np.float32)
+            a = np.clip((xr - xs) / 3.0, 0, 1)  # soft only BEHIND the tip
+            sub[..., 3] = (sub[..., 3] * a[None, :]).astype(np.uint8)
     else:  # a label flips in at once (the pen then signs over it)
         sub[..., 3] = (sub[..., 3] * min(1.0, p * 4)).astype(np.uint8)
     rot = Image.fromarray(sub).rotate(float(mark.get("angle", 0)), resample=Image.BICUBIC, expand=True)
@@ -361,6 +402,8 @@ class ImageShot(Shot):
                 mask = subject_mask(self.base, dcrop, box, self.draw.get("mode", "shape"))
             self._ld = LineDrawing(self.base, paper, mask)
             self.depth = None  # no parallax while a picture is being drawn
+        if self.marks:
+            self.depth = None  # marks and the pen live on the flat picture: parallax would slide the ink off the pen
         if self.full:
             fw, fh = self.full
             src_bg = Image.new("RGB", image.size, hex_to_rgb(cfg["style"]["palette"]["paper"])) if self.draw else image

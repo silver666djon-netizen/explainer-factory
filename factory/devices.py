@@ -449,12 +449,6 @@ class ExhibitShot(Shot):
         W, H = self.W, self.H
         tag_p = min(1.0, max(0.0, (t - 0.25) / 0.2))
         out = exhibit_frame(self.inner.frame(t), W, H, self.cfg, t, self.seed, self.label, self.tag, tag_p)
-        if t < 0.75:  # the hand slaps the tag on, then leaves
-            portrait = H > W
-            tx, ty = LAST_TAG
-            tip = hand_path(lambda q: (tx, ty), 0.2, 0.45, t, W, H, False, from_below=True)
-            if tip:
-                paste_hand(out, "ink_under", tip[0], tip[1], False)
         if self.tap is not None:
             fx, fy, at = self.tap
             px, py, pw, ph = LAST_PRINT

@@ -91,7 +91,8 @@ class Plan:
     stamps: list = field(default_factory=list)  # (start, end, text) rubber stamps over the picture
     labels: list = field(default_factory=list)  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
     ledger_hide: list = field(default_factory=list)
-    hand_cuts: list = field(default_factory=list)  # times a drawing hand acts on a picture (counts as a picture change)
+    hand_cuts: list = field(default_factory=list)
+    hand_windows: list = field(default_factory=list)  # (start, end) a drawing hand is on screen (one at a time)  # times a drawing hand acts on a picture (counts as a picture change)
 
 
 def group_captions(words, offset: float, max_chars: int, max_words: int, speaker: str = "narrator") -> list[Caption]:
@@ -227,6 +228,31 @@ def _remap_mark(m: dict, box) -> dict:
     if "h" in m:
         m["h"] = float(m["h"]) / sy
     return m
+
+
+HAND_IN, HAND_OUT, HAND_GAP = 0.28, 0.32, 0.2  # hand_path enter / leave times, + >= 6 frames between two hands
+
+
+def _hand_prep(marks: list[dict], hand_default: bool) -> None:
+    """Hand flag + pen duration: a written mark takes as long as its text needs (reveal speed = pen speed)."""
+    for m in marks:
+        if m.get("hand") is None:
+            m["hand"] = hand_default
+        if m.get("type") == "write" and m["hand"] and float(m.get("dur", 0.7)) > 0.05:
+            m["dur"] = max(float(m.get("dur", 0.7)), 0.45, 0.075 * len(str(m.get("text", ""))))
+
+
+def _serialize_hands(marks: list[dict], busy_until: float = -1e9) -> float:
+    """One hand on screen at a time: a hand mark starts only after the previous hand has left the frame.
+    Marks are shifted later (never earlier). Returns the time the last hand leaves."""
+    for m in sorted([m for m in marks if m.get("hand") and m.get("type") != "led" and float(m.get("dur", 0.7)) > 0.05],
+                    key=lambda m: float(m.get("at", 0))):
+        at = float(m.get("at", 0))
+        earliest = busy_until + HAND_GAP + HAND_IN
+        if at < earliest:
+            m["at"] = at = earliest
+        busy_until = at + float(m.get("dur", 0.7)) + HAND_OUT
+    return busy_until
 
 
 def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]:
@@ -374,20 +400,26 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 if cu:
                     tc = min(max(1.2, _timed(cu, v["words"], span / 2) + lead_in), max(1.2, span - 1.2))
                 hand_default = bool(visual.get("hand_marks"))
-                segs = [(0.0, tc, base, box0, [m for m in marks if m["at"] < tc], visual.get("motion") or "static",
+                cm = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in ((cu or {}).get("marks") or [])]
+                _hand_prep(marks, hand_default)
+                _hand_prep(cm, hand_default)
+                seg0 = [m for m in marks if m["at"] < tc]
+                _serialize_hands(seg0 + cm)
+                seg0 = [m for m in seg0 if m["at"] < tc - 0.4 or not m["hand"]]
+                for m in cm:
+                    m["at"] = m["at"] - tc
+                segs = [(0.0, tc, base, box0, seg0, visual.get("motion") or "static",
                          f"#push{box0[0]:.2f},{box0[1]:.2f},{box0[2]:.2f}" if cr else "")]
                 if cu:
                     full = pil(path)
                     cimg, cbox = _crop_pic(full, cu)
-                    cm = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in - tc) for m in (cu.get("marks") or [])]
                     segs.append((tc, span - tc, cimg, cbox, cm, cu.get("motion", "zoom_in"), f"#push{cbox[0]:.2f},{cbox[1]:.2f},{cbox[2]:.2f}"))
                 for k, (a0, dur0, im0, bx, mk, mot, tag) in enumerate(segs):
                     mk = [_remap_mark(m, bx) for m in mk] if bx != (0.0, 0.0, 1.0, 1.0) else mk
                     for m in mk:
-                        if m.get("hand") is None:
-                            m["hand"] = hand_default
                         if m["hand"] and m.get("at", 0) > 0.05 and float(m.get("dur", 0.7)) > 0.05:
                             plan.hand_cuts.append(shot_start + a0 + m["at"])
+                            plan.hand_windows.append((shot_start + a0 + m["at"] - HAND_IN, shot_start + a0 + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
                         plan.timeline.add_sfx(shot_start + a0 + m["at"], "scribble", seed=i + k)
                     shot = ImageShot(shot_start + a0, dur0, im0, mot, size, cfg, marks=mk, photo=is_archive_photo(path),
                                      seed=i * 7 + k, depth=depth_of(path) if (k == 0 and not cr) else None)
@@ -397,6 +429,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 marks = []
                 pieces = 0
             elif marks or beat.get("bubble") or visual.get("draw"):
+                _hand_prep(marks, bool(visual.get("hand_marks")))
+                _serialize_hands(marks)
                 pieces = len(keys)  # marks / bubbles / hand drawing need a steady picture: no extra cuts
             else:
                 pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))
@@ -438,6 +472,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         m["hand"] = bool(visual.get("hand_marks"))
                     if m["hand"] and m.get("at", 0) > 0.05 and float(m.get("dur", 0.7)) > 0.05:
                         plan.hand_cuts.append(shot_start + k * seg + m["at"])
+                        plan.hand_windows.append((shot_start + k * seg + m["at"] - HAND_IN,
+                                                  shot_start + k * seg + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
                 shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                  marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
                                  ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
@@ -488,11 +524,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             if vtype == "mugshot":
                 sus = dict(visual["suspect"])
                 sus["photo_marks"] = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("photo_marks") or [])]
+                _hand_prep(sus["photo_marks"], True)
+                _serialize_hands(sus["photo_marks"])
                 for m in sus["photo_marks"]:
-                    m.setdefault("hand", True)
                     plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
                     plan.hand_cuts.append(shot_start + m["at"])
-                prop = MugshotShot(shot_start, span, pil(images[beat["id"]]), sus, cfg, size, lead_in, seed=i)
+                    plan.hand_windows.append((shot_start + m["at"] - HAND_IN, shot_start + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
+                if sus.get("type_on"):  # each card field types in when the narrator reads it
+                    sus["_type_at"] = [_timed({"on": w}, v["words"], 0.35 + k * 0.9) + lead_in for k, w in enumerate(sus["type_on"])]
+                prop = MugshotShot(shot_start, span, pil(images[visual.get("from_beat") or beat["id"]]), sus, cfg, size, lead_in, seed=i)
             elif vtype == "roulette":
                 prop = RouletteShot(shot_start, span, visual.get("roulette") or {}, cfg, size, lead_in)
             elif vtype == "maze":
@@ -551,6 +591,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             elif c0 > shot_start:
                 _still(doc.get("pre"), shot_start, c0, "zoom_in")
             plan.shots.append(EvidenceShot(c0, c1 - c0, doc, cfg, size, mark_at=mark_abs - c0, seed=i))
+            _es = plan.shots[-1]
+            plan.hand_windows.append((c0 + _es.mark_at - HAND_IN, c0 + _es.mark_at + _es.mark_dur + HAND_OUT))
             for at, k_ in plan.shots[-1].sfx(c0):
                 plan.timeline.add_sfx(at, k_, seed=i)
             plan.ledger_hide.append((c0, c1))
@@ -695,6 +737,22 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.ledger_hide.append((b.start - 0.2, b.end + 0.2))
     if ledger_rows:
         from .devices import Ledger
+        # one hand at a time: Larry's tab is written only when no other hand is on screen
+        busy = sorted(plan.hand_windows)
+        last = -1e9
+        for row in sorted(ledger_rows, key=lambda r: r["at"]):
+            at = max(row["at"], last + HAND_GAP + HAND_IN - 0.15)
+            moved = True
+            while moved:
+                moved = False
+                w0, w1 = at + 0.15 - HAND_IN, at + 0.15 + Ledger.WRITE + HAND_OUT
+                for b0, b1 in busy:
+                    if w0 < b1 + HAND_GAP and b0 < w1 + HAND_GAP:
+                        at = b1 + HAND_GAP + HAND_IN - 0.15
+                        moved = True
+            row["at"] = at
+            last = at + 0.15 + Ledger.WRITE + HAND_OUT
+            plan.hand_windows.append((at + 0.15 - HAND_IN, last))
         plan.ledger = Ledger(ledger_rows, cfg, size, hide=plan.ledger_hide)
         for at, k_ in plan.ledger.sfx():
             plan.timeline.add_sfx(at, k_, seed=int(at * 10))

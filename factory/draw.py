@@ -315,9 +315,10 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
             continue
         at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))
         strokes = m.get("_strokes")
-        if strokes is None:
+        if strokes is None or m.get("_strokes_WH") != (W, H):
             strokes = mark_strokes(m, W, H, seed=17 + i)
-            m["_strokes"] = strokes
+            if m.get("type") != "write" or m.get("_lay") is not None:
+                m["_strokes"], m["_strokes_WH"] = strokes, (W, H)
         pts = np.concatenate(strokes)
 
         def tip(tt, pts=pts, at=at, dur=dur):

@@ -148,12 +148,16 @@ class CaseFileShot(Shot):
         if spec.get("writes"):
             from .endscreen import Writing
             wf = font(marker, int(fs * 1.05))
-            for w_ in spec["writes"]:
+            busy = -1e9
+            for w_ in sorted(spec["writes"], key=lambda w: float(w.get("at", 2.5))):
                 lx, ly, txt = self.inside_lines[int(w_["line"])]
                 gap = int(fs * 0.5) if txt.strip() else 0
                 col = pal.get(w_.get("color", "ink"), pal["ink"])
+                dur = float(w_.get("dur", max(0.6, 0.075 * len(str(w_["text"])))))
+                w0 = max(float(w_.get("at", 2.5)) + lead_in, busy + 0.2 + 0.28)  # one hand at a time, line by line
                 self.writes.append((Writing(str(w_["text"]), wf, col), lx + int(ft.getlength(txt)) + gap, ly - int(fs * 0.12),
-                                    float(w_.get("at", 2.5)) + lead_in, float(w_.get("dur", 0.9)), w_.get("color", "ink")))
+                                    w0, dur, w_.get("color", "ink")))
+                busy = w0 + dur + 0.32
         # stamp
         self.stamp = None
         if spec.get("stamp"):
@@ -261,11 +265,6 @@ class CaseFileShot(Shot):
                 sc = 2.0 - 1.0 * p
                 st = cv2.resize(self._ostamp, (max(1, int(self._ostamp.shape[1] * sc)), max(1, int(self._ostamp.shape[0] * sc))))
                 blend(canvas, st, sx - st.shape[1] // 2, sy - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
-            if osa - 0.35 <= t <= osa + 0.4:
-                from .draw import hand_path, paste_hand
-                tip = hand_path(lambda q: (sx, sy), osa - 0.05, osa + 0.25, t, canvas.shape[1], canvas.shape[0], False, from_below=True)
-                if tip:
-                    paste_hand(canvas, "ink_under", tip[0], tip[1], False)
         if self.mode == "open" and self.writes and op >= 0.999:
             from .draw import hand_path, paste_hand
             px0 = self.BW // 2
@@ -305,7 +304,8 @@ class CaseFileShot(Shot):
             if self.spec.get("typed") is not False:
                 out.append((start_abs + self.lead_in + 1.7, "type"))
             if self.spec.get("open_stamp_at") is not None:
-                out.append((start_abs + self.lead_in + float(self.spec["open_stamp_at"]), "stamp"))
+                osa = start_abs + self.lead_in + float(self.spec["open_stamp_at"])
+                out += [(osa, "stamp"), (osa + 0.01, "thud")]
             for w_ in self.writes:
                 out += [(start_abs + w_[3], "marker"), (start_abs + w_[3] + w_[4] * 0.5, "marker")]
             return out
@@ -372,12 +372,15 @@ class MugshotShot(Shot):
         self.rows = []
         y = 0
         row_imgs = []
+        self.row_type = []
         for label, value in rows:
             lab = text_block([label + ":"], lf, fill=pal["red"], align="left")
             vfnt, vlines = fit_font(str(value).upper(), vf_path, int(cw * 0.86), int(BH * 0.16), start=int(BH * (0.045 if portrait else 0.055)))
             val = text_block(vlines, vfnt, fill=pal["ink"], align="left")
             row_imgs.append((lab, val))
+            self.row_type.append((vfnt, vlines))
             y += lab.shape[0] + val.shape[0] + int(BH * 0.015)
+        self._typed = {}
         card_h = y + int(BH * 0.06)
         card = Image.new("RGBA", (cw, card_h), (250, 246, 236, 255))
         cd = ImageDraw.Draw(card)
@@ -389,8 +392,21 @@ class MugshotShot(Shot):
         self.row_imgs = row_imgs
         self.BW, self.BH = BW, BH
         # marker word 'GUILTY?' scribble near the photo
-        self.tag = text_block([spec.get("tag", "WANTED")], font(marker, int(BH * 0.06)), fill=pal["red"], stroke=3, stroke_fill=(250, 246, 236))
-        self.tag_xy = (px + pw - int(pw * 0.15), py - int(BH * 0.05))
+        from .endscreen import _stamp
+        self.tag = _stamp(spec.get("tag", "WANTED"), cfg, int(pw * 0.95), pal["red"], 8, seed + 5)  # a rubber stamp, dropped in
+        self.tag_xy = (px + pw - int(pw * 0.15), py - int(BH * 0.02))
+        # typing: each field types in letter by letter, in sync with the narration of that field
+        n = len(row_imgs)
+        ta = list(spec.get("_type_at") or [lead_in + 0.35 + i * 0.9 for i in range(n)])
+        while len(ta) < n:
+            ta.append(ta[-1] + 0.9 if ta else lead_in + 0.35)
+        self.type_at, self.type_dur = [], []
+        for i in range(n):
+            chars = sum(len(l) for l in self.row_type[i][1])
+            nxt = ta[i + 1] - 0.15 if i + 1 < n else self.duration - 0.6
+            self.type_at.append(ta[i])
+            self.type_dur.append(max(0.3, min(0.065 * chars, nxt - ta[i])))
+        self.tag_at = float(spec.get("_tag_at", max((a + d for a, d in zip(self.type_at, self.type_dur)), default=lead_in) + 0.25))
         self._static = None
 
     def frame(self, t: float) -> np.ndarray:
@@ -400,11 +416,29 @@ class MugshotShot(Shot):
         blend(canvas, self.card, cx, cy, opacity=min(1.0, max(0.0, tl / 0.25)))
         y = cy + int(self.BH * 0.03)
         for i, (lab, val) in enumerate(self.row_imgs):
-            appear = 0.35 + i * 0.9
-            if tl >= appear:
-                op = min(1.0, (tl - appear) / 0.12)
-                blend(canvas, lab, cx + int(self.BW * 0.03), y, opacity=op)
-                blend(canvas, val, cx + int(self.BW * 0.03), y + lab.shape[0], opacity=op)
+            ta, td = self.type_at[i], self.type_dur[i]
+            if t >= ta:
+                blend(canvas, lab, cx + int(self.BW * 0.03), y)
+                vfnt, vlines = self.row_type[i]
+                total = sum(len(l) for l in vlines)
+                nch = total if t >= ta + td else int(total * (t - ta) / td)
+                if nch >= total:
+                    img = val
+                else:
+                    img = self._typed.get((i, nch))
+                    if img is None:
+                        left, cut = nch, []
+                        for l in vlines:
+                            cut.append(l[:max(0, left)])
+                            left -= len(l)
+                        full = Image.fromarray(val)
+                        part = Image.new("RGBA", full.size, (0, 0, 0, 0))
+                        blk = text_block([c if c else " " for c in cut], vfnt, fill=self.pal["ink"], align="left")
+                        part.alpha_composite(Image.fromarray(blk).crop((0, 0, min(blk.shape[1], full.width), min(blk.shape[0], full.height))))
+                        img = np.array(part)
+                        self._typed[(i, nch)] = img
+                if nch > 0:
+                    blend(canvas, img, cx + int(self.BW * 0.03), y + lab.shape[0])
             y += lab.shape[0] + val.shape[0] + int(self.BH * 0.015)
         if self.photo_marks:  # the hand writes / strikes on the booking photo (marks in photo fractions)
             from .shots import draw_marks
@@ -418,9 +452,12 @@ class MugshotShot(Shot):
                 pos = hand_path(lambda tt: (px + ftip(tt)[0], py + ftip(tt)[1]), t0, t1, t, self.BW, self.BH, False)
                 if pos:
                     paste_hand(canvas, kind, pos[0], pos[1], False)
-        tag_at = 0.35 + len(self.row_imgs) * 0.9
-        if tl >= tag_at:
-            blend(canvas, self.tag, *self.tag_xy, opacity=min(1.0, (tl - tag_at) / 0.15))
+        if t >= self.tag_at:  # SUSPECT stamp drops in from above with a thud
+            p = min(1.0, (t - self.tag_at) / 0.14)
+            sc = 2.0 - 1.0 * p
+            st = cv2.resize(self.tag, (max(1, int(self.tag.shape[1] * sc)), max(1, int(self.tag.shape[0] * sc))))
+            tx, ty = self.tag_xy
+            blend(canvas, st, tx - st.shape[1] // 2, ty - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
         out = _push(canvas, (self.W, self.H), 1.02 + 0.08 * ease(t / max(self.duration, 1e-6)))
         if 0 <= tl < 0.18:  # camera flash
             a = 1 - tl / 0.18
@@ -429,8 +466,12 @@ class MugshotShot(Shot):
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
         ev = [(start_abs + self.lead_in, "shutter")]
-        for i in range(len(self.row_imgs)):
-            ev.append((start_abs + self.lead_in + 0.35 + i * 0.9, "type"))
+        for ta, td in zip(self.type_at, self.type_dur):
+            k = 0.0
+            while k < td:  # typewriter clicks while the field types
+                ev.append((start_abs + ta + k, "type"))
+                k += 0.42
+        ev += [(start_abs + self.tag_at, "stamp"), (start_abs + self.tag_at + 0.01, "thud")]
         return ev
 
 

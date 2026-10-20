@@ -460,8 +460,8 @@ class EndScreenShot(Shot):
                     budget -= dash * 2
                     s += dash * 2
             lp = (t - tt["zone"] - 0.3) / 0.8
-            if lp > 0:
-                blend(out, self.label.at(lp), x0, y0 - self.label.h - 6)
+            if lp > 0:  # printed label: fades in with the frame (no pen, so nothing is "written" by itself)
+                blend(out, self.label.img, x0, y0 - self.label.h - 6, opacity=min(1.0, lp * 2))
             if self.sketch is not None and t >= tt["sketch"]:  # faded pencil preview inside the box (~40 %)
                 q = (t - tt["sketch"]) / tt["skdur"]
                 pic = self.sketch.state(q * LINES_END if q < 1 else 1.0)

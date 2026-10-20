@@ -159,10 +159,11 @@ beat("cf1", S_OPEN, "Case file number three. The sale that never was. Larry is m
                                                    {"line": 2, "text": "£49.99 — also fictional", "on": "forty-nine"}]}})
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at.",
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
-      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "last_seen": "Every Black Friday", "tag": "SUSPECT"},
+      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "tag": "SUSPECT",
+                  "type_on": ["Name:", "Aliases:"]},
       "photo_marks": [write("WAS", on="was", x=0.5, y=0.47, w=0.30, h=0.13, color="ink"),
                       write("$—", on="price.", x=0.5, y=0.62, w=0.24, h=0.13, color="ink"),
-                      strike(0.5, 0.47, 0.34, "Aliases:"), strike(0.5, 0.62, 0.30, "Aliases:", delay=0.5)]})
+                      strike(0.5, 0.545, 0.40, "Aliases:", slant=0.22)]})
 beat("m1c", S_OPEN, "Last seen: every Black Friday.",
      reuse("o1", hand_marks=True, push={"center": [0.40, 0.62], "zoom": 1.6},
            marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
@@ -170,7 +171,7 @@ beat("m1c", S_OPEN, "Last seen: every Black Friday.",
                   circle(0.365, 0.635, 0.26, 0.14, "Black")]))
 beat("m1b", S_OPEN, "It never touches your money. It just tells you how much you're saving.",
      img("{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background",
-         motion="static", hand_marks=True, marks=[write("YOU SAVE £31", on="saving.", x=0.28, y=0.55, w=0.19, h=0.07, angle=27)]))
+         motion="static", hand_marks=True, marks=[write("YOU SAVE £31", on="tells", x=0.28, y=0.55, w=0.19, h=0.07, angle=27)]))
 
 # ------------------------------------------------------------------ Monday 9:00 AM — Fair and square (J.C. Penney spine, ≥ 10 pictures)
 chapter("t1", S_PEN, "Monday, nine a.m.", "Monday 9:00 AM — Fair and square")
@@ -309,7 +310,7 @@ beat("n5", S_BRAIN, "A later replication found the effect much weaker. Weaker, b
          "very weak anchoring effects", on="weaker.", kicker="REPLICATION  ·  PARAPHRASED", seed=51, lead=0.4))
 beat("n6", S_BRAIN, "And Harvard researchers found outlet shoppers paid about seventy-seven cents more for every extra dollar of original price.",
      img("a factory outlet store clothing rail, each garment wearing a large blank cream paper price tag with a red border, nothing written on the tags", motion="static",
-         hand_marks=True, marks=[write("ORIGINAL?", on="original", x=0.5, y=0.15, w=0.16, h=0.06), circle(0.49, 0.50, 0.08, 0.17, "original")]),
+         hand_marks=True, marks=[circle(0.49, 0.50, 0.08, 0.17, "extra"), write("ORIGINAL?", on="original", x=0.5, y=0.15, w=0.16, h=0.06)]),
      label="HBS · 2018", ledger=[{"label": "each fake $1 → +77¢ paid (HBS 2018)", "note": True, "on": "seventy-seven"}])
 beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Inspector has more files.",
      reuse("k1", motion="zoom_in", marks=[write("SALE", at=0.0, x=0.495, y=0.145, w=0.15, h=0.12, color="paper", fnt="headline")]),
@@ -340,7 +341,8 @@ beat("c1", S_CLOCK, "Larry is buying a mattress. Sale ends in two minutes.",
          marks=[{"type": "led", "text": "00:02:00", "label": "Sale ends in", "x": 0.22, "y": 0.25, "w": 0.27, "on": "Sale"}]))
 beat("m2", S_CLOCK, "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine.",
      {"type": "mugshot", "prompt": "a digital countdown timer (hand-made frame: images/m2.png)",
-      "suspect": {"number": 2, "name": "The countdown clock", "alias": "'Sale ends in 02:59:59' · 'Only 3 left'", "last_seen": "Checkout, 11:58 PM", "tag": "SUSPECT"}})
+      "suspect": {"number": 2, "name": "The countdown clock", "alias": "'Sale ends in 02:59:59'", "tag": "SUSPECT",
+                  "type_on": ["Name:", "Aliases:"]}})
 beat("m2b", S_CLOCK, "Only three left.",
      reuse("c1", hand_marks=True, push={"center": [0.42, 0.45], "zoom": 1.3},
            marks=[{"type": "led", "text": "00:01:58", "label": "Sale ends in", "x": 0.22, "y": 0.25, "w": 0.27, "at": 0.0, "hand": False},
@@ -351,7 +353,7 @@ beat("e2", S_CLOCK, "Ninety-eight point two percent of Emma's sales were product
      {"type": "stat", "stat": {"value": 98.2, "decimals": 1, "suffix": "%", "label": "of sales had a struck-through 'was' price · High Court, 2026"}},
      pause_before=0.8)
 beat("e3", S_CLOCK, "In 2024 it sold seven discounted mattresses for every one at full price.",
-     img("a tall stack of mattresses in a warehouse, seven wearing red sale tags and the single one at the top wearing a plain white tag", motion="zoom_in",
+     img("a tall stack of mattresses in a warehouse, seven wearing red sale tags and the single one at the top wearing a plain white tag", motion="static", hand_marks=True,
          marks=[write("7 : 1", on="seven", x=0.86, y=0.20, w=0.12, h=0.09)]))
 beat("e4", S_CLOCK, "One model, in one test period, sold just zero point zero two percent at full price. At full price, this mattress is rarer than a quiet Black Friday.",
      img("a single mattress displayed inside a glass museum case with a blank brass plaque, under a spotlight in a dark gallery", motion="static",
@@ -415,14 +417,14 @@ beat("x4", S_CHECK, "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or 
                 write("camelcamelcamel", on="camelcamelcamel", x=0.53, y=0.44, w=0.22, h=0.05, angle=-6, color="ink", fnt="typewriter"),
                 write("PriceSpy", on="PriceSpy", x=0.54, y=0.54, w=0.14, h=0.05, angle=-6, color="ink", fnt="typewriter"),
                 write("idealo", on="idealo", x=0.54, y=0.62, w=0.11, h=0.05, angle=-6, color="ink", fnt="typewriter"),
-                write("US · Amazon", on="Keepa", x=0.17, y=0.40, w=0.15, h=0.05, color="red", fnt="body"),
-                write("UK · EU", on="PriceSpy", x=0.17, y=0.58, w=0.11, h=0.05, color="red", fnt="body")]),
+                write("US · Amazon", on="Keepa", x=0.17, y=0.40, w=0.15, h=0.05, color="red", fnt="body", dur=0.01),
+                write("UK · EU", on="PriceSpy", x=0.17, y=0.58, w=0.11, h=0.05, color="red", fnt="body", dur=0.01)]),
      music="ub_secret_report", say="Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.")
 beat("x5", S_CHECK, "A was price that never shows up on the chart is a suspect.", reuse("m1", marks=WAS_DASH), music="ub_secret_report")
 beat("x6", S_CHECK, "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",
      img("the shiny cream stand mixer seen from the side, a small blank metal model plate on its base, plain background", motion="static", hand_marks=True,
          marks=[write("30-DAY LOW?", on="thirty-day", x=0.20, y=0.10, w=0.20, h=0.07)],
-         closeup=closeup("Everywhere", [0.60, 0.84], 2.2, [circle(0.48, 0.89, 0.18, 0.07, "model"), write("MODEL No.", on="number.", x=0.70, y=0.80, w=0.12, h=0.045)])),
+         closeup=closeup("Everywhere", [0.60, 0.84], 2.2, [circle(0.48, 0.89, 0.18, 0.07, "search"), write("MODEL No.", on="model", x=0.70, y=0.80, w=0.12, h=0.045)])),
      music="ub_secret_report")
 beat("x7", S_CHECK, "Larry's mixer: ninety dollars cheaper, one click away.", reuse("k5", motion="zoom_in"), music="ub_secret_report")
 beat("x8", S_CHECK, "Forget the percentage. Compare the price you'd pay with the price you could pay.",
@@ -461,6 +463,8 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
                 vis[k] = copy.deepcopy(v[k])
     else:
         vis = copy.deepcopy(v)
+        if v["type"] == "mugshot":
+            vis["from_beat"] = bid  # same booking photo as the long video (no new picture)
     b = {"text": text or src["text"], "visual": vis}
     if text is None:
         for k in keep:
