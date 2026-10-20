@@ -204,19 +204,22 @@ def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]
     (a new picture, an archive photo, a card, or an insert sliding over it). Channel rule from Ep. 3 on."""
     runs, cur = [], None
     cuts = sorted(ins.start for ins in plan.inserts)
-    for sh in sorted(plan.shots, key=lambda x: x.start):
+    shots = sorted(plan.shots, key=lambda x: x.start)
+    for k, sh in enumerate(shots):
         src = getattr(sh, "_src", None)
+        nxt = shots[k + 1].start if k + 1 < len(shots) else plan.total  # a gap keeps the last frame on screen
         if src is None or getattr(sh, "_archive", False) or is_archive_photo(src):
             if cur:
                 runs.append(cur)
             cur = None
             continue
+        end = max(sh.start + sh.duration, nxt)
         if cur and cur[2] == src and abs(cur[1] - sh.start) < 0.05:
-            cur = (cur[0], sh.start + sh.duration, src)
+            cur = (cur[0], end, src)
         else:
             if cur:
                 runs.append(cur)
-            cur = (sh.start, sh.start + sh.duration, src)
+            cur = (sh.start, end, src)
     if cur:
         runs.append(cur)
     out = []
@@ -444,8 +447,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             else:
                 mark_abs = start + _timed(doc, v["words"], 1.0)
                 c0 = max(shot_start, mark_abs - float(doc.get("lead", 2.2)))
-                if c0 - shot_start < 1.2:
-                    c0 = shot_start
+                if c0 - shot_start < 1.2 or not (doc.get("pre") or doc.get("pre_exhibit")):
+                    c0 = shot_start  # nothing to show before the card: the card opens the beat (no frozen previous picture)
                 c1 = min(shot_end, c0 + cap)
                 if shot_end - c1 < 1.0 and shot_end - c0 <= cap + 0.7:
                     c1 = shot_end

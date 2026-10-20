@@ -1,0 +1,1777 @@
+{
+  "slug": "0004-fake-sale",
+  "title": "The Sale That Never Was",
+  "description": "Was £49.99, now £18.99 — except it never cost £49.99. Case file #003 follows Larry (fictional) through Black Friday week: the store that stopped lying and lost $985 million, the mixer that was always on sale, the mattress-maker taken to court over its 'was' prices and countdown clocks — and three checks that catch a fake sale.",
+  "tags": [
+    "fake sales",
+    "reference pricing",
+    "was price",
+    "black friday deals",
+    "anchoring",
+    "jcpenney",
+    "consumer rights",
+    "psychology of money",
+    "behavioral economics"
+  ],
+  "characters": {
+    "larry": "a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red fedora"
+  },
+  "music": {
+    "_default": "ub_private_detective",
+    "_shorts": "ub_wells_street",
+    "The case": "ub_private_detective",
+    "Monday 9:00 AM: Fair and square": "ub_tunnel_vision",
+    "Tuesday 7:40 PM: Always on sale": "ub_wells_street",
+    "Why your brain says yes": "ub_mechanisms_of_action",
+    "In defence of the accused": "ub_usual_suspects",
+    "Friday 11:58 PM: The clock that resets": "ub_clock_is_ticking",
+    "Saturday 10:00 AM: Three checks": "ub_secret_report",
+    "Case closed": "ub_jazz_rumble"
+  },
+  "thumbnail": {
+    "text": "The sale that never was.",
+    "prompt": "a large cream paper price tag with a red border hanging on the right side of the frame, its higher price struck through in red, plain cream background"
+  },
+  "sources": [
+    "Which? (26 Nov 2024). Nine in 10 Black Friday deals cheaper or same price at other times of the year (227 deals, 8 retailers; Boots hair dryer £49.99/£18.99).",
+    "J.C. Penney Form 8-K, 27 Feb 2013 (fiscal 2012: net loss $985M; total sales −24.8%; comparable sales −25.2%).",
+    "Fortune (25 Jan 2012): 590 promotional events in 2011; Ron Johnson: \"People are disgusted with the lack of integrity on pricing.\"",
+    "Los Angeles Times via CS Monitor (26 Jan 2012): 0.2% of revenue at full price; almost 73% at 50%+ off.",
+    "TIME (2013): $5 T-shirt re-tagged $6 before markdowns returned.",
+    "Consumer Reports (22 Jun 2013), 'Fake sales can cost you': KitchenAid mixer check (2012); Edgar Dworsky's 2003 Kohl's tracking (20 items, 103 days, 86%).",
+    "Checkbook (2018), via 6abc: 19 retailers; sale price usually the routine price.",
+    "Hinojos v. Kohl's Corp., 9th Cir. (21 May 2013).",
+    "City of Los Angeles complaints (8 Dec 2016); Daily Journal (8 Oct 2021): case against Kohl's and Macy's dismissed.",
+    "Tversky & Kahneman (1974), Judgment under Uncertainty, Science. Ariely, Loewenstein & Prelec (2003), QJE. Fudenberg, Levine & Maniadis (2012), AEJ: Micro.",
+    "Ngwe (2018), Fake Discounts Drive Real Revenues in Retail — HBS Working Knowledge summary.",
+    "FTC Bureau of Economics (1992), An Analysis of Department Store Reference Pricing in Metropolitan Washington, D.C.",
+    "CMA v Emma Matratzen GmbH & Ors [2026] EWHC 1995 (Ch), 30 July 2026; consent order 22 May 2026.",
+    "FTC Guides Against Deceptive Pricing, 16 CFR 233.1 (1964). California Business & Professions Code §17501. EU Directive 2019/2161, Art. 6a.",
+    "Larry is a fictional character. Scenes marked 'Illustration' are illustrations."
+  ],
+  "beats": [
+    {
+      "id": "o1",
+      "section": "The case",
+      "text": "A hair dryer at Boots. Was forty-nine ninety-nine.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a chrome 1950s hand-held hair dryer standing on a shop shelf beside a large blank cream paper price tag with a red border on a string, plain cream background, product shot",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "BRITAIN · 2024",
+            "x": 0.7,
+            "y": 0.3,
+            "w": 0.16,
+            "h": 0.04,
+            "angle": 0,
+            "color": "ink",
+            "font": "body",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "WAS £49.99",
+            "x": 0.7,
+            "y": 0.45,
+            "w": 0.22,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Was"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "forty-nine",
+        "sec": 0.9,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "o2",
+      "section": "The case",
+      "text": "Now eighteen ninety-nine.",
+      "visual": {
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "BRITAIN · 2024",
+            "x": 0.7,
+            "y": 0.3,
+            "w": 0.16,
+            "h": 0.04,
+            "angle": 0,
+            "color": "ink",
+            "font": "body",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "WAS £49.99",
+            "x": 0.7,
+            "y": 0.45,
+            "w": 0.22,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "cross",
+            "x": 0.7,
+            "y": 0.45,
+            "w": 0.24,
+            "h": 0.1,
+            "on": "Now"
+          },
+          {
+            "type": "write",
+            "text": "NOW £18.99",
+            "x": 0.7,
+            "y": 0.58,
+            "w": 0.24,
+            "h": 0.1,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "eighteen"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "eighteen",
+        "sec": 0.9,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "o3",
+      "section": "The case",
+      "text": "In the twelve months before, it had never cost forty-nine ninety-nine there. Not once.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Which? · price check · Nov 2024",
+          "headline": "The £49.99 that wasn't",
+          "body": "A hair dryer was £18.99 on Black Friday, marked down from £49.99. It had never been £49.99 at Boots in the preceding 12 months.",
+          "highlight": "never been £49.99",
+          "on": "never",
+          "mark": "underline",
+          "seed": 11,
+          "kicker": "CONSUMER GROUP  ·  QUOTED",
+          "lead": 0.6
+        }
+      }
+    },
+    {
+      "id": "o4",
+      "section": "The case",
+      "text": "Larry is made up. The forty-nine ninety-nine was too.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} holding a chrome 1950s hair dryer pointed at his own face, his moustache, tie and hat brim blown sideways by the air, plain cream background, mid shot"
+      }
+    },
+    {
+      "id": "cf1",
+      "section": "The case",
+      "text": "Case file number three. The sale that never was.",
+      "visual": {
+        "type": "casefile",
+        "casefile": {
+          "mode": "open",
+          "number": "003",
+          "title": "The fake sale",
+          "typed": false,
+          "open_stamp_on": "never",
+          "inside": [
+            "SUBJECT: Larry (fictional)",
+            "EXHIBIT: one hair dryer",
+            "SUSPECTS: 2",
+            "STATUS: open"
+          ]
+        }
+      }
+    },
+    {
+      "id": "m1",
+      "section": "The case",
+      "text": "Suspect number one. Name: the was price. Aliases: original, regular, compare at. Last seen: every Black Friday.",
+      "visual": {
+        "type": "mugshot",
+        "prompt": "a single cream paper price tag with a thick red border hanging on a string, a bold black line struck through its upper half, plain light grey background, studio lighting",
+        "suspect": {
+          "number": 1,
+          "name": "The WAS price",
+          "alias": "Original · Regular · Compare at",
+          "last_seen": "Every Black Friday",
+          "tag": "SUSPECT"
+        }
+      }
+    },
+    {
+      "id": "m1b",
+      "section": "The case",
+      "text": "It never touches your money. It just tells you how much you're saving.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background"
+      }
+    },
+    {
+      "id": "t1",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "Monday, nine a.m.",
+      "visual": {
+        "type": "title",
+        "text": "Monday 9:00 AM — Fair and square"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "p1",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "Larry reads about a store that tried to arrest this suspect.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} at a sunny breakfast table reading a folded newspaper with a coffee cup, mid shot"
+      }
+    },
+    {
+      "id": "p2",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "In 2011, J.C. Penney ran five hundred and ninety different promotions.",
+      "visual": {
+        "type": "archive",
+        "file": "sale_signs_montgomery_1939.jpg",
+        "look": "print",
+        "credit": "Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Sale signs on a department store, Montgomery, Alabama, 1939",
+        "crop": [
+          0.05,
+          0.0,
+          0.95,
+          1.0
+        ]
+      },
+      "pause_at": {
+        "word": "five",
+        "sec": 1.0,
+        "hit": "stamp"
+      },
+      "stamp": {
+        "text": "590 promotions",
+        "on": "promotions"
+      },
+      "label": "J.C. Penney · 2011"
+    },
+    {
+      "id": "p3",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "Only zero point two percent of its revenue came from full-price sales.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 0.2,
+          "decimals": 1,
+          "suffix": "%",
+          "label": "of revenue at full price · J.C. Penney, 2011"
+        }
+      },
+      "pause_at": {
+        "word": "zero",
+        "sec": 0.9,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "p3b",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "Almost three-quarters came from things marked half off or more.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 73,
+          "prefix": "≈",
+          "suffix": "%",
+          "label": "of revenue at 50 % off or more · LA Times, Jan 2012"
+        }
+      }
+    },
+    {
+      "id": "p4",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "So in 2012 a new boss, Ron Johnson, the man behind the Apple Store, tore it all up.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a man in a dark 1950s suit seen from behind tearing a long paper banner of red sale tags in half in an empty department store aisle"
+      },
+      "label": "Illustration"
+    },
+    {
+      "id": "p5",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "No fake markdowns. No coupons. One honest price on every tag. He called it Fair and Square.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a neatly folded white shirt on a shop counter with one clean cream price tag on a string, warm light, simple composition"
+      },
+      "stamp": {
+        "text": "Fair and square",
+        "on": "Fair"
+      }
+    },
+    {
+      "id": "p6",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "\"People are disgusted,\" he said, \"with the lack of integrity on pricing.\"",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Fortune · Jan 2012",
+          "headline": "Ron Johnson on pricing",
+          "body": "\"People are disgusted with the lack of integrity on pricing.\"",
+          "highlight": "disgusted with the lack of integrity",
+          "on": "disgusted",
+          "mark": "underline",
+          "seed": 21,
+          "kicker": "INTERVIEW  ·  QUOTED",
+          "lead": 0.4
+        }
+      }
+    },
+    {
+      "id": "p7",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "Honest prices. The customers were not ready for the experience.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_out",
+        "prompt": "an empty, spotless 1950s department store floor with tidy clothing racks and one bored shop assistant leaning on the counter, no customers"
+      }
+    },
+    {
+      "id": "p8",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "That year, sales fell by a quarter.",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "bar",
+          "title": "J.C. Penney sales",
+          "labels": [
+            "2011",
+            "2012"
+          ],
+          "values": [
+            17.26,
+            12.99
+          ],
+          "unit": "$bn",
+          "highlight": 1,
+          "note": "−24.8 % · annual results, Feb 2013"
+        }
+      },
+      "pause_at": {
+        "word": "quarter.",
+        "sec": 0.9,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "p9",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "The company lost nine hundred and eighty-five million dollars.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "an old brass cash register with its drawer wide open and completely empty, a single moth fluttering out, dark shop at night"
+      },
+      "pause_at": {
+        "word": "nine",
+        "sec": 1.0,
+        "hit": "stamp"
+      },
+      "stamp": {
+        "text": "−$985,000,000",
+        "on": "dollars."
+      }
+    },
+    {
+      "id": "p10",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "Even before Johnson was fired in April 2013, the old game was back.",
+      "visual": {
+        "type": "archive",
+        "file": "chain_store_window_signs_1940.jpg",
+        "look": "print",
+        "credit": "Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Signs on a chain store window, 1940",
+        "crop": [
+          0.02,
+          0.03,
+          0.96,
+          0.93
+        ]
+      },
+      "label": "April 2013"
+    },
+    {
+      "id": "p11",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "A five-dollar T-shirt got a six-dollar tag, so it could be marked down to five again.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a plain white T-shirt on a wooden hanger with a large blank cream paper price tag, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$5",
+            "x": 0.66,
+            "y": 0.5,
+            "w": 0.1,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "five-dollar"
+          },
+          {
+            "type": "cross",
+            "x": 0.66,
+            "y": 0.5,
+            "w": 0.12,
+            "h": 0.11,
+            "on": "six-dollar"
+          },
+          {
+            "type": "write",
+            "text": "$6",
+            "x": 0.66,
+            "y": 0.62,
+            "w": 0.1,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "six-dollar"
+          },
+          {
+            "type": "write",
+            "text": "SALE $5",
+            "x": 0.66,
+            "y": 0.74,
+            "w": 0.16,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "again."
+          }
+        ]
+      }
+    },
+    {
+      "id": "p12",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "The T-shirt did not change. The tag got promoted.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a cream paper price tag on a string wearing a tiny gold crown and a small red sash, proud, plain cream background"
+      },
+      "stamp": {
+        "text": "Promoted",
+        "on": "promoted."
+      }
+    },
+    {
+      "id": "p13",
+      "section": "Monday 9:00 AM: Fair and square",
+      "text": "The store that stopped lying nearly went broke. Our suspect doesn't work alone.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a police line-up wall with black height lines: a paper price tag on a string hangs on the left, and on the right an empty space with a chalk-drawn question mark"
+      }
+    },
+    {
+      "id": "t2",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Tuesday, seven-forty p.m.",
+      "visual": {
+        "type": "title",
+        "text": "Tuesday 7:40 PM — Always on sale"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "k1",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Larry wants a stand mixer. And it's on sale. Of course it is.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} in a department store aisle gazing lovingly at a shiny cream stand mixer on a pedestal under a spotlight, a big blank red sign hanging above it"
+      }
+    },
+    {
+      "id": "k2",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "First, the evidence. Britain's Which? checked two hundred and twenty-seven Black Friday deals.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 227,
+          "label": "Black Friday deals checked · Which?, Britain, 2024"
+        }
+      },
+      "pause_at": {
+        "word": "two",
+        "sec": 0.8,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "k2b",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Nine in ten were the same price, or cheaper, at other times of the year.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Which? · Nov 2024",
+          "headline": "Black Friday deals",
+          "body": "Of 227 Black Friday deals at eight big retailers, 92% were the same price or cheaper at other times of the year.",
+          "highlight": "92% were the same price or cheaper",
+          "on": "Nine",
+          "mark": "underline",
+          "seed": 31,
+          "kicker": "CONSUMER GROUP  ·  PARAPHRASED",
+          "lead": 0.3
+        }
+      }
+    },
+    {
+      "id": "k3a",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Now Larry's mixer. Consumer Reports priced this exact one at Kohl's:",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Consumer Reports · June 2013",
+          "headline": "Fake sales can cost you",
+          "body": "Last year, we compared prices of more than a dozen home and kitchen products on sale at Kohl's with prices at a handful of online retailers. We easily were able to beat Kohl's deals.",
+          "highlight": "We easily were able to beat Kohl's deals",
+          "on": "priced",
+          "mark": "underline",
+          "seed": 35,
+          "kicker": "CONSUMER REPORTS  ·  QUOTED",
+          "lead": 0.2
+        }
+      },
+      "label": "Consumer Reports · checked 2012"
+    },
+    {
+      "id": "k3",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "on sale for four eighty-nine ninety-nine.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a shiny cream stand mixer on a white shop shelf with a large blank cream paper price tag hanging from it, plain background, product shot",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "SALE $489.99",
+            "x": 0.72,
+            "y": 0.55,
+            "w": 0.22,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "four"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "four",
+        "sec": 0.9,
+        "hit": "stamp"
+      },
+      "label": "Consumer Reports · checked 2012",
+      "ledger": [
+        {
+          "label": "MIXER",
+          "amount": "$489.99",
+          "on": "four"
+        }
+      ]
+    },
+    {
+      "id": "k4",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "\"Regular\" price: five forty-nine ninety-nine.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a large cream paper price tag with a red border hanging from the chrome handle of a cream stand mixer, close up, plain background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "SALE $489.99",
+            "x": 0.55,
+            "y": 0.62,
+            "w": 0.26,
+            "h": 0.09,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "REG. $549.99",
+            "x": 0.55,
+            "y": 0.45,
+            "w": 0.26,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "five"
+          }
+        ]
+      },
+      "label": "Consumer Reports · checked 2012",
+      "ledger": [
+        {
+          "label": "\"WAS\"",
+          "amount": "$549.99",
+          "on": "five"
+        }
+      ]
+    },
+    {
+      "id": "k5",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "On Amazon, the same mixer: three ninety-nine ninety-nine.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "the same shiny cream stand mixer sitting in an open plain cardboard delivery box on a doorstep, daylight"
+      },
+      "pause_at": {
+        "word": "three",
+        "sec": 0.9,
+        "hit": "stamp"
+      },
+      "label": "Consumer Reports · checked 2012",
+      "ledger": [
+        {
+          "label": "ELSEWHERE",
+          "amount": "$399.99",
+          "on": "three"
+        }
+      ]
+    },
+    {
+      "id": "k6",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Larry's saving: sixty dollars. His real overpay: ninety.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} proudly holding up a long shop receipt with both hands, beaming, plain cream background"
+      },
+      "pause_at": {
+        "word": "ninety.",
+        "sec": 0.9,
+        "hit": "stamp"
+      },
+      "ledger": [
+        {
+          "label": "OVERPAID",
+          "amount": "$90.00",
+          "loss": true,
+          "circle": true,
+          "on": "ninety."
+        }
+      ]
+    },
+    {
+      "id": "k7",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil"
+      },
+      "label": "tracked 2003"
+    },
+    {
+      "id": "k8",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "They were on sale eighty-six percent of the time.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 86,
+          "suffix": "%",
+          "label": "of the time on sale · tracked 2003"
+        }
+      },
+      "pause_at": {
+        "word": "eighty-six",
+        "sec": 1.0,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "k9",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "One in four never sold at its regular price at all. Regular price: the thing that happens on the other fourteen percent of days.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "four identical white shirts on hangers on a rail, three wearing bright red sale tags and the fourth wearing a plain tag covered in dust and cobwebs",
+          "the fourth white shirt on its hanger in close up, its plain price tag thick with dust and a small spider web"
+        ]
+      },
+      "label": "tracked 2003"
+    },
+    {
+      "id": "k10",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Years later, Checkbook magazine tracked nineteen big retailers. Most of the time, the sale price simply was the price.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "a 1950s woman with a clipboard and pencil noting down prices on a department store shelf of boxed goods, mid shot",
+          "close up of a clipboard page with a long handwritten table of prices and many ticks"
+        ]
+      },
+      "label": "Checkbook 2018"
+    },
+    {
+      "id": "k11",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "A federal appeals court summed it up in three words: price advertisements matter.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Hinojos v. Kohl's · 9th Cir. · 2013",
+          "headline": "Fake 'original' prices",
+          "body": "\"Misinformation about a product's 'normal' price is, therefore, significant to many consumers ... In sum, price advertisements matter.\"",
+          "highlight": "price advertisements matter",
+          "on": "price",
+          "mark": "underline",
+          "seed": 41,
+          "kicker": "COURT OPINION  ·  QUOTED",
+          "lead": 1.2
+        }
+      }
+    },
+    {
+      "id": "k12",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Los Angeles sued four department-store chains over fake original prices.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "four department-store shopping bags standing in a row on courthouse steps like defendants, 1950s courthouse columns behind, morning light"
+      },
+      "label": "LA lawsuit 2016"
+    },
+    {
+      "id": "k13",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Five years later, the city dropped its case against Kohl's and Macy's, after the judge tore into its expert witness.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "an empty wooden witness stand in a wood-panelled 1950s courtroom, morning light",
+          "a crumpled paper bar chart lying on a courtroom floor beside a wooden chair leg, close up"
+        ]
+      },
+      "label": "LA lawsuit 2016 · dropped 2021"
+    },
+    {
+      "id": "k14",
+      "section": "Tuesday 7:40 PM: Always on sale",
+      "text": "Turns out, proving a price was never real is harder than faking one.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "n1",
+      "section": "Why your brain says yes",
+      "text": "Why does a made-up number work? Psychologists once spun a rigged wheel that stopped on ten or sixty-five, then asked people to guess a percentage.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "a 1950s fairground wheel of fortune in a psychology lab, a scientist in a white coat holding a clipboard beside it",
+          "close up of the fairground wheel's pointer stopping on a segment, motion blur on the wheel"
+        ]
+      },
+      "label": "Experiment · 1974"
+    },
+    {
+      "id": "n2",
+      "section": "Why your brain says yes",
+      "text": "The sixty-five group guessed almost twice as high.",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "bar",
+          "title": "Median guess",
+          "labels": [
+            "Wheel: 10",
+            "Wheel: 65"
+          ],
+          "values": [
+            25,
+            45
+          ],
+          "unit": "%",
+          "highlight": 1,
+          "note": "Tversky & Kahneman, 1974"
+        }
+      }
+    },
+    {
+      "id": "n3",
+      "section": "Why your brain says yes",
+      "text": "At MIT, students wrote down the last digits of their social security number, then bid on a keyboard.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a 1950s university lecture room, students writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk"
+      },
+      "label": "MIT · 2003"
+    },
+    {
+      "id": "n4",
+      "section": "Why your brain says yes",
+      "text": "High numbers bid fifty-six dollars. Low numbers, sixteen.",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "bar",
+          "title": "Bid for the same keyboard",
+          "labels": [
+            "Low numbers",
+            "High numbers"
+          ],
+          "values": [
+            16,
+            56
+          ],
+          "unit": "$",
+          "highlight": 1,
+          "note": "Ariely, Loewenstein & Prelec, 2003"
+        }
+      },
+      "pause_at": {
+        "word": "fifty-six",
+        "sec": 0.9,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "n5",
+      "section": "Why your brain says yes",
+      "text": "A later replication found the effect much weaker. Weaker, but not zero.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "Fudenberg, Levine & Maniadis · AEJ: Micro · 2012",
+          "headline": "Replication 2012: effect much weaker",
+          "body": "Repeating the experiment, the authors found very weak anchoring effects on what people were willing to pay.",
+          "highlight": "very weak anchoring effects",
+          "on": "weaker.",
+          "mark": "underline",
+          "seed": 51,
+          "kicker": "REPLICATION  ·  PARAPHRASED",
+          "lead": 0.4
+        }
+      }
+    },
+    {
+      "id": "n6",
+      "section": "Why your brain says yes",
+      "text": "And Harvard researchers found outlet shoppers paid about seventy-seven cents more for every extra dollar of original price.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a factory outlet store clothing rail, each garment wearing a large paper tag with a crossed-out original price and a lower price below"
+      },
+      "label": "HBS · 2018",
+      "ledger": [
+        {
+          "label": "each fake $1 → +77¢ paid (HBS 2018)",
+          "note": true,
+          "on": "seventy-seven"
+        }
+      ]
+    },
+    {
+      "id": "sub",
+      "section": "Why your brain says yes",
+      "text": "If you like catching prices in the act, subscribe. The Inspector has more files.",
+      "visual": {
+        "type": "reuse",
+        "beat": "k1",
+        "index": 0,
+        "motion": "zoom_in"
+      },
+      "cta": {
+        "on": "subscribe.",
+        "click_on": "Inspector"
+      }
+    },
+    {
+      "id": "t3",
+      "section": "In defence of the accused",
+      "text": "In defence of the accused.",
+      "visual": {
+        "type": "title",
+        "text": "In defence of the accused"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "f1",
+      "section": "In defence of the accused",
+      "text": "One: Penney tried honesty, and shoppers walked out. They wanted the hunt.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "excited 1950s shoppers rushing through department store doors at opening time, chasing big red blank sale signs, energetic"
+      }
+    },
+    {
+      "id": "f2",
+      "section": "In defence of the accused",
+      "text": "Two: a sale can still be a deal. An FTC study checked twenty department-store regular prices.",
+      "visual": {
+        "type": "archive",
+        "file": "ceiling_price_tag_furniture_1942.jpg",
+        "look": "print",
+        "credit": "Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "US government drawing of a price tag, 1942",
+        "crop": [
+          0.04,
+          0.12,
+          0.96,
+          0.92
+        ]
+      },
+      "label": "FTC study, 1992"
+    },
+    {
+      "id": "f3",
+      "section": "In defence of the accused",
+      "text": "Twelve were higher than any rival charged. Yet the sale prices averaged about four percent below the competition.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "FTC Bureau of Economics · 1992",
+          "headline": "Department store reference pricing",
+          "body": "In 12 of 20 items, the 'regular' price was above the highest competitor price. On average, sale prices were about 4% below competitor average prices.",
+          "highlight": "about 4% below competitor average prices",
+          "on": "four",
+          "mark": "underline",
+          "seed": 61,
+          "kicker": "FTC STUDY  ·  PARAPHRASED",
+          "lead": 1.0,
+          "post": "f2"
+        }
+      }
+    },
+    {
+      "id": "f4",
+      "section": "In defence of the accused",
+      "text": "Three: nobody buys a mattress every month. Waiting for a sale is smart.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} lying on his back on a showroom mattress with his eyes closed and hands folded, a tiny wall calendar propped on his chest, plain cream background"
+      }
+    },
+    {
+      "id": "f5",
+      "section": "In defence of the accused",
+      "text": "The was price may be fiction. The saving isn't always. And the accomplice nobody arrests? Our love of a bargain.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "a cream paper price tag with a red border hanging on a string, plain cream background",
+          "a red heart-shaped paper price tag hanging on a string, plain cream background"
+        ]
+      }
+    },
+    {
+      "id": "t4",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "Friday, eleven fifty-eight p.m.",
+      "visual": {
+        "type": "title",
+        "text": "Friday 11:58 PM — The clock that resets"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "c1",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "Larry is buying a mattress. Sale ends in two minutes.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} in striped pyjamas sitting up in bed at night, his face lit by a glowing laptop showing a big mattress, wide-eyed",
+        "marks": [
+          {
+            "type": "write",
+            "text": "SALE ENDS IN 00:02:00",
+            "x": 0.5,
+            "y": 0.12,
+            "w": 0.36,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Sale"
+          }
+        ]
+      }
+    },
+    {
+      "id": "m2",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine. Only three left.",
+      "visual": {
+        "type": "mugshot",
+        "prompt": "a single chrome 1950s twin-bell alarm clock with a red face, plain light grey background, studio lighting",
+        "suspect": {
+          "number": 2,
+          "name": "The countdown clock",
+          "alias": "'Sale ends in 02:59:59' · 'Only 3 left'",
+          "last_seen": "Checkout, 11:58 PM",
+          "tag": "SUSPECT"
+        }
+      }
+    },
+    {
+      "id": "e1",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "In Britain, the competition watchdog took mattress-maker Emma to court. The judgment has the numbers.",
+      "visual": {
+        "type": "archive",
+        "file": "furniture_windows_shenandoah_1938.jpg",
+        "look": "print",
+        "credit": "Library of Congress, Prints & Photographs Division (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Furniture store windows at night, Pennsylvania, 1938",
+        "crop": [
+          0.0,
+          0.0,
+          1.0,
+          0.94
+        ]
+      },
+      "label": "High Court · July 2026"
+    },
+    {
+      "id": "e2",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "Ninety-eight point two percent of Emma's sales were products shown with a struck-through was price.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 98.2,
+          "decimals": 1,
+          "suffix": "%",
+          "label": "of sales had a struck-through 'was' price · High Court, 2026"
+        }
+      },
+      "pause_before": 0.8
+    },
+    {
+      "id": "e3",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "In 2024 it sold seven discounted mattresses for every one at full price.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a tall stack of mattresses in a warehouse, seven wearing red sale tags and the single one at the top wearing a plain white tag",
+        "marks": [
+          {
+            "type": "write",
+            "text": "7 : 1",
+            "x": 0.8,
+            "y": 0.3,
+            "w": 0.14,
+            "h": 0.1,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "seven"
+          }
+        ]
+      }
+    },
+    {
+      "id": "e4",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "One model, in one test period, sold just zero point zero two percent at full price. At full price, this mattress is rarer than a quiet Black Friday.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "a single mattress displayed inside a glass museum case with a brass plaque, under a spotlight in a dark gallery",
+          "the brass plaque of the museum case in close up, blank, warm spotlight"
+        ],
+        "marks": [
+          {
+            "type": "write",
+            "text": "0.02 %",
+            "x": 0.5,
+            "y": 0.2,
+            "w": 0.18,
+            "h": 0.09,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "zero"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "zero",
+        "sec": 0.9,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "e5",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "The watchdog wanted a simple rule: for every two sold on sale, one at full price.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "1 : 2",
+            "x": 0.5,
+            "y": 0.15,
+            "w": 0.14,
+            "h": 0.09,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "two"
+          }
+        ]
+      }
+    },
+    {
+      "id": "e6",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "In July 2026, the High Court found Emma had broken the law in places, but refused the ratio.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "CMA v Emma · [2026] EWHC 1995 (Ch) · 30 July 2026",
+          "headline": "No fixed ratio",
+          "body": "\"I do not consider that I should make an enforcement order that imposes a 1:2 FVR.\"",
+          "highlight": "I do not consider that I should make an enforcement order that imposes a 1:2 FVR",
+          "on": "refused",
+          "mark": "underline",
+          "seed": 71,
+          "kicker": "HIGH COURT  ·  QUOTED",
+          "lead": 1.2,
+          "post": "e5"
+        }
+      },
+      "stamp": {
+        "text": "1:2 refused",
+        "on": "ratio."
+      }
+    },
+    {
+      "id": "e7",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "A fixed rule, the judge said, risked drawing the line in the wrong place.",
+      "visual": {
+        "type": "reuse",
+        "beat": "e5",
+        "index": 0,
+        "motion": "static",
+        "marks": [
+          {
+            "type": "write",
+            "text": "1 : 2",
+            "x": 0.5,
+            "y": 0.15,
+            "w": 0.14,
+            "h": 0.09,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "cross",
+            "x": 0.5,
+            "y": 0.15,
+            "w": 0.18,
+            "h": 0.12,
+            "on": "wrong"
+          }
+        ]
+      }
+    },
+    {
+      "id": "e8",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "The clock lost anyway. In May, Emma agreed its countdown timers must end when the sale really ends, and can't be reused on a similar deal within four weeks.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "CMA v Emma · consent order · 22 May 2026",
+          "headline": "Countdown timers",
+          "body": "Countdown timers must conclude at the same time as the sales promotion they apply to, and are not used on any substantially similar promotion within 28 days.",
+          "highlight": "conclude at the same time as the sales promotion",
+          "on": "end",
+          "mark": "underline",
+          "seed": 81,
+          "kicker": "COURT ORDER  ·  PARAPHRASED",
+          "pre": "m2",
+          "lead": 1.0
+        }
+      }
+    },
+    {
+      "id": "e9",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "The clock resets. Your decision doesn't.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "e10",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "So what makes a was price real? America's rulebook says: a price you really offered, regularly, for a reasonably substantial time.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "FTC Guides Against Deceptive Pricing · 16 CFR 233.1 · 1964",
+          "headline": "Former price comparisons",
+          "body": "The former price must be the actual, bona fide price at which the article was offered to the public on a regular basis for a reasonably substantial period of time.",
+          "highlight": "offered to the public on a regular basis",
+          "on": "regularly,",
+          "mark": "underline",
+          "seed": 91,
+          "kicker": "US RULEBOOK  ·  QUOTED",
+          "lead": 1.6,
+          "post": "o1"
+        }
+      }
+    },
+    {
+      "id": "e11",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "Its own example is a pen tagged ten dollars for a few days, just so seven-fifty can look like a bargain.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompts": [
+          "a 1950s fountain pen lying on a velvet display stand with a large blank cream paper price tag, plain background",
+          "the large blank cream paper price tag of the fountain pen in close up, velvet behind it"
+        ],
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$10",
+            "x": 0.7,
+            "y": 0.45,
+            "w": 0.1,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "ten"
+          },
+          {
+            "type": "cross",
+            "x": 0.7,
+            "y": 0.45,
+            "w": 0.12,
+            "h": 0.11,
+            "on": "seven-fifty"
+          },
+          {
+            "type": "write",
+            "text": "$7.50!",
+            "x": 0.7,
+            "y": 0.6,
+            "w": 0.14,
+            "h": 0.09,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "seven-fifty"
+          }
+        ]
+      }
+    },
+    {
+      "id": "e12",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "California says: within the last three months.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a 1950s pull-down classroom wall map of California, soft colours, no labels",
+        "marks": [
+          {
+            "type": "write",
+            "text": "3 MONTHS",
+            "x": 0.62,
+            "y": 0.4,
+            "w": 0.18,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "three"
+          }
+        ]
+      },
+      "label": "California · B&P Code §17501"
+    },
+    {
+      "id": "e12b",
+      "section": "Friday 11:58 PM: The clock that resets",
+      "text": "And in the EU, any was price must be the lowest of the last thirty days.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a 1950s pull-down classroom wall map of Europe, soft colours, no labels",
+        "marks": [
+          {
+            "type": "write",
+            "text": "30 DAYS",
+            "x": 0.55,
+            "y": 0.4,
+            "w": 0.16,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "thirty"
+          }
+        ]
+      },
+      "label": "EU rule · 2022"
+    },
+    {
+      "id": "t5",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Saturday, ten a.m.",
+      "visual": {
+        "type": "title",
+        "text": "Saturday 10:00 AM — Three checks"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "x1",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Three checks before you pay. One. Was it ever that price here? Look for a date.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} bending close to a shop shelf, inspecting a price tag through a big magnifying glass, plain cream background"
+      },
+      "music": "ub_secret_report",
+      "inserts": [
+        {
+          "file": "ceiling_price_tag_shirt_1942.jpg",
+          "kind": "photo",
+          "from": "right",
+          "x": 0.82,
+          "y": 0.45,
+          "w": 0.26,
+          "on": "date.",
+          "crop": [
+            0.04,
+            0.12,
+            0.96,
+            0.92
+          ],
+          "caption": "Stamping the facts on a price tag, 1942"
+        }
+      ]
+    },
+    {
+      "id": "x2",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "If the tag can't give you one, treat the was as decoration.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "a cream paper price tag hanging as an ornament on a small decorated Christmas tree, plain cream background"
+      },
+      "music": "ub_secret_report"
+    },
+    {
+      "id": "x3",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Two. Check the price history. Free trackers show what a product really cost, week by week:",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "line",
+          "title": "Price history (illustration)",
+          "labels": [
+            "Jan",
+            "Mar",
+            "May",
+            "Jul",
+            "Sep",
+            "Nov"
+          ],
+          "values": [
+            399,
+            399,
+            405,
+            399,
+            399,
+            489
+          ],
+          "unit": "$",
+          "highlight": 5,
+          "note": "the 'was' price never appears"
+        }
+      },
+      "music": "ub_secret_report",
+      "label": "Illustration"
+    },
+    {
+      "id": "x4",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "an open 1950s wooden index-card box with four blank white cards standing up, plain cream background",
+        "marks": [
+          {
+            "type": "write",
+            "text": "Keepa",
+            "x": 0.3,
+            "y": 0.4,
+            "w": 0.16,
+            "h": 0.06,
+            "angle": 0,
+            "color": "ink",
+            "font": "typewriter",
+            "dur": 0.7,
+            "on": "Keepa"
+          },
+          {
+            "type": "write",
+            "text": "camelcamelcamel",
+            "x": 0.3,
+            "y": 0.55,
+            "w": 0.24,
+            "h": 0.06,
+            "angle": 0,
+            "color": "ink",
+            "font": "typewriter",
+            "dur": 0.7,
+            "on": "camelcamelcamel"
+          },
+          {
+            "type": "write",
+            "text": "PriceSpy",
+            "x": 0.68,
+            "y": 0.4,
+            "w": 0.16,
+            "h": 0.06,
+            "angle": 0,
+            "color": "ink",
+            "font": "typewriter",
+            "dur": 0.7,
+            "on": "PriceSpy"
+          },
+          {
+            "type": "write",
+            "text": "idealo",
+            "x": 0.68,
+            "y": 0.55,
+            "w": 0.14,
+            "h": 0.06,
+            "angle": 0,
+            "color": "ink",
+            "font": "typewriter",
+            "dur": 0.7,
+            "on": "idealo"
+          },
+          {
+            "type": "write",
+            "text": "US · Amazon",
+            "x": 0.3,
+            "y": 0.28,
+            "w": 0.16,
+            "h": 0.05,
+            "angle": 0,
+            "color": "red",
+            "font": "body",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "UK · EU",
+            "x": 0.68,
+            "y": 0.28,
+            "w": 0.12,
+            "h": 0.05,
+            "angle": 0,
+            "color": "red",
+            "font": "body",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          }
+        ]
+      },
+      "music": "ub_secret_report",
+      "say": "Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe."
+    },
+    {
+      "id": "x5",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "A was price that never shows up on the chart is a suspect.",
+      "visual": {
+        "type": "reuse",
+        "beat": "m1",
+        "index": 0,
+        "motion": "zoom_in"
+      },
+      "music": "ub_secret_report"
+    },
+    {
+      "id": "x6",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompts": [
+          "the shiny cream stand mixer seen from the side, its small metal model plate on the base in close up, plain background",
+          "a 1950s shop catalogue page of identical stand mixers in a neat grid, each with a different blank price box"
+        ]
+      },
+      "music": "ub_secret_report"
+    },
+    {
+      "id": "x7",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Larry's mixer: ninety dollars cheaper, one click away.",
+      "visual": {
+        "type": "reuse",
+        "beat": "k5",
+        "index": 0,
+        "motion": "zoom_in"
+      },
+      "music": "ub_secret_report"
+    },
+    {
+      "id": "x8",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Forget the percentage. Compare the price you'd pay with the price you could pay.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      },
+      "music": "ub_secret_report"
+    },
+    {
+      "id": "z1",
+      "section": "Case closed",
+      "text": "Case closed. The verdict. Guilty: the was price. Accomplice: the clock.",
+      "visual": {
+        "type": "endscreen",
+        "endscreen": {
+          "number": "003",
+          "title": "The fake sale",
+          "stamp": "Case closed",
+          "verdict": [
+            "Guilty: the WAS price.",
+            "Accomplice: the clock."
+          ],
+          "next": {
+            "number": "004",
+            "title": "Drip pricing",
+            "tagline": "The $30 ticket that costs $48.",
+            "image_file": "next_ticket.png",
+            "copies": 1,
+            "fees": [
+              "$30",
+              "+ $8",
+              "+ $6",
+              "+ $4",
+              "= $48"
+            ],
+            "label": "Illustration"
+          }
+        }
+      },
+      "block_start": true,
+      "sting": "ub_sting_brass",
+      "sting_at": 0.1
+    },
+    {
+      "id": "z2",
+      "section": "Case closed",
+      "text": "The sentence: a date on every tag, and a second look from you.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 6.5,
+      "inserts": [
+        {
+          "file": "p5",
+          "kind": "cutout",
+          "from": "right",
+          "x": 0.8,
+          "y": 0.62,
+          "w": 0.26,
+          "on": "date"
+        }
+      ]
+    },
+    {
+      "id": "z3",
+      "section": "Case closed",
+      "text": "Larry closed his tab without buying the mixer. Then he checked the price again. Twice.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 10.5,
+      "inserts": [
+        {
+          "file": "x1",
+          "kind": "cutout",
+          "from": "left",
+          "x": 0.18,
+          "y": 0.62,
+          "w": 0.26,
+          "on": "Larry"
+        }
+      ]
+    },
+    {
+      "id": "z4",
+      "section": "Case closed",
+      "text": "Next case: the thirty-dollar ticket that costs forty-eight. Fee by fee.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 16.0
+    },
+    {
+      "id": "z5",
+      "section": "Case closed",
+      "text": "Subscribe, so the next case file finds you.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 21.5,
+      "block_end": 27.0
+    }
+  ],
+  "shorts": []
+}
