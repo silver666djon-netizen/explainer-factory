@@ -183,19 +183,9 @@
       }
     },
     {
-      "id": "o4",
-      "section": "The case",
-      "text": "Larry is made up. The forty-nine ninety-nine was too.",
-      "visual": {
-        "type": "image",
-        "motion": "zoom_in",
-        "prompt": "{larry} holding a chrome 1950s hair dryer pointed at his own face, his moustache, tie and hat brim blown sideways by the air, plain cream background, mid shot"
-      }
-    },
-    {
       "id": "cf1",
       "section": "The case",
-      "text": "Case file number three. The sale that never was.",
+      "text": "Larry is made up. The forty-nine ninety-nine was too. Case file number three. The sale that never was.",
       "visual": {
         "type": "casefile",
         "casefile": {

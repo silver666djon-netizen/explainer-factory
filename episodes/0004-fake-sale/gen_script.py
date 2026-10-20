@@ -107,10 +107,7 @@ beat("o3", S_OPEN, "In the twelve months before, it had never cost forty-nine ni
      doc("Which? · price check · Nov 2024", "The £49.99 that wasn't",
          "A hair dryer was £18.99 on Black Friday, marked down from £49.99. It had never been £49.99 at Boots in the preceding 12 months.",
          "never been £49.99", on="never", kicker="CONSUMER GROUP  ·  QUOTED", seed=11, lead=0.6))
-beat("o4", S_OPEN, "Larry is made up. The forty-nine ninety-nine was too.",
-     img("{larry} holding a chrome 1950s hair dryer pointed at his own face, his moustache, tie and hat brim blown sideways by the air, plain cream background, mid shot",
-         motion="zoom_in"))
-beat("cf1", S_OPEN, "Case file number three. The sale that never was.",
+beat("cf1", S_OPEN, "Larry is made up. The forty-nine ninety-nine was too. Case file number three. The sale that never was.",  # the gag lands on "SUBJECT: Larry (fictional)"
      {"type": "casefile", "casefile": {"mode": "open", "number": "003", "title": "The fake sale", "typed": False, "open_stamp_on": "never",
                                         "inside": ["SUBJECT: Larry (fictional)", "EXHIBIT: one hair dryer", "SUSPECTS: 2", "STATUS: open"]}})
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at. Last seen: every Black Friday.",
