@@ -61,3 +61,21 @@ no paid generation or Actions minute is spent twice on the same thing.
 
 ## Logos / banners / other brand art
 Small batches (≤ 10) only after Klot picks a direction; finals are made once from the chosen draft.
+
+## Handwriting, hands and stamps (engine rules, from Ep. 3 on)
+1. Written text is revealed by a mask that follows the pen tip along the ink: nothing right of the tip exists.
+   The pen takes as long as the text needs (~0.075 s per letter).
+2. One line at a time: a multi-line mark is several passes; the hand leaves between them.
+3. One hand on screen at a time: a second hand action waits until the first hand has left (>= 6 frames gap) —
+   marks, Larry's tab, evidence-card underlines, folder-page writing, stamp hands.
+4. The hand leaves only after the last letter.
+5. A strike-through covers every line of the mark it cancels (one stroke per line, hand lifts between).
+6. Ink colour = pen colour (graphite pencil -> black, red pencil -> red, white paint pen -> white).
+7. Small stamps on paper (OPEN, SUSPECT, EXHIBIT, REAL TOTALS, …): the stamp hand (wooden handle, red rubber,
+   assets/hands/hand_stamp.png) enters from above, presses (impression appears on the press frame, uneven ink),
+   holds 3–4 frames, lifts, leaves; sound "kachunk" (same sample every time). Never a pen hand, never a drop-in.
+8. Large stamps over the whole picture (CASE CLOSED, FAIR AND SQUARE, amounts, percentages, 1:2 REFUSED,
+   PROMOTED, NOT PROVEN): drop in from above with the heavy thud.
+9. Typed text (mugshot card) types letter by letter with typewriter clicks, each field when the narrator reads it.
+QC: the 4 fps hand check (text ahead of pen, two hands, pen-applied stamps, marks not finishing in their shot)
+must report zero before a final render.

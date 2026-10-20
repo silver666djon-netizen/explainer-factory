@@ -241,7 +241,7 @@
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
-            "on": "was"
+            "at": 0.35
           },
           {
             "type": "write",
@@ -254,16 +254,23 @@
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
-            "on": "price."
+            "on": "number"
           },
           {
             "type": "underline",
             "x": 0.5,
-            "y": 0.545,
-            "w": 0.4,
+            "y": 0.47,
+            "w": 0.3,
             "h": 0.02,
-            "slant": 0.22,
-            "on": "Aliases:"
+            "on": "number"
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.26,
+            "h": 0.02,
+            "on": "number"
           }
         ]
       }
@@ -653,10 +660,24 @@
         "marks": [
           {
             "type": "write",
-            "text": "WAS $—",
+            "text": "WAS",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.16,
+            "y": 0.47,
+            "w": 0.12,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$—",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.1,
             "h": 0.09,
             "angle": 0,
             "color": "ink",
@@ -668,8 +689,18 @@
           {
             "type": "underline",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.19,
+            "y": 0.47,
+            "w": 0.13,
+            "h": 0.02,
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.11,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
@@ -1507,10 +1538,24 @@
         "marks": [
           {
             "type": "write",
-            "text": "WAS $—",
+            "text": "WAS",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.16,
+            "y": 0.47,
+            "w": 0.12,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$—",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.1,
             "h": 0.09,
             "angle": 0,
             "color": "ink",
@@ -1522,8 +1567,18 @@
           {
             "type": "underline",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.19,
+            "y": 0.47,
+            "w": 0.13,
+            "h": 0.02,
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.11,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
@@ -1553,10 +1608,24 @@
           "marks": [
             {
               "type": "write",
-              "text": "WAS $—",
+              "text": "WAS",
               "x": 0.5,
-              "y": 0.52,
-              "w": 0.16,
+              "y": 0.47,
+              "w": 0.12,
+              "h": 0.09,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "write",
+              "text": "$—",
+              "x": 0.5,
+              "y": 0.62,
+              "w": 0.1,
               "h": 0.09,
               "angle": 0,
               "color": "ink",
@@ -1568,8 +1637,18 @@
             {
               "type": "underline",
               "x": 0.5,
-              "y": 0.52,
-              "w": 0.19,
+              "y": 0.47,
+              "w": 0.13,
+              "h": 0.02,
+              "at": 0.0,
+              "dur": 0.01,
+              "hand": false
+            },
+            {
+              "type": "underline",
+              "x": 0.5,
+              "y": 0.62,
+              "w": 0.11,
               "h": 0.02,
               "at": 0.0,
               "dur": 0.01,
@@ -2340,10 +2419,24 @@
         "marks": [
           {
             "type": "write",
-            "text": "WAS $—",
+            "text": "WAS",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.16,
+            "y": 0.47,
+            "w": 0.12,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$—",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.1,
             "h": 0.09,
             "angle": 0,
             "color": "ink",
@@ -2355,8 +2448,18 @@
           {
             "type": "underline",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.19,
+            "y": 0.47,
+            "w": 0.13,
+            "h": 0.02,
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.11,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
@@ -2960,10 +3063,24 @@
             "marks": [
               {
                 "type": "write",
-                "text": "WAS $—",
+                "text": "WAS",
                 "x": 0.5,
-                "y": 0.52,
-                "w": 0.16,
+                "y": 0.47,
+                "w": 0.12,
+                "h": 0.09,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "$—",
+                "x": 0.5,
+                "y": 0.62,
+                "w": 0.1,
                 "h": 0.09,
                 "angle": 0,
                 "color": "ink",
@@ -2975,8 +3092,18 @@
               {
                 "type": "underline",
                 "x": 0.5,
-                "y": 0.52,
-                "w": 0.19,
+                "y": 0.47,
+                "w": 0.13,
+                "h": 0.02,
+                "at": 0.0,
+                "dur": 0.01,
+                "hand": false
+              },
+              {
+                "type": "underline",
+                "x": 0.5,
+                "y": 0.62,
+                "w": 0.11,
                 "h": 0.02,
                 "at": 0.0,
                 "dur": 0.01,

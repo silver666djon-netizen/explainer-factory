@@ -311,11 +311,9 @@ class ReceiptsShot(Shot):
                 cv2.polylines(pic, [pts.astype(np.int32).reshape(-1, 1, 2)], False, self.red, max(5, wh // 130), cv2.LINE_AA)
                 if q < 1.0:
                     hand = (x0 + pts[-1][0], y0 + pts[-1][1])
-        if self.stamp is not None and t >= self.stamp_at:
-            p = min(1.0, (t - self.stamp_at) / 0.14)
-            s = 2.2 - 1.2 * p
-            st = cv2.resize(self.stamp, (max(1, int(self.stamp.shape[1] * s)), max(1, int(self.stamp.shape[0] * s))))
-            blend(pic, st, int(ww * 0.5 - st.shape[1] / 2), int(wh * (0.62 if not self.portrait else 0.12) - st.shape[0] / 2), opacity=min(1.0, 0.3 + p))
+        if self.stamp is not None:  # REAL TOTALS: pressed on by the stamp hand
+            from .draw import stamp_press
+            stamp_press(pic, self.stamp, ww * 0.5, wh * (0.62 if not self.portrait else 0.12), t, self.stamp_at)
         z = 1.0 + 0.04 * ease(t / max(self.duration, 1e-6))
         pic = _push(pic, z)
         if self.bg is not None:
@@ -335,7 +333,7 @@ class ReceiptsShot(Shot):
             out += [(start_abs + max(0.0, r["t0"]), "printer"), (start_abs + r["t0"] + 0.3, "paper")]
         out += [(start_abs + self.circle_at, "marker"), (start_abs + self.circle_at + 0.45, "marker")]
         if self.stamp_at is not None:
-            out.append((start_abs + self.stamp_at, "stamp"))
+            out.append((start_abs + self.stamp_at, "kachunk"))
         return out
 
 

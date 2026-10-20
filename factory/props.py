@@ -148,7 +148,8 @@ class CaseFileShot(Shot):
         if spec.get("writes"):
             from .endscreen import Writing
             wf = font(marker, int(fs * 1.05))
-            busy = -1e9
+            from .draw import stamp_window
+            busy = stamp_window(float(spec["open_stamp_at"]) + lead_in)[1] if spec.get("open_stamp_at") is not None else -1e9
             for w_ in sorted(spec["writes"], key=lambda w: float(w.get("at", 2.5))):
                 lx, ly, txt = self.inside_lines[int(w_["line"])]
                 gap = int(fs * 0.5) if txt.strip() else 0
@@ -260,11 +261,8 @@ class CaseFileShot(Shot):
             lx, ly, txt = self.inside_lines[-1]
             sx = int(self.BW // 2 + lx + self.ft.getlength(txt) + self.fw * 0.26)
             sy = int(self.fy + ly + self.ft.size * 0.5)
-            if t >= osa:
-                p = min(1.0, (t - osa) / 0.14)
-                sc = 2.0 - 1.0 * p
-                st = cv2.resize(self._ostamp, (max(1, int(self._ostamp.shape[1] * sc)), max(1, int(self._ostamp.shape[0] * sc))))
-                blend(canvas, st, sx - st.shape[1] // 2, sy - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
+            from .draw import stamp_press
+            stamp_press(canvas, self._ostamp, sx, sy, t, osa)
         if self.mode == "open" and self.writes and op >= 0.999:
             from .draw import hand_path, paste_hand
             px0 = self.BW // 2
@@ -305,7 +303,7 @@ class CaseFileShot(Shot):
                 out.append((start_abs + self.lead_in + 1.7, "type"))
             if self.spec.get("open_stamp_at") is not None:
                 osa = start_abs + self.lead_in + float(self.spec["open_stamp_at"])
-                out += [(osa, "stamp"), (osa + 0.01, "thud")]
+                out += [(osa, "kachunk")]
             for w_ in self.writes:
                 out += [(start_abs + w_[3], "marker"), (start_abs + w_[3] + w_[4] * 0.5, "marker")]
             return out
@@ -406,7 +404,10 @@ class MugshotShot(Shot):
             nxt = ta[i + 1] - 0.15 if i + 1 < n else self.duration - 0.6
             self.type_at.append(ta[i])
             self.type_dur.append(max(0.3, min(0.065 * chars, nxt - ta[i])))
-        self.tag_at = float(spec.get("_tag_at", max((a + d for a, d in zip(self.type_at, self.type_dur)), default=lead_in) + 0.25))
+        from .draw import STAMP_IN
+        pm_end = max((float(m.get("at", 0)) + float(m.get("dur", 0.45)) + 0.32 for m in self.photo_marks if m.get("hand")), default=-1e9)
+        self.tag_at = float(spec.get("_tag_at", max(max((a + d for a, d in zip(self.type_at, self.type_dur)), default=lead_in) + 0.25,
+                                                     pm_end + 0.2 + STAMP_IN)))
         self._static = None
 
     def frame(self, t: float) -> np.ndarray:
@@ -452,12 +453,8 @@ class MugshotShot(Shot):
                 pos = hand_path(lambda tt: (px + ftip(tt)[0], py + ftip(tt)[1]), t0, t1, t, self.BW, self.BH, False)
                 if pos:
                     paste_hand(canvas, kind, pos[0], pos[1], False)
-        if t >= self.tag_at:  # SUSPECT stamp drops in from above with a thud
-            p = min(1.0, (t - self.tag_at) / 0.14)
-            sc = 2.0 - 1.0 * p
-            st = cv2.resize(self.tag, (max(1, int(self.tag.shape[1] * sc)), max(1, int(self.tag.shape[0] * sc))))
-            tx, ty = self.tag_xy
-            blend(canvas, st, tx - st.shape[1] // 2, ty - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
+        from .draw import stamp_press  # SUSPECT is pressed on by the stamp hand
+        stamp_press(canvas, self.tag, self.tag_xy[0], self.tag_xy[1], t, self.tag_at)
         out = _push(canvas, (self.W, self.H), 1.02 + 0.08 * ease(t / max(self.duration, 1e-6)))
         if 0 <= tl < 0.18:  # camera flash
             a = 1 - tl / 0.18
@@ -471,7 +468,7 @@ class MugshotShot(Shot):
             while k < td:  # typewriter clicks while the field types
                 ev.append((start_abs + ta + k, "type"))
                 k += 0.42
-        ev += [(start_abs + self.tag_at, "stamp"), (start_abs + self.tag_at + 0.01, "thud")]
+        ev += [(start_abs + self.tag_at, "kachunk")]
         return ev
 
 

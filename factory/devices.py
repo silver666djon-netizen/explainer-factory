@@ -159,7 +159,7 @@ class Ledger:
         for r in self.rows:
             out += [(r["at"] + 0.15, "marker"), (r["at"] + 0.5, "marker")]
             if r.get("circle"):
-                out += [(r["at"] + 0.15 + self.WRITE, "scribble"), (r["at"] + 0.15 + self.WRITE + 0.6, "stamp")]
+                out += [(r["at"] + 0.15 + self.WRITE, "scribble")]  # (no stamp sound: nothing is stamped here)
         return out
 
 
@@ -369,7 +369,7 @@ LAST_PRINT = (0, 0, 1, 1)
 
 
 def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: int, label: str, tag: str,
-                  tag_p: float = 1.0) -> np.ndarray:
+                  tag_p: float | None = 0.0) -> np.ndarray:
     """One frame of a live-action clip presented as evidence on the desk."""
     pal = _pal(cfg)
     if (W, H) not in _DESKS:
@@ -417,14 +417,15 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
     for fx in (0.12, 0.80):
         tp = np.array(tape_strip(int(W * 0.09), int(H * 0.035), seed + int(fx * 10)).rotate(-6 if fx < 0.5 else 5, expand=True))
         blend(out, tp, x + int(pr.shape[1] * fx), y - tp.shape[0] // 3)
-    if tag_p > 0:
-        tg = evidence_tag(cfg, tag, int(W * 0.20), seed, word="EXHIBIT")
-        s = 1.6 - 0.6 * ease(min(1.0, tag_p))
-        tg = tg.rotate(9, resample=Image.BICUBIC, expand=True)
-        tg = tg.resize((int(tg.width * s), int(tg.height * s)), Image.LANCZOS)
-        ta = np.array(tg)
-        tx0, ty0 = x + pr.shape[1] - int(ta.shape[1] * 0.80), y + pr.shape[0] - int(ta.shape[0] * 0.95)
-        blend(out, ta, tx0, ty0, opacity=min(1.0, tag_p * 2))
+    if tag_p is not None:  # tag_p = the press time: the EXHIBIT mark is applied by the stamp hand
+        key = ("exh", tag, W, seed)
+        if key not in _DESKS:
+            tg = evidence_tag(cfg, tag, int(W * 0.20), seed, word="EXHIBIT").rotate(9, resample=Image.BICUBIC, expand=True)
+            _DESKS[key] = np.array(tg)
+        ta = _DESKS[key]
+        cxs, cys = x + pr.shape[1] - int(ta.shape[1] * 0.30), y + pr.shape[0] - int(ta.shape[0] * 0.45)
+        from .draw import stamp_press
+        stamp_press(out, ta, cxs, cys, t, float(tag_p))
     global LAST_TAG
     tw0 = int(W * 0.20 * 1.15)
     LAST_TAG = (x + pr.shape[1] - tw0 * 0.30, y + pr.shape[0] - tw0 * 0.20)
@@ -436,6 +437,7 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
 
 
 class ExhibitShot(Shot):
+    TAG_AT = 0.45  # stamp-hand press time of the EXHIBIT mark
     """Live clip as evidence: keeps playing inside the paper print, slow 3 % push-in, the hand slaps the red
     EXHIBIT tag on at the start."""
 
@@ -443,12 +445,14 @@ class ExhibitShot(Shot):
         super().__init__(inner.start, inner.duration)
         self.inner, self.cfg, self.label, self.tag, self.seed = inner, cfg, label, tag, seed
         self.W, self.H = size
-        self.tap = tap  # (fx, fy, at): the pen taps that spot of the picture twice at `at` (shot-relative s)
+        self.tap = tap  # (fx, fy, at)
+        if tap is not None:  # one hand at a time: the pen taps only after the stamp hand has gone
+            from .draw import stamp_window
+            self.tap = (tap[0], tap[1], max(tap[2], stamp_window(self.TAG_AT)[1] + 0.2 + 0.28))  # the pen taps that spot twice at `at` (shot-relative s)
 
     def frame(self, t: float) -> np.ndarray:
         W, H = self.W, self.H
-        tag_p = min(1.0, max(0.0, (t - 0.25) / 0.2))
-        out = exhibit_frame(self.inner.frame(t), W, H, self.cfg, t, self.seed, self.label, self.tag, tag_p)
+        out = exhibit_frame(self.inner.frame(t), W, H, self.cfg, t, self.seed, self.label, self.tag, self.TAG_AT)
         if self.tap is not None:
             fx, fy, at = self.tap
             px, py, pw, ph = LAST_PRINT
@@ -462,7 +466,7 @@ class ExhibitShot(Shot):
         return cv2.warpAffine(out, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
-        out = [(start_abs + 0.05, "paper"), (start_abs + 0.42, "stamp")]
+        out = [(start_abs + 0.05, "paper"), (start_abs + self.TAG_AT, "kachunk")]
         if self.tap is not None:
             out += [(start_abs + self.tap[2] + 0.1, "tap"), (start_abs + self.tap[2] + 0.32, "tap")]
         return out

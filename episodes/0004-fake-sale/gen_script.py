@@ -120,8 +120,8 @@ def strike(x, y, w, on, **kw):
     return m
 
 
-WAS_DASH = [write("WAS $—", at=0.0, x=0.50, y=0.52, w=0.16, h=0.09, color="ink"),
-            strike(0.50, 0.52, 0.19, None, at=0.0, dur=0.01, hand=False)]
+WAS_DASH = [write("WAS", at=0.0, x=0.50, y=0.47, w=0.12, h=0.09, color="ink"), write("$—", at=0.0, x=0.50, y=0.62, w=0.10, h=0.09, color="ink"),
+            strike(0.50, 0.47, 0.13, None, at=0.0, dur=0.01, hand=False), strike(0.50, 0.62, 0.11, None, at=0.0, dur=0.01, hand=False)]
 
 
 def chapter(id, section, spoken, card):
@@ -161,9 +161,9 @@ beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, 
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "tag": "SUSPECT",
                   "type_on": ["Name:", "Aliases:"]},
-      "photo_marks": [write("WAS", on="was", x=0.5, y=0.47, w=0.30, h=0.13, color="ink"),
-                      write("$—", on="price.", x=0.5, y=0.62, w=0.24, h=0.13, color="ink"),
-                      strike(0.5, 0.545, 0.40, "Aliases:", slant=0.22)]})
+      "photo_marks": [write("WAS", at=0.35, x=0.5, y=0.47, w=0.30, h=0.13, color="ink"),  # passes chain one after another
+                      write("$—", on="number", x=0.5, y=0.62, w=0.24, h=0.13, color="ink"),
+                      strike(0.5, 0.47, 0.30, "number"), strike(0.5, 0.62, 0.26, "number")]})
 beat("m1c", S_OPEN, "Last seen: every Black Friday.",
      reuse("o1", hand_marks=True, push={"center": [0.40, 0.62], "zoom": 1.6},
            marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),

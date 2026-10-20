@@ -159,6 +159,18 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         out = swish * 0.6
         out[k:] += flap * 1.4
         return (out / (np.abs(out).max() + 1e-9) * 0.7).astype(np.float32)
+    if kind == "kachunk":  # small rubber stamp pressed on paper by hand: same sample every time
+        rnd = np.random.default_rng(4242)
+        n = int(0.32 * SR)
+        t = np.arange(n) / SR
+        ka = sosfilt(butter(2, [1500, 5000], btype="band", fs=SR, output="sos"), rnd.standard_normal(n)) * np.exp(-t * 140)
+        k2 = int(0.055 * SR)
+        chunk = np.zeros(n)
+        tt = t[: n - k2]
+        chunk[k2:] = np.sin(2 * np.pi * (140 - 60 * tt) * tt) * np.exp(-tt * 30) + \
+            sosfilt(butter(2, [250, 1800], btype="band", fs=SR, output="sos"), rnd.standard_normal(n - k2)) * np.exp(-tt * 70) * 0.6
+        out = ka * 0.5 + chunk
+        return (out / (np.abs(out).max() + 1e-9) * 0.85).astype(np.float32)
     if kind == "stamp":  # rubber stamp slammed on a folder: low thump + papery slap
         n = int(0.4 * SR)
         t = np.arange(n) / SR
@@ -374,7 +386,7 @@ class Timeline:
     def add_voice(self, at: float, audio24k: np.ndarray, src_sr: int) -> None:
         self._add(self.voice, at, to_sr(audio24k, src_sr) * db(self.cfg.get("narration_db", 0)))
 
-    HIT_KINDS = ("stamp", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter")
+    HIT_KINDS = ("stamp", "kachunk", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter")
 
     def add_sfx(self, at: float, kind: str, seed: int = 0) -> None:
         if not kind or kind == "none":

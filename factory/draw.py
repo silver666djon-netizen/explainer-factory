@@ -336,3 +336,37 @@ def pen_for(mark: dict) -> str:
     if mark.get("type", "circle") != "write":
         col = str(mark.get("color", "red"))
     return {"ink": "pencil", "paper": "white"}.get(col, "red")
+
+
+# ---------------------------------------------------------------- rubber-stamp hand (small stamps on paper)
+STAMP_IN, STAMP_HOLD, STAMP_OUT = 0.35, 0.13, 0.32  # enter from above, press 3-4 frames, lift and leave
+STAMP_RUBBER_W = 360 / 1024  # rubber width / hand ref height in hand_stamp.png
+
+
+def stamp_window(t_press: float) -> tuple[float, float]:
+    return t_press - STAMP_IN, t_press + STAMP_HOLD + STAMP_OUT
+
+
+def stamp_press(frame: np.ndarray, impression: np.ndarray, cx: float, cy: float, t: float, t_press: float) -> None:
+    """A small stamp applied by hand: the hand enters from above holding a rubber stamp, presses at t_press
+    (the impression appears on that frame, exactly where the rubber is), holds 3-4 frames, lifts, leaves.
+    Rule: stamps on paper are never applied by a pen hand and never drop in."""
+    from .shots import ease
+    from .text import blend
+    H, W = frame.shape[:2]
+    ih, iw = impression.shape[:2]
+    if t >= t_press:
+        blend(frame, impression, int(cx - iw / 2), int(cy - ih / 2))
+    w0, w1 = stamp_window(t_press)
+    if not (w0 <= t <= w1):
+        return
+    height = int(max(iw, ih) * 1.12 / STAMP_RUBBER_W)
+    img, (tx, ty) = _hand("stamp", height, False)
+    if t < t_press:
+        lift = (1 - ease((t - w0) / STAMP_IN)) * (cy + H * 0.15)
+    elif t <= t_press + STAMP_HOLD:
+        lift = 0.0
+    else:
+        lift = ease((t - t_press - STAMP_HOLD) / STAMP_OUT) * (cy + H * 0.15)
+    bottom = cy + ih / 2 - lift  # rubber bottom sits on the impression when pressed
+    blend(frame, img, int(cx - tx), int(bottom - ty), opacity=1.0)
