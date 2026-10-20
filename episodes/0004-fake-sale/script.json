@@ -136,7 +136,14 @@
             "y": 0.64,
             "w": 0.22,
             "h": 0.045,
-            "on": "Now"
+            "on": "Now",
+            "role": "strike",
+            "target": [
+              0.27,
+              0.605,
+              0.46,
+              0.67
+            ]
           },
           {
             "type": "write",
@@ -224,6 +231,10 @@
           "name": "The WAS price",
           "alias": "Original · Regular · Compare at",
           "tag": "SUSPECT",
+          "stamp_pos": [
+            0.7,
+            0.12
+          ],
           "type_on": [
             "Name:",
             "Aliases:"
@@ -258,18 +269,32 @@
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.47,
             "w": 0.3,
             "h": 0.02,
+            "target": [
+              0.37,
+              0.42,
+              0.63,
+              0.52
+            ],
             "on": "number"
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.62,
             "w": 0.26,
             "h": 0.02,
+            "target": [
+              0.39,
+              0.57,
+              0.61,
+              0.67
+            ],
             "on": "number"
           }
         ]
@@ -327,7 +352,13 @@
             "y": 0.635,
             "w": 0.26,
             "h": 0.14,
-            "on": "Black"
+            "on": "Black",
+            "target": [
+              0.27,
+              0.605,
+              0.46,
+              0.67
+            ]
           }
         ]
       }
@@ -377,7 +408,8 @@
       "visual": {
         "type": "image",
         "motion": "zoom_in",
-        "prompt": "{larry} at a sunny breakfast table reading a folded newspaper with a coffee cup, mid shot"
+        "prompt": "{larry} at a sunny breakfast table reading a folded newspaper with a coffee cup, mid shot",
+        "cam_dy": 0.75
       }
     },
     {
@@ -458,7 +490,13 @@
             "y": 0.5,
             "w": 0.62,
             "h": 0.62,
-            "on": "tore"
+            "on": "tore",
+            "target": [
+              0.2,
+              0.2,
+              0.8,
+              0.8
+            ]
           }
         ]
       }
@@ -502,8 +540,15 @@
       "text": "Honest prices. The customers were not ready for the experience.",
       "visual": {
         "type": "image",
-        "motion": "zoom_out",
-        "prompt": "an empty, spotless 1950s department store floor with tidy clothing racks and one bored shop assistant leaning on the counter, no customers"
+        "motion": "zoom_in",
+        "prompt": "an empty, spotless 1950s department store floor with tidy clothing racks and one bored shop assistant leaning on the counter, no customers",
+        "push": {
+          "center": [
+            0.5,
+            0.37
+          ],
+          "zoom": 1.6
+        }
       }
     },
     {
@@ -525,7 +570,11 @@
           ],
           "unit": "$bn",
           "highlight": 1,
-          "note": "−24.8 % · annual results, Feb 2013"
+          "note": "−24.8 % · annual results, Feb 2013",
+          "value_labels": [
+            "$17.3bn",
+            "$13.0bn"
+          ]
         }
       },
       "pause_at": {
@@ -602,7 +651,13 @@
             "y": 0.45,
             "w": 0.08,
             "h": 0.08,
-            "on": "six-dollar"
+            "on": "six-dollar",
+            "target": [
+              0.475,
+              0.42,
+              0.525,
+              0.48
+            ]
           },
           {
             "type": "write",
@@ -688,23 +743,37 @@
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.47,
             "w": 0.13,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
-            "hand": false
+            "hand": false,
+            "target": [
+              0.45,
+              0.43,
+              0.55,
+              0.51
+            ]
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.62,
             "w": 0.11,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
-            "hand": false
+            "hand": false,
+            "target": [
+              0.46,
+              0.58,
+              0.54,
+              0.66
+            ]
           },
           {
             "type": "write",
@@ -974,7 +1043,13 @@
             "y": 0.35,
             "w": 0.38,
             "h": 0.58,
-            "on": "tracked"
+            "on": "tracked",
+            "target": [
+              0.2,
+              0.12,
+              0.53,
+              0.62
+            ]
           },
           {
             "type": "write",
@@ -1027,7 +1102,13 @@
             "y": 0.58,
             "w": 0.12,
             "h": 0.26,
-            "on": "never"
+            "on": "never",
+            "target": [
+              0.755,
+              0.49,
+              0.83,
+              0.66
+            ]
           },
           {
             "type": "write",
@@ -1060,7 +1141,13 @@
               "on": null,
               "at": 0.0,
               "hand": false,
-              "dur": 0.01
+              "dur": 0.01,
+              "target": [
+                0.755,
+                0.49,
+                0.83,
+                0.66
+              ]
             },
             {
               "type": "write",
@@ -1113,12 +1200,18 @@
           "zoom": 2.0,
           "marks": [
             {
-              "type": "underline",
-              "x": 0.38,
-              "y": 0.64,
-              "w": 0.1,
-              "h": 0.02,
-              "on": "simply"
+              "type": "write",
+              "text": "19 RETAILERS",
+              "x": 0.378,
+              "y": 0.545,
+              "w": 0.068,
+              "h": 0.024,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "Most",
+              "delay": 0.5
             }
           ],
           "motion": "zoom_in"
@@ -1179,7 +1272,13 @@
               "y": 0.5,
               "w": 0.14,
               "h": 0.36,
-              "on": "expert"
+              "on": "expert",
+              "target": [
+                0.56,
+                0.4,
+                0.68,
+                0.66
+              ]
             }
           ],
           "motion": "zoom_in"
@@ -1277,7 +1376,13 @@
               "y": 0.15,
               "w": 0.06,
               "h": 0.1,
-              "on": "guess"
+              "on": "guess",
+              "target": [
+                0.4,
+                0.1,
+                0.44,
+                0.16
+              ]
             }
           ],
           "motion": "zoom_in"
@@ -1324,7 +1429,13 @@
             "y": 0.78,
             "w": 0.3,
             "h": 0.16,
-            "on": "keyboard."
+            "on": "keyboard.",
+            "target": [
+              0.39,
+              0.72,
+              0.61,
+              0.8
+            ]
           }
         ]
       },
@@ -1367,13 +1478,14 @@
         "doc": {
           "source": "Fudenberg, Levine & Maniadis · AEJ: Micro · 2012",
           "headline": "Replication 2012: effect much weaker",
-          "body": "Repeating the experiment, the authors found very weak anchoring effects on what people were willing to pay.",
-          "highlight": "very weak anchoring effects",
-          "on": "weaker.",
+          "body": "Repeating the experiment, the authors found the effect much weaker: very weak anchoring on what people were willing to pay.",
+          "highlight": "much weaker",
+          "on": "much",
           "mark": "underline",
           "seed": 51,
           "kicker": "REPLICATION  ·  PARAPHRASED",
-          "lead": 0.4
+          "lead": 0.4,
+          "push_on": "Weaker,"
         }
       }
     },
@@ -1389,19 +1501,25 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.49,
-            "y": 0.5,
-            "w": 0.08,
-            "h": 0.17,
-            "on": "extra"
+            "x": 0.513,
+            "y": 0.465,
+            "w": 0.085,
+            "h": 0.2,
+            "on": "extra",
+            "target": [
+              0.48,
+              0.39,
+              0.55,
+              0.54
+            ]
           },
           {
             "type": "write",
             "text": "ORIGINAL?",
-            "x": 0.5,
-            "y": 0.15,
-            "w": 0.16,
-            "h": 0.06,
+            "x": 0.515,
+            "y": 0.14,
+            "w": 0.14,
+            "h": 0.055,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1447,7 +1565,11 @@
       },
       "cta": {
         "on": "subscribe.",
-        "click_on": "Inspector"
+        "click_on": "Inspector",
+        "pos": [
+          0.64,
+          0.62
+        ]
       }
     },
     {
@@ -1511,7 +1633,7 @@
           "seed": 61,
           "kicker": "FTC STUDY  ·  PARAPHRASED",
           "lead": 1.0,
-          "post": "f2"
+          "max": 8.4
         }
       }
     },
@@ -1566,23 +1688,37 @@
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.47,
             "w": 0.13,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
-            "hand": false
+            "hand": false,
+            "target": [
+              0.45,
+              0.43,
+              0.55,
+              0.51
+            ]
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.62,
             "w": 0.11,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
-            "hand": false
+            "hand": false,
+            "target": [
+              0.46,
+              0.58,
+              0.54,
+              0.66
+            ]
           },
           {
             "type": "write",
@@ -1636,23 +1772,37 @@
             },
             {
               "type": "underline",
+              "role": "strike",
               "x": 0.5,
               "y": 0.47,
               "w": 0.13,
               "h": 0.02,
               "at": 0.0,
               "dur": 0.01,
-              "hand": false
+              "hand": false,
+              "target": [
+                0.45,
+                0.43,
+                0.55,
+                0.51
+              ]
             },
             {
               "type": "underline",
+              "role": "strike",
               "x": 0.5,
               "y": 0.62,
               "w": 0.11,
               "h": 0.02,
               "at": 0.0,
               "dur": 0.01,
-              "hand": false
+              "hand": false,
+              "target": [
+                0.46,
+                0.58,
+                0.54,
+                0.66
+              ]
             },
             {
               "type": "write",
@@ -1731,6 +1881,10 @@
           "name": "The countdown clock",
           "alias": "'Sale ends in 02:59:59'",
           "tag": "SUSPECT",
+          "stamp_pos": [
+            0.55,
+            0.32
+          ],
           "type_on": [
             "Name:",
             "Aliases:"
@@ -1830,8 +1984,8 @@
           {
             "type": "write",
             "text": "7 : 1",
-            "x": 0.86,
-            "y": 0.2,
+            "x": 0.13,
+            "y": 0.22,
             "w": 0.12,
             "h": 0.09,
             "angle": 0,
@@ -1871,19 +2025,33 @@
           "on": "At",
           "center": [
             0.505,
-            0.78
+            0.8
           ],
           "zoom": 2.2,
           "marks": [
             {
               "type": "write",
               "text": "RARE",
-              "x": 0.505,
-              "y": 0.815,
+              "x": 0.497,
+              "y": 0.8,
               "w": 0.08,
-              "h": 0.045,
+              "h": 0.04,
               "angle": 0,
               "color": "ink",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "At",
+              "delay": 0.3
+            },
+            {
+              "type": "write",
+              "text": "0.02 % AT FULL PRICE",
+              "x": 0.497,
+              "y": 0.605,
+              "w": 0.22,
+              "h": 0.036,
+              "angle": 0,
+              "color": "red",
               "font": "marker",
               "dur": 0.7,
               "on": "rarer"
@@ -2033,7 +2201,13 @@
             "y": 0.2,
             "w": 0.15,
             "h": 0.11,
-            "on": "wrong"
+            "on": "wrong",
+            "target": [
+              0.09,
+              0.17,
+              0.19,
+              0.23
+            ]
           }
         ]
       }
@@ -2141,7 +2315,13 @@
               "y": 0.62,
               "w": 0.09,
               "h": 0.08,
-              "on": "seven-fifty"
+              "on": "seven-fifty",
+              "target": [
+                0.18,
+                0.59,
+                0.24,
+                0.65
+              ]
             },
             {
               "type": "write",
@@ -2251,6 +2431,7 @@
         "motion": "zoom_in",
         "prompt": "{larry} bending close to a shop shelf, inspecting a price tag through a big magnifying glass, plain cream background"
       },
+      "hero": true,
       "music": "ub_secret_report",
       "inserts": [
         {
@@ -2327,11 +2508,11 @@
           {
             "type": "write",
             "text": "Keepa",
-            "x": 0.53,
-            "y": 0.36,
-            "w": 0.12,
-            "h": 0.05,
-            "angle": -6,
+            "x": 0.5,
+            "y": 0.252,
+            "w": 0.1,
+            "h": 0.032,
+            "angle": 12,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2340,11 +2521,11 @@
           {
             "type": "write",
             "text": "camelcamelcamel",
-            "x": 0.53,
-            "y": 0.44,
-            "w": 0.22,
-            "h": 0.05,
-            "angle": -6,
+            "x": 0.52,
+            "y": 0.29,
+            "w": 0.19,
+            "h": 0.032,
+            "angle": 12,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2354,10 +2535,10 @@
             "type": "write",
             "text": "PriceSpy",
             "x": 0.54,
-            "y": 0.54,
-            "w": 0.14,
-            "h": 0.05,
-            "angle": -6,
+            "y": 0.33,
+            "w": 0.12,
+            "h": 0.032,
+            "angle": 12,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2366,11 +2547,11 @@
           {
             "type": "write",
             "text": "idealo",
-            "x": 0.54,
-            "y": 0.62,
-            "w": 0.11,
-            "h": 0.05,
-            "angle": -6,
+            "x": 0.58,
+            "y": 0.39,
+            "w": 0.1,
+            "h": 0.036,
+            "angle": 12,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2379,10 +2560,10 @@
           {
             "type": "write",
             "text": "US · Amazon",
-            "x": 0.17,
-            "y": 0.4,
+            "x": 0.3,
+            "y": 0.055,
             "w": 0.15,
-            "h": 0.05,
+            "h": 0.045,
             "angle": 0,
             "color": "red",
             "font": "body",
@@ -2392,10 +2573,10 @@
           {
             "type": "write",
             "text": "UK · EU",
-            "x": 0.17,
-            "y": 0.58,
+            "x": 0.62,
+            "y": 0.055,
             "w": 0.11,
-            "h": 0.05,
+            "h": 0.045,
             "angle": 0,
             "color": "red",
             "font": "body",
@@ -2447,23 +2628,37 @@
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.47,
             "w": 0.13,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
-            "hand": false
+            "hand": false,
+            "target": [
+              0.45,
+              0.43,
+              0.55,
+              0.51
+            ]
           },
           {
             "type": "underline",
+            "role": "strike",
             "x": 0.5,
             "y": 0.62,
             "w": 0.11,
             "h": 0.02,
             "at": 0.0,
             "dur": 0.01,
-            "hand": false
+            "hand": false,
+            "target": [
+              0.46,
+              0.58,
+              0.54,
+              0.66
+            ]
           }
         ]
       },
@@ -2496,34 +2691,42 @@
         "closeup": {
           "on": "Everywhere",
           "center": [
-            0.6,
-            0.84
+            0.42,
+            0.74
           ],
           "zoom": 2.2,
           "marks": [
             {
               "type": "circle",
-              "x": 0.48,
-              "y": 0.89,
-              "w": 0.18,
-              "h": 0.07,
-              "on": "search"
+              "x": 0.365,
+              "y": 0.808,
+              "w": 0.09,
+              "h": 0.06,
+              "on": "Everywhere",
+              "delay": 0.35,
+              "target": [
+                0.335,
+                0.795,
+                0.395,
+                0.821
+              ]
             },
             {
               "type": "write",
               "text": "MODEL No.",
-              "x": 0.7,
-              "y": 0.8,
-              "w": 0.12,
-              "h": 0.045,
+              "x": 0.225,
+              "y": 0.79,
+              "w": 0.11,
+              "h": 0.04,
               "angle": 0,
               "color": "red",
               "font": "marker",
               "dur": 0.7,
-              "on": "model"
+              "on": "search"
             }
           ],
-          "motion": "zoom_in"
+          "motion": "zoom_in",
+          "back": 0.8
         }
       },
       "music": "ub_secret_report"
@@ -2566,6 +2769,7 @@
           }
         ]
       },
+      "hero": true,
       "music": "ub_secret_report"
     },
     {
@@ -2589,11 +2793,11 @@
           {
             "type": "write",
             "text": "DATE?",
-            "x": 0.76,
-            "y": 0.7,
-            "w": 0.08,
-            "h": 0.05,
-            "angle": 0,
+            "x": 0.757,
+            "y": 0.648,
+            "w": 0.036,
+            "h": 0.024,
+            "angle": -20,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
@@ -2601,6 +2805,7 @@
           }
         ]
       },
+      "hero": true,
       "music": "ub_secret_report"
     },
     {
@@ -2620,6 +2825,7 @@
           "zoom": 1.7
         }
       },
+      "hero": true,
       "music": "ub_secret_report",
       "bubble": {
         "text": "Twice.",
@@ -2792,7 +2998,14 @@
                 "y": 0.64,
                 "w": 0.22,
                 "h": 0.045,
-                "on": "Now"
+                "on": "Now",
+                "role": "strike",
+                "target": [
+                  0.27,
+                  0.605,
+                  0.46,
+                  0.67
+                ]
               },
               {
                 "type": "write",
@@ -2911,7 +3124,14 @@
                 "y": 0.64,
                 "w": 0.22,
                 "h": 0.045,
-                "on": "Now"
+                "on": "Now",
+                "role": "strike",
+                "target": [
+                  0.27,
+                  0.605,
+                  0.46,
+                  0.67
+                ]
               },
               {
                 "type": "write",
@@ -2987,7 +3207,13 @@
                 "y": 0.5,
                 "w": 0.62,
                 "h": 0.62,
-                "on": "tore"
+                "on": "tore",
+                "target": [
+                  0.2,
+                  0.2,
+                  0.8,
+                  0.8
+                ]
               }
             ],
             "hand_marks": true
@@ -3024,7 +3250,11 @@
               ],
               "unit": "$bn",
               "highlight": 1,
-              "note": "−24.8 % · annual results, Feb 2013"
+              "note": "−24.8 % · annual results, Feb 2013",
+              "value_labels": [
+                "$17.3bn",
+                "$13.0bn"
+              ]
             }
           },
           "pause_at": {
@@ -3091,23 +3321,37 @@
               },
               {
                 "type": "underline",
+                "role": "strike",
                 "x": 0.5,
                 "y": 0.47,
                 "w": 0.13,
                 "h": 0.02,
                 "at": 0.0,
                 "dur": 0.01,
-                "hand": false
+                "hand": false,
+                "target": [
+                  0.45,
+                  0.43,
+                  0.55,
+                  0.51
+                ]
               },
               {
                 "type": "underline",
+                "role": "strike",
                 "x": 0.5,
                 "y": 0.62,
                 "w": 0.11,
                 "h": 0.02,
                 "at": 0.0,
                 "dur": 0.01,
-                "hand": false
+                "hand": false,
+                "target": [
+                  0.46,
+                  0.58,
+                  0.54,
+                  0.66
+                ]
               },
               {
                 "type": "write",
@@ -3271,7 +3515,13 @@
                 "y": 0.35,
                 "w": 0.38,
                 "h": 0.58,
-                "on": "tracked"
+                "on": "tracked",
+                "target": [
+                  0.2,
+                  0.12,
+                  0.53,
+                  0.62
+                ]
               },
               {
                 "type": "write",
@@ -3322,7 +3572,13 @@
                 "y": 0.58,
                 "w": 0.12,
                 "h": 0.26,
-                "on": "never"
+                "on": "never",
+                "target": [
+                  0.755,
+                  0.49,
+                  0.83,
+                  0.66
+                ]
               },
               {
                 "type": "write",
@@ -3356,7 +3612,13 @@
                   "on": null,
                   "at": 0.0,
                   "hand": false,
-                  "dur": 0.01
+                  "dur": 0.01,
+                  "target": [
+                    0.755,
+                    0.49,
+                    0.83,
+                    0.66
+                  ]
                 },
                 {
                   "type": "write",
@@ -3476,7 +3738,13 @@
                   "y": 0.15,
                   "w": 0.06,
                   "h": 0.1,
-                  "on": "guess"
+                  "on": "guess",
+                  "target": [
+                    0.4,
+                    0.1,
+                    0.44,
+                    0.16
+                  ]
                 }
               ],
               "motion": "zoom_in"
@@ -3520,7 +3788,13 @@
                 "y": 0.78,
                 "w": 0.3,
                 "h": 0.16,
-                "on": "keyboard."
+                "on": "keyboard.",
+                "target": [
+                  0.39,
+                  0.72,
+                  0.61,
+                  0.8
+                ]
               }
             ],
             "hand_marks": true
@@ -3562,13 +3836,14 @@
             "doc": {
               "source": "Fudenberg, Levine & Maniadis · AEJ: Micro · 2012",
               "headline": "Replication 2012: effect much weaker",
-              "body": "Repeating the experiment, the authors found very weak anchoring effects on what people were willing to pay.",
-              "highlight": "very weak anchoring effects",
-              "on": "weaker.",
+              "body": "Repeating the experiment, the authors found the effect much weaker: very weak anchoring on what people were willing to pay.",
+              "highlight": "much weaker",
+              "on": "much",
               "mark": "underline",
               "seed": 51,
               "kicker": "REPLICATION  ·  PARAPHRASED",
-              "lead": 0.4
+              "lead": 0.4,
+              "push_on": "Weaker,"
             }
           },
           "id": "s4_4"
@@ -3632,6 +3907,10 @@
               "name": "The countdown clock",
               "alias": "'Sale ends in 02:59:59'",
               "tag": "SUSPECT",
+              "stamp_pos": [
+                0.55,
+                0.32
+              ],
               "type_on": [
                 "Name:",
                 "Aliases:"
@@ -3742,8 +4021,8 @@
               {
                 "type": "write",
                 "text": "7 : 1",
-                "x": 0.86,
-                "y": 0.2,
+                "x": 0.13,
+                "y": 0.22,
                 "w": 0.12,
                 "h": 0.09,
                 "angle": 0,
@@ -3912,7 +4191,13 @@
                 "y": 0.2,
                 "w": 0.15,
                 "h": 0.11,
-                "on": "wrong"
+                "on": "wrong",
+                "target": [
+                  0.09,
+                  0.17,
+                  0.19,
+                  0.23
+                ]
               }
             ]
           },
@@ -3975,11 +4260,11 @@
               {
                 "type": "write",
                 "text": "Keepa",
-                "x": 0.53,
-                "y": 0.36,
-                "w": 0.12,
-                "h": 0.05,
-                "angle": -6,
+                "x": 0.5,
+                "y": 0.252,
+                "w": 0.1,
+                "h": 0.032,
+                "angle": 12,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -3988,11 +4273,11 @@
               {
                 "type": "write",
                 "text": "camelcamelcamel",
-                "x": 0.53,
-                "y": 0.44,
-                "w": 0.22,
-                "h": 0.05,
-                "angle": -6,
+                "x": 0.52,
+                "y": 0.29,
+                "w": 0.19,
+                "h": 0.032,
+                "angle": 12,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4002,10 +4287,10 @@
                 "type": "write",
                 "text": "PriceSpy",
                 "x": 0.54,
-                "y": 0.54,
-                "w": 0.14,
-                "h": 0.05,
-                "angle": -6,
+                "y": 0.33,
+                "w": 0.12,
+                "h": 0.032,
+                "angle": 12,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4014,11 +4299,11 @@
               {
                 "type": "write",
                 "text": "idealo",
-                "x": 0.54,
-                "y": 0.62,
-                "w": 0.11,
-                "h": 0.05,
-                "angle": -6,
+                "x": 0.58,
+                "y": 0.39,
+                "w": 0.1,
+                "h": 0.036,
+                "angle": 12,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4030,7 +4315,7 @@
                 "x": 0.38,
                 "y": 0.1,
                 "w": 0.15,
-                "h": 0.05,
+                "h": 0.045,
                 "angle": 0,
                 "color": "red",
                 "font": "body",
@@ -4043,7 +4328,7 @@
                 "x": 0.6,
                 "y": 0.1,
                 "w": 0.11,
-                "h": 0.05,
+                "h": 0.045,
                 "angle": 0,
                 "color": "red",
                 "font": "body",
@@ -4080,34 +4365,42 @@
             "closeup": {
               "on": "Everywhere",
               "center": [
-                0.6,
-                0.84
+                0.42,
+                0.74
               ],
               "zoom": 2.2,
               "marks": [
                 {
                   "type": "circle",
-                  "x": 0.48,
-                  "y": 0.89,
-                  "w": 0.18,
-                  "h": 0.07,
-                  "on": "search"
+                  "x": 0.365,
+                  "y": 0.808,
+                  "w": 0.09,
+                  "h": 0.06,
+                  "on": "Everywhere",
+                  "delay": 0.35,
+                  "target": [
+                    0.335,
+                    0.795,
+                    0.395,
+                    0.821
+                  ]
                 },
                 {
                   "type": "write",
                   "text": "MODEL No.",
-                  "x": 0.7,
-                  "y": 0.8,
-                  "w": 0.12,
-                  "h": 0.045,
+                  "x": 0.225,
+                  "y": 0.79,
+                  "w": 0.11,
+                  "h": 0.04,
                   "angle": 0,
                   "color": "red",
                   "font": "marker",
                   "dur": 0.7,
-                  "on": "model"
+                  "on": "search"
                 }
               ],
-              "motion": "zoom_in"
+              "motion": "zoom_in",
+              "back": 0.8
             }
           },
           "id": "s7_3"

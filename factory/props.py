@@ -262,7 +262,7 @@ class CaseFileShot(Shot):
             sx = int(self.BW // 2 + lx + self.ft.getlength(txt) + self.fw * 0.26)
             sy = int(self.fy + ly + self.ft.size * 0.5)
             from .draw import stamp_press
-            stamp_press(canvas, self._ostamp, sx, sy, t, osa)
+            stamp_press(canvas, self._ostamp, sx, sy, t, osa, plate=(self.BW // 2, self.fy, self.BW // 2 + self.fw, self.fy + self.fh))
         if self.mode == "open" and self.writes and op >= 0.999:
             from .draw import hand_path, paste_hand
             px0 = self.BW // 2
@@ -392,7 +392,8 @@ class MugshotShot(Shot):
         # marker word 'GUILTY?' scribble near the photo
         from .endscreen import _stamp
         self.tag = _stamp(spec.get("tag", "WANTED"), cfg, int(pw * 0.95), pal["red"], 8, seed + 5)  # a rubber stamp, dropped in
-        self.tag_xy = (px + pw - int(pw * 0.15), py - int(BH * 0.02))
+        sp = spec.get("stamp_pos")  # (fx, fy) in photo fractions: where the SUSPECT stamp lands
+        self.tag_xy = (px + int(pw * sp[0]), py + int(ph * sp[1])) if sp else (px + pw - int(pw * 0.15), py - int(BH * 0.02))
         # typing: each field types in letter by letter, in sync with the narration of that field
         n = len(row_imgs)
         ta = list(spec.get("_type_at") or [lead_in + 0.35 + i * 0.9 for i in range(n)])
@@ -454,7 +455,8 @@ class MugshotShot(Shot):
                 if pos:
                     paste_hand(canvas, kind, pos[0], pos[1], False)
         from .draw import stamp_press  # SUSPECT is pressed on by the stamp hand
-        stamp_press(canvas, self.tag, self.tag_xy[0], self.tag_xy[1], t, self.tag_at)
+        px, py, pw, ph = self.photo_box
+        stamp_press(canvas, self.tag, self.tag_xy[0], self.tag_xy[1], t, self.tag_at, plate=(px, py, px + pw, py + ph))
         out = _push(canvas, (self.W, self.H), 1.02 + 0.08 * ease(t / max(self.duration, 1e-6)))
         if 0 <= tl < 0.18:  # camera flash
             a = 1 - tl / 0.18

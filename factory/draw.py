@@ -347,7 +347,11 @@ def stamp_window(t_press: float) -> tuple[float, float]:
     return t_press - STAMP_IN, t_press + STAMP_HOLD + STAMP_OUT
 
 
-def stamp_press(frame: np.ndarray, impression: np.ndarray, cx: float, cy: float, t: float, t_press: float) -> None:
+STAMP_LOG: list | None = None  # QC: set to [] to record every press (centre, size, target plate)
+
+
+def stamp_press(frame: np.ndarray, impression: np.ndarray, cx: float, cy: float, t: float, t_press: float,
+                plate: tuple | None = None) -> None:
     """A small stamp applied by hand: the hand enters from above holding a rubber stamp, presses at t_press
     (the impression appears on that frame, exactly where the rubber is), holds 3-4 frames, lifts, leaves.
     Rule: stamps on paper are never applied by a pen hand and never drop in."""
@@ -355,6 +359,9 @@ def stamp_press(frame: np.ndarray, impression: np.ndarray, cx: float, cy: float,
     from .text import blend
     H, W = frame.shape[:2]
     ih, iw = impression.shape[:2]
+    if STAMP_LOG is not None and abs(t - t_press) < 0.13:
+        STAMP_LOG.append({"t_press": t_press, "c": (cx / W, cy / H), "plate": None if plate is None else
+                          (plate[0] / W, plate[1] / H, plate[2] / W, plate[3] / H)})
     if t >= t_press:
         blend(frame, impression, int(cx - iw / 2), int(cy - ih / 2))
     w0, w1 = stamp_window(t_press)

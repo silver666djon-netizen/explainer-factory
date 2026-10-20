@@ -117,8 +117,19 @@ s = 0.78 * H / crop.shape[0]
 cw, ch = int(crop.shape[1] * s), int(crop.shape[0] * s)
 crop = cv2.resize(crop, (cw, ch), interpolation=cv2.INTER_CUBIC)
 m = cv2.resize(m, (cw, ch))[..., None]
-ox, oy = (W - cw) // 2, int(0.93 * H) - ch
+ox, oy = (W - cw) // 2, int(0.85 * H) - ch  # sits high: the base and its plate stay above the subtitles
 reg = out[oy:oy + ch, ox:ox + cw].astype(np.float32)
 out[oy:oy + ch, ox:ox + cw] = (reg * (1 - m) + crop * m).astype(np.uint8)
-Image.fromarray(out).save(OUT / "x6.png")
+# a small brushed-metal model plate on the front of the base (the target of the "model number" circle)
+pl = Image.fromarray(out).convert("RGBA")
+d = ImageDraw.Draw(pl)
+PX, PY, PW, PH = 0.365, 0.808, 0.06, 0.026
+bx0, by0, bx1, by1 = int((PX - PW / 2) * W), int((PY - PH / 2) * H), int((PX + PW / 2) * W), int((PY + PH / 2) * H)
+d.rounded_rectangle((bx0, by0, bx1, by1), radius=5, fill=(196, 196, 186, 255), outline=(30, 27, 24, 255), width=3)
+for k in range(1, 4):
+    yy = by0 + (by1 - by0) * k // 4
+    d.line((bx0 + 8, yy, bx1 - 8, yy), fill=(120, 120, 112, 255), width=2)
+for cxp in (bx0 + 6, bx1 - 6):
+    d.ellipse((cxp - 3, (by0 + by1) // 2 - 3, cxp + 3, (by0 + by1) // 2 + 3), fill=(30, 27, 24, 255))
+pl.convert("RGB").save(OUT / "x6.png")
 print("edits written:", sorted(p.name for p in OUT.iterdir()))

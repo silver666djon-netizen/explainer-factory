@@ -302,7 +302,7 @@ class EndScreenShot(Shot):
         pal = self.pal
         img = Image.new("RGBA", (s, s), (0, 0, 0, 0))
         d = ImageDraw.Draw(img)
-        gold, ink = pal["accent"] + (255,), pal["ink"] + (255,)
+        gold, ink = pal["red"] + (255,), (250, 246, 236, 255)  # channel bell: red, cream outline
         d.pieslice((s * 0.18, s * 0.12, s * 0.82, s * 0.95), 180, 360, fill=gold, outline=ink, width=3)
         d.polygon([(s * 0.18, s * 0.53), (s * 0.82, s * 0.53), (s * 0.90, s * 0.76), (s * 0.10, s * 0.76)], fill=gold, outline=ink)
         d.ellipse((s * 0.42, s * 0.74, s * 0.58, s * 0.90), fill=ink)

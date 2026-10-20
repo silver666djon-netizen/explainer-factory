@@ -425,7 +425,7 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
         ta = _DESKS[key]
         cxs, cys = x + pr.shape[1] - int(ta.shape[1] * 0.30), y + pr.shape[0] - int(ta.shape[0] * 0.45)
         from .draw import stamp_press
-        stamp_press(out, ta, cxs, cys, t, float(tag_p))
+        stamp_press(out, ta, cxs, cys, t, float(tag_p), plate=(x, y, x + pr.shape[1], y + pr.shape[0]))
     global LAST_TAG
     tw0 = int(W * 0.20 * 1.15)
     LAST_TAG = (x + pr.shape[1] - tw0 * 0.30, y + pr.shape[0] - tw0 * 0.20)

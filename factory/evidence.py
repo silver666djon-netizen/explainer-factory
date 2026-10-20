@@ -322,6 +322,18 @@ class EvidenceShot(Shot):
     def _camera(self, t):
         p = ease(t / max(self.duration, 1e-6))
         z = (self.W / self.BW) * 1.10 * (1 + PUSH * p)  # board is 10 % larger than the frame
+        pa = self.spec.get("_push_at")
+        if pa is not None and t > pa and self.strokes:  # second framing: push in on the marked words
+            q = ease(min(1.0, (t - pa) / 0.9))
+            z *= 1 + 0.32 * q
+            pts = np.concatenate(self.strokes)
+            tx, ty = float(pts[:, 0].mean()), float(pts[:, 1].mean())
+            rot = (-TILT / 2 + TILT * p) * (1 if self.seed % 2 else -1)
+            cx, cy = self.BW / 2 + (tx - self.BW / 2) * 0.6 * q, self.BH / 2 + (ty - self.BH / 2) * 0.6 * q
+            M = cv2.getRotationMatrix2D((cx, cy), rot, z)
+            M[0, 2] += self.W / 2 - cx
+            M[1, 2] += self.H / 2 - cy
+            return M
         rot = (-TILT / 2 + TILT * p) * (1 if self.seed % 2 else -1)
         M = cv2.getRotationMatrix2D((self.BW / 2, self.BH / 2), rot, z)
         M[0, 2] += self.W / 2 - self.BW / 2

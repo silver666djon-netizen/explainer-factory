@@ -79,3 +79,14 @@ Small batches (≤ 10) only after Klot picks a direction; finals are made once f
 9. Typed text (mugshot card) types letter by letter with typewriter clicks, each field when the narrator reads it.
 QC: the 4 fps hand check (text ahead of pen, two hands, pen-applied stamps, marks not finishing in their shot)
 must report zero before a final render.
+10. No drawing hand enters a frame where a character's own hands are visible in the same area — use a push-in
+    (or write on a part of the picture far from the character's hands, entering from the other side).
+11. Every circle / underline / strike / cross carries a labelled "target" box and must land on it; stamps press
+    with their centre inside their plate; nothing is drawn in the ledger safe zone (top-right 18 % x 22 %) while
+    Larry's tab is on screen. Hero close-ups of a character (beat "hero": true) hide the tab, like newsreel,
+    titles, cards and the end screen. Check: `python tools/qc/mark_audit.py episodes/<slug> <timings.json> --shorts`
+    — zero exceptions before a final render.
+12. Archive captions are drawn by the overlay on a solid cream plate at output resolution (never baked into the
+    print). Chart bars carry their value labels. A push-in that ends on a detail returns to the full frame before
+    the cut when the next shot needs context ("closeup": {..., "back": s}).
+13. Subscribe bell: red with a cream outline, placed clear of the character (cta "pos").

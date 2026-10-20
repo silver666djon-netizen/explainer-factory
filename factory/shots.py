@@ -439,6 +439,7 @@ class ImageShot(Shot):
     def _matrix(self, t: float):
         p = t / max(self.duration, 1e-6)
         z, dx, dy = self._camera(p)
+        dy += getattr(self, "cam_dy", 0.0)  # push aimed a little lower: the picture rides up (clear of subtitles)
         win_w, win_h = self.BW / z, self.BH / z
         free_x, free_y = (self.BW - win_w) / 2, (self.BH - win_h) / 2
         cx = self.BW / 2 + dx * free_x * 0.95
@@ -656,7 +657,8 @@ class ChartShot(Shot):
                     draw.rectangle((bx, top, bx + bw, y1), fill=color, outline=self.pal["ink"], width=3)
                 draw.text((bx + bw / 2, y1 + 12), str(lab), font=lab_font, fill=self.pal["ink"], anchor="ma")
                 if p >= 0.999:
-                    draw.text((bx + bw / 2, top - 8), self._fmt(v), font=val_font, fill=self.pal["ink"], anchor="md")
+                    vl = (self.spec.get("value_labels") or [None] * n)[i]
+                    draw.text((bx + bw / 2, top - 8), vl or self._fmt(v), font=val_font, fill=self.pal["ink"], anchor="md")
         else:
             p_all = ease(t / g)
             pts = [(x0 + (x1 - x0) * i / max(1, n - 1), y1 - (y1 - y0) * (v / vmax)) for i, v in enumerate(values)]
@@ -846,9 +848,9 @@ class KineticShot(Shot):
                 x += ww + space
                 wi += 1
             y += lh
-        if self.items and self.items[0][3] > 0:  # no empty paper on the cut: the first word is already landing
-            img0, x0_, y0_, _a = self.items[0]
-            self.items[0] = (img0, x0_, y0_, 0.0)
+        for k_ in range(min(2, len(self.items))):  # no lone word on the cut: the first two words are already there
+            img0, x0_, y0_, _a = self.items[k_]
+            self.items[k_] = (img0, x0_, y0_, 0.0)
 
     def frame(self, t: float) -> np.ndarray:
         out = self.bg.copy()

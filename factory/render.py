@@ -89,7 +89,8 @@ class Plan:
     timeline: A.Timeline | None = None
     ledger: object | None = None  # factory.devices.Ledger (Larry's tab, top-right)
     stamps: list = field(default_factory=list)  # (start, end, text) rubber stamps over the picture
-    labels: list = field(default_factory=list)  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
+    labels: list = field(default_factory=list)
+    plates: list = field(default_factory=list)  # (start, end, text) archive captions on a solid cream plate  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
     ledger_hide: list = field(default_factory=list)
     hand_cuts: list = field(default_factory=list)
     hand_windows: list = field(default_factory=list)  # (start, end) a drawing hand is on screen (one at a time)  # times a drawing hand acts on a picture (counts as a picture change)
@@ -382,7 +383,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         elif vtype in ("image", "reuse", "photo", "clip", "archive"):
             keys = _image_keys(visual, beat_lookup)
             if vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive"):
-                visual["motion"] = "static"  # captioned archive prints: a big push would slide the caption into the subtitles
+                visual["motion"] = "static"
+                capv = visual if vtype == "archive" else beat_lookup[visual["beat"]]["visual"]
+                if capv.get("caption"):
+                    plan.plates.append((shot_start, shot_end, str(capv["caption"])))  # captioned archive prints: a big push would slide the caption into the subtitles
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
             for m in marks:  # a label that is replaced when another word is spoken
                 if m.get("until_on"):
@@ -413,7 +417,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 if cu:
                     full = pil(path)
                     cimg, cbox = _crop_pic(full, cu)
-                    segs.append((tc, span - tc, cimg, cbox, cm, cu.get("motion", "zoom_in"), f"#push{cbox[0]:.2f},{cbox[1]:.2f},{cbox[2]:.2f}"))
+                    back = float(cu.get("back", 0) or 0)
+                    cdur = span - tc - (back if back and span - tc - back >= 1.2 else 0.0)
+                    segs.append((tc, cdur, cimg, cbox, cm, cu.get("motion", "zoom_in"), f"#push{cbox[0]:.2f},{cbox[1]:.2f},{cbox[2]:.2f}"))
+                    if cdur < span - tc - 1e-6:  # pull back out to the full frame before the cut
+                        done = [dict(m, at=0.0, dur=0.01, hand=False) for m in seg0 + [dict(c_, at=0) for c_ in cm]]
+                        for m in done:
+                            m.pop("on", None)
+                            m.pop("until", None)
+                        segs.append((tc + cdur, span - tc - cdur, base, box0, done, "zoom_out", "#pushback"))
                 for k, (a0, dur0, im0, bx, mk, mot, tag) in enumerate(segs):
                     mk = [_remap_mark(m, bx) for m in mk] if bx != (0.0, 0.0, 1.0, 1.0) else mk
                     for m in mk:
@@ -483,6 +495,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
                 shot._archive = vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive")
                 shot._still_src = str(path)  # for the max-still check (one illustration on screen too long)
+                if visual.get("cam_dy") and k == 0:
+                    shot.cam_dy = float(visual["cam_dy"])
                 plan.shots.append(shot)
             if visual.get("newsreel"):
                 plan.ledger_hide.append((shot_start, shot_end))
@@ -590,6 +604,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 plan.ledger_hide.append((shot_start, c0))
             elif c0 > shot_start:
                 _still(doc.get("pre"), shot_start, c0, "zoom_in")
+            if doc.get("push_on"):
+                doc["_push_at"] = start + _timed({"on": doc["push_on"]}, v["words"], 2.0) - c0
             plan.shots.append(EvidenceShot(c0, c1 - c0, doc, cfg, size, mark_at=mark_abs - c0, seed=i))
             _es = plan.shots[-1]
             plan.hand_windows.append((c0 + _es.mark_at - HAND_IN, c0 + _es.mark_at + _es.mark_dur + HAND_OUT))
@@ -650,6 +666,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 if (c.get("click_on") or c.get("click_at") is not None) else appear + 1.2
             end = max(click + 1.6, start + dur + float(c.get("hold", 0.0)))
             plan.ctas.append(Cta(appear, end, click))
+            plan.ctas[-1].pos = c.get("pos")
             plan.timeline.add_sfx(appear, "pop", seed=i + 3)
             plan.timeline.add_sfx(click, "tick", seed=i + 4)
             plan.timeline.add_sfx(click + 0.12, "ding", seed=i + 5)
@@ -717,7 +734,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
         if beat.get("label"):
             plan.labels.append((shot_start, shot_end, str(beat["label"])))
-        if beat.get("ledger_hide"):
+        if beat.get("ledger_hide") or beat.get("hero") or visual.get("hero"):
             plan.ledger_hide.append((shot_start, shot_end))
         if beat.get("stamp"):  # a quick verdict stamp over any picture
             stp = beat["stamp"]
@@ -891,12 +908,13 @@ class Overlay:
             if pressed:  # little ringing bell, drawn by code
                 b = Image.new("RGBA", (bell, bell), (0, 0, 0, 0))
                 bd = ImageDraw.Draw(b)
-                gold = self.pal["accent"] + (255,)
-                ink = self.pal["ink"] + (255,)
-                bd.pieslice((bell * 0.18, bell * 0.12, bell * 0.82, bell * 0.95), 180, 360, fill=gold, outline=ink, width=3)
-                bd.rectangle((bell * 0.18, bell * 0.52, bell * 0.82, bell * 0.72), fill=gold, outline=ink, width=3)
-                bd.ellipse((bell * 0.42, bell * 0.72, bell * 0.58, bell * 0.88), fill=ink)
-                bd.ellipse((bell * 0.44, bell * 0.02, bell * 0.56, bell * 0.14), fill=gold, outline=ink, width=2)
+                gold = self.pal["red"] + (255,)  # channel bell: red with a cream outline (reads on any jacket)
+                ink = (250, 246, 236, 255)
+                ow = max(3, bell // 14)
+                bd.pieslice((bell * 0.18, bell * 0.12, bell * 0.82, bell * 0.95), 180, 360, fill=gold, outline=ink, width=ow)
+                bd.rectangle((bell * 0.18, bell * 0.52, bell * 0.82, bell * 0.72), fill=gold, outline=ink, width=ow)
+                bd.ellipse((bell * 0.40, bell * 0.70, bell * 0.60, bell * 0.90), fill=gold, outline=ink, width=ow)
+                bd.ellipse((bell * 0.43, bell * 0.0, bell * 0.57, bell * 0.15), fill=gold, outline=ink, width=ow)
                 b = b.rotate(18 * wiggle, resample=Image.BICUBIC)
                 img.alpha_composite(b, (bw + int(fs * 0.5), 2))
             self.cache[key] = np.array(img)
@@ -916,6 +934,8 @@ class Overlay:
             op *= min(1.0, (c.end - t) / 0.25)
             if self.plan.kind == "short":
                 x, y = (self.W - img.shape[1]) // 2, int(self.H * 0.56)
+            elif getattr(c, "pos", None):  # placed clear of the character
+                x, y = int(self.W * float(c.pos[0])), int(self.H * float(c.pos[1]))
             else:
                 x, y = int(self.W * 0.05), int(self.H * 0.66)
             blend(frame, img, x, y, opacity=op)
@@ -926,6 +946,16 @@ class Overlay:
                 ins.draw(frame, t)
         if self.plan.ledger is not None:
             self.plan.ledger.draw(frame, t)
+        for p0, p1, txt in self.plan.plates:
+            if p0 <= t < p1:
+                key = ("plate", txt)
+                if key not in self.cache:
+                    fnt = font(self.body, max(14, int(self.H * 0.024)))
+                    self.cache[key] = text_block([txt], fnt, fill=self.pal["ink"], box_fill=(250, 246, 236, 255), pad=int(fnt.size * 0.45))
+                im = self.cache[key]
+                from .shots import SHORT_VIEW_TOP
+                py = int(self.H * SHORT_VIEW_TOP + self.W * 0.93) if self.plan.kind == "short" else int(self.H * 0.745)
+                blend(frame, im, (self.W - im.shape[1]) // 2, py - im.shape[0] // 2)
         for l0, l1, txt in self.plan.labels:
             if l0 <= t < l1:
                 key = ("label", txt)

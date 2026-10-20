@@ -100,10 +100,10 @@ def clipping(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: st
     return canvas
 
 
-def print_photo(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: str | None) -> Image.Image:
+def print_photo(img: Image.Image, cfg: dict, w: int, h: int, seed: int, caption: str | None, draw_caption: bool = True) -> Image.Image:
     from .shots import archival_print
     canvas = archival_print(img, cfg, w, h, seed, fit=0.58 if caption else 0.80, dy=-0.09 if caption else 0.0)
-    if caption:  # just under the print (never under its shadow), and always above the subtitle zone
+    if caption and draw_caption:  # just under the print (never under its shadow), and always above the subtitle zone
         _caption(canvas, caption, cfg, int(canvas.info.get("bottom", h * 0.72)) + int(h * 0.012))
     return canvas
 
@@ -136,7 +136,7 @@ def ensure_archive(episode: dict, cfg: dict, cache: Path, log=print) -> dict[str
         v = beat["visual"]
         if v["type"] != "archive":
             continue
-        key = hashlib.sha1(repr({**{k: v.get(k) for k in ("file", "look", "crop", "page", "caption")}, "_layout": LAYOUT_VERSION}).encode()).hexdigest()[:10]
+        key = hashlib.sha1(repr({**{k: v.get(k) for k in ("file", "look", "crop", "page", "caption")}, "_layout": LAYOUT_VERSION, "_plate": 1}).encode()).hexdigest()[:10]
         dst = cache / f"archive-{beat['id']}-{key}.png"
         if not dst.exists():
             src = _source(v, cache)
@@ -146,8 +146,8 @@ def ensure_archive(episode: dict, cfg: dict, cache: Path, log=print) -> dict[str
                 img = clipping(src, cfg, W, H, seed, v.get("caption"))
             elif look == "plain":
                 img = plain(src, cfg, W, H)
-            else:
-                img = print_photo(src, cfg, W, H, seed, v.get("caption"))
+            else:  # caption: drawn later by the overlay on a sharp cream plate (layout keeps its room)
+                img = print_photo(src, cfg, W, H, seed, v.get("caption"), draw_caption=False)
             img.save(dst)
             log(f"  archive {beat['id']}: {v['file']} ({look})")
         out[beat["id"]] = dst
