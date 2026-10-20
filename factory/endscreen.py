@@ -31,7 +31,10 @@ SHEET = (0.035, 0.055, 0.565, 0.665)        # next-case sheet (left), above the 
 
 T = {"stamp": 0.15, "v1": 0.9, "v2": 2.6, "vdur": 1.45, "swap": 5.0, "draw": 5.75, "ddur": 3.6,
      "tags": 9.45, "p1": 9.85, "p2": 10.75, "pdur": 0.8, "tagline": 12.0, "zone": 12.35, "zdur": 0.8,
-     "sketch": 13.0, "skdur": 1.1, "sub": 14.1, "click": 15.15, "push": 15.9}
+     "sketch": 13.0, "skdur": 1.1, "sub": 14.1, "click": 15.15, "push": 15.9,
+     "fees": 9.6, "fgap": 0.75, "fdur": 0.55}
+# "next": {"fees": ["$30", "+ $8 fee", ...]} — a price that grows: lines handwritten one under another beside the
+# sketched subject (last line red, ringed); "label": a small typed plate on the sheet (e.g. "Illustration").
 
 
 def _pal(cfg):
@@ -249,6 +252,32 @@ class EndScreenShot(Shot):
             mk[ly:ly + lab.h, lx:lx + lab.w] = np.maximum(mk[ly:ly + lab.h, lx:lx + lab.w], la[..., 0])
             self.sketch = LineDrawing(news, tuple(int(c) for c in news_c), mk)
             self.sketch_pos = (zx0, zy0)
+        self.fees = []
+        if nx.get("fees") and getattr(self, "slots", None):
+            px, py, cw, ch = self.slots[0]
+            fx = sx0 + px + cw + int(sw * 0.05)
+            room = sx0 + sw - int(sw * 0.04) - fx
+            n = len(nx["fees"])
+            lh = min(int(sh * 0.11), int((sh * 0.80 - (py - sh * 0.0)) / max(1, n)))
+            fy0 = sy0 + py - int(lh * 0.2)
+            fpath = resolve_font(cfg["fonts"]["marker"])
+            size = int(lh * 0.82)
+            while size > 12 and max(font(fpath, size).getlength(f) for f in nx["fees"]) > room:
+                size -= 2
+            for k, f in enumerate(nx["fees"]):
+                col = pal["red"] if k == n - 1 else pal["ink"]
+                self.fees.append((Writing(f, font(fpath, size), col), (fx, fy0 + k * lh)))
+        if nx.get("label"):
+            d = ImageDraw.Draw(Image.fromarray(self.sheet))
+            lab_img = Image.fromarray(self.sheet)
+            d = ImageDraw.Draw(lab_img)
+            lf = font(typew, int(sh * 0.045))
+            txt = str(nx["label"]).upper()
+            tw = lf.getlength(txt)
+            bx1, by1 = sw - int(sw * 0.04), sh - int(sh * 0.05)
+            d.rectangle((bx1 - tw - 18, by1 - lf.size - 12, bx1, by1), fill=pal["ink"] + (225,))
+            d.text((bx1 - tw - 9, by1 - lf.size - 7), txt, font=lf, fill=(250, 246, 236, 255))
+            self.sheet = np.array(lab_img)
         self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5, max_h=int(sh * 0.11)) if nx.get("tagline") else None
         self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * 0.27))
         # ---- end-screen furniture
@@ -384,6 +413,29 @@ class EndScreenShot(Shot):
                     tip = hand_path(lambda _q: (xe, ye), tt["p2"], tt["p2"] + 0.5, t, W, H, False, from_below=True)
                     if tip:
                         hand = ("marker_under", tip[0], tip[1], False)
+            for k, (wr, (fx, fy)) in enumerate(self.fees):  # the price grows, fee by fee
+                t0 = tt["fees"] + k * tt["fgap"]
+                pp = (t - t0) / tt["fdur"]
+                if pp > 0:
+                    blend(out, wr.at(pp), fx, fy)
+                    if pp < 1.2:
+                        tip = hand_path(lambda q, wr=wr, fx=fx, fy=fy, t0=t0: (fx + wr.tip((q - t0) / tt["fdur"])[0], fy + wr.tip((q - t0) / tt["fdur"])[1]),
+                                        t0, t0 + tt["fdur"], t, W, H, False, from_below=True)
+                        if tip:
+                            hand = ("ink_under", tip[0], tip[1], False)
+            if self.fees:  # ring the final price
+                wr, (fx, fy) = self.fees[-1]
+                c0 = tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.15
+                if t >= c0:
+                    q = min(1.0, (t - c0) / 0.55)
+                    cxr, cyr = fx + wr.w // 2, fy + wr.h // 2
+                    rx, ry = int(wr.w * 0.66), int(wr.h * 0.85)
+                    cv2.ellipse(out, (cxr, cyr), (rx, ry), -5, -150, -150 + 380 * q, tuple(int(c) for c in self.pal["red"]), max(5, H // 160), cv2.LINE_AA)
+                    if q < 1:
+                        ang = math.radians(-150 + 380 * q)
+                        tip = hand_path(lambda _q: (cxr + rx * math.cos(ang), cyr + ry * math.sin(ang)), c0, c0 + 0.55, t, W, H, False, from_below=True)
+                        if tip:
+                            hand = ("marker_under", tip[0], tip[1], False)
             if self.tagline is not None and t >= tt["tagline"]:
                 p = min(1.0, (t - tt["tagline"]) / 0.14)
                 sc = 2.0 - 1.0 * p
@@ -491,6 +543,10 @@ class EndScreenShot(Shot):
             out.append((start_abs + tt["p2"] + tt["pdur"] + 0.1, "scribble"))
         if getattr(self, "strike", None):
             out.append((start_abs + tt["p2"], "scribble"))
+        for k in range(len(self.fees)):
+            out.append((start_abs + tt["fees"] + k * tt["fgap"], "marker"))
+        if self.fees:
+            out.append((start_abs + tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.15, "scribble"))
         if self.tagline is not None:
             out.append((start_abs + tt["tagline"], "stamp"))
         out += [(start_abs + tt["zone"], "marker")]

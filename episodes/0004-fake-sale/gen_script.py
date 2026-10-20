@@ -11,6 +11,34 @@ LOC = "Library of Congress, Prints & Photographs Division (no known restrictions
 B = []
 
 
+def make_ticket(path):
+    """Code-drawn subject for the Ep.4 teaser sketch: a 1950s concert ticket with a blank price box (no generation)."""
+    from PIL import Image, ImageDraw, ImageFont
+    W, H = 1376, 768
+    im = Image.new("RGB", (W, H), (243, 233, 210))
+    d = ImageDraw.Draw(im)
+    ink, red, paper = (30, 27, 24), (210, 69, 47), (252, 247, 233)
+
+    def fnt(name, size):
+        for q in (HERE.parent.parent / "assets" / "fonts" / name, Path("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")):
+            if q.exists():
+                return ImageFont.truetype(str(q), size)
+    x0, y0, x1, y1 = 250, 190, 1130, 590
+    d.rounded_rectangle((x0, y0, x1, y1), radius=26, fill=paper, outline=ink, width=10)
+    sx = x1 - 230  # perforated stub
+    for yy in range(y0 + 24, y1 - 20, 34):
+        d.ellipse((sx - 7, yy - 7, sx + 7, yy + 7), fill=(243, 233, 210), outline=ink, width=3)
+    d.rectangle((x0 + 40, y0 + 40, sx - 40, y0 + 150), fill=red)
+    d.text(((x0 + sx) / 2, y0 + 95), "ADMIT ONE", font=fnt("Anton-Regular.ttf", 92), fill=paper, anchor="mm")
+    d.text(((x0 + sx) / 2, y0 + 215), "CONCERT · ROW G · SEAT 12", font=fnt("ArchivoBlack-Regular.ttf", 42), fill=ink, anchor="mm")
+    d.rectangle((x0 + 160, y0 + 270, sx - 160, y1 - 40), outline=ink, width=6)  # the blank price box
+    d.text((x1 - 115, (y0 + y1) / 2), "No. 004", font=fnt("ArchivoBlack-Regular.ttf", 40), fill=ink, anchor="mm")
+    im.save(path)
+
+
+make_ticket(HERE / "next_ticket.png")
+
+
 def beat(id, section, text, visual, **kw):
     b = {"id": id, "section": section, "text": text, "visual": visual}
     b.update(kw)
@@ -79,6 +107,11 @@ def cross(x, y, w, h, on, **kw):
     return {"type": "cross", "x": x, "y": y, "w": w, "h": h, "on": on, **kw}
 
 
+def closeup(on, center, zoom=2.0, marks=None, motion="zoom_in"):
+    """Second framing of the same picture: push-in on a detail from the word `on`; marks in original-picture fractions."""
+    return {"on": on, "center": center, "zoom": zoom, "marks": marks or [], "motion": motion}
+
+
 def chapter(id, section, spoken, card):
     return beat(id, section, spoken, title(card), pause_before=1.0, sting="ub_sting_trumpet", sting_at=-1.0)
 
@@ -95,14 +128,14 @@ beat("o1", S_OPEN, "A hair dryer at Boots. Was forty-nine ninety-nine.",
          motion="static", hand_marks=True,
          marks=[write("BRITAIN · 2024", at=0.0, x=0.70, y=0.30, w=0.16, h=0.04, color="ink", fnt="body"),
                 write("WAS £49.99", on="Was", x=0.70, y=0.45, w=0.22, h=0.09, **TAG_W)]),
-     pause_at={"word": "forty-nine", "sec": 0.9, "hit": "stamp"})
+     pause_at={"word": "forty-nine", "sec": 0.7, "hit": "stamp"})
 beat("o2", S_OPEN, "Now eighteen ninety-nine.",
      reuse("o1", hand_marks=True,
            marks=[write("BRITAIN · 2024", at=0.0, x=0.70, y=0.30, w=0.16, h=0.04, color="ink", fnt="body"),
                   write("WAS £49.99", at=0.0, x=0.70, y=0.45, w=0.22, h=0.09, color="ink"),
                   cross(0.70, 0.45, 0.24, 0.10, "Now"),
                   write("NOW £18.99", on="eighteen", x=0.70, y=0.58, w=0.24, h=0.10)]),
-     pause_at={"word": "eighteen", "sec": 0.9, "hit": "stamp"})
+     pause_at={"word": "eighteen", "sec": 0.7, "hit": "stamp"})
 beat("o3", S_OPEN, "In the twelve months before, it had never cost forty-nine ninety-nine there. Not once.",
      doc("Which? · price check · Nov 2024", "The £49.99 that wasn't",
          "A hair dryer was £18.99 on Black Friday, marked down from £49.99. It had never been £49.99 at Boots in the preceding 12 months.",
@@ -123,16 +156,16 @@ beat("p1", S_PEN, "Larry reads about a store that tried to arrest this suspect."
      img("{larry} at a sunny breakfast table reading a folded newspaper with a coffee cup, mid shot", motion="zoom_in"))
 beat("p2", S_PEN, "In 2011, J.C. Penney ran five hundred and ninety different promotions.",
      arch("sale_signs_montgomery_1939.jpg", "Sale signs on a department store, Montgomery, Alabama, 1939", motion="zoom_in", crop=[0.05, 0.0, 0.95, 1.0]),
-     pause_at={"word": "five", "sec": 1.0, "hit": "stamp"}, stamp={"text": "590 promotions", "on": "promotions"},
+     pause_at={"word": "five", "sec": 0.8, "hit": "stamp"}, stamp={"text": "590 promotions", "on": "promotions"},
      label="J.C. Penney · 2011")
 beat("p3", S_PEN, "Only zero point two percent of its revenue came from full-price sales.",
      {"type": "stat", "stat": {"value": 0.2, "decimals": 1, "suffix": "%", "label": "of revenue at full price · J.C. Penney, 2011"}},
-     pause_at={"word": "zero", "sec": 0.9, "hit": "stamp"})
+     pause_at={"word": "zero", "sec": 0.7, "hit": "stamp"})
 beat("p3b", S_PEN, "Almost three-quarters came from things marked half off or more.",
      {"type": "stat", "stat": {"value": 73, "prefix": "≈", "suffix": "%", "label": "of revenue at 50 % off or more · LA Times, Jan 2012"}})
 beat("p4", S_PEN, "So in 2012 a new boss, Ron Johnson, the man behind the Apple Store, tore it all up.",
-     img("a man in a dark 1950s suit seen from behind tearing a long paper banner of red sale tags in half in an empty department store aisle",
-         motion="zoom_in"), label="Illustration")
+     img("a shop wall covered from edge to edge with rows of pinned red and cream paper sale tags of different sizes, flat front view, plain light",
+         motion="static", hand_marks=True, marks=[cross(0.5, 0.5, 0.62, 0.62, "tore")]))
 beat("p5", S_PEN, "No fake markdowns. No coupons. One honest price on every tag. He called it Fair and Square.",
      img("a neatly folded white shirt on a shop counter with one clean cream price tag on a string, warm light, simple composition", motion="zoom_in"),
      stamp={"text": "Fair and square", "on": "Fair"})
@@ -144,10 +177,10 @@ beat("p7", S_PEN, "Honest prices. The customers were not ready for the experienc
 beat("p8", S_PEN, "That year, sales fell by a quarter.",
      {"type": "chart", "chart": {"kind": "bar", "title": "J.C. Penney sales", "labels": ["2011", "2012"], "values": [17.26, 12.99],
                                  "unit": "$bn", "highlight": 1, "note": "−24.8 % · annual results, Feb 2013"}},
-     pause_at={"word": "quarter.", "sec": 0.9, "hit": "stamp"})
+     pause_at={"word": "quarter.", "sec": 0.7, "hit": "stamp"})
 beat("p9", S_PEN, "The company lost nine hundred and eighty-five million dollars.",
      img("an old brass cash register with its drawer wide open and completely empty, a single moth fluttering out, dark shop at night", motion="zoom_in"),
-     pause_at={"word": "nine", "sec": 1.0, "hit": "stamp"}, stamp={"text": "−$985,000,000", "on": "dollars."})
+     pause_at={"word": "nine", "sec": 0.8, "hit": "stamp"}, stamp={"text": "−$985,000,000", "on": "dollars."})
 beat("p10", S_PEN, "Even before Johnson was fired in April 2013, the old game was back.",
      arch("chain_store_window_signs_1940.jpg", "Signs on a chain store window, 1940", motion="zoom_in", crop=[0.02, 0.03, 0.96, 0.93]), label="April 2013")
 beat("p11", S_PEN, "A five-dollar T-shirt got a six-dollar tag, so it could be marked down to five again.",
@@ -183,34 +216,36 @@ beat("k3a", S_KOHL, "Now Larry's mixer. Consumer Reports priced this exact one a
 beat("k3", S_KOHL, "on sale for four eighty-nine ninety-nine.",
      img("a shiny cream stand mixer on a white shop shelf with a large blank cream paper price tag hanging from it, plain background, product shot", motion="static", hand_marks=True,
          marks=[write("SALE $489.99", on="four", x=0.72, y=0.55, w=0.22, h=0.08)]),
-     pause_at={"word": "four", "sec": 0.9, "hit": "stamp"}, label="Consumer Reports · checked 2012",
+     pause_at={"word": "four", "sec": 0.7, "hit": "stamp"}, label="Consumer Reports · checked 2012",
      ledger=[{"label": "MIXER", "amount": "$489.99", "on": "four"}])
 beat("k4", S_KOHL, "\"Regular\" price: five forty-nine ninety-nine.",
-     img("a large cream paper price tag with a red border hanging from the chrome handle of a cream stand mixer, close up, plain background", motion="static", hand_marks=True,
-         marks=[write("SALE $489.99", at=0.0, x=0.55, y=0.62, w=0.26, h=0.09),
-                write("REG. $549.99", on="five", x=0.55, y=0.45, w=0.26, h=0.09, **TAG_W)]),
+     reuse("k3", hand_marks=True, push={"center": [0.72, 0.52], "zoom": 2.2},
+           marks=[write("SALE $489.99", at=0.0, x=0.72, y=0.55, w=0.22, h=0.08),
+                  write("REG. $549.99", on="five", x=0.72, y=0.45, w=0.22, h=0.08, **TAG_W)]),
      label="Consumer Reports · checked 2012", ledger=[{"label": "\"WAS\"", "amount": "$549.99", "on": "five"}])
 beat("k5", S_KOHL, "On Amazon, the same mixer: three ninety-nine ninety-nine.",
      img("the same shiny cream stand mixer sitting in an open plain cardboard delivery box on a doorstep, daylight", motion="zoom_in"),
-     pause_at={"word": "three", "sec": 0.9, "hit": "stamp"}, label="Consumer Reports · checked 2012",
+     pause_at={"word": "three", "sec": 0.7, "hit": "stamp"}, label="Consumer Reports · checked 2012",
      ledger=[{"label": "ELSEWHERE", "amount": "$399.99", "on": "three"}])
 beat("k6", S_KOHL, "Larry's saving: sixty dollars. His real overpay: ninety.",
      img("{larry} proudly holding up a long shop receipt with both hands, beaming, plain cream background", motion="zoom_in"),
-     pause_at={"word": "ninety.", "sec": 0.9, "hit": "stamp"},
+     pause_at={"word": "ninety.", "sec": 0.7, "hit": "stamp"},
      ledger=[{"label": "OVERPAID", "amount": "$90.00", "loss": True, "circle": True, "on": "ninety."}])
 beat("k7", S_KOHL, "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
      img("a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil", motion="zoom_in"),
      label="tracked 2003")
 beat("k8", S_KOHL, "They were on sale eighty-six percent of the time.",
      {"type": "stat", "stat": {"value": 86, "suffix": "%", "label": "of the time on sale · tracked 2003"}},
-     pause_at={"word": "eighty-six", "sec": 1.0, "hit": "stamp"})
+     pause_at={"word": "eighty-six", "sec": 0.8, "hit": "stamp"})
 beat("k9", S_KOHL, "One in four never sold at its regular price at all. Regular price: the thing that happens on the other fourteen percent of days.",
-     img(prompts=["four identical white shirts on hangers on a rail, three wearing bright red sale tags and the fourth wearing a plain tag covered in dust and cobwebs",
-                  "the fourth white shirt on its hanger in close up, its plain price tag thick with dust and a small spider web"], motion="zoom_in"),
+     img("four identical white shirts on hangers on a rail, three wearing bright red sale tags and the fourth wearing a plain tag covered in dust and cobwebs",
+         motion="static", hand_marks=True, marks=[circle(0.80, 0.55, 0.16, 0.26, "never")],
+         closeup=closeup("Regular", [0.80, 0.55], 2.2, [write("14 %", on="fourteen", x=0.80, y=0.40, w=0.10, h=0.07)])),
      label="tracked 2003")
 beat("k10", S_KOHL, "Years later, Checkbook magazine tracked nineteen big retailers. Most of the time, the sale price simply was the price.",
-     img(prompts=["a 1950s woman with a clipboard and pencil noting down prices on a department store shelf of boxed goods, mid shot",
-                  "close up of a clipboard page with a long handwritten table of prices and many ticks"], motion="zoom_in"), label="Checkbook 2018")
+     img("a 1950s woman with a clipboard and pencil noting down prices on a department store shelf of boxed goods, mid shot", motion="static",
+         hand_marks=True, closeup=closeup("Most", [0.45, 0.55], 2.0, [{"type": "underline", "x": 0.45, "y": 0.62, "w": 0.22, "h": 0.02, "on": "simply"}])),
+     label="Checkbook 2018")
 beat("k11", S_KOHL, "A federal appeals court summed it up in three words: price advertisements matter.",
      doc("Hinojos v. Kohl's · 9th Cir. · 2013", "Fake 'original' prices", "\"Misinformation about a product's 'normal' price is, therefore, significant to many consumers ... In sum, price advertisements matter.\"",
          "price advertisements matter", on="price", kicker="COURT OPINION  ·  QUOTED", seed=41, lead=1.2))
@@ -218,15 +253,15 @@ beat("k12", S_KOHL, "Los Angeles sued four department-store chains over fake ori
      img("four department-store shopping bags standing in a row on courthouse steps like defendants, 1950s courthouse columns behind, morning light", motion="zoom_in"),
      label="LA lawsuit 2016")
 beat("k13", S_KOHL, "Five years later, the city dropped its case against Kohl's and Macy's, after the judge tore into its expert witness.",
-     img(prompts=["an empty wooden witness stand in a wood-panelled 1950s courtroom, morning light",
-                  "a crumpled paper bar chart lying on a courtroom floor beside a wooden chair leg, close up"], motion="zoom_in"),
+     img("an empty wooden witness stand in a wood-panelled 1950s courtroom, a crumpled paper chart lying on the floor beside it, morning light", motion="static",
+         hand_marks=True, closeup=closeup("after", [0.62, 0.70], 2.0, [circle(0.62, 0.72, 0.18, 0.14, "expert")])),
      label="LA lawsuit 2016 · dropped 2021")
 beat("k14", S_KOHL, "Turns out, proving a price was never real is harder than faking one.", kin())
 
 # ------------------------------------------------------------------ Why your brain says yes (insert, ~27 s)
 beat("n1", S_BRAIN, "Why does a made-up number work? Psychologists once spun a rigged wheel that stopped on ten or sixty-five, then asked people to guess a percentage.",
-     img(prompts=["a 1950s fairground wheel of fortune in a psychology lab, a scientist in a white coat holding a clipboard beside it",
-                  "close up of the fairground wheel's pointer stopping on a segment, motion blur on the wheel"], motion="zoom_in"),
+     img("a 1950s fairground wheel of fortune in a psychology lab, a scientist in a white coat holding a clipboard beside it", motion="static",
+         hand_marks=True, closeup=closeup("then", [0.40, 0.30], 2.0, [circle(0.40, 0.26, 0.10, 0.12, "guess")])),
      label="Experiment · 1974")
 beat("n2", S_BRAIN, "The sixty-five group guessed almost twice as high.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Median guess", "labels": ["Wheel: 10", "Wheel: 65"], "values": [25, 45],
@@ -237,7 +272,7 @@ beat("n3", S_BRAIN, "At MIT, students wrote down the last digits of their social
 beat("n4", S_BRAIN, "High numbers bid fifty-six dollars. Low numbers, sixteen.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Bid for the same keyboard", "labels": ["Low numbers", "High numbers"], "values": [16, 56],
                                  "unit": "$", "highlight": 1, "note": "Ariely, Loewenstein & Prelec, 2003"}},
-     pause_at={"word": "fifty-six", "sec": 0.9, "hit": "stamp"})
+     pause_at={"word": "fifty-six", "sec": 0.7, "hit": "stamp"})
 beat("n5", S_BRAIN, "A later replication found the effect much weaker. Weaker, but not zero.",
      doc("Fudenberg, Levine & Maniadis · AEJ: Micro · 2012", "Replication 2012: effect much weaker",
          "Repeating the experiment, the authors found very weak anchoring effects on what people were willing to pay.",
@@ -251,9 +286,10 @@ beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Ins
 # ------------------------------------------------------------------ In defence of the accused
 chapter("t3", S_DEF, "In defence of the accused.", "In defence of the accused")
 beat("f1", S_DEF, "One: Penney tried honesty, and shoppers walked out. They wanted the hunt.",
-     img("excited 1950s shoppers rushing through department store doors at opening time, chasing big red blank sale signs, energetic", motion="zoom_in"))
+     {"type": "clip", "file": "clip_supermarket_1950s.mp4", "in": 256.0, "out": 266.0, "newsreel": "Supermarket film, 1960s",
+      "credit": "\"The Supermarket\" (Ezra Baker Films) — Prelinger Archives / Internet Archive (public domain)"})
 beat("f2", S_DEF, "Two: a sale can still be a deal. An FTC study checked twenty department-store regular prices.",
-     arch("ceiling_price_tag_furniture_1942.jpg", "US government drawing of a price tag, 1942", motion="zoom_in", crop=[0.04, 0.12, 0.96, 0.92]), label="FTC study, 1992")
+     arch("ceiling_price_tag_furniture_1942.jpg", "Price tag drawing, 1942 · Library of Congress", motion="zoom_in", crop=[0.04, 0.12, 0.96, 0.92]), label="FTC study · 1992")
 beat("f3", S_DEF, "Twelve were higher than any rival charged. Yet the sale prices averaged about four percent below the competition.",
      doc("FTC Bureau of Economics · 1992", "Department store reference pricing",
          "In 12 of 20 items, the 'regular' price was above the highest competitor price. On average, sale prices were about 4% below competitor average prices.",
@@ -261,8 +297,8 @@ beat("f3", S_DEF, "Twelve were higher than any rival charged. Yet the sale price
 beat("f4", S_DEF, "Three: nobody buys a mattress every month. Waiting for a sale is smart.",
      img("{larry} lying on his back on a showroom mattress with his eyes closed and hands folded, a tiny wall calendar propped on his chest, plain cream background", motion="zoom_in"))
 beat("f5", S_DEF, "The was price may be fiction. The saving isn't always. And the accomplice nobody arrests? Our love of a bargain.",
-     img(prompts=["a cream paper price tag with a red border hanging on a string, plain cream background",
-                  "a red heart-shaped paper price tag hanging on a string, plain cream background"], motion="zoom_in"))
+     reuse("m1", hand_marks=True, marks=[cross(0.5, 0.42, 0.30, 0.10, "fiction.")],
+           closeup=closeup("accomplice", [0.5, 0.55], 1.8, [write("BARGAIN!", on="bargain.", x=0.5, y=0.60, w=0.26, h=0.09)])))
 
 # ------------------------------------------------------------------ Friday 11:58 PM — The clock that resets (Emma)
 chapter("t4", S_CLOCK, "Friday, eleven fifty-eight p.m.", "Friday 11:58 PM — The clock that resets")
@@ -281,10 +317,10 @@ beat("e3", S_CLOCK, "In 2024 it sold seven discounted mattresses for every one a
      img("a tall stack of mattresses in a warehouse, seven wearing red sale tags and the single one at the top wearing a plain white tag", motion="zoom_in",
          marks=[write("7 : 1", on="seven", x=0.80, y=0.30, w=0.14, h=0.10)]))
 beat("e4", S_CLOCK, "One model, in one test period, sold just zero point zero two percent at full price. At full price, this mattress is rarer than a quiet Black Friday.",
-     img(prompts=["a single mattress displayed inside a glass museum case with a brass plaque, under a spotlight in a dark gallery",
-                  "the brass plaque of the museum case in close up, blank, warm spotlight"], motion="zoom_in",
-         marks=[write("0.02 %", on="zero", x=0.5, y=0.2, w=0.18, h=0.09)]),
-     pause_at={"word": "zero", "sec": 0.9, "hit": "stamp"})
+     img("a single mattress displayed inside a glass museum case with a blank brass plaque, under a spotlight in a dark gallery", motion="static",
+         hand_marks=True, marks=[write("0.02 %", on="zero", x=0.5, y=0.2, w=0.18, h=0.09)],
+         closeup=closeup("At", [0.5, 0.80], 2.2, [write("RARE", on="rarer", x=0.5, y=0.80, w=0.12, h=0.06, color="ink")])),
+     pause_at={"word": "zero", "sec": 0.7, "hit": "stamp"})
 beat("e5", S_CLOCK, "The watchdog wanted a simple rule: for every two sold on sale, one at full price.",
      img("a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background", motion="static", hand_marks=True,
          marks=[write("1 : 2", on="two", x=0.5, y=0.15, w=0.14, h=0.09)]))
@@ -305,16 +341,18 @@ beat("e10", S_CLOCK, "So what makes a was price real? America's rulebook says: a
          "The former price must be the actual, bona fide price at which the article was offered to the public on a regular basis for a reasonably substantial period of time.",
          "offered to the public on a regular basis", on="regularly,", kicker="US RULEBOOK  ·  QUOTED", seed=91, lead=1.6, post="o1"))
 beat("e11", S_CLOCK, "Its own example is a pen tagged ten dollars for a few days, just so seven-fifty can look like a bargain.",
-     img(prompts=["a 1950s fountain pen lying on a velvet display stand with a large blank cream paper price tag, plain background",
-                  "the large blank cream paper price tag of the fountain pen in close up, velvet behind it"], motion="static", hand_marks=True,
-         marks=[write("$10", on="ten", x=0.70, y=0.45, w=0.10, h=0.09, **TAG_W), cross(0.70, 0.45, 0.12, 0.11, "seven-fifty"),
-                write("$7.50!", on="seven-fifty", x=0.70, y=0.60, w=0.14, h=0.09)]))
+     img("a 1950s fountain pen lying on a velvet display stand with a large blank cream paper price tag, plain background", motion="static", hand_marks=True,
+         marks=[write("$10", on="ten", x=0.70, y=0.45, w=0.10, h=0.09, **TAG_W)],
+         closeup=closeup("just", [0.70, 0.52], 2.0, [write("$10", at=0.0, x=0.70, y=0.45, w=0.10, h=0.09, color="ink"),
+                                                     cross(0.70, 0.45, 0.12, 0.11, "seven-fifty"),
+                                                     write("$7.50!", on="seven-fifty", x=0.70, y=0.60, w=0.14, h=0.09)])))
 beat("e12", S_CLOCK, "California says: within the last three months.",
-     img("a 1950s pull-down classroom wall map of California, soft colours, no labels", motion="zoom_in",
-         marks=[write("3 MONTHS", on="three", x=0.62, y=0.40, w=0.18, h=0.08)]), label="California · B&P Code §17501")
+     img("a 1950s pull-down classroom wall map showing North America on the left and Europe on the right, soft colours, no labels", motion="static",
+         hand_marks=True, push={"center": [0.22, 0.45], "zoom": 1.8}, marks=[write("3 MONTHS", on="three", x=0.22, y=0.45, w=0.12, h=0.06)]),
+     label="California · B&P Code §17501")
 beat("e12b", S_CLOCK, "And in the EU, any was price must be the lowest of the last thirty days.",
-     img("a 1950s pull-down classroom wall map of Europe, soft colours, no labels", motion="zoom_in",
-         marks=[write("30 DAYS", on="thirty", x=0.55, y=0.40, w=0.16, h=0.08)]), label="EU rule · 2022")
+     reuse("e12", hand_marks=True, push={"center": [0.75, 0.38], "zoom": 1.8}, marks=[write("30 DAYS", on="thirty", x=0.75, y=0.38, w=0.10, h=0.06)]),
+     label="EU rule · 2022")
 
 # ------------------------------------------------------------------ Saturday 10:00 AM — Three checks
 chapter("t5", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
@@ -340,25 +378,31 @@ beat("x4", S_CHECK, "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or 
      music="ub_secret_report", say="Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.")
 beat("x5", S_CHECK, "A was price that never shows up on the chart is a suspect.", reuse("m1", motion="zoom_in"), music="ub_secret_report")
 beat("x6", S_CHECK, "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",
-     img(prompts=["the shiny cream stand mixer seen from the side, its small metal model plate on the base in close up, plain background",
-                  "a 1950s shop catalogue page of identical stand mixers in a neat grid, each with a different blank price box"], motion="zoom_in"),
+     img("the shiny cream stand mixer seen from the side, a small blank metal model plate on its base, plain background", motion="static", hand_marks=True,
+         marks=[write("30-DAY LOW?", on="thirty-day", x=0.30, y=0.20, w=0.22, h=0.08)],
+         closeup=closeup("Everywhere", [0.55, 0.78], 2.2, [circle(0.55, 0.80, 0.14, 0.10, "model"), write("MODEL No.", on="number.", x=0.55, y=0.68, w=0.16, h=0.06)])),
      music="ub_secret_report")
 beat("x7", S_CHECK, "Larry's mixer: ninety dollars cheaper, one click away.", reuse("k5", motion="zoom_in"), music="ub_secret_report")
-beat("x8", S_CHECK, "Forget the percentage. Compare the price you'd pay with the price you could pay.", kin(), music="ub_secret_report")
+beat("x8", S_CHECK, "Forget the percentage. Compare the price you'd pay with the price you could pay.",
+     reuse("x1", hand_marks=True, marks=[write("COULD PAY?", on="could", x=0.70, y=0.22, w=0.22, h=0.08)]), music="ub_secret_report")
+beat("x9", S_CHECK, "The sentence: a date on every tag, and a second look from you.",
+     reuse("x1", hand_marks=True, push={"center": [0.62, 0.50], "zoom": 1.8}, marks=[write("DATE: ____", on="date", x=0.62, y=0.50, w=0.14, h=0.06, color="ink")]),
+     music="ub_secret_report")
+beat("x10", S_CHECK, "Larry closed his tab without buying the mixer. Then he checked the price again. Twice.",
+     reuse("x1", push={"center": [0.35, 0.35], "zoom": 1.7}), music="ub_secret_report",
+     bubble={"text": "Twice.", "x": 0.70, "y": 0.22, "tail": "left", "on": "Twice."})
 
 # ------------------------------------------------------------------ Case closed + end screen (Ep.4 teaser: drip pricing)
 ES = {"number": "003", "title": "The fake sale", "stamp": "Case closed",
       "verdict": ["Guilty: the WAS price.", "Accomplice: the clock."],
       "next": {"number": "004", "title": "Drip pricing", "tagline": "The $30 ticket that costs $48.", "image_file": "next_ticket.png",
-               "copies": 1, "fees": ["$30", "+ $8", "+ $6", "+ $4", "= $48"], "label": "Illustration"}}
+               "copies": 1, "fees": ["$30", "+ $8 fee", "+ $6 fee", "+ $4 fee", "= $48"], "label": "Illustration"},
+      "times": {"swap": 5.8, "draw": 6.4, "ddur": 3.4, "fees": 10.0, "fgap": 0.8, "fdur": 0.55, "tagline": 14.4,
+                "zone": 14.7, "sketch": 15.2, "skdur": 1.0, "sub": 16.2, "click": 17.3, "push": 18.0}}
 beat("z1", S_CLOSE, "Case closed. The verdict. Guilty: the was price. Accomplice: the clock.", {"type": "endscreen", "endscreen": ES},
      block_start=True, sting="ub_sting_brass", sting_at=0.1)
-beat("z2", S_CLOSE, "The sentence: a date on every tag, and a second look from you.", {"type": "continue"}, block_at=6.5,
-     inserts=[{"file": "p5", "kind": "cutout", "from": "right", "x": 0.80, "y": 0.62, "w": 0.26, "on": "date"}])
-beat("z3", S_CLOSE, "Larry closed his tab without buying the mixer. Then he checked the price again. Twice.", {"type": "continue"}, block_at=10.5,
-     inserts=[{"file": "x1", "kind": "cutout", "from": "left", "x": 0.18, "y": 0.62, "w": 0.26, "on": "Larry"}])
-beat("z4", S_CLOSE, "Next case: the thirty-dollar ticket that costs forty-eight. Fee by fee.", {"type": "continue"}, block_at=16.0)
-beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=21.5, block_end=27.0)
+beat("z4", S_CLOSE, "Next case: the thirty-dollar ticket that costs forty-eight. Fee by fee.", {"type": "continue"}, block_at=6.0)
+beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=16.0, block_end=22.0)
 
 ep = {
     "slug": "0004-fake-sale",

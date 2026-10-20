@@ -91,6 +91,7 @@ class Plan:
     stamps: list = field(default_factory=list)  # (start, end, text) rubber stamps over the picture
     labels: list = field(default_factory=list)  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
     ledger_hide: list = field(default_factory=list)
+    hand_cuts: list = field(default_factory=list)  # times a drawing hand acts on a picture (counts as a picture change)
 
 
 def group_captions(words, offset: float, max_chars: int, max_words: int, speaker: str = "narrator") -> list[Caption]:
@@ -199,11 +200,40 @@ def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
     return {**v, "audio": audio, "words": words, "duration": v["duration"] + sec}, wt + sec
 
 
+def _crop_pic(im: Image.Image, c: dict):
+    """A push-in on a detail: {"center": [x, y], "zoom": z} in fractions of the picture -> (picture, box)."""
+    W0, H0 = im.size
+    z = max(1.05, float(c.get("zoom", 2.0)))
+    cx, cy = c.get("center", [0.5, 0.5])
+    w, h = W0 / z, H0 / z
+    x0 = min(max(0.0, cx * W0 - w / 2), W0 - w)
+    y0 = min(max(0.0, cy * H0 - h / 2), H0 - h)
+    out = im.crop((int(x0), int(y0), int(x0 + w), int(y0 + h))).resize((W0, H0), Image.LANCZOS)
+    return out, (x0 / W0, y0 / H0, (x0 + w) / W0, (y0 + h) / H0)
+
+
+def _remap_mark(m: dict, box) -> dict:
+    bx0, by0, bx1, by1 = box
+    sx, sy = bx1 - bx0, by1 - by0
+    m = dict(m)
+    for k in ("x", "text_x", "from_x"):
+        if k in m:
+            m[k] = (float(m[k]) - bx0) / sx
+    for k in ("y", "text_y", "from_y"):
+        if k in m:
+            m[k] = (float(m[k]) - by0) / sy
+    if "w" in m:
+        m["w"] = float(m["w"]) / sx
+    if "h" in m:
+        m["h"] = float(m["h"]) / sy
+    return m
+
+
 def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]:
     """Stretches where ONE illustration stays on screen longer than `limit` s with nothing cutting in
     (a new picture, an archive photo, a card, or an insert sliding over it). Channel rule from Ep. 3 on."""
     runs, cur = [], None
-    cuts = sorted(ins.start for ins in plan.inserts)
+    cuts = sorted([ins.start for ins in plan.inserts] + list(plan.hand_cuts))
     shots = sorted(plan.shots, key=lambda x: x.start)
     for k, sh in enumerate(shots):
         src = getattr(sh, "_src", None)
@@ -334,13 +364,45 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     if wt is not None:
                         m["until"] = wt + lead_in
             beat_max_shot = hook_max_shot if (start < hook_seconds or kind == "short") else max_shot
-            if marks or beat.get("bubble") or visual.get("draw"):
+            cu, cr = visual.get("closeup"), visual.get("push")  # "push": whole shot on a detail {"center", "zoom"}
+            if (cu or cr) and len(keys) == 1:
+                # one generated picture, two framings: the full frame, then a push-in on a detail where a hand acts
+                # (or the whole shot on a detail: "push"). Marks are given in fractions of the ORIGINAL picture.
+                path = images[keys[0]]
+                base, box0 = (_crop_pic(pil(path), cr) if cr else (pil(path), (0.0, 0.0, 1.0, 1.0)))
+                tc = span
+                if cu:
+                    tc = min(max(1.2, _timed(cu, v["words"], span / 2) + lead_in), max(1.2, span - 1.2))
+                hand_default = bool(visual.get("hand_marks"))
+                segs = [(0.0, tc, base, box0, [m for m in marks if m["at"] < tc], visual.get("motion") or "static",
+                         f"#push{box0[0]:.2f},{box0[1]:.2f},{box0[2]:.2f}" if cr else "")]
+                if cu:
+                    full = pil(path)
+                    cimg, cbox = _crop_pic(full, cu)
+                    cm = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in - tc) for m in (cu.get("marks") or [])]
+                    segs.append((tc, span - tc, cimg, cbox, cm, cu.get("motion", "zoom_in"), f"#push{cbox[0]:.2f},{cbox[1]:.2f},{cbox[2]:.2f}"))
+                for k, (a0, dur0, im0, bx, mk, mot, tag) in enumerate(segs):
+                    mk = [_remap_mark(m, bx) for m in mk] if bx != (0.0, 0.0, 1.0, 1.0) else mk
+                    for m in mk:
+                        if m.get("hand") is None:
+                            m["hand"] = hand_default
+                        if m["hand"] and m.get("at", 0) > 0.05 and float(m.get("dur", 0.7)) > 0.05:
+                            plan.hand_cuts.append(shot_start + a0 + m["at"])
+                        plan.timeline.add_sfx(shot_start + a0 + m["at"], "scribble", seed=i + k)
+                    shot = ImageShot(shot_start + a0, dur0, im0, mot, size, cfg, marks=mk, photo=is_archive_photo(path),
+                                     seed=i * 7 + k, depth=depth_of(path) if (k == 0 and not cr) else None)
+                    shot._archive = False
+                    shot._src = str(path) + tag
+                    plan.shots.append(shot)
+                marks = []
+                pieces = 0
+            elif marks or beat.get("bubble") or visual.get("draw"):
                 pieces = len(keys)  # marks / bubbles / hand drawing need a steady picture: no extra cuts
             else:
                 pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))
                 while pieces > len(keys) and span / pieces < min_shot:
                     pieces -= 1
-            seg = span / pieces
+            seg = span / max(1, pieces)
             for k in range(pieces):
                 key = keys[k % len(keys)]
                 path = images[key]
@@ -374,6 +436,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 for m in shot_marks:
                     if m.get("hand") is None:
                         m["hand"] = bool(visual.get("hand_marks"))
+                    if m["hand"] and m.get("at", 0) > 0.05 and float(m.get("dur", 0.7)) > 0.05:
+                        plan.hand_cuts.append(shot_start + k * seg + m["at"])
                 shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                  marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
                                  ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
