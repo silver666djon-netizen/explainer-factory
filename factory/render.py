@@ -236,7 +236,7 @@ def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]
     cuts = sorted([ins.start for ins in plan.inserts] + list(plan.hand_cuts))
     shots = sorted(plan.shots, key=lambda x: x.start)
     for k, sh in enumerate(shots):
-        src = getattr(sh, "_src", None)
+        src = getattr(sh, "_still_src", None)
         nxt = shots[k + 1].start if k + 1 < len(shots) else plan.total  # a gap keeps the last frame on screen
         if src is None or getattr(sh, "_archive", False) or is_archive_photo(src):
             if cur:
@@ -392,7 +392,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     shot = ImageShot(shot_start + a0, dur0, im0, mot, size, cfg, marks=mk, photo=is_archive_photo(path),
                                      seed=i * 7 + k, depth=depth_of(path) if (k == 0 and not cr) else None)
                     shot._archive = False
-                    shot._src = str(path) + tag
+                    shot._still_src = str(path) + tag
                     plan.shots.append(shot)
                 marks = []
                 pieces = 0
@@ -446,7 +446,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
                 shot._archive = vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive")
-                shot._src = str(path)  # for the max-still check (one illustration on screen too long)
+                shot._still_src = str(path)  # for the max-still check (one illustration on screen too long)
                 plan.shots.append(shot)
             if visual.get("newsreel"):
                 plan.ledger_hide.append((shot_start, shot_end))
@@ -523,7 +523,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 path = images[keys[0]]
                 plan.shots.append(ImageShot(a, b - a, pil(path), motion, size, cfg, photo=is_archive_photo(path), seed=i * 7 + 3,
                                             depth=depth_of(path)))
-                plan.shots[-1]._src = str(path)
+                plan.shots[-1]._still_src = str(path)
             pe = doc.get("pre_exhibit")  # an archive photo as EXHIBIT before the card (instead of a repeated still)
             if c0 > shot_start and pe:
                 from .devices import ExhibitShot, StillInner

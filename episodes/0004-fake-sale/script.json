@@ -63,10 +63,10 @@
           {
             "type": "write",
             "text": "BRITAIN · 2024",
-            "x": 0.7,
-            "y": 0.3,
-            "w": 0.16,
-            "h": 0.04,
+            "x": 0.365,
+            "y": 0.555,
+            "w": 0.15,
+            "h": 0.035,
             "angle": 0,
             "color": "ink",
             "font": "body",
@@ -77,10 +77,10 @@
           {
             "type": "write",
             "text": "WAS £49.99",
-            "x": 0.7,
-            "y": 0.45,
-            "w": 0.22,
-            "h": 0.09,
+            "x": 0.365,
+            "y": 0.635,
+            "w": 0.2,
+            "h": 0.07,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -109,10 +109,10 @@
           {
             "type": "write",
             "text": "BRITAIN · 2024",
-            "x": 0.7,
-            "y": 0.3,
-            "w": 0.16,
-            "h": 0.04,
+            "x": 0.365,
+            "y": 0.555,
+            "w": 0.15,
+            "h": 0.035,
             "angle": 0,
             "color": "ink",
             "font": "body",
@@ -123,10 +123,10 @@
           {
             "type": "write",
             "text": "WAS £49.99",
-            "x": 0.7,
-            "y": 0.45,
-            "w": 0.22,
-            "h": 0.09,
+            "x": 0.365,
+            "y": 0.635,
+            "w": 0.2,
+            "h": 0.07,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -136,19 +136,19 @@
           },
           {
             "type": "cross",
-            "x": 0.7,
-            "y": 0.45,
-            "w": 0.24,
-            "h": 0.1,
+            "x": 0.365,
+            "y": 0.635,
+            "w": 0.22,
+            "h": 0.08,
             "on": "Now"
           },
           {
             "type": "write",
             "text": "NOW £18.99",
-            "x": 0.7,
-            "y": 0.58,
-            "w": 0.24,
-            "h": 0.1,
+            "x": 0.365,
+            "y": 0.725,
+            "w": 0.22,
+            "h": 0.075,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -457,10 +457,10 @@
           {
             "type": "write",
             "text": "$5",
-            "x": 0.66,
-            "y": 0.5,
-            "w": 0.1,
-            "h": 0.09,
+            "x": 0.5,
+            "y": 0.45,
+            "w": 0.06,
+            "h": 0.07,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -469,19 +469,19 @@
           },
           {
             "type": "cross",
-            "x": 0.66,
-            "y": 0.5,
-            "w": 0.12,
-            "h": 0.11,
+            "x": 0.5,
+            "y": 0.45,
+            "w": 0.08,
+            "h": 0.08,
             "on": "six-dollar"
           },
           {
             "type": "write",
             "text": "$6",
-            "x": 0.66,
-            "y": 0.62,
-            "w": 0.1,
-            "h": 0.09,
+            "x": 0.5,
+            "y": 0.55,
+            "w": 0.06,
+            "h": 0.07,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -491,10 +491,10 @@
           {
             "type": "write",
             "text": "SALE $5",
-            "x": 0.66,
-            "y": 0.74,
-            "w": 0.16,
-            "h": 0.08,
+            "x": 0.5,
+            "y": 0.65,
+            "w": 0.09,
+            "h": 0.06,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -636,11 +636,11 @@
           {
             "type": "write",
             "text": "SALE $489.99",
-            "x": 0.72,
-            "y": 0.55,
-            "w": 0.22,
-            "h": 0.08,
-            "angle": 0,
+            "x": 0.81,
+            "y": 0.6,
+            "w": 0.15,
+            "h": 0.06,
+            "angle": -12,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
@@ -674,8 +674,8 @@
         "hand_marks": true,
         "push": {
           "center": [
-            0.72,
-            0.52
+            0.8,
+            0.57
           ],
           "zoom": 2.2
         },
@@ -683,11 +683,11 @@
           {
             "type": "write",
             "text": "SALE $489.99",
-            "x": 0.72,
-            "y": 0.55,
-            "w": 0.22,
-            "h": 0.08,
-            "angle": 0,
+            "x": 0.81,
+            "y": 0.6,
+            "w": 0.15,
+            "h": 0.06,
+            "angle": -12,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
@@ -697,11 +697,11 @@
           {
             "type": "write",
             "text": "REG. $549.99",
-            "x": 0.72,
-            "y": 0.45,
-            "w": 0.22,
-            "h": 0.08,
-            "angle": 0,
+            "x": 0.8,
+            "y": 0.51,
+            "w": 0.15,
+            "h": 0.06,
+            "angle": -12,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
@@ -806,9 +806,9 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.8,
-            "y": 0.55,
-            "w": 0.16,
+            "x": 0.79,
+            "y": 0.58,
+            "w": 0.12,
             "h": 0.26,
             "on": "never"
           }
@@ -822,12 +822,23 @@
           "zoom": 2.2,
           "marks": [
             {
+              "type": "circle",
+              "x": 0.79,
+              "y": 0.58,
+              "w": 0.12,
+              "h": 0.26,
+              "on": null,
+              "at": 0.0,
+              "hand": false,
+              "dur": 0.01
+            },
+            {
               "type": "write",
               "text": "14 %",
-              "x": 0.8,
-              "y": 0.4,
-              "w": 0.1,
-              "h": 0.07,
+              "x": 0.66,
+              "y": 0.36,
+              "w": 0.07,
+              "h": 0.06,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -852,16 +863,16 @@
         "closeup": {
           "on": "Most",
           "center": [
-            0.45,
-            0.55
+            0.4,
+            0.58
           ],
           "zoom": 2.0,
           "marks": [
             {
               "type": "underline",
-              "x": 0.45,
-              "y": 0.62,
-              "w": 0.22,
+              "x": 0.38,
+              "y": 0.64,
+              "w": 0.1,
               "h": 0.02,
               "on": "simply"
             }
@@ -913,17 +924,17 @@
         "closeup": {
           "on": "after",
           "center": [
-            0.62,
-            0.7
+            0.6,
+            0.5
           ],
           "zoom": 2.0,
           "marks": [
             {
               "type": "circle",
               "x": 0.62,
-              "y": 0.72,
-              "w": 0.18,
-              "h": 0.14,
+              "y": 0.5,
+              "w": 0.14,
+              "h": 0.36,
               "on": "expert"
             }
           ],
@@ -955,17 +966,17 @@
         "closeup": {
           "on": "then",
           "center": [
-            0.4,
-            0.3
+            0.42,
+            0.35
           ],
           "zoom": 2.0,
           "marks": [
             {
               "type": "circle",
-              "x": 0.4,
-              "y": 0.26,
-              "w": 0.1,
-              "h": 0.12,
+              "x": 0.42,
+              "y": 0.15,
+              "w": 0.06,
+              "h": 0.1,
               "on": "guess"
             }
           ],
@@ -1069,13 +1080,21 @@
             "type": "write",
             "text": "ORIGINAL?",
             "x": 0.5,
-            "y": 0.5,
-            "w": 0.14,
-            "h": 0.05,
+            "y": 0.15,
+            "w": 0.16,
+            "h": 0.06,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
+            "on": "original"
+          },
+          {
+            "type": "circle",
+            "x": 0.49,
+            "y": 0.5,
+            "w": 0.08,
+            "h": 0.17,
             "on": "original"
           }
         ]
@@ -1191,11 +1210,16 @@
         "hand_marks": true,
         "marks": [
           {
-            "type": "cross",
+            "type": "write",
+            "text": "FICTION",
             "x": 0.5,
-            "y": 0.42,
-            "w": 0.3,
-            "h": 0.1,
+            "y": 0.66,
+            "w": 0.13,
+            "h": 0.055,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
             "on": "fiction."
           }
         ],
@@ -1203,17 +1227,31 @@
           "on": "accomplice",
           "center": [
             0.5,
-            0.55
+            0.66
           ],
           "zoom": 1.8,
           "marks": [
             {
               "type": "write",
+              "text": "FICTION",
+              "x": 0.5,
+              "y": 0.66,
+              "w": 0.13,
+              "h": 0.055,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "write",
               "text": "BARGAIN!",
               "x": 0.5,
-              "y": 0.6,
-              "w": 0.26,
-              "h": 0.09,
+              "y": 0.77,
+              "w": 0.14,
+              "h": 0.055,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -1249,13 +1287,13 @@
           {
             "type": "write",
             "text": "SALE ENDS IN 00:02:00",
-            "x": 0.5,
-            "y": 0.12,
-            "w": 0.36,
-            "h": 0.07,
+            "x": 0.25,
+            "y": 0.24,
+            "w": 0.26,
+            "h": 0.06,
             "angle": 0,
-            "color": "red",
-            "font": "marker",
+            "color": "paper",
+            "font": "headline",
             "dur": 0.7,
             "on": "Sale"
           }
@@ -1325,10 +1363,10 @@
           {
             "type": "write",
             "text": "7 : 1",
-            "x": 0.8,
-            "y": 0.3,
-            "w": 0.14,
-            "h": 0.1,
+            "x": 0.86,
+            "y": 0.2,
+            "w": 0.12,
+            "h": 0.09,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1352,9 +1390,9 @@
             "type": "write",
             "text": "0.02 %",
             "x": 0.5,
-            "y": 0.2,
-            "w": 0.18,
-            "h": 0.09,
+            "y": 0.32,
+            "w": 0.16,
+            "h": 0.08,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1365,18 +1403,18 @@
         "closeup": {
           "on": "At",
           "center": [
-            0.5,
-            0.8
+            0.505,
+            0.78
           ],
           "zoom": 2.2,
           "marks": [
             {
               "type": "write",
               "text": "RARE",
-              "x": 0.5,
-              "y": 0.8,
-              "w": 0.12,
-              "h": 0.06,
+              "x": 0.505,
+              "y": 0.815,
+              "w": 0.08,
+              "h": 0.045,
               "angle": 0,
               "color": "ink",
               "font": "marker",
@@ -1406,10 +1444,10 @@
           {
             "type": "write",
             "text": "1 : 2",
-            "x": 0.5,
-            "y": 0.15,
-            "w": 0.14,
-            "h": 0.09,
+            "x": 0.8,
+            "y": 0.74,
+            "w": 0.12,
+            "h": 0.08,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1452,14 +1490,15 @@
         "beat": "e5",
         "index": 0,
         "motion": "static",
+        "hand_marks": true,
         "marks": [
           {
             "type": "write",
             "text": "1 : 2",
-            "x": 0.5,
-            "y": 0.15,
-            "w": 0.14,
-            "h": 0.09,
+            "x": 0.8,
+            "y": 0.74,
+            "w": 0.12,
+            "h": 0.08,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1469,10 +1508,10 @@
           },
           {
             "type": "cross",
-            "x": 0.5,
-            "y": 0.15,
-            "w": 0.18,
-            "h": 0.12,
+            "x": 0.8,
+            "y": 0.74,
+            "w": 0.15,
+            "h": 0.11,
             "on": "wrong"
           }
         ]
@@ -1542,11 +1581,11 @@
           {
             "type": "write",
             "text": "$10",
-            "x": 0.7,
-            "y": 0.45,
-            "w": 0.1,
-            "h": 0.09,
-            "angle": 0,
+            "x": 0.21,
+            "y": 0.62,
+            "w": 0.08,
+            "h": 0.07,
+            "angle": -14,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
@@ -1556,19 +1595,19 @@
         "closeup": {
           "on": "just",
           "center": [
-            0.7,
-            0.52
+            0.26,
+            0.62
           ],
           "zoom": 2.0,
           "marks": [
             {
               "type": "write",
               "text": "$10",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.1,
-              "h": 0.09,
-              "angle": 0,
+              "x": 0.21,
+              "y": 0.62,
+              "w": 0.08,
+              "h": 0.07,
+              "angle": -14,
               "color": "ink",
               "font": "marker",
               "dur": 0.01,
@@ -1577,20 +1616,20 @@
             },
             {
               "type": "cross",
-              "x": 0.7,
-              "y": 0.45,
-              "w": 0.12,
-              "h": 0.11,
+              "x": 0.21,
+              "y": 0.62,
+              "w": 0.09,
+              "h": 0.08,
               "on": "seven-fifty"
             },
             {
               "type": "write",
               "text": "$7.50!",
-              "x": 0.7,
-              "y": 0.6,
-              "w": 0.14,
-              "h": 0.09,
-              "angle": 0,
+              "x": 0.215,
+              "y": 0.72,
+              "w": 0.1,
+              "h": 0.07,
+              "angle": -14,
               "color": "red",
               "font": "marker",
               "dur": 0.7,
@@ -1612,8 +1651,8 @@
         "hand_marks": true,
         "push": {
           "center": [
-            0.22,
-            0.45
+            0.3,
+            0.58
           ],
           "zoom": 1.8
         },
@@ -1621,10 +1660,10 @@
           {
             "type": "write",
             "text": "3 MONTHS",
-            "x": 0.22,
-            "y": 0.45,
+            "x": 0.3,
+            "y": 0.56,
             "w": 0.12,
-            "h": 0.06,
+            "h": 0.05,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1647,8 +1686,8 @@
         "hand_marks": true,
         "push": {
           "center": [
-            0.75,
-            0.38
+            0.66,
+            0.52
           ],
           "zoom": 1.8
         },
@@ -1656,10 +1695,10 @@
           {
             "type": "write",
             "text": "30 DAYS",
-            "x": 0.75,
-            "y": 0.38,
+            "x": 0.62,
+            "y": 0.4,
             "w": 0.1,
-            "h": 0.06,
+            "h": 0.05,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1696,10 +1735,10 @@
         {
           "file": "ceiling_price_tag_shirt_1942.jpg",
           "kind": "photo",
-          "from": "right",
-          "x": 0.82,
-          "y": 0.45,
-          "w": 0.26,
+          "from": "left",
+          "x": 0.18,
+          "y": 0.34,
+          "w": 0.24,
           "on": "date.",
           "crop": [
             0.04,
@@ -1767,11 +1806,11 @@
           {
             "type": "write",
             "text": "Keepa",
-            "x": 0.3,
-            "y": 0.4,
-            "w": 0.16,
-            "h": 0.06,
-            "angle": 0,
+            "x": 0.53,
+            "y": 0.36,
+            "w": 0.12,
+            "h": 0.05,
+            "angle": -6,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -1780,11 +1819,11 @@
           {
             "type": "write",
             "text": "camelcamelcamel",
-            "x": 0.3,
-            "y": 0.55,
-            "w": 0.24,
-            "h": 0.06,
-            "angle": 0,
+            "x": 0.53,
+            "y": 0.44,
+            "w": 0.22,
+            "h": 0.05,
+            "angle": -6,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -1793,11 +1832,11 @@
           {
             "type": "write",
             "text": "PriceSpy",
-            "x": 0.68,
-            "y": 0.4,
-            "w": 0.16,
-            "h": 0.06,
-            "angle": 0,
+            "x": 0.54,
+            "y": 0.54,
+            "w": 0.14,
+            "h": 0.05,
+            "angle": -6,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -1806,11 +1845,11 @@
           {
             "type": "write",
             "text": "idealo",
-            "x": 0.68,
-            "y": 0.55,
-            "w": 0.14,
-            "h": 0.06,
-            "angle": 0,
+            "x": 0.54,
+            "y": 0.62,
+            "w": 0.11,
+            "h": 0.05,
+            "angle": -6,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -1819,30 +1858,28 @@
           {
             "type": "write",
             "text": "US · Amazon",
-            "x": 0.3,
-            "y": 0.28,
-            "w": 0.16,
+            "x": 0.17,
+            "y": 0.4,
+            "w": 0.15,
             "h": 0.05,
             "angle": 0,
             "color": "red",
             "font": "body",
-            "dur": 0.01,
-            "at": 0.0,
-            "hand": false
+            "dur": 0.7,
+            "on": "Keepa"
           },
           {
             "type": "write",
             "text": "UK · EU",
-            "x": 0.68,
-            "y": 0.28,
-            "w": 0.12,
+            "x": 0.17,
+            "y": 0.58,
+            "w": 0.11,
             "h": 0.05,
             "angle": 0,
             "color": "red",
             "font": "body",
-            "dur": 0.01,
-            "at": 0.0,
-            "hand": false
+            "dur": 0.7,
+            "on": "PriceSpy"
           }
         ]
       },
@@ -1874,10 +1911,10 @@
           {
             "type": "write",
             "text": "30-DAY LOW?",
-            "x": 0.3,
-            "y": 0.2,
-            "w": 0.22,
-            "h": 0.08,
+            "x": 0.2,
+            "y": 0.1,
+            "w": 0.2,
+            "h": 0.07,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1888,26 +1925,26 @@
         "closeup": {
           "on": "Everywhere",
           "center": [
-            0.55,
-            0.78
+            0.47,
+            0.82
           ],
-          "zoom": 2.2,
+          "zoom": 2.4,
           "marks": [
             {
               "type": "circle",
-              "x": 0.55,
-              "y": 0.8,
-              "w": 0.14,
-              "h": 0.1,
+              "x": 0.47,
+              "y": 0.89,
+              "w": 0.08,
+              "h": 0.05,
               "on": "model"
             },
             {
               "type": "write",
               "text": "MODEL No.",
-              "x": 0.55,
-              "y": 0.68,
-              "w": 0.16,
-              "h": 0.06,
+              "x": 0.47,
+              "y": 0.8,
+              "w": 0.1,
+              "h": 0.04,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -1946,10 +1983,10 @@
           {
             "type": "write",
             "text": "COULD PAY?",
-            "x": 0.7,
+            "x": 0.2,
             "y": 0.22,
-            "w": 0.22,
-            "h": 0.08,
+            "w": 0.2,
+            "h": 0.07,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -1972,21 +2009,21 @@
         "hand_marks": true,
         "push": {
           "center": [
-            0.62,
-            0.5
+            0.72,
+            0.6
           ],
           "zoom": 1.8
         },
         "marks": [
           {
             "type": "write",
-            "text": "DATE: ____",
-            "x": 0.62,
-            "y": 0.5,
-            "w": 0.14,
-            "h": 0.06,
+            "text": "DATE?",
+            "x": 0.76,
+            "y": 0.7,
+            "w": 0.08,
+            "h": 0.05,
             "angle": 0,
-            "color": "ink",
+            "color": "red",
             "font": "marker",
             "dur": 0.7,
             "on": "date"
@@ -2006,8 +2043,8 @@
         "motion": "static",
         "push": {
           "center": [
-            0.35,
-            0.35
+            0.5,
+            0.34
           ],
           "zoom": 1.7
         }
