@@ -145,7 +145,7 @@ beat("o2", S_OPEN, "Now eighteen ninety-nine.",
      reuse("o1", hand_marks=True,
            marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
                   write("WAS £49.99", at=0.0, x=0.365, y=0.635, w=0.20, h=0.07, color="ink"),
-                  cross(0.365, 0.635, 0.22, 0.08, "Now"),
+                  cross(0.365, 0.64, 0.22, 0.045, "Now"),
                   write("NOW £18.99", on="eighteen", x=0.365, y=0.725, w=0.22, h=0.075)]),
      pause_at={"word": "eighteen", "sec": 0.45, "hit": "stamp"})
 beat("o3", S_OPEN, "In the twelve months before, it had never cost forty-nine ninety-nine there. Not once.",
