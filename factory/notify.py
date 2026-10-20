@@ -18,9 +18,13 @@ def _api(method: str, **kwargs):
         print("Telegram secrets are not set — skipping notification")
         return None
     data = dict(kwargs.pop("data", {}), chat_id=chat.strip())
-    resp = requests.post(f"https://api.telegram.org/bot{token.strip()}/{method}", data=data, timeout=120, **kwargs)
+    try:
+        resp = requests.post(f"https://api.telegram.org/bot{token.strip()}/{method}", data=data, timeout=300, **kwargs)
+    except requests.RequestException as exc:  # one slow upload must not stop the rest
+        print(f"::warning::Telegram {method} error: {exc}")
+        return None
     if resp.status_code != 200:
-        print(f"Telegram {method} failed: {resp.status_code} {resp.text[:300]}")
+        print(f"::warning::Telegram {method} failed: {resp.status_code} {resp.text[:300]}")
     return resp
 
 
