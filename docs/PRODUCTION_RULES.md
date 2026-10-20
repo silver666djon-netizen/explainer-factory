@@ -91,7 +91,8 @@ must report zero before a final render.
     the cut when the next shot needs context ("closeup": {..., "back": s}).
 13. Subscribe bell: red with a cream outline, placed clear of the character (cta "pos").
 14. Audio gate: every rendered file is metered after encoding (BS.1770, ffmpeg ebur128). True peak above
-    -1.0 dBTP (`audio.true_peak_max`) fails the build. Master: 4x oversampled limiter (ceiling 0.72), 48 kHz,
+    -1.0 dBTP (`audio.true_peak_max`) fails the build. Loudness: one constant gain, calibrated so the level after
+    the limiter lands on `audio.target_lufs` (-14.0). Master: 4x oversampled limiter (ceiling 0.72), 48 kHz,
     AAC 192k with an 18 kHz cutoff (the native AAC encoder overshoots up to +5 dB on the scribble/stamp top end).
     A file over the ceiling is remastered automatically (audio only, video copied) at 0.66 / 0.60 / 0.54
     before the build fails. Spot-check any file with `python tools/qc/audio_gate.py <files>`.

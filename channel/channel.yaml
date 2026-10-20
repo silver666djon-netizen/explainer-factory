@@ -76,7 +76,7 @@ audio:
   music_gap_db: -8             # music level vs the narration in the gaps
   music_under_voice_db: -14    # music level vs the narration while he speaks (smooth, no pumping)
   sting_db: -6                 # musical hits on chapter titles and reveals (peak vs voice peaks)
-  target_lufs: -13.6            # lands at ~-14 LUFS after the true-peak limiter
+  target_lufs: -14.0            # final integrated loudness (gain calibrated after the limiter)
   true_peak_max: -1.0          # QC gate: any rendered file above this true peak (dBTP) fails the build
 
 images:

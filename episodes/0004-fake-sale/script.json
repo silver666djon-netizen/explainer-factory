@@ -487,15 +487,15 @@
           {
             "type": "cross",
             "x": 0.5,
-            "y": 0.5,
+            "y": 0.45,
             "w": 0.62,
-            "h": 0.62,
+            "h": 0.56,
             "on": "tore",
             "target": [
               0.2,
               0.2,
               0.8,
-              0.8
+              0.7
             ]
           }
         ]
@@ -1262,16 +1262,16 @@
           "on": "after",
           "center": [
             0.6,
-            0.5
+            0.56
           ],
           "zoom": 2.0,
           "marks": [
             {
               "type": "circle",
               "x": 0.62,
-              "y": 0.5,
+              "y": 0.53,
               "w": 0.14,
-              "h": 0.36,
+              "h": 0.3,
               "on": "expert",
               "target": [
                 0.56,
@@ -1421,14 +1421,21 @@
         "type": "image",
         "motion": "static",
         "prompt": "a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk",
+        "push": {
+          "center": [
+            0.5,
+            0.6
+          ],
+          "zoom": 1.15
+        },
         "hand_marks": true,
         "marks": [
           {
             "type": "circle",
             "x": 0.5,
-            "y": 0.78,
+            "y": 0.76,
             "w": 0.3,
-            "h": 0.16,
+            "h": 0.12,
             "on": "keyboard.",
             "target": [
               0.39,
@@ -2358,8 +2365,8 @@
             {
               "type": "write",
               "text": "$7.50!",
-              "x": 0.215,
-              "y": 0.72,
+              "x": 0.31,
+              "y": 0.655,
               "w": 0.1,
               "h": 0.07,
               "angle": -14,
@@ -3246,15 +3253,15 @@
               {
                 "type": "cross",
                 "x": 0.5,
-                "y": 0.5,
+                "y": 0.45,
                 "w": 0.62,
-                "h": 0.62,
+                "h": 0.56,
                 "on": "tore",
                 "target": [
                   0.2,
                   0.2,
                   0.8,
-                  0.8
+                  0.7
                 ]
               }
             ],
@@ -3828,9 +3835,9 @@
               {
                 "type": "circle",
                 "x": 0.5,
-                "y": 0.78,
+                "y": 0.76,
                 "w": 0.3,
-                "h": 0.16,
+                "h": 0.12,
                 "on": "keyboard.",
                 "target": [
                   0.39,
@@ -3840,7 +3847,14 @@
                 ]
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "push": {
+              "center": [
+                0.5,
+                0.6
+              ],
+              "zoom": 1.15
+            }
           },
           "label": "MIT · 2003",
           "id": "s4_2"

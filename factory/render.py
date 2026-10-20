@@ -1046,12 +1046,36 @@ def _loudnorm_filter(wav_path: Path, lufs: float) -> str:
         return base
 
 
+def _integrated(wav_path: Path, af: str | None = None) -> float:
+    """Integrated loudness (LUFS) of a wav, optionally through a filter chain."""
+    import re as _re
+    chain = (af + "," if af else "") + "ebur128"
+    res = subprocess.run(["ffmpeg", "-nostats", "-i", str(wav_path), "-af", chain, "-f", "null", "-"],
+                         capture_output=True, text=True)
+    tail = res.stderr[res.stderr.rfind("Summary:"):]
+    return float(_re.search(r"I:\s+(-?[\d.]+) LUFS", tail).group(1))
+
+
+def _gain_filter(wav_path: Path, lufs: float, limit: float, log=print) -> str:
+    """One constant gain for the whole mix (no riding the volume), calibrated so the level AFTER the limiter lands
+    on the target: measure, apply gain + limiter, re-measure, correct (twice)."""
+    try:
+        g = lufs - _integrated(wav_path)
+        for _ in range(2):
+            got = _integrated(wav_path, _master_af(f"volume={g:.2f}dB", limit))
+            g += lufs - got
+        return f"volume={g:.2f}dB"
+    except Exception as e:  # noqa: BLE001
+        log(f"  loudness calibration failed ({e}); falling back to loudnorm")
+        return _loudnorm_filter(wav_path, lufs)
+
+
 def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> Path:
     fps = int(cfg["video"]["fps"])
     W, H = plan.size
     A.write_wav(wav_path, plan.timeline.mix())
     lufs = cfg["audio"].get("target_lufs", -14)
-    loud_af = _loudnorm_filter(wav_path, lufs)
+    loud_af = _gain_filter(wav_path, lufs, LIMIT0, log)
     cmd = [
         "ffmpeg", "-y", "-v", "error",
         "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps), "-i", "-",

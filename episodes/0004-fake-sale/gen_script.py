@@ -194,7 +194,7 @@ beat("p3b", S_PEN, "Almost three-quarters came from things marked half off or mo
      {"type": "stat", "stat": {"value": 73, "prefix": "≈", "suffix": "%", "label": "of revenue at 50 % off or more · LA Times, Jan 2012"}})
 beat("p4", S_PEN, "So in 2012 a new boss, Ron Johnson, the man behind the Apple Store, tore it all up.",
      img("a shop wall covered from edge to edge with rows of pinned red and cream paper sale tags of different sizes, flat front view, no people, nothing in front of the wall",
-         motion="static", hand_marks=True, marks=[cross(0.5, 0.5, 0.62, 0.62, "tore", target=[0.2, 0.2, 0.8, 0.8])]))
+         motion="static", hand_marks=True, marks=[cross(0.5, 0.45, 0.62, 0.56, "tore", target=[0.2, 0.2, 0.8, 0.7])]))  # lower arm above the subtitles
 beat("p5", S_PEN, "No fake markdowns. No coupons. One honest price on every tag. He called it Fair and Square.",
      img("a neatly folded white shirt on a shop counter with one clean cream price tag on a string, warm light, simple composition", motion="zoom_in"),
      stamp={"text": "Fair and square", "on": "Fair"})
@@ -289,7 +289,7 @@ beat("k12", S_KOHL, "Los Angeles sued four department-store chains over fake ori
      label="LA lawsuit 2016")
 beat("k13", S_KOHL, "Five years later, the city dropped its case against Kohl's and Macy's, after the judge tore into its expert witness.",
      img("an empty wooden witness stand in a wood-panelled 1950s courtroom, a crumpled paper chart lying on the floor beside it, morning light", motion="static",
-         hand_marks=True, closeup=closeup("after", [0.60, 0.50], 2.0, [circle(0.62, 0.50, 0.14, 0.36, "expert", target=[0.56, 0.40, 0.68, 0.66])])),
+         hand_marks=True, closeup=closeup("after", [0.60, 0.56], 2.0, [circle(0.62, 0.53, 0.14, 0.30, "expert", target=[0.56, 0.40, 0.68, 0.66])])),  # chair + circle above the subtitles
      label="LA lawsuit 2016 · dropped 2021")
 beat("k14", S_KOHL, "Turns out, proving a price was never real is harder than faking one.", kin())
 
@@ -307,7 +307,8 @@ beat("n2", S_BRAIN, "The sixty-five group guessed almost twice as high.",
                                  "unit": "%", "highlight": 1, "note": "Tversky & Kahneman, 1974"}})
 beat("n3", S_BRAIN, "At MIT, students wrote down the last digits of their social security number, then bid on a keyboard.",
      img("a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk", motion="static",
-         hand_marks=True, marks=[circle(0.50, 0.78, 0.30, 0.16, "keyboard.", target=[0.39, 0.72, 0.61, 0.80])]),
+         push={"center": [0.5, 0.60], "zoom": 1.15},  # framing raised: keyboard and circle sit above the subtitles
+         hand_marks=True, marks=[circle(0.50, 0.76, 0.30, 0.12, "keyboard.", target=[0.39, 0.72, 0.61, 0.80])]),
      label="MIT · 2003")
 beat("n4", S_BRAIN, "High numbers bid fifty-six dollars. Low numbers, sixteen.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Bid for the same keyboard", "labels": ["Low numbers", "High numbers"], "values": [16, 56],
@@ -400,7 +401,7 @@ beat("e11", S_CLOCK, "Its own example is a pen tagged ten dollars for a few days
          marks=[write("$10", on="ten", x=0.21, y=0.62, w=0.08, h=0.07, angle=-14, **TAG_W)],
          closeup=closeup("just", [0.26, 0.62], 2.0, [write("$10", at=0.0, x=0.21, y=0.62, w=0.08, h=0.07, angle=-14, color="ink"),
                                                      cross(0.21, 0.62, 0.09, 0.08, "seven-fifty", target=[0.18, 0.59, 0.24, 0.65]),
-                                                     write("$7.50!", on="seven-fifty", x=0.215, y=0.72, w=0.10, h=0.07, angle=-14)])))
+                                                     write("$7.50!", on="seven-fifty", x=0.31, y=0.655, w=0.10, h=0.07, angle=-14)])))  # up/right on the tag, clear of the subtitles
 beat("e12", S_CLOCK, "California says: within the last three months.",
      img("a 1950s pull-down classroom wall map showing North America on the left and Europe on the right, soft colours, no labels", motion="static",
          hand_marks=True, push={"center": [0.30, 0.58], "zoom": 1.8}, marks=[write("3 MONTHS", on="three", x=0.30, y=0.56, w=0.12, h=0.05)]),
