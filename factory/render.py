@@ -1131,6 +1131,8 @@ def measure_audio(path: Path) -> tuple[float, float]:
     import re as _re
     res = subprocess.run(["ffmpeg", "-nostats", "-i", str(path), "-map", "0:a", "-af", "ebur128=peak=true", "-f", "null", "-"],
                          capture_output=True, text=True)
+    if "Summary:" not in res.stderr:
+        raise RuntimeError(f"QC FAIL {Path(path).name}: no audio could be metered")
     tail = res.stderr[res.stderr.rfind("Summary:"):]
     i = float(_re.search(r"I:\s+(-?[\d.]+|-inf) LUFS", tail).group(1))
     tp = float(_re.search(r"Peak:\s+(-?[\d.]+|-inf) dBFS", tail).group(1))
