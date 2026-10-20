@@ -413,7 +413,7 @@ ES = {"number": "003", "title": "The fake sale", "stamp": "Case closed",
 beat("z1", S_CLOSE, "Case closed. The verdict. Guilty: the was price. Accomplice: the clock.", {"type": "endscreen", "endscreen": ES},
      block_start=True, sting="ub_sting_brass", sting_at=0.1)
 beat("z4", S_CLOSE, "Next case: the thirty-dollar ticket that costs forty-eight. Fee by fee.", {"type": "continue"}, block_at=6.0)
-beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=16.0, block_end=21.3)
+beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=16.0, block_end=21.0)
 
 ep = {
     "slug": "0004-fake-sale",
