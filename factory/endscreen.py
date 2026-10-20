@@ -199,7 +199,7 @@ class EndScreenShot(Shot):
                 crop, mcrop = src[y0:y1 + 1, x0:x1 + 1], m[y0:y1 + 1, x0:x1 + 1]
                 copies = int(nx.get("copies", 2))
                 area_w, area_h = sw * 0.94 / copies, sh * 0.50
-                k = min(area_w * 0.62 / crop.shape[1], area_h / crop.shape[0])
+                k = min(area_w * (0.52 if nx.get("fees") else 0.62) / crop.shape[1], area_h / crop.shape[0])
                 cw, ch = int(crop.shape[1] * k), int(crop.shape[0] * k)
                 crop = cv2.resize(crop, (cw, ch), interpolation=cv2.INTER_AREA)
                 mcrop = cv2.resize(mcrop.astype(np.float32), (cw, ch))
@@ -258,26 +258,25 @@ class EndScreenShot(Shot):
             fx = sx0 + px + cw + int(sw * 0.05)
             room = sx0 + sw - int(sw * 0.04) - fx
             n = len(nx["fees"])
-            lh = min(int(sh * 0.11), int((sh * 0.80 - (py - sh * 0.0)) / max(1, n)))
-            fy0 = sy0 + py - int(lh * 0.2)
+            top, bot = int(sh * 0.36), int(sh * 0.95)  # under the tagline stamp
+            lh = min(int(sh * 0.12), int((bot - top) / max(1, n + 0.25)))
+            fy0 = sy0 + top
             fpath = resolve_font(cfg["fonts"]["marker"])
-            size = int(lh * 0.82)
+            size = int(lh * 0.78)
             while size > 12 and max(font(fpath, size).getlength(f) for f in nx["fees"]) > room:
                 size -= 2
             for k, f in enumerate(nx["fees"]):
                 col = pal["red"] if k == n - 1 else pal["ink"]
-                self.fees.append((Writing(f, font(fpath, size), col), (fx, fy0 + k * lh)))
-        if nx.get("label"):
-            d = ImageDraw.Draw(Image.fromarray(self.sheet))
-            lab_img = Image.fromarray(self.sheet)
-            d = ImageDraw.Draw(lab_img)
+                extra = int(lh * 0.22) if k == n - 1 else 0  # the total sits a little apart (room for its ring)
+                self.fees.append((Writing(f, font(fpath, size), col), (fx, fy0 + k * lh + extra)))
+        self.plate = None
+        if nx.get("label"):  # small typed plate, bottom-right of the sheet (drawn over the sketch, every frame)
             lf = font(typew, int(sh * 0.045))
             txt = str(nx["label"]).upper()
-            tw = lf.getlength(txt)
-            bx1, by1 = sw - int(sw * 0.04), sh - int(sh * 0.05)
-            d.rectangle((bx1 - tw - 18, by1 - lf.size - 12, bx1, by1), fill=pal["ink"] + (225,))
-            d.text((bx1 - tw - 9, by1 - lf.size - 7), txt, font=lf, fill=(250, 246, 236, 255))
-            self.sheet = np.array(lab_img)
+            tw = int(lf.getlength(txt))
+            pl = Image.new("RGBA", (tw + 20, lf.size + 14), pal["ink"] + (230,))
+            ImageDraw.Draw(pl).text((10, 6), txt, font=lf, fill=(250, 246, 236, 255))
+            self.plate = (np.array(pl), int(sw * 0.04), sh - int(sh * 0.06) - pl.height)  # bottom-left, under the subject
         self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5, max_h=int(sh * 0.11)) if nx.get("tagline") else None
         self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * 0.27))
         # ---- end-screen furniture
@@ -364,6 +363,8 @@ class EndScreenShot(Shot):
             shadow[..., 3] = 120
             blend(out, cv2.GaussianBlur(shadow, (0, 0), 12), sx + dx + 10, sy + 14)
             blend(out, sheet, sx + dx, sy)
+            if self.plate is not None:
+                blend(out, self.plate[0], sx + dx + self.plate[1], sy + self.plate[2])
             if self.draw is not None and 0 < (t - tt["draw"]) / tt["ddur"] < 1.08:
                 q = (t - tt["draw"]) / tt["ddur"]
                 kind = "pencil" if q < (LINES_END + COLOR_START) / 2 else "colour"
@@ -429,7 +430,7 @@ class EndScreenShot(Shot):
                 if t >= c0:
                     q = min(1.0, (t - c0) / 0.55)
                     cxr, cyr = fx + wr.w // 2, fy + wr.h // 2
-                    rx, ry = int(wr.w * 0.66), int(wr.h * 0.85)
+                    rx, ry = int(wr.w * 0.62), int(wr.h * 0.62)
                     cv2.ellipse(out, (cxr, cyr), (rx, ry), -5, -150, -150 + 380 * q, tuple(int(c) for c in self.pal["red"]), max(5, H // 160), cv2.LINE_AA)
                     if q < 1:
                         ang = math.radians(-150 + 380 * q)

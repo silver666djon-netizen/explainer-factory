@@ -30,7 +30,7 @@ def make_ticket(path):
         d.ellipse((sx - 7, yy - 7, sx + 7, yy + 7), fill=(243, 233, 210), outline=ink, width=3)
     d.rectangle((x0 + 40, y0 + 40, sx - 40, y0 + 150), fill=red)
     d.text(((x0 + sx) / 2, y0 + 95), "ADMIT ONE", font=fnt("Anton-Regular.ttf", 92), fill=paper, anchor="mm")
-    d.text(((x0 + sx) / 2, y0 + 215), "CONCERT · ROW G · SEAT 12", font=fnt("ArchivoBlack-Regular.ttf", 42), fill=ink, anchor="mm")
+    d.text(((x0 + sx) / 2, y0 + 215), "ROW G · SEAT 12", font=fnt("ArchivoBlack-Regular.ttf", 40), fill=ink, anchor="mm")
     d.rectangle((x0 + 160, y0 + 270, sx - 160, y1 - 40), outline=ink, width=6)  # the blank price box
     d.text((x1 - 115, (y0 + y1) / 2), "No. 004", font=fnt("ArchivoBlack-Regular.ttf", 40), fill=ink, anchor="mm")
     im.save(path)
