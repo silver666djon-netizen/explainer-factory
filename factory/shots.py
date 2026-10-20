@@ -344,6 +344,19 @@ class ImageShot(Shot):
         focus_x = float(np.mean([float(m.get("x", 0.5)) for m in marks])) if marks else 0.5
         self.focus = (focus_x, 0.5)
         self._geo = cover_geometry(sw, sh, self.BW, self.BH, *self.focus)
+        if marks:  # a window that cuts a mark: centre it on the marks' bounding box instead
+            lo = min(float(m.get("x", 0.5)) - float(m.get("w", 0.0)) / 2 for m in marks)
+            hi = max(float(m.get("x", 0.5)) + float(m.get("w", 0.0)) / 2 for m in marks)
+            nw0, _nh0, left0, _t0 = self._geo
+            if lo < left0 / nw0 or hi > (left0 + self.BW) / nw0:
+                if (hi - lo) * nw0 > self.BW:  # not all fit: the marks with a labelled target (the action) win
+                    key = [m for m in marks if m.get("target")] or marks
+                    lo = min(min(float(m["target"][0]), float(m.get("x", 0.5)) - float(m.get("w", 0.0)) / 2) if m.get("target")
+                             else float(m.get("x", 0.5)) - float(m.get("w", 0.0)) / 2 for m in key)
+                    hi = max(max(float(m["target"][2]), float(m.get("x", 0.5)) + float(m.get("w", 0.0)) / 2) if m.get("target")
+                             else float(m.get("x", 0.5)) + float(m.get("w", 0.0)) / 2 for m in key)
+                self.focus = ((lo + hi) / 2, 0.5)
+                self._geo = cover_geometry(sw, sh, self.BW, self.BH, *self.focus)
         nw, nh, left, top = self._geo
         for m in marks:
             for k in ("x", "text_x", "from_x"):
@@ -356,6 +369,9 @@ class ImageShot(Shot):
                 m["w"] = float(m["w"]) * nw / self.BW
             if "h" in m:
                 m["h"] = float(m["h"]) * nh / self.BH
+            if m.get("target"):
+                tx0, ty0, tx1, ty1 = m["target"]
+                m["target"] = [(tx0 * nw - left) / self.BW, (ty0 * nh - top) / self.BH, (tx1 * nw - left) / self.BW, (ty1 * nh - top) / self.BH]
         self.marks = marks
         self.red = tuple(int(c) for c in hex_to_rgb(cfg["style"]["palette"]["red"]))
         self.cfg = cfg
@@ -404,12 +420,53 @@ class ImageShot(Shot):
             self.depth = None  # no parallax while a picture is being drawn
         if self.marks:
             self.depth = None  # marks and the pen live on the flat picture: parallax would slide the ink off the pen
+            self._clamp_writes()
         if self.full:
             fw, fh = self.full
             src_bg = Image.new("RGB", image.size, hex_to_rgb(cfg["style"]["palette"]["paper"])) if self.draw else image
             small = cover(src_bg, max(8, fw // 10), max(8, fh // 10))  # drawn pictures: plain backdrop, no spoiler
             small = cv2.GaussianBlur(small, (0, 0), 2.5)
             self.bg = (cv2.resize(small, (fw, fh), interpolation=cv2.INTER_LINEAR) * 0.45).astype(np.uint8)
+
+    def _clamp_writes(self, pad: float = 0.012) -> None:
+        """Rule: a mark is never written while it is outside the frame. A written label is moved (never resized)
+        just inside the part of the picture the camera shows during its writing."""
+        if getattr(self, "_clamped", False):
+            return
+        self._clamped = True
+        for m in self.marks:
+            if m.get("type") not in ("write", "circle", "cross"):
+                continue
+            at = max(0.0, float(m.get("at", 0.6)))
+            dur = max(0.0, float(m.get("dur", 0.45)))
+            x0, y0, x1, y1 = 0.0, 0.0, 1.0, 1.0
+            for tt in np.linspace(at, min(self.duration, at + dur), 6):
+                _p, s, M = self._matrix(float(tt))
+                x0 = max(x0, (-M[0, 2]) / s / self.BW)
+                x1 = min(x1, (self.W - M[0, 2]) / s / self.BW)
+                y0 = max(y0, (-M[1, 2]) / s / self.BH)
+                y1 = min(y1, (self.H - M[1, 2]) / s / self.BH)
+            if m["type"] != "write":  # circle / cross: shrink to the visible part, if its target still fits inside
+                x, y, w, h = float(m.get("x", 0.5)), float(m.get("y", 0.5)), float(m.get("w", 0.2)), float(m.get("h", 0.1))
+                a0, b0 = max(x - w / 2, x0 + pad), max(y - h / 2, y0 + pad)
+                a1, b1 = min(x + w / 2, x1 - pad), min(y + h / 2, y1 - pad)
+                if (a0, b0, a1, b1) == (x - w / 2, y - h / 2, x + w / 2, y + h / 2) or a1 - a0 < 0.02 or b1 - b0 < 0.02:
+                    continue
+                tg = m.get("target")
+                if tg and m["type"] == "cross":  # a cross over the whole picture strikes what is visible
+                    tg = [max(tg[0], a0), max(tg[1], b0), min(tg[2], a1), min(tg[3], b1)]
+                    m["target"] = tg
+                if tg and not (a0 <= tg[0] + 1e-3 and b0 <= tg[1] + 1e-3 and tg[2] - 1e-3 <= a1 and tg[3] - 1e-3 <= b1):
+                    continue
+                m["x"], m["y"], m["w"], m["h"] = (a0 + a1) / 2, (b0 + b1) / 2, a1 - a0, b1 - b0
+                continue
+            hw, hh = float(m.get("w", 0.2)) / 2 + pad, float(m.get("h", 0.08)) / 2 + pad
+            x, y = float(m.get("x", 0.5)), float(m.get("y", 0.5))
+            nx = (x0 + x1) / 2 if x1 - x0 < 2 * hw else min(max(x, x0 + hw), x1 - hw)
+            ny = (y0 + y1) / 2 if y1 - y0 < 2 * hh else min(max(y, y0 + hh), y1 - hh)
+            if abs(nx - x) > 1e-4 or abs(ny - y) > 1e-4:
+                m["x"], m["y"] = nx, ny
+                m.pop("_lay", None)
 
     def release(self) -> None:
         self.base = None

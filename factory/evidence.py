@@ -324,12 +324,15 @@ class EvidenceShot(Shot):
         z = (self.W / self.BW) * 1.10 * (1 + PUSH * p)  # board is 10 % larger than the frame
         pa = self.spec.get("_push_at")
         if pa is not None and t > pa and self.strokes:  # second framing: push in on the marked words
-            q = ease(min(1.0, (t - pa) / 0.9))
-            z *= 1 + 0.32 * q
+            ramp = self.spec.get("push_ease", 0.9)  # seconds, or "rest": a slow push across the rest of the shot
+            ramp = max(0.3, self.duration - pa) if ramp == "rest" else float(ramp)
+            q = ease(min(1.0, (t - pa) / ramp))
+            z *= 1 + float(self.spec.get("push_zoom", 0.32)) * q
             pts = np.concatenate(self.strokes)
             tx, ty = float(pts[:, 0].mean()), float(pts[:, 1].mean())
             rot = (-TILT / 2 + TILT * p) * (1 if self.seed % 2 else -1)
-            cx, cy = self.BW / 2 + (tx - self.BW / 2) * 0.6 * q, self.BH / 2 + (ty - self.BH / 2) * 0.6 * q
+            k = 0.6 * min(1.0, float(self.spec.get("push_zoom", 0.32)) / 0.32)  # a gentle push only drifts a little
+            cx, cy = self.BW / 2 + (tx - self.BW / 2) * k * q, self.BH / 2 + (ty - self.BH / 2) * k * q
             M = cv2.getRotationMatrix2D((cx, cy), rot, z)
             M[0, 2] += self.W / 2 - cx
             M[1, 2] += self.H / 2 - cy

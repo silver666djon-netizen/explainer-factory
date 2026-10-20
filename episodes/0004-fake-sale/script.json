@@ -1338,7 +1338,7 @@
           "on": "then",
           "center": [
             0.42,
-            0.35
+            0.29
           ],
           "zoom": 2.0,
           "marks": [
@@ -1485,7 +1485,9 @@
           "seed": 51,
           "kicker": "REPLICATION  ·  PARAPHRASED",
           "lead": 0.4,
-          "push_on": "Weaker,"
+          "push_on": "much",
+          "push_zoom": 0.1,
+          "push_ease": "rest"
         }
       }
     },
@@ -1983,11 +1985,26 @@
         "marks": [
           {
             "type": "write",
-            "text": "7 : 1",
-            "x": 0.13,
+            "text": " ",
+            "x": 0.15,
             "y": 0.22,
-            "w": 0.12,
-            "h": 0.09,
+            "w": 0.23,
+            "h": 0.2,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "bg": "paper",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "7 : 1",
+            "x": 0.15,
+            "y": 0.22,
+            "w": 0.2,
+            "h": 0.18,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -2045,11 +2062,26 @@
             },
             {
               "type": "write",
+              "text": " ",
+              "x": 0.497,
+              "y": 0.725,
+              "w": 0.33,
+              "h": 0.066,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "bg": "paper",
+              "hand": false
+            },
+            {
+              "type": "write",
               "text": "0.02 % AT FULL PRICE",
               "x": 0.497,
-              "y": 0.605,
-              "w": 0.22,
-              "h": 0.036,
+              "y": 0.725,
+              "w": 0.31,
+              "h": 0.0504,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -2504,15 +2536,22 @@
         "type": "image",
         "motion": "static",
         "prompt": "an open 1950s wooden index-card box with four blank white cards standing up, plain cream background",
+        "push": {
+          "center": [
+            0.56,
+            0.37
+          ],
+          "zoom": 1.42
+        },
         "marks": [
           {
             "type": "write",
             "text": "Keepa",
-            "x": 0.5,
-            "y": 0.252,
-            "w": 0.1,
-            "h": 0.032,
-            "angle": 12,
+            "x": 0.491,
+            "y": 0.2879,
+            "w": 0.05,
+            "h": 0.018,
+            "angle": 15.6,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2521,11 +2560,11 @@
           {
             "type": "write",
             "text": "camelcamelcamel",
-            "x": 0.52,
-            "y": 0.29,
-            "w": 0.19,
-            "h": 0.032,
-            "angle": 12,
+            "x": 0.517,
+            "y": 0.3142,
+            "w": 0.13,
+            "h": 0.018,
+            "angle": 17.0,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2534,11 +2573,11 @@
           {
             "type": "write",
             "text": "PriceSpy",
-            "x": 0.54,
-            "y": 0.33,
-            "w": 0.12,
-            "h": 0.032,
-            "angle": 12,
+            "x": 0.549,
+            "y": 0.3353,
+            "w": 0.08,
+            "h": 0.018,
+            "angle": 17.9,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2547,11 +2586,11 @@
           {
             "type": "write",
             "text": "idealo",
-            "x": 0.58,
-            "y": 0.39,
-            "w": 0.1,
-            "h": 0.036,
-            "angle": 12,
+            "x": 0.565,
+            "y": 0.392,
+            "w": 0.07,
+            "h": 0.018,
+            "angle": 18.0,
             "color": "ink",
             "font": "typewriter",
             "dur": 0.7,
@@ -2689,21 +2728,25 @@
           }
         ],
         "closeup": {
-          "on": "Everywhere",
+          "on": "search",
           "center": [
             0.42,
             0.74
           ],
           "zoom": 2.2,
-          "marks": [
+          "marks": [],
+          "motion": "zoom_in",
+          "back": 3.2,
+          "back_marks": [
             {
               "type": "circle",
               "x": 0.365,
               "y": 0.808,
               "w": 0.09,
               "h": 0.06,
-              "on": "Everywhere",
-              "delay": 0.35,
+              "on": null,
+              "delay": 0.45,
+              "dur": 0.5,
               "target": [
                 0.335,
                 0.795,
@@ -2722,13 +2765,12 @@
               "color": "red",
               "font": "marker",
               "dur": 0.7,
-              "on": "search"
+              "delay": 0.5
             }
-          ],
-          "motion": "zoom_in",
-          "back": 0.8
+          ]
         }
       },
+      "hold": 2.1,
       "music": "ub_secret_report"
     },
     {
@@ -3540,6 +3582,7 @@
             "hand_marks": true
           },
           "label": "tracked 2003",
+          "ledger_hide": true,
           "id": "s3_4"
         },
         {
@@ -3700,7 +3743,7 @@
               "on": "then",
               "center": [
                 0.42,
-                0.35
+                0.29
               ],
               "zoom": 2.0,
               "marks": [
@@ -3843,7 +3886,9 @@
               "seed": 51,
               "kicker": "REPLICATION  ·  PARAPHRASED",
               "lead": 0.4,
-              "push_on": "Weaker,"
+              "push_on": "much",
+              "push_zoom": 0.1,
+              "push_ease": "rest"
             }
           },
           "id": "s4_4"
@@ -4020,11 +4065,26 @@
             "marks": [
               {
                 "type": "write",
-                "text": "7 : 1",
-                "x": 0.13,
+                "text": " ",
+                "x": 0.15,
                 "y": 0.22,
-                "w": 0.12,
-                "h": 0.09,
+                "w": 0.23,
+                "h": 0.2,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "bg": "paper",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "7 : 1",
+                "x": 0.15,
+                "y": 0.22,
+                "w": 0.2,
+                "h": 0.18,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
@@ -4260,11 +4320,11 @@
               {
                 "type": "write",
                 "text": "Keepa",
-                "x": 0.5,
-                "y": 0.252,
-                "w": 0.1,
-                "h": 0.032,
-                "angle": 12,
+                "x": 0.491,
+                "y": 0.2879,
+                "w": 0.05,
+                "h": 0.018,
+                "angle": 15.6,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4273,11 +4333,11 @@
               {
                 "type": "write",
                 "text": "camelcamelcamel",
-                "x": 0.52,
-                "y": 0.29,
-                "w": 0.19,
-                "h": 0.032,
-                "angle": 12,
+                "x": 0.517,
+                "y": 0.3142,
+                "w": 0.13,
+                "h": 0.018,
+                "angle": 17.0,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4286,11 +4346,11 @@
               {
                 "type": "write",
                 "text": "PriceSpy",
-                "x": 0.54,
-                "y": 0.33,
-                "w": 0.12,
-                "h": 0.032,
-                "angle": 12,
+                "x": 0.549,
+                "y": 0.3353,
+                "w": 0.08,
+                "h": 0.018,
+                "angle": 17.9,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4299,11 +4359,11 @@
               {
                 "type": "write",
                 "text": "idealo",
-                "x": 0.58,
-                "y": 0.39,
-                "w": 0.1,
-                "h": 0.036,
-                "angle": 12,
+                "x": 0.565,
+                "y": 0.392,
+                "w": 0.07,
+                "h": 0.018,
+                "angle": 18.0,
                 "color": "ink",
                 "font": "typewriter",
                 "dur": 0.7,
@@ -4335,7 +4395,14 @@
                 "dur": 0.01,
                 "on": "PriceSpy"
               }
-            ]
+            ],
+            "push": {
+              "center": [
+                0.56,
+                0.37
+              ],
+              "zoom": 1.42
+            }
           },
           "say": "Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",
           "id": "s7_2"
@@ -4363,21 +4430,25 @@
             ],
             "hand_marks": true,
             "closeup": {
-              "on": "Everywhere",
+              "on": "search",
               "center": [
                 0.42,
                 0.74
               ],
               "zoom": 2.2,
-              "marks": [
+              "marks": [],
+              "motion": "zoom_in",
+              "back": 3.2,
+              "back_marks": [
                 {
                   "type": "circle",
                   "x": 0.365,
                   "y": 0.808,
                   "w": 0.09,
                   "h": 0.06,
-                  "on": "Everywhere",
-                  "delay": 0.35,
+                  "on": null,
+                  "delay": 0.45,
+                  "dur": 0.5,
                   "target": [
                     0.335,
                     0.795,
@@ -4396,11 +4467,9 @@
                   "color": "red",
                   "font": "marker",
                   "dur": 0.7,
-                  "on": "search"
+                  "delay": 0.5
                 }
-              ],
-              "motion": "zoom_in",
-              "back": 0.8
+              ]
             }
           },
           "id": "s7_3"

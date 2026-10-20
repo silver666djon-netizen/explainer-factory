@@ -9,12 +9,19 @@ Checks (exceptions are listed with timecodes):
  2. every small stamp (stamp hand) presses with its centre inside its target plate (photo, page, print).
  3. nothing (mark, stamp, insert, label) is drawn inside the ledger's safe zone (top-right 18 % x 22 %) while
     the ledger is on screen.
+ 4. a mark is never written while its target or the mark itself is outside the frame (sampled every frame
+    of the writing at 12 fps).
 Exit code 1 if anything is listed."""
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
+
+# offline: no image API is ever called. The provider name only makes the cache file names match the CI
+# renders, so the audit lays marks out on the real pictures (not on square placeholders).
+os.environ.setdefault("OPENROUTER_API_KEY", "audit-offline")
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT))
@@ -75,6 +82,7 @@ def script_marks(ep: dict, shorts: bool):
         groups = [("", v.get("marks") or [])]
         if v.get("closeup"):
             groups.append(("closeup", v["closeup"].get("marks") or []))
+            groups.append(("after pull-back", v["closeup"].get("back_marks") or []))
         groups.append(("photo", v.get("photo_marks") or []))
         for where, ms in groups:
             for m in ms:
@@ -87,6 +95,10 @@ def build(ep, cfg, timings, shorts):
     TXT = {b["text"]: b for b in timings["beats"]}
     cache = ROOT / ".cache" / "images" / ep["slug"]
     images = ensure_images(cfg, image_prompts(ep), cache, True, lambda *a: None)
+    from PIL import Image
+    fake = [k for k, p in images.items() if Image.open(p).size == (1024, 1024) and os.path.getsize(p) < 80_000]
+    if fake:
+        raise SystemExit(f"mark audit: no real picture for {', '.join(fake)} (placeholders) - fetch the image cache first")
     images.update(ensure_archive(ep, cfg, cache, lambda *a: None))
     ensure_clips(ep, cache, lambda *a: None)
     voice = make_voice(cfg, True, ep.get("voices"))
@@ -153,6 +165,36 @@ def main(argv):
                 problems.append((name, "?", None, f"stamp centre ({cx:.2f},{cy:.2f}) outside its plate"))
         print(f"  [{name}] stamp presses checked: {sum(1 for r in D.STAMP_LOG if r["plate"])}")
         D.STAMP_LOG = None
+        # 4. writing in frame: the mark box and its target stay inside the frame while the hand writes
+        Wf, Hf = plan.size
+        for sh in plan.shots:
+            if not hasattr(sh, "_screen"):
+                continue
+            for m in getattr(sh, "marks", None) or []:
+                at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))
+                if dur <= 0.05 or not m.get("hand") or m.get("type") == "led":
+                    continue
+                if sh.base is None:
+                    sh._prepare()
+                boxes = [("mark", float(m.get("x", 0.5)) - float(m.get("w", 0.2)) / 2, float(m.get("y", 0.5)) - float(m.get("h", 0.1)) / 2,
+                          float(m.get("x", 0.5)) + float(m.get("w", 0.2)) / 2, float(m.get("y", 0.5)) + float(m.get("h", 0.1)) / 2)]
+                if m.get("target"):
+                    boxes.append(("target", *m["target"]))
+                fy0 = sh.y0 if getattr(sh, "full", None) else 0
+                fy1 = fy0 + (sh.H if getattr(sh, "full", None) else Hf)
+                tt = max(0.0, at)
+                while tt <= min(sh.duration, at + dur):
+                    for nm, x0, y0, x1, y1 in boxes:
+                        ax, ay = sh._screen(x0 * sh.BW, y0 * sh.BH, tt)
+                        bx2, by2 = sh._screen(x1 * sh.BW, y1 * sh.BH, tt)
+                        over = max(-ax, fy0 - ay, bx2 - Wf, by2 - fy1)
+                        if over > 1:
+                            problems.append((name, beat_at(sh.start + tt), sh.start + tt,
+                                             f"{m.get('type')} '{m.get('text', '')}' written while its {nm} is outside the frame "
+                                             f"({over / Wf:.1%} of the width out)"))
+                            tt = 1e9
+                            break
+                    tt += 1 / 12
         # 3. ledger safe zone
         led = plan.ledger
         if led is None:

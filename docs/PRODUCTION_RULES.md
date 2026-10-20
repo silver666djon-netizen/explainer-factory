@@ -93,3 +93,7 @@ must report zero before a final render.
 14. Audio gate: every rendered file is metered after encoding (BS.1770, ffmpeg ebur128). True peak above
     -1.0 dBTP (`audio.true_peak_max`) fails the build. The master limiter runs 4x oversampled so inter-sample
     peaks are caught before the AAC encode. Spot-check any file with `python tools/qc/audio_gate.py <files>`.
+15. A mark is never written while its target or the mark itself is outside the frame. Written labels are kept
+    inside the visible picture by the engine; a push-in that needs a mark pulls back first ("closeup":
+    {"back": s, "back_marks": [...]}: written only on the full frame). The mark audit checks every frame of
+    every hand action (check 4) - zero exceptions before a final render.

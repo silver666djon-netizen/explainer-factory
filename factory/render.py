@@ -228,6 +228,9 @@ def _remap_mark(m: dict, box) -> dict:
         m["w"] = float(m["w"]) / sx
     if "h" in m:
         m["h"] = float(m["h"]) / sy
+    if m.get("target"):
+        tx0, ty0, tx1, ty1 = m["target"]
+        m["target"] = [(tx0 - bx0) / sx, (ty0 - by0) / sy, (tx1 - bx0) / sx, (ty1 - by0) / sy]
     return m
 
 
@@ -425,7 +428,14 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         for m in done:
                             m.pop("on", None)
                             m.pop("until", None)
-                        segs.append((tc + cdur, span - tc - cdur, base, box0, done, "zoom_out", "#pushback"))
+                        # marks written only once the camera is back on the full frame (target and mark in shot):
+                        # "back_marks", timed by "delay" from the start of the pull-back
+                        bm = [dict(m, at=float(m.get("delay", 0.5))) for m in (cu.get("back_marks") or [])]
+                        for m in bm:
+                            m.pop("on", None)
+                        _hand_prep(bm, True)
+                        _serialize_hands(bm, busy_until=-HAND_GAP)
+                        segs.append((tc + cdur, span - tc - cdur, base, box0, done + bm, cu.get("back_motion", "zoom_out"), "#pushback"))
                 for k, (a0, dur0, im0, bx, mk, mot, tag) in enumerate(segs):
                     mk = [_remap_mark(m, bx) for m in mk] if bx != (0.0, 0.0, 1.0, 1.0) else mk
                     for m in mk:
