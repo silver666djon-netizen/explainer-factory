@@ -115,10 +115,13 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   5. 4:16–4:22 replication card: slow 10 % push from the underline to the end of the beat.
   Also: engine/audit rule 15 (never write outside the frame) fixed n1 closeup, Shorts s2/s3/s4/s6 marks;
   Short 3 k7 hides the ledger.
-- **r61 render**: first run 39483687135 failed the true-peak gate (+1.6 dBTP, long.mp4) → master fixed, re-dispatched (see `gh run list`). NEXT: when it completes →
-  download → mark_audit + handcheck (long + shorts) + audio_gate on all 8 files → frame sheet at 4:16–4:22,
-  5:57, 6:09, 7:41, 7:50–8:01 (timecodes shift ≈ +0.4 s after x6) → report → Notify `0004-fake-sale-r61` →
-  in the SAME message send the Episode 4 angle options below.
+- **r61** render failed the true-peak gate (+1.6 dBTP) → master fixed (AAC cutoff, auto-remaster).
+  **r62 released** (tag 0004-fake-sale-r62): all 8 files pass (long −14.7 LUFS / −1.7 dBTP, Shorts −14.7…−14.8 /
+  −2.1…−2.7), mark audit checks 1–4 and handcheck 0 issues, 5 fixes confirmed on frames. Loudness sits ~0.7 LU
+  under −14 since the lower ceiling → for Ep.4 consider `target_lufs −13.0`.
+  Audit check 5 (new, subtitle over a mark's target) lists 4 older spots, NOT yet fixed, waiting for Klot:
+  1:09.7 p4 big cross under subtitle (marginal), 3:41.1 k13 chair circle crosses subtitle (marginal),
+  4:09.4 n3 subtitle "keyboard." covers the circled keyboard (visible), 7:02.4 e11 "$7.50!" touches subtitle.
 - **Episode 4 "Drip pricing"** (teased in Ep.3 end screen: $30 → $48 fee stack). Verified primary sources:
   - FTC Rule on Unfair or Deceptive Fees, 16 CFR 464 — announced 17 Dec 2024, effective 12 May 2025; live-event
     tickets + short-term lodging; total price shown most prominently; FTC estimate up to 53 m hours/yr saved,

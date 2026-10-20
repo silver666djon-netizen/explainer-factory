@@ -11,6 +11,7 @@ Checks (exceptions are listed with timecodes):
     the ledger is on screen.
  4. a mark is never written while its target or the mark itself is outside the frame (sampled every frame
     of the writing at 12 fps).
+ 5. a mark is never written while a subtitle covers its target (or the mark itself).
 Exit code 1 if anything is listed."""
 from __future__ import annotations
 
@@ -166,7 +167,15 @@ def main(argv):
         print(f"  [{name}] stamp presses checked: {sum(1 for r in D.STAMP_LOG if r["plate"])}")
         D.STAMP_LOG = None
         # 4. writing in frame: the mark box and its target stay inside the frame while the hand writes
+        # 5. ... and no subtitle sits on it meanwhile
         Wf, Hf = plan.size
+        from factory.render import Overlay
+        ov = Overlay(cfg, plan)
+        cap_boxes = []
+        for cap in plan.captions:
+            ci = ov.caption_img(cap, 0)
+            ch, cw = ci.shape[:2]
+            cap_boxes.append((cap.start, cap.end, (Wf - cw) / 2, ov.cap_y - ch / 2, (Wf + cw) / 2, ov.cap_y + ch / 2))
         for sh in plan.shots:
             if not hasattr(sh, "_screen"):
                 continue
@@ -187,6 +196,11 @@ def main(argv):
                     for nm, x0, y0, x1, y1 in boxes:
                         ax, ay = sh._screen(x0 * sh.BW, y0 * sh.BH, tt)
                         bx2, by2 = sh._screen(x1 * sh.BW, y1 * sh.BH, tt)
+                        tabs = sh.start + tt
+                        for c0, c1, cx0, cy0, cx1, cy1 in cap_boxes:
+                            if c0 <= tabs < c1 and ax < cx1 and bx2 > cx0 and ay < cy1 and by2 > cy0 and (nm == "target" or not m.get("target")):
+                                problems.append((name, beat_at(tabs), tabs, f"{m.get('type')} '{m.get('text', '')}' written under a subtitle"))
+                                break
                         over = max(-ax, fy0 - ay, bx2 - Wf, by2 - fy1)
                         if over > 1:
                             problems.append((name, beat_at(sh.start + tt), sh.start + tt,
