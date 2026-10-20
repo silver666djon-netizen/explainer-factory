@@ -160,8 +160,9 @@ beat("cf1", S_OPEN, "Case file number three. The sale that never was. Larry is m
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at.",
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "last_seen": "Every Black Friday", "tag": "SUSPECT"},
-      "photo_marks": [write("WAS $—", on="was", x=0.5, y=0.52, w=0.36, h=0.12, color="ink"),
-                      strike(0.5, 0.52, 0.42, "Aliases:")]})
+      "photo_marks": [write("WAS", on="was", x=0.5, y=0.47, w=0.30, h=0.13, color="ink"),
+                      write("$—", on="price.", x=0.5, y=0.62, w=0.24, h=0.13, color="ink"),
+                      strike(0.5, 0.47, 0.34, "Aliases:"), strike(0.5, 0.62, 0.30, "Aliases:", delay=0.5)]})
 beat("m1c", S_OPEN, "Last seen: every Black Friday.",
      reuse("o1", hand_marks=True, push={"center": [0.40, 0.62], "zoom": 1.6},
            marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
@@ -252,7 +253,8 @@ beat("k6", S_KOHL, "Larry's saving: sixty dollars. His real overpay: ninety.",
      pause_at={"word": "ninety.", "sec": 0.7, "hit": "stamp"},
      ledger=[{"label": "OVERPAID", "amount": "$90.00", "loss": True, "circle": True, "on": "ninety."}])
 beat("k7", S_KOHL, "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
-     img("a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil", motion="zoom_in"),
+     img("a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil", motion="static",
+         hand_marks=True, marks=[circle(0.37, 0.35, 0.38, 0.58, "tracked"), write("103 DAYS", on="hundred", x=0.73, y=0.30, w=0.20, h=0.08)]),
      label="tracked 2003")
 beat("k8", S_KOHL, "They were on sale eighty-six percent of the time.",
      {"type": "stat", "stat": {"value": 86, "suffix": "%", "label": "of the time on sale · tracked 2003"}},
@@ -294,7 +296,8 @@ beat("n2", S_BRAIN, "The sixty-five group guessed almost twice as high.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Median guess", "labels": ["Wheel: 10", "Wheel: 65"], "values": [25, 45],
                                  "unit": "%", "highlight": 1, "note": "Tversky & Kahneman, 1974"}})
 beat("n3", S_BRAIN, "At MIT, students wrote down the last digits of their social security number, then bid on a keyboard.",
-     img("a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk", motion="zoom_in"),
+     img("a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk", motion="static",
+         hand_marks=True, marks=[circle(0.50, 0.78, 0.30, 0.16, "keyboard.")]),
      label="MIT · 2003")
 beat("n4", S_BRAIN, "High numbers bid fifty-six dollars. Low numbers, sixteen.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Bid for the same keyboard", "labels": ["Low numbers", "High numbers"], "values": [16, 56],

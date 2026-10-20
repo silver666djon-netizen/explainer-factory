@@ -229,11 +229,11 @@
         "photo_marks": [
           {
             "type": "write",
-            "text": "WAS $—",
+            "text": "WAS",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.36,
-            "h": 0.12,
+            "y": 0.47,
+            "w": 0.3,
+            "h": 0.13,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -241,11 +241,33 @@
             "on": "was"
           },
           {
+            "type": "write",
+            "text": "$—",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.24,
+            "h": 0.13,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "price."
+          },
+          {
             "type": "underline",
             "x": 0.5,
-            "y": 0.52,
-            "w": 0.42,
+            "y": 0.47,
+            "w": 0.34,
             "h": 0.02,
+            "on": "Aliases:"
+          },
+          {
+            "type": "underline",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.3,
+            "h": 0.02,
+            "delay": 0.5,
             "on": "Aliases:"
           }
         ]
@@ -916,8 +938,32 @@
       "text": "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
       "visual": {
         "type": "image",
-        "motion": "zoom_in",
-        "prompt": "a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil"
+        "motion": "static",
+        "prompt": "a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.37,
+            "y": 0.35,
+            "w": 0.38,
+            "h": 0.58,
+            "on": "tracked"
+          },
+          {
+            "type": "write",
+            "text": "103 DAYS",
+            "x": 0.73,
+            "y": 0.3,
+            "w": 0.2,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "hundred"
+          }
+        ]
       },
       "label": "tracked 2003"
     },
@@ -1242,8 +1288,19 @@
       "text": "At MIT, students wrote down the last digits of their social security number, then bid on a keyboard.",
       "visual": {
         "type": "image",
-        "motion": "zoom_in",
-        "prompt": "a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk"
+        "motion": "static",
+        "prompt": "a 1950s university lecture room seen from the front, students with simple friendly cartoon faces writing numbers on small white cards, a cordless keyboard displayed on the lecturer's desk",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.5,
+            "y": 0.78,
+            "w": 0.3,
+            "h": 0.16,
+            "on": "keyboard."
+          }
+        ]
       },
       "label": "MIT · 2003"
     },
