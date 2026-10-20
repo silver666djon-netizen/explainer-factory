@@ -128,14 +128,14 @@ beat("o1", S_OPEN, "A hair dryer at Boots. Was forty-nine ninety-nine.",
          motion="static", hand_marks=True,
          marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
                 write("WAS £49.99", on="Was", x=0.365, y=0.635, w=0.20, h=0.07, **TAG_W)]),
-     pause_at={"word": "forty-nine", "sec": 0.7, "hit": "stamp"})
+     pause_at={"word": "forty-nine", "sec": 0.45, "hit": "stamp"})
 beat("o2", S_OPEN, "Now eighteen ninety-nine.",
      reuse("o1", hand_marks=True,
            marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
                   write("WAS £49.99", at=0.0, x=0.365, y=0.635, w=0.20, h=0.07, color="ink"),
                   cross(0.365, 0.635, 0.22, 0.08, "Now"),
                   write("NOW £18.99", on="eighteen", x=0.365, y=0.725, w=0.22, h=0.075)]),
-     pause_at={"word": "eighteen", "sec": 0.7, "hit": "stamp"})
+     pause_at={"word": "eighteen", "sec": 0.45, "hit": "stamp"})
 beat("o3", S_OPEN, "In the twelve months before, it had never cost forty-nine ninety-nine there. Not once.",
      doc("Which? · price check · Nov 2024", "The £49.99 that wasn't",
          "A hair dryer was £18.99 on Black Friday, marked down from £49.99. It had never been £49.99 at Boots in the preceding 12 months.",
@@ -143,9 +143,14 @@ beat("o3", S_OPEN, "In the twelve months before, it had never cost forty-nine ni
 beat("cf1", S_OPEN, "Larry is made up. The forty-nine ninety-nine was too. Case file number three. The sale that never was.",  # the gag lands on "SUBJECT: Larry (fictional)"
      {"type": "casefile", "casefile": {"mode": "open", "number": "003", "title": "The fake sale", "typed": False, "open_stamp_on": "never",
                                         "inside": ["SUBJECT: Larry (fictional)", "EXHIBIT: one hair dryer", "SUSPECTS: 2", "STATUS: open"]}})
-beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at. Last seen: every Black Friday.",
+beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at.",
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "last_seen": "Every Black Friday", "tag": "SUSPECT"}})
+beat("m1c", S_OPEN, "Last seen: every Black Friday.",
+     reuse("o1", hand_marks=True, push={"center": [0.40, 0.62], "zoom": 1.6},
+           marks=[write("BRITAIN · 2024", at=0.0, x=0.365, y=0.555, w=0.15, h=0.035, color="ink", fnt="body"),
+                  write("WAS £49.99", at=0.0, x=0.365, y=0.635, w=0.20, h=0.07, color="ink"),
+                  circle(0.365, 0.635, 0.26, 0.14, "Black")]))
 beat("m1b", S_OPEN, "It never touches your money. It just tells you how much you're saving.",
      img("{larry} leaning in with a delighted smile while an oversized cream paper price tag on a string hovers by his ear as if whispering a secret, plain cream background",
          motion="zoom_in"))
@@ -307,9 +312,13 @@ chapter("t4", S_CLOCK, "Friday, eleven fifty-eight p.m.", "Friday 11:58 PM — T
 beat("c1", S_CLOCK, "Larry is buying a mattress. Sale ends in two minutes.",
      img("{larry} in striped pyjamas sitting up in bed at night, his face lit by a glowing laptop showing a big mattress, wide-eyed", motion="zoom_in",
          marks=[write("SALE ENDS IN 00:02:00", on="Sale", x=0.25, y=0.24, w=0.26, h=0.06, color="paper", fnt="headline")]))
-beat("m2", S_CLOCK, "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine. Only three left.",
+beat("m2", S_CLOCK, "Suspect number two. Name: the countdown clock. Aliases: sale ends in two fifty-nine fifty-nine.",
      {"type": "mugshot", "prompt": "a single chrome 1950s twin-bell alarm clock with a red face standing alone on a plain light grey background, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The countdown clock", "alias": "'Sale ends in 02:59:59' · 'Only 3 left'", "last_seen": "Checkout, 11:58 PM", "tag": "SUSPECT"}})
+beat("m2b", S_CLOCK, "Only three left.",
+     reuse("c1", hand_marks=True, push={"center": [0.42, 0.45], "zoom": 1.3},
+           marks=[write("SALE ENDS IN 00:01:58", at=0.0, x=0.25, y=0.24, w=0.26, h=0.06, color="paper", fnt="headline"),
+                  write("ONLY 3 LEFT!", on="three", x=0.25, y=0.36, w=0.20, h=0.06)]))
 beat("e1", S_CLOCK, "In Britain, the competition watchdog took mattress-maker Emma to court. The judgment has the numbers.",
      arch("furniture_windows_shenandoah_1938.jpg", "Furniture store windows at night, Pennsylvania, 1938", motion="zoom_in", crop=[0.0, 0.0, 1.0, 0.94]), label="High Court · July 2026")
 beat("e2", S_CLOCK, "Ninety-eight point two percent of Emma's sales were products shown with a struck-through was price.",
@@ -404,7 +413,7 @@ ES = {"number": "003", "title": "The fake sale", "stamp": "Case closed",
 beat("z1", S_CLOSE, "Case closed. The verdict. Guilty: the was price. Accomplice: the clock.", {"type": "endscreen", "endscreen": ES},
      block_start=True, sting="ub_sting_brass", sting_at=0.1)
 beat("z4", S_CLOSE, "Next case: the thirty-dollar ticket that costs forty-eight. Fee by fee.", {"type": "continue"}, block_at=6.0)
-beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=16.0, block_end=22.0)
+beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=16.0, block_end=21.3)
 
 ep = {
     "slug": "0004-fake-sale",
