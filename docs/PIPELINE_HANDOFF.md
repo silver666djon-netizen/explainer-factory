@@ -1,6 +1,6 @@
 # Pipeline chat — handoff (read this first in any new chat / any model)
 
-Last updated: 2026-10-20, Episode 3 r61 in render. This file plus `docs/PRODUCTION_RULES.md` is everything a
+Last updated: 2026-10-21, Episode 3 r63 released; Episode 4 structure awaiting approval. This file plus `docs/PRODUCTION_RULES.md` is everything a
 new session needs. Do not ask Klot to re-explain the project; continue from "Current state" below.
 
 ## 1. Who and what
@@ -115,13 +115,14 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   5. 4:16–4:22 replication card: slow 10 % push from the underline to the end of the beat.
   Also: engine/audit rule 15 (never write outside the frame) fixed n1 closeup, Shorts s2/s3/s4/s6 marks;
   Short 3 k7 hides the ledger.
-- **r61** render failed the true-peak gate (+1.6 dBTP) → master fixed (AAC cutoff, auto-remaster).
-  **r62 released** (tag 0004-fake-sale-r62): all 8 files pass (long −14.7 LUFS / −1.7 dBTP, Shorts −14.7…−14.8 /
-  −2.1…−2.7), mark audit checks 1–4 and handcheck 0 issues, 5 fixes confirmed on frames. Loudness sits ~0.7 LU
-  under −14 since the lower ceiling → for Ep.4 consider `target_lufs −13.0`.
-  Audit check 5 (new, subtitle over a mark's target) lists 4 older spots, NOT yet fixed, waiting for Klot:
-  1:09.7 p4 big cross under subtitle (marginal), 3:41.1 k13 chair circle crosses subtitle (marginal),
-  4:09.4 n3 subtitle "keyboard." covers the circled keyboard (visible), 7:02.4 e11 "$7.50!" touches subtitle.
+- r61 failed the true-peak gate; r62 released. **r63 released and sent** (tag 0004-fake-sale-r63): the four
+  subtitle collisions fixed (1:10 p4 cross, 3:41 k13 circle, 4:09 n3 framing 1.15x, 7:02 e11 "$7.50!"),
+  loudness now calibrated after the limiter: long −14.2 LUFS / −1.9 dBTP, Shorts −14.2…−14.3 / −2.0…−2.6.
+  Mark audit (checks 1–5) 0, handcheck 0 (long + 7 Shorts). Waiting for Klot's frame check on r63.
+- **Episode 4 structure** sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
+  structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
+  teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);
+  StubHub "all-in, lost share, reverted" is NOT in NBER w25186 (only StubHub's 2023 White House remarks).
 - **Episode 4 "Drip pricing"** (teased in Ep.3 end screen: $30 → $48 fee stack). Verified primary sources:
   - FTC Rule on Unfair or Deceptive Fees, 16 CFR 464 — announced 17 Dec 2024, effective 12 May 2025; live-event
     tickets + short-term lodging; total price shown most prominently; FTC estimate up to 53 m hours/yr saved,
