@@ -1,0 +1,27 @@
+name: TTS probe
+# Synthesises every long beat of an episode one by one with a time limit and reports slow or hanging lines.
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        required: true
+        default: "0005-drip-pricing"
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-v1
+      - run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt
+      - run: python tools/tts_probe.py "episodes/${{ github.event.inputs.episode }}" 90
