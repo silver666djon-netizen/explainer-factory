@@ -130,8 +130,12 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
     (images/c4.png, l1.png, m1b.png).
   - Engine added: manual stills, ClipImageShot, stamp marks pressed by the stamp hand, ALLEGED plate, end-screen
     "writes" (No tip), labels from a word (label_on), map dot.
-  - NEXT: when images/o4.png arrives → cold-open + end-screen previews (render.yml preview=yes, upto=cf1 for the cold
-    open; the end screen needs z0 too, use its fallback-free path once z0.png exists).
+  - Real-voice build hang FIXED 2026-10-21 (render.py, Larry's tab scheduling `while moved:` re-matched one busy
+    window forever on float rounding). Narration on CI ≈ 7.5 min for 87 beats; long video 8.34 min on the real voice.
+    tools/tts_probe.py (tts-probe.yml) publishes real timings to release probe-<slug> (voiced.json) → rebuild the plan
+    locally fast with scratchpad plan_real.py-style script (zero audio + real word times).
+  - End screen z1..z5 = 19.4 s on the real voice (target ≤ 22 s); ES times retimed to the real words (see gen_script).
+  - NEXT: when images/o4.png arrives → cold-open preview (render.yml preview=yes, upto=cf1).
 - (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
   teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);
