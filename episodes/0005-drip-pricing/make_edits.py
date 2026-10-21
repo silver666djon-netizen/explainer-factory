@@ -1,5 +1,5 @@
 """Episode 0005 — hand-made frames from the storyboard pictures (no new generations, rule 20: no generated text).
-Writes episodes/0005-drip-pricing/images/{c4,l1,m1b}.png. Run from the repo root after the storyboard is downloaded:
+Writes episodes/0005-drip-pricing/images/{c4,l1,m1b,m2,n4}.png. Run from the repo root after the storyboard is downloaded:
   gh release download frames-0005-drip-pricing -D .cache/images/0005-drip-pricing --pattern "*.png"
   python episodes/0005-drip-pricing/make_edits.py"""
 from pathlib import Path
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 CACHE = ROOT / ".cache" / "images" / "0005-drip-pricing"
 OUT = HERE / "images"
-FRAMES = {"c4": "c4-f978b0455f", "l1": "l1-8b76d60501", "m1b": "m1b-1fea7e9bcd"}
+FRAMES = {"c4": "c4-f978b0455f", "l1": "l1-8b76d60501", "m1b": "m1b-1fea7e9bcd", "m2": "m2-8d6150208a", "n4": "n4-047244334d"}
 INK, RED, PAPER = (30, 27, 24), (210, 69, 47), (252, 247, 233)
 
 
@@ -48,6 +48,10 @@ paper = np.median(reg[reg.max(2) > 200], axis=0)
 fill = np.clip(paper + np.random.default_rng(3).normal(0, 3.0, reg.shape), 0, 255).astype(np.uint8)
 m = cv2.GaussianBlur(mask.astype(np.float32) / 255, (0, 0), 1.2)[..., None]
 im[y0:y1, x0:x1] = (reg * (1 - m) + fill * m).astype(np.uint8)
+# the two short "field" stubs under the green header go too: a clean strip for the handwritten "$9 – $95 / night"
+sy0, sy1, sx0, sx1 = int(0.288 * H), int(0.308 * H), int(0.350 * W), int(0.660 * W)
+strip = im[sy0:sy1, sx0:sx1]
+im[sy0:sy1, sx0:sx1] = np.where(strip.max(2, keepdims=True) < 200, fill[: sy1 - sy0, : sx1 - sx0] if fill.shape[0] >= sy1 - sy0 else paper, strip)
 Image.fromarray(im).save(OUT / "c4.png")
 
 # ---- l1: the customs desk with the code-drawn $30 ticket (same ticket as o1) lying in the middle
@@ -94,4 +98,29 @@ d.rectangle((0.47 * W, 0.375 * H, 0.60 * W, 0.425 * H), outline=INK, width=3)  #
 d.rounded_rectangle((0.50 * W, 0.44 * H, 0.60 * W, 0.487 * H), radius=12, fill=RED, outline=INK, width=2)
 d.text((0.55 * W, 0.4635 * H), "PAY", font=fnt("Anton-Regular.ttf", 30), fill=PAPER, anchor="mm")
 lap.save(OUT / "m1b.png")
+
+# ---- m2: the key's two-notch bit read as a letter "E" (rule 20): notches filled -> a plain solid bit, shadow squared
+im = load("m2")
+red = im[616:620, 720:728].reshape(-1, 3).mean(0)
+ink, shd = im[610, 700].copy(), im[628, 740:748].reshape(-1, 3).mean(0)
+im[620:659, 715:733] = red.astype(np.uint8)
+im[612:666, 733:737] = ink
+im[616:669, 737:748] = shd.astype(np.uint8)
+Image.fromarray(im).save(OUT / "m2.png")
+
+# ---- n4: the index card was generated red; "$30" is written on it in ink -> recolour the card cream, keep its shading
+im = load("n4")
+H, W = im.shape[:2]
+f = im.astype(np.float32)
+r, g, b = f[..., 0], f[..., 1], f[..., 2]
+card = (r > 170) & (g < 140) & (b < 120) & (r - g > 70)
+card[:, : int(0.25 * W)] = False
+card[:, int(0.62 * W):] = False
+lum = (0.299 * r + 0.587 * g + 0.114 * b)
+ref = float(np.median(lum[card]))
+cream = np.array([246, 238, 216], np.float32)
+new = np.clip(cream[None, None, :] * (lum / ref)[..., None] ** 0.6, 0, 255)
+m = cv2.GaussianBlur(card.astype(np.float32), (0, 0), 0.8)[..., None]
+im = (f * (1 - m) + new * m).astype(np.uint8)
+Image.fromarray(im).save(OUT / "n4.png")
 print("written:", ", ".join(f"images/{k}.png" for k in FRAMES))

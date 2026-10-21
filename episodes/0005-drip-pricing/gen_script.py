@@ -313,10 +313,10 @@ beat("c3", S_HOTEL, "The lawsuit says at least one hundred and eighty-nine Marri
      pause_at={"word": "one", "sec": 0.5, "hit": "stamp"})
 beat("c4", S_HOTEL, "from nine to ninety-five dollars, per room, per day.",
      img("a 1950s hotel bill on a desk: a cream sheet with a plain green header band, plain ruled lines and empty columns, a fountain pen beside it, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$9 – $95 / night", on="nine", x=0.50, y=0.40, w=0.30, h=0.07)]),
+         motion="static", hand_marks=True, marks=[write("$9 – $95 / night", on="nine", x=0.485, y=0.274, w=0.30, h=0.058)]),
      alleged=True)
 beat("c5", S_HOTEL, "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.",
-     reuse("c4", hand_marks=True, marks=[write("$9 – $95 / night", at=0.0, x=0.50, y=0.40, w=0.30, h=0.07)],
+     reuse("c4", hand_marks=True, marks=[write("$9 – $95 / night", at=0.0, x=0.485, y=0.274, w=0.30, h=0.058)],
            closeup=closeup("booking,", [0.50, 0.62], 1.8, [write("TAXES AND FEES", on="Taxes", x=0.42, y=0.62, w=0.26, h=0.06, color="ink"),
                                                             circle(0.42, 0.62, 0.30, 0.10, "Fees.", target=[0.29, 0.59, 0.55, 0.65])])))
 beat("c6", S_HOTEL, "From customers in D.C. alone, the Attorney General says, that came to millions of dollars.",
@@ -340,7 +340,7 @@ beat("n3", S_BRAIN, "People remembered paying less in total. And they bought mor
 beat("n4", S_BRAIN, "Your brain files the first number. Everything after it is small print.",
      img("an open 1950s office filing drawer with one large blank index card standing at the front and a few tiny crumpled paper slips at the very back, plain cream background",
          motion="static", hand_marks=True, marks=[write("$30", on="first", x=0.50, y=0.40, w=0.12, h=0.09, color="ink"),
-                                                  write("+ fees", on="small", x=0.72, y=0.30, w=0.06, h=0.025, color="ink")]))
+                                                  write("+ fees", on="small", x=0.50, y=0.50, w=0.09, h=0.035, color="ink")]))
 beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Inspector has more files.",
      reuse("o4", motion="zoom_in"), cta={"on": "subscribe.", "click_on": "Inspector", "pos": [0.64, 0.62]})
 
@@ -422,8 +422,8 @@ beat("l12", S_LAW, "Border three: the European Union. The total price, taxes inc
      reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, at=0.0, angle=6, w=0.18), stamp('EU · TOTAL BEFORE YOU PAY', 0.655, 0.44, on='total', angle=-4, w=0.16)]))
 beat("l13", S_LAW, "And any extra charge needs your clear yes. A pre-ticked box is not a yes.",
      img("a 1950s paper order form on a desk with three plain empty lines, each line ending in a small square checkbox, the last checkbox already ticked in black ink, plain cream background",
-         motion="static", hand_marks=True, marks=[circle(0.30, 0.66, 0.08, 0.10, "pre-ticked", target=[0.27, 0.62, 0.33, 0.70]),
-                                                  write("NOT A YES", on="not", x=0.55, y=0.66, w=0.22, h=0.07)]))
+         motion="static", hand_marks=True, marks=[circle(0.60, 0.455, 0.055, 0.085, "pre-ticked", target=[0.586, 0.43, 0.615, 0.479]),
+                                                  write("NOT A YES", on="not", x=0.47, y=0.445, w=0.17, h=0.055)]))  # on the ticked line, clean paper
 beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
      reuse("l1", motion="zoom_out", marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, at=0.0, angle=6, w=0.18), stamp('EU · TOTAL BEFORE YOU PAY', 0.655, 0.44, at=0.0, angle=-4, w=0.16)]))
 

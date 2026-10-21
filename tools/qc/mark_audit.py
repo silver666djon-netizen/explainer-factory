@@ -99,7 +99,9 @@ def build(ep, cfg, timings, shorts):
     images = ensure_images(cfg, image_prompts(ep), cache, True, lambda *a: None)
     from PIL import Image
     fake = [k for k, p in images.items() if Image.open(p).size == (1024, 1024) and os.path.getsize(p) < 80_000]
-    if fake:
+    if fake and os.environ.get("MARK_AUDIT_ALLOW_PLACEHOLDERS"):  # hand-made stills not in yet: their beats are unchecked
+        print(f"mark audit: WARNING placeholders for {', '.join(fake)} - marks on those pictures are NOT verified")
+    elif fake:
         raise SystemExit(f"mark audit: no real picture for {', '.join(fake)} (placeholders) - fetch the image cache first")
     images.update(ensure_archive(ep, cfg, cache, lambda *a: None))
     ensure_clips(ep, cache, lambda *a: None)
