@@ -135,6 +135,10 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
     tools/tts_probe.py (tts-probe.yml) publishes real timings to release probe-<slug> (voiced.json) → rebuild the plan
     locally fast with scratchpad plan_real.py-style script (zero audio + real word times).
   - End screen z1..z5 = 19.4 s on the real voice (target ≤ 22 s); ES times retimed to the real words (see gen_script).
+  - End-screen fixes 2026-10-22 (approved preview + 3 fixes): verdict = 4 lines at the Ep.3 letter size (96 px marker,
+    wider folder when >2 lines; "verdict_at"/"verdict_dur" per line, one hand travelling line to line); "No tip" moved
+    below the 25 % button (tablet buttons raised); the short white pointer "<" left of SUBSCRIBE removed (shared code:
+    Ep.3 gets it at its next rebuild). Shown to Klot as 3 local stills; no CI re-render yet.
   - NEXT: when images/o4.png arrives → cold-open preview (render.yml preview=yes, upto=cf1).
 - (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5

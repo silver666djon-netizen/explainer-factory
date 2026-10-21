@@ -137,7 +137,9 @@ class EndScreenShot(Shot):
         head = resolve_font(cfg["fonts"]["headline"])
         typew = resolve_font(cfg["fonts"].get("typewriter") or cfg["fonts"]["serif"])
         # ---- phase 1: the closed folder, lying landscape on the desk
-        fw, fh = int(W * 0.66), int(H * 0.70)
+        nv = len(spec.get("verdict") or [])
+        fw0 = int(W * 0.66)  # label and stamp keep the classic size
+        fw, fh = (int(W * 0.88) if nv > 2 else fw0), int(H * 0.70)  # 3-4 verdict lines: wider folder, same letters
         self.fx, self.fy = (W - fw) // 2, int(H * 0.06)
         manila = (222, 186, 120)
         folder = Image.new("RGBA", (fw, fh + int(fh * 0.06)), (0, 0, 0, 0))
@@ -145,22 +147,30 @@ class EndScreenShot(Shot):
         tab = int(fh * 0.06)
         d.rectangle((int(fw * 0.06), 0, int(fw * 0.32), tab + 4), fill=tuple(int(c * 0.93) for c in manila) + (255,))
         d.rectangle((0, tab, fw - 1, tab + fh - 1), fill=manila + (255,), outline=tuple(int(c * 0.7) for c in manila) + (255,), width=4)
-        lab = (int(fw * 0.05), tab + int(fh * 0.07), int(fw * 0.47), tab + int(fh * 0.30))
+        lab = (int(fw0 * 0.05), tab + int(fh * 0.07), int(fw0 * 0.47), tab + int(fh * 0.30))
         d.rectangle(lab, fill=(250, 246, 236, 255), outline=pal["ink"] + (255,), width=3)
         f1 = font(typew, int(fh * 0.050))
         d.text((lab[0] + int(fw * 0.02), lab[1] + int(fh * 0.03)), f"CASE FILE #{spec.get('number', '001')}", font=f1, fill=pal["ink"])
         f2, l2 = fit_font(str(spec.get("title", "")).upper(), head, int((lab[2] - lab[0]) * 0.9), int(fh * 0.12), start=int(fh * 0.10))
         d.text((lab[0] + int(fw * 0.02), lab[1] + int(fh * 0.10)), " ".join(l2), font=f2, fill=pal["ink"])
-        d.text((int(fw * 0.05), tab + int(fh * 0.92)), "CONFIDENTIAL", font=font(typew, int(fh * 0.035)), fill=tuple(int(c * 0.55) for c in manila))
+        d.text((int(fw0 * 0.05), tab + int(fh * 0.92)), "CONFIDENTIAL", font=font(typew, int(fh * 0.035)), fill=tuple(int(c * 0.55) for c in manila))
         self.folder = add_grain(np.array(folder), 0.0)
-        self.stamp = _stamp(spec.get("stamp", "Case closed"), cfg, int(fw * 0.50), pal["red"], 8, seed + 3)
-        self.stamp_pos = (self.fx + int(fw * 0.72), self.fy + int(fh * 0.25))
+        self.stamp = _stamp(spec.get("stamp", "Case closed"), cfg, int(fw0 * 0.50), pal["red"], 8, seed + 3)
+        self.stamp_pos = (self.fx + fw - int(fw0 * 0.28), self.fy + int(fh * 0.25))
         vsz = int(H * 0.10)
-        while vsz > 20 and max((font(marker, vsz).getlength(v) for v in (spec.get("verdict") or [""])), default=0) > fw * 0.86:
+        while vsz > 20 and max((font(marker, vsz).getlength(v) for v in (spec.get("verdict") or [""])), default=0) > fw * (0.86 if nv <= 2 else 0.90):
             vsz -= 2  # long verdict lines shrink to stay on the folder
         vf = font(marker, vsz)
-        self.verdict = [Writing(v, vf, pal["ink"]) for v in (spec.get("verdict") or [])][:2]
-        self.v_pos = [(self.fx + int(fw * 0.06), self.fy + int(fh * 0.47) + i * int(H * 0.15)) for i in range(len(self.verdict))]
+        self.verdict = [Writing(v, vf, pal["ink"]) for v in (spec.get("verdict") or [])][:4]
+        if nv > 2:  # four lines under the label, each written as it is spoken (verdict_at / verdict_dur, seconds)
+            y0, pitch = int(fh * 0.40), int(H * 0.091)
+            self.v_pos = [(self.fx + int(fw * 0.05), self.fy + y0 + i * pitch) for i in range(len(self.verdict))]
+        else:
+            self.v_pos = [(self.fx + int(fw * 0.06), self.fy + int(fh * 0.47) + i * int(H * 0.15)) for i in range(len(self.verdict))]
+        tt0 = self.t
+        vat = spec.get("verdict_at") or [tt0["v1"] - lead_in, tt0["v2"] - lead_in]
+        vdu = spec.get("verdict_dur") or [tt0["vdur"]] * len(self.verdict)
+        self.v_times = [(float(vat[i]) + lead_in, float(vdu[i])) for i in range(len(self.verdict))]
         # ---- phase 2: next-case sheet with the subject drawn twice
         nx = spec.get("next") or {}
         sx0, sy0, sx1, sy1 = (int(SHEET[0] * W), int(SHEET[1] * H), int(SHEET[2] * W), int(SHEET[3] * H))
@@ -355,17 +365,33 @@ class EndScreenShot(Shot):
                 st = cv2.resize(self.stamp, (max(1, int(self.stamp.shape[1] * sc)), max(1, int(self.stamp.shape[0] * sc))))
                 blend(out, st, self.stamp_pos[0] + dx - st.shape[1] // 2, self.stamp_pos[1] - st.shape[0] // 2, opacity=min(1.0, 0.3 + p))
             for i, wr in enumerate(self.verdict):
-                t0 = tt["v1"] if i == 0 else tt["v2"]
-                p = (t - t0) / tt["vdur"]
+                t0, vd = self.v_times[i]
+                p = (t - t0) / vd
                 if p <= 0:
                     continue
                 vx, vy = self.v_pos[i]
                 blend(out, wr.at(p), vx + dx, vy)
-                if p < 1.25 and dx == 0:
-                    tip = hand_path(lambda q, wr=wr, vx=vx, vy=vy, t0=t0: (vx + wr.tip((q - t0) / tt["vdur"])[0], vy + wr.tip((q - t0) / tt["vdur"])[1]),
-                                    t0, t0 + tt["vdur"], t, W, H, False, from_below=True)
-                    if tip:
-                        hand = ("ink_under", tip[0], tip[1], False)
+            if self.verdict and dx == 0:  # one hand writes every line; between lines it travels back to the next start
+                vt = self.v_times
+
+                def vtip(q):
+                    for k, (a, d_) in enumerate(vt):
+                        vx, vy = self.v_pos[k]
+                        if q <= a + d_ or k == len(vt) - 1:
+                            if q >= a or k == 0:
+                                x, y = self.verdict[k].tip((q - a) / d_)
+                                return vx + x, vy + y
+                            pa, pd = vt[k - 1]
+                            px, py = self.v_pos[k - 1]
+                            ex, ey = self.verdict[k - 1].tip(1.0)
+                            sx_, sy_ = self.verdict[k].tip(0.0)
+                            u = ease(min(1.0, max(0.0, (q - pa - pd) / max(0.05, a - pa - pd))))
+                            return (px + ex) + ((vx + sx_) - (px + ex)) * u, (py + ey) + ((vy + sy_) - (py + ey)) * u
+                    return None
+
+                tip = hand_path(vtip, vt[0][0], vt[-1][0] + vt[-1][1], t, W, H, False, from_below=True)
+                if tip:
+                    hand = ("ink_under", tip[0], tip[1], False)
         # phase 2: the next-case sheet slides in from the right
         if t > tt["swap"] + 0.1:
             p = ease((t - tt["swap"] - 0.1) / 0.6)
@@ -506,7 +532,7 @@ class EndScreenShot(Shot):
                                     tt["sketch"], tt["sketch"] + tt["skdur"], t, W, H, False)
                     if tip:
                         hand = ("pencil", tip[0], tip[1], False)
-        # our subscribe button beside YouTube's subscribe zone, with a drawn arrow pointing at it
+        # our subscribe button beside YouTube's subscribe zone (the 30 px pointer arrow read as a stray '<': removed)
         if t >= tt["sub"]:
             pressed = t >= tt["click"]
             img = self.btn[pressed]
@@ -516,16 +542,6 @@ class EndScreenShot(Shot):
             im2 = cv2.resize(img, (max(1, int(img.shape[1] * sc)), max(1, int(img.shape[0] * sc))))
             bx, by = int(W * 0.17), int(H * 0.69)
             blend(out, im2, bx, by + down + (img.shape[0] - im2.shape[0]) // 2)
-            # arrow from the button to the subscribe zone
-            ax0, ay0 = bx - 8, by + img.shape[0] // 2
-            ax1 = int(SUB_ZONE[2] * W) + 10
-            ap = min(1.0, (t - tt["sub"] - 0.3) / 0.4)
-            if ap > 0:
-                xe = int(ax0 + (ax1 - ax0) * ap)
-                cv2.line(out, (ax0, ay0), (xe, ay0 + int(4 * math.sin(ap * 3))), tuple(int(c) for c in self.pal["paper"]), 5, cv2.LINE_AA)
-                if ap >= 1:
-                    for s in (+1, -1):
-                        cv2.line(out, (ax1, ay0), (ax1 + 22, ay0 + s * 16), tuple(int(c) for c in self.pal["paper"]), 5, cv2.LINE_AA)
             if True:
                 age = t - tt["click"] if pressed else 9.0
                 ang = 22 * math.sin(age * 22) * math.exp(-age * 2.2) if pressed else 6 * math.sin((t - tt["sub"]) * 5)
@@ -555,9 +571,8 @@ class EndScreenShot(Shot):
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
         tt = self.t
         out = [(start_abs + tt["stamp"], "stamp")]
-        for i in range(len(self.verdict)):
-            t0 = tt["v1"] if i == 0 else tt["v2"]
-            out += [(start_abs + t0 + k * 0.3, "marker") for k in range(int(tt["vdur"] / 0.3))]
+        for t0, vd in self.v_times:
+            out += [(start_abs + t0 + k * 0.3, "marker") for k in range(max(1, int(vd / 0.3)))]
         out += [(start_abs + tt["swap"], "whoosh"), (start_abs + tt["swap"] + 0.5, "paper")]
         if self.draw is not None:
             k = 0.0

@@ -53,9 +53,9 @@ def make_tablet(path):
     x0, y0, x1, y1 = 418, 70, 958, 700
     d.rounded_rectangle((x0, y0, x1, y1), radius=40, fill=(60, 56, 52), outline=ink, width=8)
     d.rounded_rectangle((x0 + 34, y0 + 34, x1 - 34, y1 - 34), radius=18, fill=paper)
-    d.text(((x0 + x1) / 2, y0 + 110), "ADD A TIP?", font=_fnt("ArchivoBlack-Regular.ttf", 46), fill=ink, anchor="mm")
+    d.text(((x0 + x1) / 2, y0 + 100), "ADD A TIP?", font=_fnt("ArchivoBlack-Regular.ttf", 46), fill=ink, anchor="mm")
     for k, t in enumerate(["18%", "22%", "25%"]):
-        by = y0 + 190 + k * 120
+        by = y0 + 165 + k * 112  # leaves room under the 25 % button for the handwritten "No tip"
         d.rounded_rectangle((x0 + 90, by, x1 - 90, by + 92), radius=18, fill=green if k else red, outline=ink, width=5)
         d.text(((x0 + x1) / 2, by + 46), t, font=_fnt("Anton-Regular.ttf", 58), fill=paper, anchor="mm")
     im.save(path)
@@ -451,9 +451,11 @@ beat("z0", S_CLOSE, "Case closed. Larry paid forty-eight dollars for a thirty-do
 beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
      reuse("z0", push={"center": [0.45, 0.40], "zoom": 1.6}, closeup=closeup("checkout", [0.58, 0.62], 2.0)), hero=True)
 ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
-      "verdict": ["Guilty: the checkout fee and its cousin, the resort fee.", "Accomplice: the first number on the screen."],
+      # four lines at the Ep.3 letter size, each written from its first spoken word (real-voice word times)
+      "verdict": ["Guilty: the checkout fee", "and its cousin, the resort fee.", "Accomplice:", "the first number on the screen."],
+      "verdict_at": [1.4, 3.17, 5.36, 6.25], "verdict_dur": [1.55, 1.9, 0.72, 1.55],
       "next": {"number": "005", "title": "Tip screens", "tagline": "18 % · 22 % · 25 % · No tip?", "image_file": "next_tablet.png",
-               "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.86, "h": 0.035}],
+               "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.880, "h": 0.085}],
                "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True},
       # timed on the real voice (CI timings 2026-10-21): verdict lines written as spoken, swap after "screen.",
       # sketch with "Next case", "No tip" on "tip", Pew plate after "coffee", click on "Subscribe"

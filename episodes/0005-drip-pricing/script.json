@@ -2511,8 +2511,22 @@
           "title": "The fee at the end",
           "stamp": "Case closed",
           "verdict": [
-            "Guilty: the checkout fee and its cousin, the resort fee.",
-            "Accomplice: the first number on the screen."
+            "Guilty: the checkout fee",
+            "and its cousin, the resort fee.",
+            "Accomplice:",
+            "the first number on the screen."
+          ],
+          "verdict_at": [
+            1.4,
+            3.17,
+            5.36,
+            6.25
+          ],
+          "verdict_dur": [
+            1.55,
+            1.9,
+            0.72,
+            1.55
           ],
           "next": {
             "number": "005",
@@ -2524,8 +2538,8 @@
               {
                 "text": "No tip",
                 "x": 0.5,
-                "y": 0.86,
-                "h": 0.035
+                "y": 0.88,
+                "h": 0.085
               }
             ],
             "label": [
