@@ -37,6 +37,9 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     started = time.time()
     episode = load_episode(episode_path)
     cfg = load_config(episode.get("config"))
+    if preview:  # previews may run before every hand-made frame (rule 19) has arrived: those show a marked placeholder
+        import os as _os
+        _os.environ.setdefault("FACTORY_SKIP_MANUAL", "placeholder")
     if preview:  # fast draft for QC: half size, 15 fps — same layout, timing and sound
         vc = cfg["video"]
         vc["fps"] = 15
@@ -127,13 +130,14 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         "beats": [{"id": bid, "start": plan_long.beat_starts.get(bid), "voice": round(v["duration"], 3),
                    "text": b["text"], "words": [[w, round(s0, 3), round(e0, 3)] for w, s0, e0 in v["words"]]}
                   for bid, b, v in zip(ids, episode["beats"], long_voiced)]}, indent=1))
-    if upto:  # preview of the opening only: beats up to and including `upto`, timed exactly as in the full cut
-        k = ids.index(upto) + 1
-        sub = episode["beats"][:k]
-        plan_long = build_plan(sub, long_voiced[:k], images, cfg,
+    if upto:  # preview of one part: "cf1" = opening up to and including cf1; "z0..z5" = from z0 to z5 (end screen)
+        k0, k1 = (upto.split("..", 1) if ".." in upto else (ids[0], upto))
+        a, k = ids.index(k0), ids.index(k1) + 1
+        sub = episode["beats"][a:k]
+        plan_long = build_plan(sub, long_voiced[a:k], images, cfg,
                                (cfg["video"]["long"]["width"], cfg["video"]["long"]["height"]), "long", beat_lookup,
                                extra)
-        log(f"Preview cut up to {upto}: {plan_long.total:.1f}s")
+        log(f"Preview cut {k0}..{k1}: {plan_long.total:.1f}s")
         render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
         (out / "long.wav").unlink(missing_ok=True)
         return out

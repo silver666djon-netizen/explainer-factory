@@ -16,7 +16,7 @@ on:
         required: false
         default: "no"
       upto:
-        description: "preview only: render the opening up to and including this beat id (empty = whole video)"
+        description: "preview only: 'cf1' = the opening up to and including cf1; 'z0..z5' = one part from z0 to z5 (empty = whole video)"
         required: false
         default: ""
       send:
