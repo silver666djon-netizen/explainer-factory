@@ -455,8 +455,10 @@ ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
       "next": {"number": "005", "title": "Tip screens", "tagline": "18 % · 22 % · 25 % · No tip?", "image_file": "next_tablet.png",
                "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.86, "h": 0.035}],
                "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True},
-      "times": {"swap": 5.8, "draw": 6.4, "ddur": 3.0, "writes": 9.6, "tagline": 10.4, "zone": 11.0, "sketch": 11.4,
-                "skdur": 1.0, "label": 12.6, "sub": 13.2, "click": 14.3, "push": 15.0}}
+      # timed on the real voice (CI timings 2026-10-21): verdict lines written as spoken, swap after "screen.",
+      # sketch with "Next case", "No tip" on "tip", Pew plate after "coffee", click on "Subscribe"
+      "times": {"v1": 1.4, "v2": 5.36, "vdur": 2.2, "swap": 8.4, "draw": 8.9, "ddur": 3.0, "writes": 11.9, "tagline": 12.5,
+                "zone": 13.0, "sketch": 13.2, "skdur": 1.0, "label": 13.6, "sub": 14.5, "click": 15.2, "push": 15.9}}
 beat("z1", S_CLOSE, "The verdict. Guilty: the checkout fee and its cousin, the resort fee. Accomplice: the first number on the screen.",
      {"type": "endscreen", "endscreen": ES}, block_start=True, sting="ub_sting_brass", sting_at=0.1)
 beat("z4", S_CLOSE, "Next case: the screen that asks how much you'd like to tip, before you've had your coffee.",

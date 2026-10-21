@@ -82,17 +82,19 @@ class Writing:
 
 def _stamp(text: str, cfg, width: int, color, angle: float, seed: int, max_h: int | None = None) -> np.ndarray:
     head = resolve_font(cfg["fonts"]["headline"])
-    sf, sl = fit_font(text.upper(), head, int(width * 0.9), int(max_h or width * 0.4), start=int(width * 0.22))
+    sf, sl = fit_font(text.upper(), head, int(width * 0.82), int(max_h or width * 0.4), start=int(width * 0.22))
     pad = int(sf.size * 0.28)
-    tw = int(max(sf.getlength(l) for l in sl)) + 2 * pad
+    padx = int(sf.size * 0.42)  # the glyphs' ink (not the advance width) keeps clear of the border
+    ink = [sf.getbbox(l) for l in sl]
+    tw = int(max(b[2] - b[0] for b in ink)) + 2 * padx
     th = int(len(sl) * sf.size * 1.12) + 2 * pad
     img = Image.new("RGBA", (tw, th), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
     bw = max(5, sf.size // 10)
     d.rectangle((bw // 2, bw // 2, tw - bw // 2, th - bw // 2), outline=tuple(color) + (255,), width=bw)
     y = pad
-    for l in sl:
-        d.text(((tw - sf.getlength(l)) / 2, y), l, font=sf, fill=tuple(color) + (255,))
+    for l, b in zip(sl, ink):
+        d.text(((tw - (b[2] - b[0])) / 2 - b[0], y), l, font=sf, fill=tuple(color) + (255,))
         y += int(sf.size * 1.12)
     arr = np.array(img)
     holes = cv2.GaussianBlur(np.random.default_rng(seed).random(arr.shape[:2]).astype(np.float32), (0, 0), 1.2) > 0.58
