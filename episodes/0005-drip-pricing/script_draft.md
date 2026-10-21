@@ -1,4 +1,4 @@
-# CASE FILE #004 — THE FEE AT THE END — SCRIPT (draft for approval)
+# CASE FILE #004 — THE FEE AT THE END — SCRIPT (approved 2026-10-21 with six changes)
 
 Markup: ⏸ = short pause before a number · [STAMP] small stamp by the stamp hand unless marked BIG · [TAB] Larry's Tab row ·
 [PLATE] date/source plate · [ALLEGED] red ALLEGED plate (case not decided) · (aside) dry aside · narration = everything outside brackets.
@@ -12,15 +12,15 @@ Larry is made up. The fees are not.
 ## THE CASE
 Case file number four. The fee at the end. [folder; OPEN stamp]
 Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee. Last seen: one click before "Pay". [STAMP: SUSPECT]
-It never touches the price you see. It waits for the price you pay. It doesn't raise the price. It just moves it to the end.
+It never touches the price you see. It waits for the price you pay.
 
 ## TUESDAY 8:12 PM: THE EXPERIMENT
 Tuesday, eight-twelve p.m. Larry has a ticket in his basket. To see how the fees got there, we go back to 2015, and a company that tested them on its own customers.
 StubHub, the ticket resale site, was owned by eBay back then. For a couple of years before that summer, it showed every fee upfront. The price on the screen was the price you paid. [PLATE: NBER w25186 · Blake, Moshary, Sweeney & Tadelis]
 Then, for twelve days in August 2015, it split its buyers in two. Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout. [PLATE: Aug 19–31, 2015]
 Same tickets. Same fees. The only thing that changed was the moment you saw them.
-The ones who met the fees late spent almost ⏸ twenty-one percent more. They were ⏸ fourteen point one percent more likely to buy at all. And the buyers among them chose pricier seats, spending about ⏸ five percent more.
-That seat upgrade alone explained at least ⏸ twenty-eight percent of the gap. A seat looks cheaper when its fees are still offstage, so you pick a better one. Then the fees walk on.
+The ones who met the fees late spent almost ⏸ twenty-one percent more. They were ⏸ fourteen point one percent more likely to buy at all. And the buyers among them picked seats about ⏸ five percent pricier.
+A seat looks cheaper when its fees are still offstage, so you pick a better one. Then the fees walk on. [PLATE: seat choice = at least 28 % of the revenue gap · NBER w25186]
 (aside) Twelve days of science. Then the science went live.
 On September the first, the whole site switched. Fees at the end, for everyone. [STAMP: SEPT 1, 2015]
 
@@ -49,14 +49,14 @@ If you like catching prices in the act, subscribe. The Inspector has more files.
 In defence of the accused.
 One: StubHub says it tried honesty. In 2014, it says, it moved to all-in prices, and lost customers to rivals who kept their fees. It went back in the fall of 2015. [PLATE: StubHub statement · White House event · March 2023]
 Two: its own economists saw it differently. Their finding on the switch to late fees: "market-expanding, rather than pure business-stealing." [PLATE: NBER w25186 · p. 27] In plain English, hidden fees didn't just win buyers from rivals. They made people spend more.
-Three: fees pay for real things. Card payments, staff, the venue. And the law agrees. America's new rule bans no fee at all. It only wants the total, upfront.
+Three: fees pay for real things. Card payments, staff, the venue. America's new rule bans no fee at all. It only wants the total, upfront.
 The fee may be fair. Hiding it isn't.
 
 ## FRIDAY 9:00 AM: ONE FEE, THREE LAWS
 Friday, nine a.m. Larry's ticket goes on a trip. Three borders. Three stamps.
-Border one: America. Since ⏸ May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront. [STAMP: USA · TOTAL UPFRONT · MAY 2025] The first case under the rule: StubHub, with ⏸ ten million dollars back to buyers. [PLATE: FTC · April 2026]
+Border one: America. Since ⏸ May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront. [STAMP: USA · TOTAL UPFRONT · MAY 2025] In April 2026, StubHub agreed to pay ⏸ ten million dollars back to buyers, over fees it showed too late. [PLATE: FTC · April 2026 · settlement]
 America has done this before. In 1958, a law put a sticker on the window of every new car: the price, every option, the delivery charge, and the total. [archive insert] [PLATE: Automobile Information Disclosure Act · 1958] Cars got the total sixty-seven years before concert tickets did.
-Border two: Britain. Since ⏸ April 2025, the price must include every fee you can't avoid. [STAMP: UK · ALL FEES IN · APRIL 2025] A driving-school group hid a ⏸ three-pound booking fee on lessons for learner drivers, over eighty thousand of them. It paid a ⏸ four point two million pound fine, and over seven hundred and sixty thousand pounds in refunds. [PLATE: CMA · April 2026] In June, StubHub's British arm was fined too. [PLATE: CMA · June 2026]
+Border two: Britain. Since ⏸ April 2025, the price must include every fee you can't avoid. [STAMP: UK · ALL FEES IN · APRIL 2025] A driving-school group hid a ⏸ three-pound booking fee charged to over eighty thousand learner drivers. It paid a ⏸ four point two million pound fine, and over seven hundred and sixty thousand pounds in refunds. [PLATE: CMA · April 2026] In June, StubHub's British arm was fined too. [PLATE: CMA · June 2026]
 (aside) Three pounds. Very expensive pounds.
 Border three: the European Union. The total price, taxes included, before you pay. And any extra charge needs your clear yes. A pre-ticked box is not a yes. [STAMP: EU · TOTAL BEFORE YOU PAY]
 One ticket. Three stamps. One message: show the total.
@@ -74,13 +74,13 @@ Larry paid forty-eight dollars for a thirty-dollar ticket. [TAB closes: PAID $48
 He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.
 
 ## END SCREEN (≤ 22 s)
-The verdict. Guilty: the checkout fee. Accomplice: the resort fee. [verdict written once by the hand]
+The verdict. Guilty: the checkout fee and its cousin, the resort fee. Accomplice: the first number on the screen. [verdict written once by the hand, two lines]
 Next case: the screen that asks how much you'd like to tip, before you've had your coffee. ⏸ Seventy-two percent of Americans say tipping is expected in more places than five years ago. [sketch: payment tablet, buttons 18 % / 22 % / 25 %, hand writes "No tip" small at the bottom] [PLATE: Pew Research Center · Nov 2023]
 Subscribe, so the next case file finds you.
 
 ---
 
-# 7 SHORTS — cut list (≤ 45 s each, hook card on frame 0, last line loops to the first)
+# 7 SHORTS — cut list (≤ 45 s each; frame 0 = hook text overlaid on the Short's strongest picture, never a standalone card; last line loops to the first)
 | # | Title / hook card | Built from | Loop |
 |---|---|---|---|
 | s1 | The $30 ticket that costs $48 · "$30 → $48" | Cold open + Suspect No. 1 + "Larry is perfectly average" (24–44 %, ALLEGED) | ends "…so before you pay thirty, ask what it costs." → back to "A concert ticket. Thirty dollars." |
@@ -96,3 +96,9 @@ Description (not on screen): 16 CFR Part 464 (90 FR 2066, eff. May 12, 2025); FT
 StubHub remarks, White House convening, Mar 21, 2023; Morwitz, Greenleaf & Johnson, JMR 35(4) 1998; 15 U.S.C. 1232 (1958);
 DMCC Act 2024 s.230; CMA AA/BSM (Apr 15, 2026); CMA StubHub UK (Jun 23, 2026); CRD 2011/83/EU Art. 6(1)(e), 22;
 UCPD 2005/29/EC Art. 7(4)(c); Reg. 1008/2008 Art. 23; Pew Research Center (Nov 9, 2023).
+
+Verified quotes (primary): DC press release "charged resort fees to tens of thousands of District consumers over the years,
+totaling millions of dollars" (complaint ¶17 says "well in excess of a million dollars"); aliases from complaint ¶1/¶4:
+"resort fee", "amenity fee", "destination fee"; CMA: "more than 80,000 learners were not shown the total price upfront";
+FTC (Apr 9, 2026): StubHub "will pay $10 million to settle" — the FTC does NOT call it the first case (claim dropped);
+Live Nation order "Dated: September 28, 2026" — "Defendant's Motion is DENIED as to each claim."
