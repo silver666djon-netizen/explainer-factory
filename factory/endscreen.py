@@ -82,7 +82,7 @@ class Writing:
 
 def _stamp(text: str, cfg, width: int, color, angle: float, seed: int, max_h: int | None = None) -> np.ndarray:
     head = resolve_font(cfg["fonts"]["headline"])
-    sf, sl = fit_font(text.upper(), head, int(width * 0.82), int(max_h or width * 0.4), start=int(width * 0.22))
+    sf, sl = fit_font(text.upper(), head, int(width * 0.9), int(max_h or width * 0.4), start=int(width * 0.22))
     pad = int(sf.size * 0.28)
     padx = int(sf.size * 0.42)  # the glyphs' ink (not the advance width) keeps clear of the border
     ink = [sf.getbbox(l) for l in sl]
