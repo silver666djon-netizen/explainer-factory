@@ -1169,7 +1169,7 @@
       "text": "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
       "visual": {
         "type": "mugshot",
-        "prompt": "an old hotel room key with a large brass key fob hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+        "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
         "suspect": {
           "number": 2,
           "name": "The resort fee",
@@ -1237,7 +1237,7 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a 1950s hotel bill on a desk with ruled lines and empty amount columns, a fountain pen beside it, plain cream background",
+        "prompt": "a 1950s hotel bill on a desk: a cream sheet with a plain green header band, plain ruled lines and empty columns, a fountain pen beside it, plain cream background",
         "hand_marks": true,
         "marks": [
           {
@@ -1660,7 +1660,7 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a 1950s customs desk seen from above with a wooden rubber-stamp rack, an ink pad and a blank passport-style form, lots of empty desk space in the middle, plain wood, warm light",
+        "prompt": "a 1950s customs desk seen from above with a wooden rubber-stamp rack and an ink pad near the top edge, a wide stretch of empty plain wood in the middle, warm light",
         "note": "after the storyboard: the code-drawn $30 ticket is composited in the middle (images/l1.png)",
         "closeup": {
           "on": "borders.",
@@ -2191,7 +2191,7 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a 1950s paper order form on a desk with three empty lines and small square checkboxes, the last checkbox already ticked in black ink, plain cream background",
+        "prompt": "a 1950s paper order form on a desk with three plain empty lines, each line ending in a small square checkbox, the last checkbox already ticked in black ink, plain cream background",
         "hand_marks": true,
         "marks": [
           {
@@ -3322,7 +3322,7 @@
           "text": "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
           "visual": {
             "type": "mugshot",
-            "prompt": "an old hotel room key with a large brass key fob hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+            "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
             "suspect": {
               "number": 2,
               "name": "The resort fee",

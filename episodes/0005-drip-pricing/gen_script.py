@@ -299,7 +299,7 @@ beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near
      manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
          motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.20, y=0.15, w=0.20, h=0.06)])))
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
-     {"type": "mugshot", "prompt": "an old hotel room key with a large brass key fob hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+     {"type": "mugshot", "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The resort fee", "alias": "Amenity fee · Destination fee", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
                   "type_on": ["Name:", "Aliases:"]}})
 beat("m2b", S_HOTEL, "Known associates: a pool you will never swim in.",
@@ -312,7 +312,7 @@ beat("c3", S_HOTEL, "The lawsuit says at least one hundred and eighty-nine Marri
      stat(189, "Marriott hotels with resort fees · DC complaint, 2019 · ALLEGED"),
      pause_at={"word": "one", "sec": 0.5, "hit": "stamp"})
 beat("c4", S_HOTEL, "from nine to ninety-five dollars, per room, per day.",
-     img("a 1950s hotel bill on a desk with ruled lines and empty amount columns, a fountain pen beside it, plain cream background",
+     img("a 1950s hotel bill on a desk: a cream sheet with a plain green header band, plain ruled lines and empty columns, a fountain pen beside it, plain cream background",
          motion="static", hand_marks=True, marks=[write("$9 – $95 / night", on="nine", x=0.50, y=0.40, w=0.30, h=0.07)]),
      alleged=True)
 beat("c5", S_HOTEL, "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.",
@@ -371,7 +371,7 @@ beat("d7", S_DEF, "The fee may be fair. Hiding it isn't.", kin())
 
 # ------------------------------------------------------------------ Friday 9:00 AM — One fee, three laws (one ticket, three stamps)
 chapter("t5", S_LAW, "Friday, nine a.m.", "Friday 9:00 AM — One fee, three laws")
-DESK = "a 1950s customs desk seen from above with a wooden rubber-stamp rack, an ink pad and a blank passport-style form, lots of empty desk space in the middle, plain wood, warm light"
+DESK = "a 1950s customs desk seen from above with a wooden rubber-stamp rack and an ink pad near the top edge, a wide stretch of empty plain wood in the middle, warm light"
 beat("l1", S_LAW, "Larry's ticket goes on a trip. Three borders. Three stamps.",
      img(DESK, note="after the storyboard: the code-drawn $30 ticket is composited in the middle (images/l1.png)", motion="static",
          closeup=closeup("borders.", [0.50, 0.50], 1.4, motion="zoom_out")))
@@ -421,7 +421,7 @@ beat("l11", S_LAW, "Three pounds. Very expensive pounds.",
 beat("l12", S_LAW, "Border three: the European Union. The total price, taxes included, before you pay.",
      reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, at=0.0, angle=6), stamp('EU · TOTAL BEFORE YOU PAY', 0.46, 0.68, on='total', angle=-4)]))
 beat("l13", S_LAW, "And any extra charge needs your clear yes. A pre-ticked box is not a yes.",
-     img("a 1950s paper order form on a desk with three empty lines and small square checkboxes, the last checkbox already ticked in black ink, plain cream background",
+     img("a 1950s paper order form on a desk with three plain empty lines, each line ending in a small square checkbox, the last checkbox already ticked in black ink, plain cream background",
          motion="static", hand_marks=True, marks=[circle(0.30, 0.66, 0.08, 0.10, "pre-ticked", target=[0.27, 0.62, 0.33, 0.70]),
                                                   write("NOT A YES", on="not", x=0.55, y=0.66, w=0.22, h=0.07)]))
 beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
