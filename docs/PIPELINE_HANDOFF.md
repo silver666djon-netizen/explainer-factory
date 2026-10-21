@@ -1,6 +1,6 @@
 # Pipeline chat — handoff (read this first in any new chat / any model)
 
-Last updated: 2026-10-21, Episode 3 r63 released; Episode 4 structure awaiting approval. This file plus `docs/PRODUCTION_RULES.md` is everything a
+Last updated: 2026-10-21, Episode 3 r64 released; Episode 4 scene list awaiting approval. This file plus `docs/PRODUCTION_RULES.md` is everything a
 new session needs. Do not ask Klot to re-explain the project; continue from "Current state" below.
 
 ## 1. Who and what
@@ -115,11 +115,15 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   5. 4:16–4:22 replication card: slow 10 % push from the underline to the end of the beat.
   Also: engine/audit rule 15 (never write outside the frame) fixed n1 closeup, Shorts s2/s3/s4/s6 marks;
   Short 3 k7 hides the ledger.
-- r61 failed the true-peak gate; r62 released. **r63 released and sent** (tag 0004-fake-sale-r63): the four
-  subtitle collisions fixed (1:10 p4 cross, 3:41 k13 circle, 4:09 n3 framing 1.15x, 7:02 e11 "$7.50!"),
-  loudness now calibrated after the limiter: long −14.2 LUFS / −1.9 dBTP, Shorts −14.2…−14.3 / −2.0…−2.6.
-  Mark audit (checks 1–5) 0, handcheck 0 (long + 7 Shorts). Waiting for Klot's frame check on r63.
-- **Episode 4 structure** sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
+- **r64 released and sent** (tag 0004-fake-sale-r64): Klot's 12-point list on r63 done (REG tag "14 % OF DAYS", notepad,
+  wheel numbers, plain tag circled, WAS/$—/FICTION levels, clean WAS tag plate from make_edits.py, maps reframed with
+  California dot + EU plate, one typed list on the front index card, stat lands before the spoken number, plate appears
+  with the pen). Long −14.2 LUFS / −1.5 dBTP, Shorts −14.2…−14.3 / −2.0…−2.6; mark audit 0 (new full-path subtitle
+  check), handcheck 0. Waiting for Klot's frame check on r64.
+- **Episode 4**: structure and script approved; scene list sent 2026-10-21 (episodes/0005-drip-pricing/scene_list.md,
+  gen_script.py, 20 generations, 0 stills > 8 s), waiting for approval; then engine work (ALLEGED plate, stamp-hand stamps,
+  desk composite, verdict/No-tip writes, Shorts hook over picture) and cold-open + end-screen previews.
+- (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
   teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);
   StubHub "all-in, lost share, reverted" is NOT in NBER w25186 (only StubHub's 2023 White House remarks).
