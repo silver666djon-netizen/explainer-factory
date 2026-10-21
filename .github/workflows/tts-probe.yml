@@ -6,6 +6,8 @@ on:
       episode:
         required: true
         default: "0005-drip-pricing"
+permissions:
+  contents: write
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -24,4 +26,26 @@ jobs:
       - run: |
           pip install -q torch --index-url https://download.pytorch.org/whl/cpu
           pip install -q -r requirements.txt
+      - name: Archive media + storyboard frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep="${{ github.event.inputs.episode }}"
+          mkdir -p assets/archive ".cache/images/$ep"
+          gh release download archive -D assets/archive --clobber || true
+          gh release download "frames-$ep" -D ".cache/images/$ep" --clobber --pattern "*.png" || true
+      - uses: actions/cache/restore@v4
+        with:
+          path: .cache/images
+          key: images-none
+          restore-keys: images-
       - run: python tools/tts_probe.py "episodes/${{ github.event.inputs.episode }}" 90
+      - name: Publish real voice timings (for local plan debugging)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep="${{ github.event.inputs.episode }}"
+          [ -s voiced.json ] || exit 0
+          gh release delete "probe-$ep" -y --cleanup-tag 2>/dev/null || true
+          gh release create "probe-$ep" voiced.json --title "TTS probe $ep" --notes "real narration timings" --prerelease

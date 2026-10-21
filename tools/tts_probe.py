@@ -49,6 +49,9 @@ def main():
         print(f"[{time.time() - T0:6.0f}] {line}", flush=True)
     msg = "%0A".join(slow) if slow else f"no slow beats ({time.time() - T0:.0f}s total)"
     print("::warning title=TTS synth::" + msg, flush=True)
+    import json
+    Path("voiced.json").write_text(json.dumps([None if v is None else {"duration": v["duration"], "words": v["words"]}
+                                               for v in voiced]))
     msg = ""
     for b in ep["beats"]:
         b["_music"] = b.get("music") or (ep.get("music") or {}).get(b.get("section") or "", (ep.get("music") or {}).get("_default", "noir"))
