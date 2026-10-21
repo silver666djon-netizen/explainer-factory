@@ -108,3 +108,12 @@ must report zero before a final render.
 18. A cream plate under a written label appears only with the pen's first stroke (write(..., plate=[sx, sy]):
     it slides in under the pen) — never a blank plate waiting on screen. Rule 16 now tests the full stroke path
     of circles / crosses / underlines and the box of labels for as long as they are on screen.
+19. Klot's own subscriptions are a production resource — use them fully, before paid API generations or stock:
+    - ChatGPT (GPT images): character references (Larry sheet), hero frames, backgrounds, thumbnails. Holds faces well
+      (Flux 2 did not). Claude writes the prompts; Klot generates and sends the files back.
+      Drop a still in as `episodes/<slug>/images/<beat id>.png` (the engine uses it instead of generating).
+    - Grok Imagine: short live clips, 6–15 s (image-to-video from an approved still keeps the 1950s look; 720p).
+      Good: portraits, products, objects, calm camera moves, simple gags. Poor: crowds, hands, text in motion, fast physics.
+      Drop a clip in as `episodes/<slug>/clips/<beat id>.mp4` (visual type "clip"; the 8-second rule still applies).
+    At the scene-list stage Claude marks which frames go to GPT and which become Grok clips, and sends the prompts
+    one stage at a time.
