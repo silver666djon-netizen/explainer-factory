@@ -140,6 +140,9 @@ S_OPEN, S_PEN, S_KOHL, S_BRAIN, S_DEF, S_CLOCK, S_CHECK, S_CLOSE = (
     "In defence of the accused", "Friday 11:58 PM: The clock that resets", "Saturday 10:00 AM: Three checks", "Case closed")
 
 TAG_W = dict(color="ink", fnt="marker")
+# the mixer tag (k3/k4): both lines on the tag's own angle (top edge falls 15 deg), same left start, even gap
+TAG_L1 = dict(x=0.8355, y=0.5494, w=0.135, h=0.055, angle=-15, align="left")
+TAG_L2 = dict(x=0.8259, y=0.6140, w=0.135, h=0.055, angle=-15, align="left")
 
 # ------------------------------------------------------------------ cold open (≤ 15 s to the folder)
 beat("o1", S_OPEN, "A hair dryer at Boots. Was forty-nine ninety-nine.",
@@ -166,7 +169,7 @@ beat("cf1", S_OPEN, "Case file number three. The sale that never was. Larry is m
                                                    {"line": 2, "text": "£49.99 — also fictional", "on": "forty-nine"}]}})
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at.",
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
-      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
+      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "tag": "SUSPECT", "stamp_pos": [0.50, 0.68], "stamp_angle": -15, "stamp_w": 0.72,
                   "type_on": ["Name:", "Aliases:"]},
       "photo_marks": [write("WAS", at=0.35, x=0.5, y=0.47, w=0.30, h=0.13, color="ink"),  # passes chain one after another
                       write("$—", on="number", x=0.5, y=0.62, w=0.24, h=0.13, color="ink"),
@@ -212,7 +215,8 @@ beat("p8", S_PEN, "That year, sales fell by a quarter.",
      pause_at={"word": "quarter.", "sec": 0.7, "hit": "stamp"})
 beat("p9", S_PEN, "The company lost nine hundred and eighty-five million dollars.",
      img("an old brass cash register with its drawer wide open and completely empty, a single moth fluttering out, dark shop at night", motion="zoom_in"),
-     pause_at={"word": "nine", "sec": 0.8, "hit": "stamp"}, stamp={"text": "−$985,000,000", "on": "dollars."})
+     pause_at={"word": "nine", "sec": 0.8, "hit": "stamp"}, stamp={"text": "−$985,000,000", "on": "dollars.",
+                                                                   "slip": {"x": 0.745, "y": 0.255, "w": 0.30, "angle": 3, "slip_angle": -4}})  # cream slip on the dark wall
 beat("p10", S_PEN, "Even before Johnson was fired in April 2013, the old game was back.",
      arch("chain_store_window_signs_1940.jpg", "Signs on a chain store window, 1940", motion="zoom_in", crop=[0.02, 0.03, 0.96, 0.93]), label="April 2013")
 beat("p11", S_PEN, "A five-dollar T-shirt got a six-dollar tag, so it could be marked down to five again.",
@@ -246,13 +250,13 @@ beat("k3a", S_KOHL, "Now Larry's mixer. Consumer Reports priced this exact one a
      label="Consumer Reports · checked 2012")
 beat("k3", S_KOHL, "on sale for four eighty-nine ninety-nine.",
      img("a shiny cream stand mixer on a white shop shelf with a large blank cream paper price tag hanging from it, plain background, product shot", motion="static", hand_marks=True,
-         marks=[write("SALE $489.99", on="four", x=0.81, y=0.60, w=0.15, h=0.06, angle=-12)]),
+         marks=[write("SALE $489.99", on="four", **TAG_L2)]),
      pause_at={"word": "four", "sec": 0.7, "hit": "stamp"}, label="Consumer Reports · checked 2012",
      ledger=[{"label": "MIXER", "amount": "$489.99", "on": "four"}])
 beat("k4", S_KOHL, "\"Regular\" price: five forty-nine ninety-nine.",
      reuse("k3", hand_marks=True, push={"center": [0.80, 0.57], "zoom": 2.2},
-           marks=[write("SALE $489.99", at=0.0, x=0.81, y=0.60, w=0.15, h=0.06, angle=-12),
-                  write("REG. $549.99", on="five", x=0.80, y=0.51, w=0.15, h=0.06, angle=-12, **TAG_W)]),
+           marks=[write("SALE $489.99", at=0.0, **TAG_L2),
+                  write("REG. $549.99", on="five", **TAG_L1, **TAG_W)]),
      label="Consumer Reports · checked 2012", ledger=[{"label": "\"WAS\"", "amount": "$549.99", "on": "five"}])
 beat("k5", S_KOHL, "On Amazon, the same mixer: three ninety-nine ninety-nine.",
      img("the same shiny cream stand mixer sitting in an open plain cardboard delivery box on a doorstep, daylight", motion="zoom_in"),
@@ -264,7 +268,7 @@ beat("k6", S_KOHL, "Larry's saving: sixty dollars. His real overpay: ninety.",
      ledger=[{"label": "OVERPAID", "amount": "$90.00", "loss": True, "circle": True, "on": "ninety."}])
 beat("k7", S_KOHL, "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
      img("a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil", motion="static",
-         hand_marks=True, marks=[circle(0.37, 0.35, 0.38, 0.58, "tracked", target=[0.20, 0.12, 0.53, 0.62]), write("103 DAYS", on="hundred", x=0.73, y=0.30, w=0.20, h=0.08)]),
+         hand_marks=True, marks=[circle(0.37, 0.35, 0.38, 0.58, "tracked", target=[0.20, 0.12, 0.53, 0.62]), write("103 DAYS", on="hundred", x=0.76, y=0.37, w=0.20, h=0.08)]),
      label="tracked 2003")
 beat("k8", S_KOHL, "They were on sale eighty-six percent of the time.",
      {"type": "stat", "stat": {"value": 86, "suffix": "%", "label": "of the time on sale · tracked 2003"}},
@@ -429,12 +433,13 @@ beat("x3", S_CHECK, "Two. Check the price history. Free trackers show what a pro
 beat("x4", S_CHECK, "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",
      img("an open 1950s wooden index-card box with four blank white cards standing up, plain cream background", motion="static",
          push={"center": [0.57, 0.45], "zoom": 1.6},
-         # one centred list on the big front card: baseline along the card's top edge (17 deg), lines at 17/32/47/62 %
-         # of the card's height (visible face ends at 78 % on the right, cut by the box rim), equal side margins
-         marks=[write("US · Amazon", at=0.05, dur=0.3, x=0.5687, y=0.3909, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter"),
-                write("Keepa · camelcamelcamel", on="Keepa", dur=1.7, x=0.5720, y=0.4337, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter"),
-                write("UK · EU", on="US,", dur=0.3, x=0.5756, y=0.4764, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter"),
-                write("PriceSpy · idealo", on="PriceSpy", dur=1.35, x=0.5792, y=0.5193, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter")]),
+         # one list centred on the front card's VISIBLE face (corners TL .431/.424, TR .698/.272, BR .719/.519, BL .453/.697 -
+         # the bottom is the box rim): lines at 23/41/59/77 % between top edge and rim, each centred between the card's
+         # left and right edges at its height, angle following the face's perspective (18.3 -> 19.9 deg)
+         marks=[write("US · Amazon", at=0.05, dur=0.3, x=0.5692, y=0.4079, w=0.24, h=0.029, angle=18.3, color="ink", fnt="typewriter"),
+                write("Keepa · camelcamelcamel", on="Keepa", dur=1.7, x=0.5731, y=0.4545, w=0.24, h=0.029, angle=18.9, color="ink", fnt="typewriter"),
+                write("UK · EU", on="US,", dur=0.3, x=0.5770, y=0.5012, w=0.24, h=0.029, angle=19.4, color="ink", fnt="typewriter"),
+                write("PriceSpy · idealo", on="PriceSpy", dur=1.35, x=0.5808, y=0.5478, w=0.24, h=0.029, angle=19.9, color="ink", fnt="typewriter")]),
      music="ub_secret_report", say="Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.")
 beat("x5", S_CHECK, "A was price that never shows up on the chart is a suspect.", reuse("m1", marks=WAS_DASH), music="ub_secret_report")
 beat("x6", S_CHECK, "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",

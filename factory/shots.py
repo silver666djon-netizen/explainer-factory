@@ -259,9 +259,10 @@ def write_layout(mark: dict, W: int, H: int, red, cfg: dict) -> dict:
         bgc = pal.get(mark["bg"]) or hex_to_rgb(mark["bg"])
         d.rounded_rectangle((0, 0, bw - 1, bh - 1), radius=bh // 6, fill=tuple(bgc) + (255,))
     tw = fnt.getlength(txt)
+    tx = bw * 0.03 if mark.get("align") == "left" else (bw - tw) / 2  # "left": lines in one box column start together
     ink = Image.new("L", (bw, bh), 0)
-    ImageDraw.Draw(ink).text(((bw - tw) / 2, bh / 2), txt, font=fnt, fill=255, anchor="lm")
-    d.text(((bw - tw) / 2, bh / 2), txt, font=fnt, fill=tuple(col) + (255,), anchor="lm")
+    ImageDraw.Draw(ink).text((tx, bh / 2), txt, font=fnt, fill=255, anchor="lm")
+    d.text((tx, bh / 2), txt, font=fnt, fill=tuple(col) + (255,), anchor="lm")
     a = np.array(ink)
     cols = np.where(a.max(0) > 40)[0]
     x0, x1 = (int(cols.min()), int(cols.max()) + 1) if len(cols) else (0, bw)

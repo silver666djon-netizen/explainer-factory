@@ -10,7 +10,7 @@ from pathlib import Path
 
 import cv2
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFilter
 
 from . import audio as A
 from .config import hex_to_rgb, resolve_font
@@ -786,7 +786,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         if beat.get("stamp"):  # a quick verdict stamp over any picture
             stp = beat["stamp"]
             sat = start + _timed(stp, v["words"], 0.3)
-            plan.stamps.append((sat, shot_end, str(stp["text"])))
+            plan.stamps.append((sat, shot_end, str(stp["text"]), stp.get("slip")))
             plan.timeline.add_sfx(sat, "stamp", seed=i + 41)
         for row in beat.get("ledger") or []:
             ledger_rows.append({**row, "at": start + _timed(row, v["words"], 0.5)})
@@ -1029,16 +1029,34 @@ class Overlay:
                 y = int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01)
                 blend(frame, im, x, y)
                 break
-        for s0, s1, txt in self.plan.stamps:
+        for s0, s1, txt, slip in self.plan.stamps:
             if s0 <= t < s1:
-                key = ("stamp", txt)
+                key = ("stamp", txt, bool(slip))
                 if key not in self.cache:
                     from .endscreen import _stamp
-                    self.cache[key] = _stamp(txt, self.cfg, int(min(self.W, self.H) * 0.62), self.pal["red"], -10, 7)
+                    sw = int(self.W * float(slip.get("w", 0.30))) if slip else int(min(self.W, self.H) * 0.62)
+                    self.cache[key] = _stamp(txt, self.cfg, sw, self.pal["red"], float(slip.get("angle", 3)) if slip else -10, 7)
+                    if slip:  # red numerals over a busy picture: a cream paper slip lies under the stamp from the press
+                        h0, w0 = self.cache[key].shape[:2]
+                        pw_, ph_ = int(w0 * 1.16), int(h0 * 1.45)
+                        sl = Image.new("RGBA", (pw_, ph_), (0, 0, 0, 0))
+                        ImageDraw.Draw(sl).rectangle((4, 4, pw_ - 5, ph_ - 5), fill=(246, 238, 216, 255), outline=(200, 190, 168, 255), width=2)
+                        sl = sl.rotate(float(slip.get("slip_angle", -4)), resample=Image.BICUBIC, expand=True)
+                        sh_ = Image.new("RGBA", sl.size, (0, 0, 0, 0))
+                        sh_.putalpha(Image.fromarray((np.array(sl)[..., 3] * 0.45).astype(np.uint8)).filter(ImageFilter.GaussianBlur(6)))
+                        self.cache[key + ("slip",)] = (np.array(sl), np.array(sh_))
                 st = self.cache[key]
                 p = min(1.0, (t - s0) / 0.14)
                 sc = 2.2 - 1.2 * p
                 im = cv2.resize(st, (max(1, int(st.shape[1] * sc)), max(1, int(st.shape[0] * sc))))
+                if slip:
+                    cx, cy = int(self.W * float(slip["x"])), int(self.H * float(slip["y"]))
+                    if p >= 1.0 or t - s0 > 0.10:  # the slip is there when the stamp lands
+                        sl, sh_ = self.cache[key + ("slip",)]
+                        blend(frame, sh_, cx - sl.shape[1] // 2 + 6, cy - sl.shape[0] // 2 + 9)
+                        blend(frame, sl, cx - sl.shape[1] // 2, cy - sl.shape[0] // 2)
+                    blend(frame, im, cx - im.shape[1] // 2, cy - im.shape[0] // 2, opacity=min(1.0, 0.3 + p))
+                    continue
                 cy = int(self.H * (0.42 if self.H < self.W else 0.45))
                 blend(frame, im, (self.W - im.shape[1]) // 2, cy - im.shape[0] // 2, opacity=min(1.0, 0.3 + p))
         if self.plan.ctas:

@@ -391,7 +391,8 @@ class MugshotShot(Shot):
         self.BW, self.BH = BW, BH
         # marker word 'GUILTY?' scribble near the photo
         from .endscreen import _stamp
-        self.tag = _stamp(spec.get("tag", "WANTED"), cfg, int(pw * 0.95), pal["red"], 8, seed + 5)  # a rubber stamp, dropped in
+        self.tag = _stamp(spec.get("tag", "WANTED"), cfg, int(pw * float(spec.get("stamp_w", 0.95))), pal["red"],
+                          float(spec.get("stamp_angle", 8)), seed + 5)  # a rubber stamp, dropped in (angle: + = rising, - = falling)
         sp = spec.get("stamp_pos")  # (fx, fy) in photo fractions: where the SUSPECT stamp lands
         self.tag_xy = (px + int(pw * sp[0]), py + int(ph * sp[1])) if sp else (px + pw - int(pw * 0.15), py - int(BH * 0.02))
         # typing: each field types in letter by letter, in sync with the narration of that field
