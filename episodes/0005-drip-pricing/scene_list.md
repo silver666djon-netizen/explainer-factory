@@ -41,7 +41,7 @@ The 1958 showroom photo (U.S. News & World Report, loc.gov/item/2023630588) woul
 | 0:00.2 | o1 | (code/hand-made) the code-drawn $30 concert ticket (hand-made frame: images/o1.png) | 3.0 | PLATE: Illustration; ⏸ before number; TAB: TICKET $30.00; writes "$30" |
 | 0:03.3 | o2 | reuse o1 | 2.9 | PLATE: Illustration; TAB: SERVICE FEE +$8.00; TAB: FACILITY FEE +$6.00; TAB: PROCESSING FEE +$4.00; writes "+ $8 fee"; writes "+ $6 fee"; writes "+ $4 fee" |
 | 0:06.2 | o3 | reuse o1 (push-in) | 2.1 | PLATE: Illustration; ⏸ before number; TAB: PAID $48.00; writes "= $48" |
-| 0:08.3 | o4 | (gen) a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red | 3.7 | writes "FICTIONAL"; writes "REAL" |
+| 0:08.3 | o4 | (gen) Larry sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped again | 3.7 | writes "FICTIONAL"; writes "REAL" |
 | 0:12.0 | cf1 | CASE FILE #004 folder opens, OPEN stamp (stamp hand) | 4.1 | Tab hidden |
 | 0:16.1 | m1 | MUGSHOT Suspect No. 1 — The checkout fee (gen photo) | 6.0 | Tab hidden |
 | 0:22.1 | m1b | (gen) a close-up of a cream retro laptop screen showing a simple checkout page with a large red rounded PAY button and an empt → push-in | 9.3 | writes "$48" (push-in) |
@@ -72,7 +72,7 @@ The 1958 showroom photo (U.S. News & World Report, loc.gov/item/2023630588) woul
 | TC | Beat | Picture | Sec | On screen / Tab |
 |---|---|---|---|---|
 | 1:58.4 | t2 | Chapter card: Wednesday 10:00 AM — $16.4 billion | 1.8 | Tab hidden |
-| 2:00.2 | b1 | (gen) a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red | 5.2 | TAB: HIDDEN $18.00; writes "$18 FEES" |
+| 2:00.2 | b1 | (gen) Larry at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream backg | 5.2 | TAB: HIDDEN $18.00; writes "$18 FEES" |
 | 2:05.4 | b2 | STAT 37.5% — of Larry's total was fees · Illustration | 5.1 | ⏸ before number; Tab hidden |
 | 2:10.5 | b3 | ARCHIVE ftc_statue_1943.jpg — Statue in front of the Federal Trade Commission building, Washington, D.C., 1943 | 7.6 | PLATE: FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending; ALLEGED plate |
 | 2:18.1 | b4 | EVIDENCE card · COMPLAINT  ·  ALLEGED  ·  QUOTED · FTC complaint · C.D. Cal. · Sept 2025 · ¶36 | 6.4 | ⏸ before number; Tab hidden |
@@ -88,7 +88,7 @@ The 1958 showroom photo (U.S. News & World Report, loc.gov/item/2023630588) woul
 | TC | Beat | Picture | Sec | On screen / Tab |
 |---|---|---|---|---|
 | 2:57.3 | t3 | Chapter card: Thursday 11:40 PM — The resort fee | 1.8 | Tab hidden |
-| 2:59.1 | c1 | (gen) a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red | 5.2 | writes "DOWNTOWN" |
+| 2:59.1 | c1 | (gen) Larry standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the w | 5.2 | writes "DOWNTOWN" |
 | 3:04.3 | m2 | MUGSHOT Suspect No. 2 — The resort fee (gen photo) | 5.2 | Tab hidden |
 | 3:09.6 | m2b | (gen) a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with c | 4.1 |  |
 | 3:13.7 | c2 | ARCHIVE hotel_clerk_dover_1938.jpg — Hotel clerk at desk, Dover, Delaware, 1938 | 4.5 | PLATE: DC Attorney General v. Marriott · July 2019; ALLEGED plate |
@@ -160,7 +160,7 @@ The 1958 showroom photo (U.S. News & World Report, loc.gov/item/2023630588) woul
 
 | TC | Beat | Picture | Sec | On screen / Tab |
 |---|---|---|---|---|
-| 7:12.3 | z0 | (gen) a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red | 4.5 | STAMP BIG Case closed; TAB: PAID $48.00 for a $30 ticket |
+| 7:12.3 | z0 | (gen) Larry happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm ligh | 4.5 | STAMP BIG Case closed; TAB: PAID $48.00 for a $30 ticket |
 | 7:16.7 | z0b | reuse z0 (push-in) → push-in | 9.5 | Tab hidden |
 | 7:26.2 | z1 | END SCREEN: CASE CLOSED folder + verdict (2 lines, hand) → NEXT CASE sketch (code-drawn tip tablet) | 7.9 | Tab hidden |
 | 7:34.2 | z4 | … end screen continues | 12.9 | Tab hidden |
