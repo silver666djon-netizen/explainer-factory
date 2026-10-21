@@ -18,8 +18,12 @@ from .script import ScriptError, image_prompts, load_episode, photo_sources
 from .tts import SAMPLE_RATE, caption_words, make_voice, spoken_text
 
 
+_T0 = __import__("time").time()
+
+
 def log(msg: str) -> None:
-    print(msg, flush=True)
+    t = __import__("time").time() - _T0
+    print(f"[{int(t // 60):02d}:{int(t % 60):02d}] {msg}", flush=True)  # elapsed time: a slow step shows in the log
 
 
 def voice_beats(voice, beats: list[dict]) -> list[dict]:

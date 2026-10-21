@@ -132,6 +132,7 @@ jobs:
           pip install -q -r requirements.txt
 
       - name: Render
+        timeout-minutes: ${{ github.event.inputs.preview == 'yes' && 25 || 150 }}  # a hung preview fails fast and reports its log
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -154,7 +155,7 @@ jobs:
           key: images-${{ github.run_id }}
 
       - name: Report error details
-        if: failure()
+        if: failure() || cancelled()
         run: |
           tail -n 60 build.log 2>/dev/null | grep -v "%  (" | python3 -c 'import sys; t=sys.stdin.read()[-6000:]; print("::error title=Render failed::" + t.replace("%","%25").replace("\r","").replace("\n","%0A"))'
 
