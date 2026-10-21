@@ -1,0 +1,26 @@
+name: Send reference pack
+# Sends refs/<folder>/* to Telegram as documents (originals). Started on purpose only.
+on:
+  workflow_dispatch:
+    inputs:
+      folder:
+        description: "folder in the repo, e.g. refs/0005-pack"
+        required: true
+      intro:
+        description: "first message"
+        required: false
+        default: ""
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install requests pyyaml
+      - name: Send
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python tools/send_pack.py "${{ github.event.inputs.folder }}" "${{ github.event.inputs.intro }}"
