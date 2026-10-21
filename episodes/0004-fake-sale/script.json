@@ -717,7 +717,7 @@
             "type": "write",
             "text": "WAS",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.455,
             "w": 0.12,
             "h": 0.09,
             "angle": 0,
@@ -731,7 +731,7 @@
             "type": "write",
             "text": "$—",
             "x": 0.5,
-            "y": 0.62,
+            "y": 0.58,
             "w": 0.1,
             "h": 0.09,
             "angle": 0,
@@ -745,7 +745,7 @@
             "type": "underline",
             "role": "strike",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.455,
             "w": 0.13,
             "h": 0.02,
             "at": 0.0,
@@ -753,16 +753,16 @@
             "hand": false,
             "target": [
               0.45,
-              0.43,
+              0.415,
               0.55,
-              0.51
+              0.495
             ]
           },
           {
             "type": "underline",
             "role": "strike",
             "x": 0.5,
-            "y": 0.62,
+            "y": 0.58,
             "w": 0.11,
             "h": 0.02,
             "at": 0.0,
@@ -770,9 +770,9 @@
             "hand": false,
             "target": [
               0.46,
-              0.58,
               0.54,
-              0.66
+              0.54,
+              0.62
             ]
           },
           {
@@ -1128,9 +1128,9 @@
           "on": "Regular",
           "center": [
             0.8,
-            0.55
+            0.62
           ],
-          "zoom": 2.2,
+          "zoom": 2.0,
           "marks": [
             {
               "type": "circle",
@@ -1165,11 +1165,11 @@
             },
             {
               "type": "write",
-              "text": "14 %",
-              "x": 0.66,
-              "y": 0.36,
-              "w": 0.07,
-              "h": 0.06,
+              "text": "14 % OF DAYS",
+              "x": 0.935,
+              "y": 0.58,
+              "w": 0.09,
+              "h": 0.032,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -1177,7 +1177,7 @@
               "on": "fourteen"
             }
           ],
-          "motion": "zoom_in"
+          "motion": "static"
         }
       },
       "label": "tracked 2003"
@@ -1202,11 +1202,11 @@
             {
               "type": "write",
               "text": "19 RETAILERS",
-              "x": 0.378,
-              "y": 0.545,
+              "x": 0.3715,
+              "y": 0.556,
               "w": 0.068,
               "h": 0.024,
-              "angle": 0,
+              "angle": -5,
               "color": "red",
               "font": "marker",
               "dur": 0.7,
@@ -1310,10 +1310,10 @@
           {
             "type": "write",
             "text": "10",
-            "x": 0.455,
-            "y": 0.2,
-            "w": 0.04,
-            "h": 0.07,
+            "x": 0.467,
+            "y": 0.239,
+            "w": 0.035,
+            "h": 0.055,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -1323,10 +1323,10 @@
           {
             "type": "write",
             "text": "65",
-            "x": 0.375,
-            "y": 0.2,
-            "w": 0.04,
-            "h": 0.07,
+            "x": 0.367,
+            "y": 0.232,
+            "w": 0.035,
+            "h": 0.055,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -1335,7 +1335,7 @@
           }
         ],
         "closeup": {
-          "on": "then",
+          "on": "people",
           "center": [
             0.42,
             0.29
@@ -1345,10 +1345,10 @@
             {
               "type": "write",
               "text": "10",
-              "x": 0.455,
-              "y": 0.2,
-              "w": 0.04,
-              "h": 0.07,
+              "x": 0.467,
+              "y": 0.239,
+              "w": 0.035,
+              "h": 0.055,
               "angle": 0,
               "color": "ink",
               "font": "marker",
@@ -1359,10 +1359,10 @@
             {
               "type": "write",
               "text": "65",
-              "x": 0.375,
-              "y": 0.2,
-              "w": 0.04,
-              "h": 0.07,
+              "x": 0.367,
+              "y": 0.232,
+              "w": 0.035,
+              "h": 0.055,
               "angle": 0,
               "color": "ink",
               "font": "marker",
@@ -1510,23 +1510,23 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.513,
-            "y": 0.465,
-            "w": 0.085,
-            "h": 0.2,
+            "x": 0.4205,
+            "y": 0.4565,
+            "w": 0.078,
+            "h": 0.233,
             "on": "extra",
             "target": [
-              0.48,
-              0.39,
-              0.55,
-              0.54
+              0.393,
+              0.374,
+              0.448,
+              0.539
             ]
           },
           {
             "type": "write",
             "text": "ORIGINAL?",
-            "x": 0.515,
-            "y": 0.14,
+            "x": 0.43,
+            "y": 0.115,
             "w": 0.14,
             "h": 0.055,
             "angle": 0,
@@ -1671,7 +1671,7 @@
             "type": "write",
             "text": "WAS",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.455,
             "w": 0.12,
             "h": 0.09,
             "angle": 0,
@@ -1685,7 +1685,7 @@
             "type": "write",
             "text": "$—",
             "x": 0.5,
-            "y": 0.62,
+            "y": 0.58,
             "w": 0.1,
             "h": 0.09,
             "angle": 0,
@@ -1699,7 +1699,7 @@
             "type": "underline",
             "role": "strike",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.455,
             "w": 0.13,
             "h": 0.02,
             "at": 0.0,
@@ -1707,16 +1707,16 @@
             "hand": false,
             "target": [
               0.45,
-              0.43,
+              0.415,
               0.55,
-              0.51
+              0.495
             ]
           },
           {
             "type": "underline",
             "role": "strike",
             "x": 0.5,
-            "y": 0.62,
+            "y": 0.58,
             "w": 0.11,
             "h": 0.02,
             "at": 0.0,
@@ -1724,18 +1724,18 @@
             "hand": false,
             "target": [
               0.46,
-              0.58,
               0.54,
-              0.66
+              0.54,
+              0.62
             ]
           },
           {
             "type": "write",
             "text": "FICTION",
             "x": 0.5,
-            "y": 0.66,
-            "w": 0.13,
-            "h": 0.055,
+            "y": 0.695,
+            "w": 0.15,
+            "h": 0.07,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -1747,7 +1747,7 @@
           "on": "accomplice",
           "center": [
             0.5,
-            0.66
+            0.62
           ],
           "zoom": 1.8,
           "marks": [
@@ -1755,7 +1755,7 @@
               "type": "write",
               "text": "WAS",
               "x": 0.5,
-              "y": 0.47,
+              "y": 0.455,
               "w": 0.12,
               "h": 0.09,
               "angle": 0,
@@ -1769,7 +1769,7 @@
               "type": "write",
               "text": "$—",
               "x": 0.5,
-              "y": 0.62,
+              "y": 0.58,
               "w": 0.1,
               "h": 0.09,
               "angle": 0,
@@ -1783,7 +1783,7 @@
               "type": "underline",
               "role": "strike",
               "x": 0.5,
-              "y": 0.47,
+              "y": 0.455,
               "w": 0.13,
               "h": 0.02,
               "at": 0.0,
@@ -1791,16 +1791,16 @@
               "hand": false,
               "target": [
                 0.45,
-                0.43,
+                0.415,
                 0.55,
-                0.51
+                0.495
               ]
             },
             {
               "type": "underline",
               "role": "strike",
               "x": 0.5,
-              "y": 0.62,
+              "y": 0.58,
               "w": 0.11,
               "h": 0.02,
               "at": 0.0,
@@ -1808,18 +1808,18 @@
               "hand": false,
               "target": [
                 0.46,
-                0.58,
                 0.54,
-                0.66
+                0.54,
+                0.62
               ]
             },
             {
               "type": "write",
               "text": "FICTION",
               "x": 0.5,
-              "y": 0.66,
-              "w": 0.13,
-              "h": 0.055,
+              "y": 0.695,
+              "w": 0.15,
+              "h": 0.07,
               "angle": 0,
               "color": "ink",
               "font": "marker",
@@ -1830,11 +1830,11 @@
             {
               "type": "write",
               "text": "BARGAIN!",
-              "x": 0.5,
-              "y": 0.77,
-              "w": 0.14,
+              "x": 0.68,
+              "y": 0.7,
+              "w": 0.13,
               "h": 0.055,
-              "angle": 0,
+              "angle": -8,
               "color": "red",
               "font": "marker",
               "dur": 0.7,
@@ -1992,21 +1992,6 @@
         "marks": [
           {
             "type": "write",
-            "text": " ",
-            "x": 0.15,
-            "y": 0.22,
-            "w": 0.23,
-            "h": 0.2,
-            "angle": 0,
-            "color": "red",
-            "font": "marker",
-            "dur": 0.01,
-            "at": 0.0,
-            "bg": "paper",
-            "hand": false
-          },
-          {
-            "type": "write",
             "text": "7 : 1",
             "x": 0.15,
             "y": 0.22,
@@ -2016,7 +2001,11 @@
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "seven"
+            "on": "seven",
+            "plate": [
+              1.15,
+              1.11
+            ]
           }
         ]
       }
@@ -2069,21 +2058,6 @@
             },
             {
               "type": "write",
-              "text": " ",
-              "x": 0.497,
-              "y": 0.725,
-              "w": 0.33,
-              "h": 0.066,
-              "angle": 0,
-              "color": "red",
-              "font": "marker",
-              "dur": 0.01,
-              "at": 0.0,
-              "bg": "paper",
-              "hand": false
-            },
-            {
-              "type": "write",
               "text": "0.02 % AT FULL PRICE",
               "x": 0.497,
               "y": 0.725,
@@ -2093,7 +2067,11 @@
               "color": "red",
               "font": "marker",
               "dur": 0.7,
-              "on": "rarer"
+              "on": "rarer",
+              "plate": [
+                1.065,
+                1.31
+              ]
             }
           ],
           "motion": "zoom_in"
@@ -2391,19 +2369,30 @@
         "hand_marks": true,
         "push": {
           "center": [
-            0.3,
-            0.58
+            0.435,
+            0.55
           ],
-          "zoom": 1.8
+          "zoom": 2.2
         },
         "marks": [
           {
+            "type": "dot",
+            "x": 0.298,
+            "y": 0.575,
+            "w": 0.012,
+            "h": 0.012,
+            "on": "California",
+            "delay": 0.2,
+            "dur": 0.3,
+            "hand": false
+          },
+          {
             "type": "write",
             "text": "3 MONTHS",
-            "x": 0.3,
-            "y": 0.56,
-            "w": 0.12,
-            "h": 0.05,
+            "x": 0.25,
+            "y": 0.615,
+            "w": 0.062,
+            "h": 0.028,
             "angle": 0,
             "color": "red",
             "font": "marker",
@@ -2412,7 +2401,9 @@
           }
         ]
       },
-      "label": "California · B&P Code §17501"
+      "label": "California · B&P Code §17501",
+      "label_on": "months.",
+      "label_delay": 0.4
     },
     {
       "id": "e12b",
@@ -2426,24 +2417,28 @@
         "hand_marks": true,
         "push": {
           "center": [
-            0.66,
-            0.52
+            0.558,
+            0.53
           ],
-          "zoom": 1.8
+          "zoom": 2.2
         },
         "marks": [
           {
             "type": "write",
             "text": "30 DAYS",
-            "x": 0.62,
-            "y": 0.4,
-            "w": 0.1,
-            "h": 0.05,
+            "x": 0.665,
+            "y": 0.535,
+            "w": 0.09,
+            "h": 0.045,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "thirty"
+            "on": "thirty",
+            "plate": [
+              1.12,
+              1.35
+            ]
           }
         ]
       },
@@ -2545,88 +2540,62 @@
         "prompt": "an open 1950s wooden index-card box with four blank white cards standing up, plain cream background",
         "push": {
           "center": [
-            0.56,
-            0.37
+            0.57,
+            0.45
           ],
-          "zoom": 1.42
+          "zoom": 1.6
         },
         "marks": [
           {
             "type": "write",
-            "text": "Keepa",
-            "x": 0.491,
-            "y": 0.2879,
-            "w": 0.05,
-            "h": 0.018,
-            "angle": 15.6,
-            "color": "ink",
-            "font": "typewriter",
-            "dur": 0.7,
-            "on": "Keepa"
-          },
-          {
-            "type": "write",
-            "text": "camelcamelcamel",
-            "x": 0.517,
-            "y": 0.3142,
-            "w": 0.13,
-            "h": 0.018,
+            "text": "US · Amazon",
+            "x": 0.5687,
+            "y": 0.3909,
+            "w": 0.24,
+            "h": 0.029,
             "angle": 17.0,
             "color": "ink",
             "font": "typewriter",
-            "dur": 0.7,
-            "on": "camelcamelcamel"
+            "dur": 0.3,
+            "at": 0.05
           },
           {
             "type": "write",
-            "text": "PriceSpy",
-            "x": 0.549,
-            "y": 0.3353,
-            "w": 0.08,
-            "h": 0.018,
-            "angle": 17.9,
+            "text": "Keepa · camelcamelcamel",
+            "x": 0.572,
+            "y": 0.4337,
+            "w": 0.24,
+            "h": 0.029,
+            "angle": 17.0,
             "color": "ink",
             "font": "typewriter",
-            "dur": 0.7,
-            "on": "PriceSpy"
-          },
-          {
-            "type": "write",
-            "text": "idealo",
-            "x": 0.565,
-            "y": 0.392,
-            "w": 0.07,
-            "h": 0.018,
-            "angle": 18.0,
-            "color": "ink",
-            "font": "typewriter",
-            "dur": 0.7,
-            "on": "idealo"
-          },
-          {
-            "type": "write",
-            "text": "US · Amazon",
-            "x": 0.3,
-            "y": 0.055,
-            "w": 0.15,
-            "h": 0.045,
-            "angle": 0,
-            "color": "red",
-            "font": "body",
-            "dur": 0.01,
+            "dur": 1.7,
             "on": "Keepa"
           },
           {
             "type": "write",
             "text": "UK · EU",
-            "x": 0.62,
-            "y": 0.055,
-            "w": 0.11,
-            "h": 0.045,
-            "angle": 0,
-            "color": "red",
-            "font": "body",
-            "dur": 0.01,
+            "x": 0.5756,
+            "y": 0.4764,
+            "w": 0.24,
+            "h": 0.029,
+            "angle": 17.0,
+            "color": "ink",
+            "font": "typewriter",
+            "dur": 0.3,
+            "on": "US,"
+          },
+          {
+            "type": "write",
+            "text": "PriceSpy · idealo",
+            "x": 0.5792,
+            "y": 0.5193,
+            "w": 0.24,
+            "h": 0.029,
+            "angle": 17.0,
+            "color": "ink",
+            "font": "typewriter",
+            "dur": 1.35,
             "on": "PriceSpy"
           }
         ]
@@ -2648,7 +2617,7 @@
             "type": "write",
             "text": "WAS",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.455,
             "w": 0.12,
             "h": 0.09,
             "angle": 0,
@@ -2662,7 +2631,7 @@
             "type": "write",
             "text": "$—",
             "x": 0.5,
-            "y": 0.62,
+            "y": 0.58,
             "w": 0.1,
             "h": 0.09,
             "angle": 0,
@@ -2676,7 +2645,7 @@
             "type": "underline",
             "role": "strike",
             "x": 0.5,
-            "y": 0.47,
+            "y": 0.455,
             "w": 0.13,
             "h": 0.02,
             "at": 0.0,
@@ -2684,16 +2653,16 @@
             "hand": false,
             "target": [
               0.45,
-              0.43,
+              0.415,
               0.55,
-              0.51
+              0.495
             ]
           },
           {
             "type": "underline",
             "role": "strike",
             "x": 0.5,
-            "y": 0.62,
+            "y": 0.58,
             "w": 0.11,
             "h": 0.02,
             "at": 0.0,
@@ -2701,9 +2670,9 @@
             "hand": false,
             "target": [
               0.46,
-              0.58,
               0.54,
-              0.66
+              0.54,
+              0.62
             ]
           }
         ]
@@ -3344,7 +3313,7 @@
                 "type": "write",
                 "text": "WAS",
                 "x": 0.5,
-                "y": 0.47,
+                "y": 0.455,
                 "w": 0.12,
                 "h": 0.09,
                 "angle": 0,
@@ -3358,7 +3327,7 @@
                 "type": "write",
                 "text": "$—",
                 "x": 0.5,
-                "y": 0.62,
+                "y": 0.58,
                 "w": 0.1,
                 "h": 0.09,
                 "angle": 0,
@@ -3372,7 +3341,7 @@
                 "type": "underline",
                 "role": "strike",
                 "x": 0.5,
-                "y": 0.47,
+                "y": 0.455,
                 "w": 0.13,
                 "h": 0.02,
                 "at": 0.0,
@@ -3380,16 +3349,16 @@
                 "hand": false,
                 "target": [
                   0.45,
-                  0.43,
+                  0.415,
                   0.55,
-                  0.51
+                  0.495
                 ]
               },
               {
                 "type": "underline",
                 "role": "strike",
                 "x": 0.5,
-                "y": 0.62,
+                "y": 0.58,
                 "w": 0.11,
                 "h": 0.02,
                 "at": 0.0,
@@ -3397,9 +3366,9 @@
                 "hand": false,
                 "target": [
                   0.46,
-                  0.58,
                   0.54,
-                  0.66
+                  0.54,
+                  0.62
                 ]
               },
               {
@@ -3649,9 +3618,9 @@
               "on": "Regular",
               "center": [
                 0.8,
-                0.55
+                0.62
               ],
-              "zoom": 2.2,
+              "zoom": 2.0,
               "marks": [
                 {
                   "type": "circle",
@@ -3686,11 +3655,11 @@
                 },
                 {
                   "type": "write",
-                  "text": "14 %",
-                  "x": 0.66,
-                  "y": 0.36,
-                  "w": 0.07,
-                  "h": 0.06,
+                  "text": "14 % OF DAYS",
+                  "x": 0.935,
+                  "y": 0.58,
+                  "w": 0.09,
+                  "h": 0.032,
                   "angle": 0,
                   "color": "red",
                   "font": "marker",
@@ -3698,7 +3667,7 @@
                   "on": "fourteen"
                 }
               ],
-              "motion": "zoom_in"
+              "motion": "static"
             }
           },
           "label": "tracked 2003",
@@ -3721,10 +3690,10 @@
               {
                 "type": "write",
                 "text": "10",
-                "x": 0.455,
-                "y": 0.2,
-                "w": 0.04,
-                "h": 0.07,
+                "x": 0.467,
+                "y": 0.239,
+                "w": 0.035,
+                "h": 0.055,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
@@ -3734,10 +3703,10 @@
               {
                 "type": "write",
                 "text": "65",
-                "x": 0.375,
-                "y": 0.2,
-                "w": 0.04,
-                "h": 0.07,
+                "x": 0.367,
+                "y": 0.232,
+                "w": 0.035,
+                "h": 0.055,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
@@ -3747,7 +3716,7 @@
             ],
             "hand_marks": true,
             "closeup": {
-              "on": "then",
+              "on": "people",
               "center": [
                 0.42,
                 0.29
@@ -3757,10 +3726,10 @@
                 {
                   "type": "write",
                   "text": "10",
-                  "x": 0.455,
-                  "y": 0.2,
-                  "w": 0.04,
-                  "h": 0.07,
+                  "x": 0.467,
+                  "y": 0.239,
+                  "w": 0.035,
+                  "h": 0.055,
                   "angle": 0,
                   "color": "ink",
                   "font": "marker",
@@ -3771,10 +3740,10 @@
                 {
                   "type": "write",
                   "text": "65",
-                  "x": 0.375,
-                  "y": 0.2,
-                  "w": 0.04,
-                  "h": 0.07,
+                  "x": 0.367,
+                  "y": 0.232,
+                  "w": 0.035,
+                  "h": 0.055,
                   "angle": 0,
                   "color": "ink",
                   "font": "marker",
@@ -4079,21 +4048,6 @@
             "marks": [
               {
                 "type": "write",
-                "text": " ",
-                "x": 0.15,
-                "y": 0.22,
-                "w": 0.23,
-                "h": 0.2,
-                "angle": 0,
-                "color": "red",
-                "font": "marker",
-                "dur": 0.01,
-                "at": 0.0,
-                "bg": "paper",
-                "hand": false
-              },
-              {
-                "type": "write",
                 "text": "7 : 1",
                 "x": 0.15,
                 "y": 0.22,
@@ -4103,7 +4057,11 @@
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "seven"
+                "on": "seven",
+                "plate": [
+                  1.15,
+                  1.11
+                ]
               }
             ],
             "hand_marks": true
@@ -4333,67 +4291,28 @@
             "marks": [
               {
                 "type": "write",
-                "text": "Keepa",
-                "x": 0.491,
-                "y": 0.2879,
-                "w": 0.05,
-                "h": 0.018,
-                "angle": 15.6,
-                "color": "ink",
-                "font": "typewriter",
-                "dur": 0.7,
-                "on": "Keepa"
-              },
-              {
-                "type": "write",
-                "text": "camelcamelcamel",
-                "x": 0.517,
-                "y": 0.3142,
-                "w": 0.13,
-                "h": 0.018,
-                "angle": 17.0,
-                "color": "ink",
-                "font": "typewriter",
-                "dur": 0.7,
-                "on": "camelcamelcamel"
-              },
-              {
-                "type": "write",
-                "text": "PriceSpy",
-                "x": 0.549,
-                "y": 0.3353,
-                "w": 0.08,
-                "h": 0.018,
-                "angle": 17.9,
-                "color": "ink",
-                "font": "typewriter",
-                "dur": 0.7,
-                "on": "PriceSpy"
-              },
-              {
-                "type": "write",
-                "text": "idealo",
-                "x": 0.565,
-                "y": 0.392,
-                "w": 0.07,
-                "h": 0.018,
-                "angle": 18.0,
-                "color": "ink",
-                "font": "typewriter",
-                "dur": 0.7,
-                "on": "idealo"
-              },
-              {
-                "type": "write",
                 "text": "US · Amazon",
                 "x": 0.38,
                 "y": 0.1,
-                "w": 0.15,
-                "h": 0.045,
-                "angle": 0,
-                "color": "red",
-                "font": "body",
-                "dur": 0.01,
+                "w": 0.24,
+                "h": 0.029,
+                "angle": 17.0,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 0.3,
+                "at": 0.05
+              },
+              {
+                "type": "write",
+                "text": "Keepa · camelcamelcamel",
+                "x": 0.572,
+                "y": 0.4337,
+                "w": 0.24,
+                "h": 0.029,
+                "angle": 17.0,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 1.7,
                 "on": "Keepa"
               },
               {
@@ -4401,21 +4320,34 @@
                 "text": "UK · EU",
                 "x": 0.6,
                 "y": 0.1,
-                "w": 0.11,
-                "h": 0.045,
-                "angle": 0,
-                "color": "red",
-                "font": "body",
-                "dur": 0.01,
+                "w": 0.24,
+                "h": 0.029,
+                "angle": 17.0,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 0.3,
+                "on": "US,"
+              },
+              {
+                "type": "write",
+                "text": "PriceSpy · idealo",
+                "x": 0.5792,
+                "y": 0.5193,
+                "w": 0.24,
+                "h": 0.029,
+                "angle": 17.0,
+                "color": "ink",
+                "font": "typewriter",
+                "dur": 1.35,
                 "on": "PriceSpy"
               }
             ],
             "push": {
               "center": [
-                0.56,
-                0.37
+                0.57,
+                0.45
               ],
-              "zoom": 1.42
+              "zoom": 1.6
             }
           },
           "say": "Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",

@@ -11,7 +11,8 @@ Checks (exceptions are listed with timecodes):
     the ledger is on screen.
  4. a mark is never written while its target or the mark itself is outside the frame (sampled every frame
     of the writing at 12 fps).
- 5. a mark is never written while a subtitle covers its target (or the mark itself).
+ 5. a mark is never written while a subtitle covers its target (or the mark itself), and the full stroke path of a
+    visible circle / cross / underline (or a label's box) never runs under a subtitle.
 Exit code 1 if anything is listed."""
 from __future__ import annotations
 
@@ -209,6 +210,49 @@ def main(argv):
                             tt = 1e9
                             break
                     tt += 1 / 12
+        # 5b. the full stroke path of every visible circle / cross / underline (and the box of every written label)
+        #     never runs under a subtitle - while it is drawn and while it stays on screen
+        import math as _m
+        for sh in plan.shots:
+            if not hasattr(sh, "_screen"):
+                continue
+            for m in getattr(sh, "marks", None) or []:
+                typ = m.get("type")
+                if typ not in ("circle", "cross", "underline", "write") or not str(m.get("text", "x")).strip():
+                    continue
+                if sh.base is None:
+                    sh._prepare()
+                x, y = float(m.get("x", 0.5)), float(m.get("y", 0.5))
+                w, h = float(m.get("w", 0.2)), float(m.get("h", 0.1))
+                if typ == "circle":
+                    pts = [(x + w / 2 * _m.cos(a), y + h / 2 * _m.sin(a)) for a in [k * _m.pi / 24 for k in range(48)]]
+                elif typ == "cross":
+                    pts = [(x - w / 2 + w * f, y - h / 2 + h * f) for f in [k / 12 for k in range(13)]] + \
+                          [(x + w / 2 - w * f, y - h / 2 + h * f) for f in [k / 12 for k in range(13)]]
+                elif typ == "underline":
+                    pts = [(x - w / 2 + w * f, y) for f in [k / 12 for k in range(13)]]
+                else:  # written label: its box
+                    pts = [(x - w / 2 + w * f, y + dy) for f in [k / 8 for k in range(9)] for dy in (-h / 2, h / 2)]
+                at = max(0.0, float(m.get("at", 0.6)))
+                until = float(m["until"]) if m.get("until") is not None else sh.duration
+                tt = at
+                while tt < min(sh.duration, until):
+                    tabs = sh.start + tt
+                    hit = False
+                    for c0, c1, cx0, cy0, cx1, cy1 in cap_boxes:
+                        if not (c0 <= tabs < c1):
+                            continue
+                        for px, py in pts:
+                            sx, sy = sh._screen(px * sh.BW, py * sh.BH, tt)
+                            if cx0 <= sx <= cx1 and cy0 <= sy <= cy1:
+                                hit = True
+                                break
+                        if hit:
+                            break
+                    if hit:
+                        problems.append((name, beat_at(tabs), tabs, f"{typ} '{m.get('text', '')}' runs under a subtitle"))
+                        break
+                    tt += 0.25
         # 3. ledger safe zone
         led = plan.ledger
         if led is None:

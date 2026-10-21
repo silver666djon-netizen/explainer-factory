@@ -189,6 +189,22 @@ def _timed(spec: dict, words, default: float, key: str = "at") -> float:
     return float(spec.get(key, default))
 
 
+_NUM_WORDS = {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve",
+              "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen", "twenty", "thirty", "forty",
+              "fifty", "sixty", "seventy", "eighty", "ninety", "hundred", "thousand", "million", "billion", "half"}
+
+
+def _number_spoken_at(words, on: str | None = None) -> float | None:
+    """Start time of the first spoken number in a voiced beat (or of the word `on`)."""
+    if on:
+        return word_time(words, on)
+    for w, s0, _e in words:
+        core = w.lower().strip(".,!?;:\"'()").split("-")[0]
+        if any(c.isdigit() for c in core) or core in _NUM_WORDS:
+            return s0
+    return None
+
+
 def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
     """Insert `sec` of silence right before `word` (a reveal lands in silence). Returns the new voiced beat and
     the (shifted) start of that word."""
@@ -660,8 +676,11 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             for _w, s0, _e in words_rel[:: max(1, len(words_rel) // 4)]:
                 plan.timeline.add_sfx(start + s0, "hit", seed=i)
         elif vtype == "stat":
-            plan.shots.append(StatShot(shot_start, span, visual["stat"], cfg, size))
-            plan.timeline.add_sfx(shot_start + min(1.4, span * 0.45), "pop", seed=i)
+            land = _number_spoken_at(v["words"], visual["stat"].get("on"))
+            land = None if land is None else lead_in + land - 0.08
+            st = StatShot(shot_start, span, visual["stat"], cfg, size, land_at=land)
+            plan.shots.append(st)
+            plan.timeline.add_sfx(shot_start + st.ramp, "pop", seed=i)
         elif vtype == "chart":
             shot = ChartShot(shot_start, span, visual["chart"], cfg, size)
             plan.shots.append(shot)
@@ -743,7 +762,12 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
         if beat.get("label"):
-            plan.labels.append((shot_start, shot_end, str(beat["label"])))
+            l0 = shot_start
+            if beat.get("label_on"):  # the plate follows the mark it explains
+                lw = word_time(v["words"], beat["label_on"])
+                if lw is not None:
+                    l0 = start + lw + float(beat.get("label_delay", 0.0))
+            plan.labels.append((l0, shot_end, str(beat["label"])))
         if beat.get("ledger_hide") or beat.get("hero") or visual.get("hero"):
             plan.ledger_hide.append((shot_start, shot_end))
         if beat.get("stamp"):  # a quick verdict stamp over any picture

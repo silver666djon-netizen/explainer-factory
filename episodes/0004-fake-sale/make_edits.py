@@ -22,25 +22,32 @@ def load(k):
     return np.array(Image.open(CACHE / f"{FRAMES[k]}.png").convert("RGB"))
 
 
-# ---- m1: the suspect tag without the painted X (the hand writes "WAS $—" and strikes it on screen)
-im = load("m1")
-H, W = im.shape[:2]
-x0, x1, y0, y1 = int(0.37 * W), int(0.63 * W), int(0.36 * H), int(0.62 * H)
-reg = im[y0:y1, x0:x1]
-dark = (reg.max(2) < 90).astype(np.uint8)
-dark = cv2.dilate(dark, np.ones((5, 5), np.uint8))
-mask = np.zeros(im.shape[:2], np.uint8)
-mask[y0:y1, x0:x1] = dark * 255
-clean = cv2.inpaint(im, mask, 9, cv2.INPAINT_TELEA)
-# redraw the tag's own black outline where the X crossed it (measured just below the X)
-rows = slice(int(0.66 * H), int(0.80 * H))
-for lo, hi in ((0.385, 0.43), (0.57, 0.615)):
-    seg = im[rows, int(lo * W):int(hi * W)].max(2) < 90
-    cols = np.where(seg.mean(0) > 0.5)[0]
-    if len(cols):
-        cx = int(lo * W) + int(cols.mean())
-        th = max(3, len(cols))
-        cv2.line(clean, (cx, y0), (cx, y1), (30, 27, 24), th, cv2.LINE_AA)
+# ---- m1: the suspect tag without the painted X (the hand writes "WAS $—" and strikes it on screen).
+# The X crosses rows 296-466 of a straight-sided tag: those rows are rebuilt from clean rows of the same tag just
+# below (466-530, ping-pong), shifted per row so the black outline and red border line up exactly; the X tip left
+# of the right shoulder (rows 280-300) is inpainted on the plain wall. The hole and string stay untouched.
+im = load("m1").astype(np.float32)
+dk = im.max(2) < 70
+def _edge(r, lo, hi):
+    c = np.where(dk[r, lo:hi])[0]
+    return lo + c.mean()
+clean = im.copy()
+t0, t1, band = 296, 467, list(range(466, 531))
+seq = band + band[::-1]
+cx0, cx1 = 500, 872
+for k, r in enumerate(range(t0, t1)):
+    sr = seq[k % len(seq)]
+    f = (r - t0) / (t1 - t0)
+    tc = ((558.5 + 811.0) / 2) * (1 - f) + ((561.5 + 813.5) / 2) * f
+    sc = (_edge(sr, 540, 575) + _edge(sr, 800, 825)) / 2
+    dx = int(round(tc - sc))
+    a = min(1.0, (r - t0 + 1) / 5, (t1 - r) / 5)
+    clean[r, cx0:cx1] = clean[r, cx0:cx1] * (1 - a) + im[sr, cx0 - dx:cx1 - dx] * a
+clean = clean.astype(np.uint8)
+mask = np.zeros(clean.shape[:2], np.uint8)
+mask[280:300, 820:875] = (clean[280:300, 820:875].max(2) < 95) * 255
+mask = cv2.dilate(mask, np.ones((5, 5), np.uint8))
+clean = cv2.inpaint(clean, mask, 7, cv2.INPAINT_TELEA)
 Image.fromarray(clean).save(OUT / "m1.png")
 
 # ---- m2: a digital countdown on the grey booking wall (same LED style as the laptop timers)

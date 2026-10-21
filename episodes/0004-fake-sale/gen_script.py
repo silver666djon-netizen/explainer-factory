@@ -125,9 +125,10 @@ def strike(x, y, w, on, **kw):
     return m
 
 
-WAS_DASH = [write("WAS", at=0.0, x=0.50, y=0.47, w=0.12, h=0.09, color="ink"), write("$—", at=0.0, x=0.50, y=0.62, w=0.10, h=0.09, color="ink"),
-            strike(0.50, 0.47, 0.13, None, at=0.0, dur=0.01, hand=False, target=[0.45, 0.43, 0.55, 0.51]),
-            strike(0.50, 0.62, 0.11, None, at=0.0, dur=0.01, hand=False, target=[0.46, 0.58, 0.54, 0.66])]
+WAS_DASH = [write("WAS", at=0.0, x=0.50, y=0.455, w=0.12, h=0.09, color="ink"), write("$—", at=0.0, x=0.50, y=0.58, w=0.10, h=0.09, color="ink"),
+            strike(0.50, 0.455, 0.13, None, at=0.0, dur=0.01, hand=False, target=[0.45, 0.415, 0.55, 0.495]),
+            strike(0.50, 0.58, 0.11, None, at=0.0, dur=0.01, hand=False, target=[0.46, 0.54, 0.54, 0.62])]
+FICTION_Y = 0.695  # third level: same gap below "$—" as between "WAS" and "$—"
 
 
 def chapter(id, section, spoken, card):
@@ -272,14 +273,15 @@ beat("k9", S_KOHL, "One in four never sold at its regular price at all. Regular 
      img("four identical white shirts on hangers on a rail, three wearing bright red sale tags and the fourth wearing a plain tag covered in dust and cobwebs",
          motion="static", hand_marks=True, marks=[circle(0.79, 0.58, 0.12, 0.26, "never", target=[0.755, 0.49, 0.83, 0.66]),
                                                  write("REG.", on="regular", x=0.79, y=0.585, w=0.05, h=0.04, color="ink")],
-         closeup=closeup("Regular", [0.80, 0.55], 2.2, [circle(0.79, 0.58, 0.12, 0.26, None, at=0.0, hand=False, dur=0.01, target=[0.755, 0.49, 0.83, 0.66]),
+         closeup=closeup("Regular", [0.80, 0.62], 2.0, [circle(0.79, 0.58, 0.12, 0.26, None, at=0.0, hand=False, dur=0.01, target=[0.755, 0.49, 0.83, 0.66]),
                                                         write("REG.", at=0.0, x=0.79, y=0.585, w=0.05, h=0.04, color="ink"),
-                                                        write("14 %", on="fourteen", x=0.66, y=0.36, w=0.07, h=0.06)])),
+                                                        write("14 % OF DAYS", on="fourteen", x=0.935, y=0.58, w=0.09, h=0.032)],
+                         motion="static")),
      label="tracked 2003")
 beat("k10", S_KOHL, "Years later, Checkbook magazine tracked nineteen big retailers. Most of the time, the sale price simply was the price.",
      img("a 1950s woman with a clipboard and pencil noting down prices on a department store shelf of boxed goods, mid shot", motion="static",
          hand_marks=True,  # her hands hold the clipboard: our hand writes only on the far (top-left) corner of the page, in the push-in
-         closeup=closeup("Most", [0.40, 0.58], 2.0, [write("19 RETAILERS", on="Most", delay=0.5, x=0.378, y=0.545, w=0.068, h=0.024)])),
+         closeup=closeup("Most", [0.40, 0.58], 2.0, [write("19 RETAILERS", on="Most", delay=0.5, x=0.3715, y=0.556, w=0.068, h=0.024, angle=-5)])),
      label="Checkbook 2018")
 beat("k11", S_KOHL, "A federal appeals court summed it up in three words: price advertisements matter.",
      doc("Hinojos v. Kohl's · 9th Cir. · 2013", "Fake 'original' prices", "\"Misinformation about a product's 'normal' price is, therefore, significant to many consumers ... In sum, price advertisements matter.\"",
@@ -296,10 +298,10 @@ beat("k14", S_KOHL, "Turns out, proving a price was never real is harder than fa
 # ------------------------------------------------------------------ Why your brain says yes (insert, ~27 s)
 beat("n1", S_BRAIN, "Why does a made-up number work? Psychologists once spun a rigged wheel that stopped on ten or sixty-five, then asked people to guess a percentage.",
      img("a 1950s fairground wheel of fortune in a psychology lab, a scientist in a white coat holding a clipboard beside it", motion="static",
-         hand_marks=True, marks=[write("10", on="ten", x=0.455, y=0.20, w=0.04, h=0.07, color="ink"),
-                                 write("65", on="sixty-five,", x=0.375, y=0.20, w=0.04, h=0.07, color="ink")],
-         closeup=closeup("then", [0.42, 0.29], 2.0, [write("10", at=0.0, x=0.455, y=0.20, w=0.04, h=0.07, color="ink"),
-                                                     write("65", at=0.0, x=0.375, y=0.20, w=0.04, h=0.07, color="ink"),
+         hand_marks=True, marks=[write("10", on="ten", x=0.467, y=0.239, w=0.035, h=0.055, color="ink"),
+                                 write("65", on="sixty-five,", x=0.367, y=0.232, w=0.035, h=0.055, color="ink")],
+         closeup=closeup("people", [0.42, 0.29], 2.0, [write("10", at=0.0, x=0.467, y=0.239, w=0.035, h=0.055, color="ink"),
+                                                      write("65", at=0.0, x=0.367, y=0.232, w=0.035, h=0.055, color="ink"),
                                                      circle(0.42, 0.15, 0.06, 0.10, "guess", target=[0.40, 0.10, 0.44, 0.16])])),
      label="Experiment · 1974")
 beat("n2", S_BRAIN, "The sixty-five group guessed almost twice as high.",
@@ -320,7 +322,7 @@ beat("n5", S_BRAIN, "A later replication found the effect much weaker. Weaker, b
          "much weaker", on="much", kicker="REPLICATION  ·  PARAPHRASED", seed=51, lead=0.4, push_on="much", push_zoom=0.10, push_ease="rest"))
 beat("n6", S_BRAIN, "And Harvard researchers found outlet shoppers paid about seventy-seven cents more for every extra dollar of original price.",
      img("a factory outlet store clothing rail, each garment wearing a large blank cream paper price tag with a red border, nothing written on the tags", motion="static",
-         hand_marks=True, marks=[circle(0.513, 0.465, 0.085, 0.20, "extra", target=[0.48, 0.39, 0.55, 0.54]), write("ORIGINAL?", on="original", x=0.515, y=0.14, w=0.14, h=0.055)]),
+         hand_marks=True, marks=[circle(0.4205, 0.4565, 0.078, 0.233, "extra", target=[0.393, 0.374, 0.448, 0.539]), write("ORIGINAL?", on="original", x=0.43, y=0.115, w=0.14, h=0.055)]),
      label="HBS · 2018", ledger=[{"label": "each fake $1 → +77¢ paid (HBS 2018)", "note": True, "on": "seventy-seven"}])
 beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Inspector has more files.",
      reuse("k1", motion="zoom_in", marks=[write("SALE", at=0.0, x=0.495, y=0.145, w=0.15, h=0.12, color="paper", fnt="headline")]),
@@ -340,9 +342,9 @@ beat("f3", S_DEF, "Twelve were higher than any rival charged. Yet the sale price
 beat("f4", S_DEF, "Three: nobody buys a mattress every month. Waiting for a sale is smart.",
      img("{larry} lying on his back on a showroom mattress with his eyes closed and hands folded, a tiny wall calendar propped on his chest, plain cream background", motion="zoom_in"))
 beat("f5", S_DEF, "The was price may be fiction. The saving isn't always. And the accomplice nobody arrests? Our love of a bargain.",
-     reuse("m1", hand_marks=True, marks=WAS_DASH + [write("FICTION", on="fiction.", x=0.5, y=0.66, w=0.13, h=0.055, color="ink")],
-           closeup=closeup("accomplice", [0.5, 0.66], 1.8, WAS_DASH + [write("FICTION", at=0.0, x=0.5, y=0.66, w=0.13, h=0.055, color="ink"),
-                                                             write("BARGAIN!", on="bargain.", x=0.5, y=0.77, w=0.14, h=0.055)])))
+     reuse("m1", hand_marks=True, marks=WAS_DASH + [write("FICTION", on="fiction.", x=0.5, y=FICTION_Y, w=0.15, h=0.07, color="ink")],
+           closeup=closeup("accomplice", [0.5, 0.62], 1.8, WAS_DASH + [write("FICTION", at=0.0, x=0.5, y=FICTION_Y, w=0.15, h=0.07, color="ink"),
+                                                             write("BARGAIN!", on="bargain.", x=0.68, y=0.70, w=0.13, h=0.055, angle=-8)])))
 
 # ------------------------------------------------------------------ Friday 11:58 PM — The clock that resets (Emma)
 chapter("t4", S_CLOCK, "Friday, eleven fifty-eight p.m.", "Friday 11:58 PM — The clock that resets")
@@ -364,13 +366,12 @@ beat("e2", S_CLOCK, "Ninety-eight point two percent of Emma's sales were product
      pause_before=0.8)
 beat("e3", S_CLOCK, "In 2024 it sold seven discounted mattresses for every one at full price.",
      img("a tall stack of mattresses in a warehouse, seven wearing red sale tags and the single one at the top wearing a plain white tag", motion="static", hand_marks=True,
-         marks=[plate(0.15, 0.22, 0.23, 0.20), write("7 : 1", on="seven", x=0.15, y=0.22, w=0.20, h=0.18)]))
+         marks=[write("7 : 1", on="seven", x=0.15, y=0.22, w=0.20, h=0.18, plate=[1.15, 1.11])]))
 beat("e4", S_CLOCK, "One model, in one test period, sold just zero point zero two percent at full price. At full price, this mattress is rarer than a quiet Black Friday.",
      img("a single mattress displayed inside a glass museum case with a blank brass plaque, under a spotlight in a dark gallery", motion="static",
          hand_marks=True, marks=[write("0.02 %", on="zero", x=0.5, y=0.32, w=0.16, h=0.08)],
          closeup=closeup("At", [0.505, 0.80], 2.2, [write("RARE", on="At", delay=0.3, x=0.497, y=0.80, w=0.08, h=0.04, color="ink"),
-                                                     plate(0.497, 0.725, 0.33, 0.066),
-                                                     write("0.02 % AT FULL PRICE", on="rarer", x=0.497, y=0.725, w=0.31, h=0.0504)])),
+                                                     write("0.02 % AT FULL PRICE", on="rarer", x=0.497, y=0.725, w=0.31, h=0.0504, plate=[1.065, 1.31])])),
      pause_at={"word": "zero", "sec": 0.7, "hit": "stamp"})
 beat("e5", S_CLOCK, "The watchdog wanted a simple rule: for every two sold on sale, one at full price.",
      img("a brass balance scale with two small mattresses on one pan and one small mattress on the other, plain cream background (edited: images/e5.png)", motion="static", hand_marks=True,
@@ -404,10 +405,12 @@ beat("e11", S_CLOCK, "Its own example is a pen tagged ten dollars for a few days
                                                      write("$7.50!", on="seven-fifty", x=0.31, y=0.655, w=0.10, h=0.07, angle=-14)])))  # up/right on the tag, clear of the subtitles
 beat("e12", S_CLOCK, "California says: within the last three months.",
      img("a 1950s pull-down classroom wall map showing North America on the left and Europe on the right, soft colours, no labels", motion="static",
-         hand_marks=True, push={"center": [0.30, 0.58], "zoom": 1.8}, marks=[write("3 MONTHS", on="three", x=0.30, y=0.56, w=0.12, h=0.05)]),
-     label="California · B&P Code §17501")
+         hand_marks=True, push={"center": [0.435, 0.55], "zoom": 2.2},
+         marks=[{"type": "dot", "x": 0.298, "y": 0.575, "w": 0.012, "h": 0.012, "on": "California", "delay": 0.2, "dur": 0.3, "hand": False},
+                write("3 MONTHS", on="three", x=0.25, y=0.615, w=0.062, h=0.028)]),
+     label="California · B&P Code §17501", label_on="months.", label_delay=0.4)
 beat("e12b", S_CLOCK, "And in the EU, any was price must be the lowest of the last thirty days.",
-     reuse("e12", hand_marks=True, push={"center": [0.66, 0.52], "zoom": 1.8}, marks=[write("30 DAYS", on="thirty", x=0.62, y=0.40, w=0.10, h=0.05)]),
+     reuse("e12", hand_marks=True, push={"center": [0.558, 0.53], "zoom": 2.2}, marks=[write("30 DAYS", on="thirty", x=0.665, y=0.535, w=0.09, h=0.045, plate=[1.12, 1.35])]),
      label="EU rule · 2022")
 
 # ------------------------------------------------------------------ Saturday 10:00 AM — Three checks
@@ -425,14 +428,13 @@ beat("x3", S_CHECK, "Two. Check the price history. Free trackers show what a pro
      music="ub_secret_report", label="Illustration")
 beat("x4", S_CHECK, "Keepa or camelcamelcamel for Amazon in the US, PriceSpy or idealo in Britain and Europe.",
      img("an open 1950s wooden index-card box with four blank white cards standing up, plain cream background", motion="static",
-         push={"center": [0.56, 0.37], "zoom": 1.42},
-         # each name centred on the visible strip of its own card, baseline along that card's top edge
-         marks=[write("Keepa", on="Keepa", x=0.491, y=0.2879, w=0.05, h=0.018, angle=15.6, color="ink", fnt="typewriter"),
-                write("camelcamelcamel", on="camelcamelcamel", x=0.517, y=0.3142, w=0.13, h=0.018, angle=17.0, color="ink", fnt="typewriter"),
-                write("PriceSpy", on="PriceSpy", x=0.549, y=0.3353, w=0.08, h=0.018, angle=17.9, color="ink", fnt="typewriter"),
-                write("idealo", on="idealo", x=0.565, y=0.392, w=0.07, h=0.018, angle=18.0, color="ink", fnt="typewriter"),
-                write("US · Amazon", on="Keepa", x=0.30, y=0.055, w=0.15, h=0.045, color="red", fnt="body", dur=0.01),
-                write("UK · EU", on="PriceSpy", x=0.62, y=0.055, w=0.11, h=0.045, color="red", fnt="body", dur=0.01)]),
+         push={"center": [0.57, 0.45], "zoom": 1.6},
+         # one centred list on the big front card: baseline along the card's top edge (17 deg), lines at 17/32/47/62 %
+         # of the card's height (visible face ends at 78 % on the right, cut by the box rim), equal side margins
+         marks=[write("US · Amazon", at=0.05, dur=0.3, x=0.5687, y=0.3909, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter"),
+                write("Keepa · camelcamelcamel", on="Keepa", dur=1.7, x=0.5720, y=0.4337, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter"),
+                write("UK · EU", on="US,", dur=0.3, x=0.5756, y=0.4764, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter"),
+                write("PriceSpy · idealo", on="PriceSpy", dur=1.35, x=0.5792, y=0.5193, w=0.24, h=0.029, angle=17.0, color="ink", fnt="typewriter")]),
      music="ub_secret_report", say="Keepa or camel camel camel for Amazon in the US, PriceSpy or idealo in Britain and Europe.")
 beat("x5", S_CHECK, "A was price that never shows up on the chart is a suspect.", reuse("m1", marks=WAS_DASH), music="ub_secret_report")
 beat("x6", S_CHECK, "Three. Find the floor. In the EU, the was price must be the thirty-day low. Everywhere else, search the exact model number.",

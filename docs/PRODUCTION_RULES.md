@@ -103,3 +103,8 @@ must report zero before a final render.
 16. A mark is never written while a subtitle covers its target (or the mark itself): place the mark above the
     caption band or time it after the line's subtitle has cleared. Mark audit check 5 — zero exceptions before
     a final render.
+17. Every animated stat lands on its final value no later than the first syllable of that number (the engine
+    times the count-up from the voiced beat: stat "on" word, else the first spoken number).
+18. A cream plate under a written label appears only with the pen's first stroke (write(..., plate=[sx, sy]):
+    it slides in under the pen) — never a blank plate waiting on screen. Rule 16 now tests the full stroke path
+    of circles / crosses / underlines and the box of labels for as long as they are on screen.

@@ -170,6 +170,16 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
         if mark.get("type") == "write":
             _draw_write(out, mark, p, W, H, red, cfg)
             continue
+        if mark.get("type") == "dot":  # a filled marker dot (e.g. a place on a map), pressed on
+            cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
+            r = max(3, int(float(mark.get("w", 0.02)) * W / 2 * (0.6 + 0.4 * ease(p))))
+            col = tuple(int(c) for c in red)
+            layer = out.copy()
+            cv2.circle(layer, (int(cx), int(cy)), r, col, -1, cv2.LINE_AA)
+            cv2.circle(layer, (int(cx), int(cy)), r, (30, 27, 24), max(2, r // 4), cv2.LINE_AA)
+            a = min(1.0, p * 3)
+            out[:] = (out * (1 - a) + layer * a).astype(out.dtype)
+            continue
         if mark.get("type") == "led":  # digital countdown panel (factory.led), pops on
             from .led import led_panel
             key = ("_led", mark.get("text"), mark.get("label"), W)
@@ -276,6 +286,20 @@ def _draw_write(out: np.ndarray, mark: dict, p: float, W: int, H: int, red, cfg:
     lay = write_layout(mark, W, H, red, cfg)
     img = lay["img"]
     h, w = img.shape[:2]
+    if mark.get("plate"):  # a cream plate that appears with the pen's first stroke (never before the hand)
+        sx, sy = mark["plate"]
+        pw, ph = int(w * float(sx)), int(h * float(sy))
+        key = (pw, ph)
+        if mark.get("_plate_key") != key:
+            pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+            pl = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+            ImageDraw.Draw(pl).rounded_rectangle((0, 0, pw - 1, ph - 1), radius=max(4, ph // 6), fill=tuple(pal["paper"]) + (255,))
+            mark["_plate_img"] = np.array(pl.rotate(float(mark.get("angle", 0)), resample=Image.BICUBIC, expand=True))
+            mark["_plate_key"] = key
+        q = min(1.0, p / 0.06)
+        pim = mark["_plate_img"]
+        cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
+        blend(out, pim, int(cx - pim.shape[1] / 2 - (1 - ease(q)) * pw * 0.12), int(cy - pim.shape[0] / 2), opacity=q)
     sub = img.copy()
     if not mark.get("bg"):
         if p < 1 and mark.get("font") == "typewriter" and not mark.get("hand"):
@@ -618,10 +642,14 @@ class TitleShot(Shot):
 class StatShot(Shot):
     """Big number that counts up: value, prefix, suffix, label, decimals."""
 
-    def __init__(self, start, duration, spec: dict, cfg: dict, size):
+    def __init__(self, start, duration, spec: dict, cfg: dict, size, land_at: float | None = None):
         super().__init__(start, duration)
         self.W, self.H = size
         self.spec = spec
+        # rule: the count-up lands on the spoken value no later than the first syllable of that number
+        self.ramp = max(0.6, min(1.4, duration * 0.45))
+        if land_at is not None:
+            self.ramp = max(0.25, min(self.ramp, land_at))
         self.pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
         self.bg = _sunburst(size, self.pal, cfg, seed=9)
         self.head = resolve_font(cfg["fonts"]["headline"])
@@ -640,7 +668,7 @@ class StatShot(Shot):
 
     def frame(self, t: float) -> np.ndarray:
         out = self.bg.copy()
-        p = ease(t / max(0.6, min(1.4, self.duration * 0.45)))
+        p = ease(t / self.ramp)
         txt = self._num(float(self.spec["value"]) * p)
         if txt not in self.cache:
             fnt = font(self.head, int(self.H * (0.26 if self.W > self.H else 0.14)))
