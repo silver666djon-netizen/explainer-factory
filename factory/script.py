@@ -8,7 +8,7 @@ from pathlib import Path
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "drift", "static"}
 VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive", "houseedge", "endscreen", "continue", "split", "receipts", "baskets", "battery"}
 IMAGE_BEARING = {"image", "photo", "mugshot", "clip", "archive"}
-MARK_TYPES = {"circle", "underline", "arrow", "cross", "check", "write", "led", "dot"}
+MARK_TYPES = {"circle", "underline", "arrow", "cross", "check", "write", "led", "dot", "stamp"}
 STYLES = {"ad", "comic"}
 CHART_KINDS = {"bar", "line"}
 SFX = {"whoosh", "pop", "tick", "thud", "hit", "riser", "ding", "cash", "scratch", "scribble", "shutter", "type", "whirr", "projector", "none", "stamp", "paper", "chips", "printer", "servo", "tap", "cart", "marker", "pencil"}
@@ -211,7 +211,8 @@ def image_prompts(episode: dict) -> dict[str, dict]:
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):
             out[beat["id"] if n == 0 else f"{beat['id']}.{n}"] = {"prompt": prompt, "style": visual.get("style", "ad"),
-                                                               "episode_dir": episode.get("_dir"), "refs": refs}
+                                                               "episode_dir": episode.get("_dir"), "refs": refs,
+                                                               "manual": bool(visual.get("manual"))}
     return out
 
 

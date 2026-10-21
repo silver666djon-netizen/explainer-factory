@@ -170,6 +170,17 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
         if mark.get("type") == "write":
             _draw_write(out, mark, p, W, H, red, cfg)
             continue
+        if mark.get("type") == "stamp":  # small rubber stamp on the picture: the impression appears on the press frame
+            imp = mark.get("_imp")
+            if imp is None or mark.get("_imp_W") != W:
+                from .endscreen import _stamp
+                pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+                imp = _stamp(str(mark.get("text", "")), cfg, max(40, int(float(mark.get("w", 0.30)) * W)), pal["red"],
+                             float(mark.get("angle", -6)), int(mark.get("seed", 11)))
+                mark["_imp"], mark["_imp_W"] = imp, W
+            cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
+            blend(out, imp, int(cx - imp.shape[1] / 2), int(cy - imp.shape[0] / 2))
+            continue
         if mark.get("type") == "dot":  # a filled marker dot (e.g. a place on a map), pressed on
             cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
             r = max(3, int(float(mark.get("w", 0.02)) * W / 2 * (0.6 + 0.4 * ease(p))))
@@ -571,6 +582,19 @@ class ImageShot(Shot):
                 pos = hand_path(lambda tt: self._screen(*ftip(tt), tt), t0, t1, t, FW, FH, mirrored)
                 if pos:
                     paste_hand(out, kind, pos[0], pos[1], mirrored)
+            from .draw import stamp_press, stamp_window
+            for m in self.marks:  # the stamp hand presses small stamps (never a pen hand, never a drop-in)
+                if m.get("type") != "stamp" or not m.get("hand"):
+                    continue
+                at = float(m.get("at", 0.6))
+                w0, w1 = stamp_window(at)
+                if not (w0 <= t <= w1) or m.get("_imp") is None:
+                    continue
+                _p, s_, _M = self._matrix(t)
+                ih, iw = m["_imp"].shape[:2]
+                ghost = np.zeros((max(2, int(ih * s_)), max(2, int(iw * s_)), 4), np.uint8)
+                sx, sy = self._screen(float(m.get("x", 0.5)) * self.BW, float(m.get("y", 0.5)) * self.BH, t)
+                stamp_press(out, ghost, sx, sy, t, at)
 
     def _view(self, t: float) -> np.ndarray:
         p, s, M = self._matrix(t)
@@ -1039,3 +1063,56 @@ class ClipShot(Shot):
         if self._g is not None:
             return np.clip(out.astype(np.int16) + self._g, 0, 255).astype(np.uint8)
         return np.ascontiguousarray(out)
+
+
+class ClipImageShot(ImageShot):
+    """A hand-made live clip (episodes/<slug>/clips/<beat id>.mp4, e.g. Grok image-to-video from the approved still)
+    played muted under exactly the same marks, drawing hand, plates and camera as the still it replaces. The still's
+    geometry is kept (the clip is made from it), so marks land where they were measured. Holds the last frame if
+    the beat is longer than the clip."""
+
+    def __init__(self, start, duration, image, motion, size, cfg, marks=None, seed=0, clip=None):
+        super().__init__(start, duration, image, motion, size, cfg, marks=marks, photo=False, seed=seed)
+        self.clip = str(clip)
+        self._cap = None
+        self._idx = -1
+        self._last = None
+
+    def _prepare(self) -> None:
+        super()._prepare()
+        self.depth = None
+        self._cap = cv2.VideoCapture(self.clip)
+        self._fps = self._cap.get(cv2.CAP_PROP_FPS) or 24.0
+        self._n = int(self._cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
+        self._grain = float(self.cfg["style"].get("grain", 0))
+
+    def _clip_frame(self, t: float):
+        i = int(t * self._fps)
+        if self._n:
+            i = min(i, self._n - 1)
+        if i < self._idx:
+            self._cap.release()
+            self._cap = cv2.VideoCapture(self.clip)
+            self._idx = -1
+        while self._idx < i:
+            ok, fr = self._cap.read()
+            if not ok:
+                break
+            self._idx += 1
+            self._last = fr
+        return self._last
+
+    def frame(self, t: float) -> np.ndarray:
+        if self.base is None:
+            self._prepare()
+        fr = self._clip_frame(t)
+        if fr is not None:
+            rgb = Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB))
+            self.base = add_grain(cover(rgb, self.BW, self.BH, *self.focus), self._grain, 0)
+        return super().frame(t)
+
+    def release(self) -> None:
+        super().release()
+        if self._cap is not None:
+            self._cap.release()
+            self._cap = None

@@ -269,6 +269,13 @@ class EndScreenShot(Shot):
                 col = pal["red"] if k == n - 1 else pal["ink"]
                 extra = int(lh * 0.22) if k == n - 1 else 0  # the total sits a little apart (room for its ring)
                 self.fees.append((Writing(f, font(fpath, size), col), (fx, fy0 + k * lh + extra)))
+        self.nwrites = []  # "writes": short handwritten notes on the sketched subject (fractions of it), e.g. "No tip"
+        if nx.get("writes") and getattr(self, "slots", None):
+            px, py, cw, ch = self.slots[0]
+            fpath = resolve_font(cfg["fonts"]["marker"])
+            for wdef in nx["writes"]:
+                wr = Writing(str(wdef["text"]), font(fpath, max(12, int(ch * float(wdef.get("h", 0.06))))), pal["red"])
+                self.nwrites.append((wr, (int(sx0 + px + float(wdef["x"]) * cw - wr.w / 2), int(sy0 + py + float(wdef["y"]) * ch - wr.h / 2))))
         self.plate = None
         if nx.get("label"):  # small typed plate, bottom-right of the sheet (drawn over the sketch, every frame)
             lf = font(typew, int(sh * 0.045))
@@ -276,7 +283,8 @@ class EndScreenShot(Shot):
             tw = int(lf.getlength(txt))
             pl = Image.new("RGBA", (tw + 20, lf.size + 14), pal["ink"] + (230,))
             ImageDraw.Draw(pl).text((10, 6), txt, font=lf, fill=(250, 246, 236, 255))
-            self.plate = (np.array(pl), int(sw * 0.04), sh - int(sh * 0.06) - pl.height)  # bottom-left, under the subject
+            px_ = int(sw * 0.04) if nx.get("fees") or int(nx.get("copies", 2)) > 1 else sw - pl.width - int(sw * 0.04)
+            self.plate = (np.array(pl), px_, sh - int(sh * 0.06) - pl.height)  # bottom-left (bottom-right beside a single subject)
         self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5, max_h=int(sh * 0.11)) if nx.get("tagline") else None
         self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * 0.27))
         # ---- end-screen furniture
@@ -424,6 +432,16 @@ class EndScreenShot(Shot):
                                         t0, t0 + tt["fdur"], t, W, H, False, from_below=True)
                         if tip:
                             hand = ("marker_under" if k == len(self.fees) - 1 else "ink_under", tip[0], tip[1], False)
+            for k, (wr, (wx, wy)) in enumerate(self.nwrites):  # small notes written by the red marker hand
+                t0 = tt.get("writes", tt["tagline"] - 1.4) + k * 0.9
+                pp = (t - t0) / 0.6
+                if pp > 0:
+                    blend(out, wr.at(pp), wx, wy)
+                    if pp < 1.2:
+                        tip = hand_path(lambda q, wr=wr, wx=wx, wy=wy, t0=t0: (wx + wr.tip((q - t0) / 0.6)[0], wy + wr.tip((q - t0) / 0.6)[1]),
+                                        t0, t0 + 0.6, t, W, H, False, from_below=True)
+                        if tip:
+                            hand = ("marker_under", tip[0], tip[1], False)
             if self.fees:  # ring the final price
                 wr, (fx, fy) = self.fees[-1]
                 c0 = tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.15
@@ -548,6 +566,8 @@ class EndScreenShot(Shot):
             out.append((start_abs + tt["fees"] + k * tt["fgap"], "marker"))
         if self.fees:
             out.append((start_abs + tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.15, "scribble"))
+        for k in range(len(getattr(self, "nwrites", []))):
+            out.append((start_abs + tt.get("writes", tt["tagline"] - 1.4) + k * 0.9, "marker"))
         if self.tagline is not None:
             out.append((start_abs + tt["tagline"], "stamp"))
         out += [(start_abs + tt["zone"], "marker")]

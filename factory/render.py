@@ -90,6 +90,7 @@ class Plan:
     ledger: object | None = None  # factory.devices.Ledger (Larry's tab, top-right)
     stamps: list = field(default_factory=list)  # (start, end, text) rubber stamps over the picture
     labels: list = field(default_factory=list)
+    alleged: list = field(default_factory=list)  # (t0, t1): red ALLEGED plate beside the source plate (case not decided)
     plates: list = field(default_factory=list)  # (start, end, text) archive captions on a solid cream plate  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
     ledger_hide: list = field(default_factory=list)
     hand_cuts: list = field(default_factory=list)
@@ -380,6 +381,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         clip_file = None
         if vtype == "continue":
             pass
+        elif vtype == "image" and visual.get("clip"):
+            pass  # a hand-made live clip under our overlays: built below as a ClipImageShot (the still is the fallback)
         elif vtype == "clip" or visual.get("clip") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("_clip")):
             clip_file = _clip_path(beat, visual, beat_lookup)
         if clip_file is not None:
@@ -458,7 +461,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         if m["hand"] and m.get("at", 0) > 0.05 and float(m.get("dur", 0.7)) > 0.05:
                             plan.hand_cuts.append(shot_start + a0 + m["at"])
                             plan.hand_windows.append((shot_start + a0 + m["at"] - HAND_IN, shot_start + a0 + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
-                        plan.timeline.add_sfx(shot_start + a0 + m["at"], "scribble", seed=i + k)
+                        plan.timeline.add_sfx(shot_start + a0 + m["at"], "kachunk" if m.get("type") == "stamp" else "scribble", seed=i + k)
                     shot = ImageShot(shot_start + a0, dur0, im0, mot, size, cfg, marks=mk, photo=is_archive_photo(path),
                                      seed=i * 7 + k, depth=depth_of(path) if (k == 0 and not cr) else None)
                     shot._archive = False
@@ -512,15 +515,21 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         plan.hand_cuts.append(shot_start + k * seg + m["at"])
                         plan.hand_windows.append((shot_start + k * seg + m["at"] - HAND_IN,
                                                   shot_start + k * seg + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
-                shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
-                                 marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
-                                 ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
-                                 draw=shot_draw if k == 0 else None)
+                live = _clip_path(beat, visual, beat_lookup) if (vtype == "image" and visual.get("clip") and k == 0) else None
+                if live is not None:  # Grok/hand-made clip plays under the same marks, hand and plates as the still
+                    from .shots import ClipImageShot
+                    shot = ClipImageShot(shot_start + k * seg, seg, pil(path), "static", size, cfg, marks=shot_marks,
+                                         seed=i * 7 + k, clip=live)
+                else:
+                    shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
+                                     marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
+                                     ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
+                                     draw=shot_draw if k == 0 else None)
                 if visual.get("newsreel"):
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
                 shot._archive = vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive")
-                shot._still_src = str(path)  # for the max-still check (one illustration on screen too long)
+                shot._still_src = None if live is not None else str(path)  # max-still check (a live clip is not a still)
                 if visual.get("cam_dy") and k == 0:
                     shot.cam_dy = float(visual["cam_dy"])
                 plan.shots.append(shot)
@@ -530,7 +539,9 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 for at in projector_sfx_times(shot_start, span):
                     plan.timeline.add_sfx(at, "projector", seed=i)
             for m in marks:
-                plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
+                if m.get("type") == "stamp" and not m.get("hand"):
+                    continue
+                plan.timeline.add_sfx(shot_start + m["at"], "kachunk" if m.get("type") == "stamp" else "scribble", seed=i)
         elif vtype == "title":
             plan.shots.append(TitleShot(shot_start, span, visual["text"], cfg, size))
         elif vtype in ("split", "receipts", "baskets", "battery"):
@@ -768,6 +779,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 if lw is not None:
                     l0 = start + lw + float(beat.get("label_delay", 0.0))
             plan.labels.append((l0, shot_end, str(beat["label"])))
+        if beat.get("alleged"):
+            plan.alleged.append((shot_start, shot_end))
         if beat.get("ledger_hide") or beat.get("hero") or visual.get("hero"):
             plan.ledger_hide.append((shot_start, shot_end))
         if beat.get("stamp"):  # a quick verdict stamp over any picture
@@ -999,6 +1012,22 @@ class Overlay:
                 im = self.cache[key]
                 yb = self.H * (0.04 if self.H < self.W else 0.235)
                 blend(frame, im, self.W - im.shape[1] - int(self.W * 0.03), int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01))
+        for a0, a1 in self.plan.alleged:  # red ALLEGED plate, left of the source plate (or alone, bottom-right)
+            if a0 <= t < a1:
+                key = ("alleged",)
+                if key not in self.cache:
+                    fnt = font(self.head, max(14, int(self.H * 0.03)))
+                    self.cache[key] = text_block(["ALLEGED"], fnt, fill=self.pal["paper"], box_fill=self.pal["red"] + (240,), pad=int(fnt.size * 0.35))
+                im = self.cache[key]
+                lab = next((txt for l0, l1, txt in self.plan.labels if l0 <= t < l1), None)
+                lw = 0
+                if lab is not None:
+                    lw = self.cache.get(("label", lab), np.zeros((1, 0, 4), np.uint8)).shape[1] + int(self.W * 0.008)
+                yb = self.H * (0.04 if self.H < self.W else 0.235)
+                x = self.W - lw - im.shape[1] - int(self.W * 0.03)
+                y = int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01)
+                blend(frame, im, x, y)
+                break
         for s0, s1, txt in self.plan.stamps:
             if s0 <= t < s1:
                 key = ("stamp", txt)

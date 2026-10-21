@@ -78,6 +78,15 @@ def img(prompt=None, motion="zoom_in", **kw):
     return v
 
 
+def manual(v, clip=False):
+    """Klot makes this still in ChatGPT (episodes/0005-drip-pricing/images/<beat>.png); clip=True: a Grok clip from that
+    still may arrive as clips/<beat>.mp4 (muted, trimmed to the beat, our overlays on top; the still is the fallback)."""
+    v["manual"] = True
+    if clip:
+        v["clip"] = True
+    return v
+
+
 def reuse(b, motion="static", index=0, **kw):
     v = {"type": "reuse", "beat": b, "index": index, "motion": motion}
     v.update(kw)
@@ -131,6 +140,17 @@ def closeup(on, center, zoom=2.0, marks=None, motion="zoom_in"):
     return {"on": on, "center": center, "zoom": zoom, "marks": marks or [], "motion": motion}
 
 
+def stamp(text, x, y, on=None, angle=-6, w=0.30, **kw):
+    """A small rubber stamp pressed onto the picture by the stamp hand (rule 7); at=0.0 = already there."""
+    m = {"type": "stamp", "text": text, "x": x, "y": y, "w": w, "angle": angle, "dur": 0.45, **kw}
+    if on is not None:
+        m["on"] = on
+        m["hand"] = True
+    if m.get("at") == 0.0:
+        m["hand"] = False
+    return m
+
+
 def chapter(id, section, spoken, card):
     return beat(id, section, spoken, title(card), pause_before=1.0, sting="ub_sting_trumpet", sting_at=-1.0)
 
@@ -150,7 +170,7 @@ TICKET_PRICE_BOX = dict(x=0.43, y=0.62, w=0.20, h=0.10)  # the blank price box o
 
 # ------------------------------------------------------------------ cold open (≤ 15 s to the folder)
 beat("o1", S_OPEN, "A concert ticket. Thirty dollars.",
-     img("the code-drawn $30 concert ticket (hand-made frame: images/o1.png)", motion="static", hand_marks=True, marks=[write("$30", on="Thirty", **TICKET_PRICE_BOX, color="ink")]),
+     img("the code-drawn $30 concert ticket", note="hand-made frame: images/o1.png (code-drawn)", motion="static", hand_marks=True, marks=[write("$30", on="Thirty", **TICKET_PRICE_BOX, color="ink")]),
      pause_at={"word": "Thirty", "sec": 0.45, "hit": "stamp"}, ledger=[tab("TICKET", "$30.00", "Thirty")], label="Illustration")
 beat("o2", S_OPEN, "Then the fees. Eight. Six. Four.",
      reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
@@ -166,9 +186,9 @@ beat("o3", S_OPEN, "Total: forty-eight.",
                   write("+ $4 fee", at=0.0, x=0.86, y=0.54, w=0.16, h=0.07), write("= $48", on="forty-eight.", x=0.86, y=0.68, w=0.16, h=0.09)]),
      pause_at={"word": "forty-eight.", "sec": 0.45, "hit": "stamp"}, ledger=[tab("PAID", "$48.00", "forty-eight.")], label="Illustration")
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
-     img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
+     manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
          motion="static", hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.22, y=0.18, w=0.18, h=0.06),
-                                                  write("REAL", on="fees", x=0.80, y=0.30, w=0.10, h=0.06)]))
+                                                  write("REAL", on="fees", x=0.80, y=0.30, w=0.10, h=0.06)])))
 
 # ------------------------------------------------------------------ the case + suspect no. 1
 beat("cf1", S_OPEN, "Case file number four. The fee at the end.",
@@ -180,7 +200,8 @@ beat("m1", S_OPEN, "Suspect number one. Name: the checkout fee. Aliases: service
       "suspect": {"number": 1, "name": "The checkout fee", "alias": "Service · Processing · Convenience", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
                   "type_on": ["Name:", "Aliases:"]}})
 beat("m1b", S_OPEN, "Last seen: one click before Pay. It never touches the price you see. It waits for the price you pay.",
-     img("a close-up of a cream retro laptop screen showing a simple checkout page with a large red rounded PAY button and an empty total box, a finger hovering above the button, plain cream background",
+     img("a cream 1950s-styled retro laptop seen from the front, its screen completely blank and softly lit, plain cream background",
+         note="after the storyboard: code-drawn checkout page (red PAY button, empty total box) composited on the screen (images/m1b.png)",
          motion="static", hand_marks=True, marks=[circle(0.62, 0.70, 0.22, 0.14, "Pay.", target=[0.53, 0.65, 0.71, 0.75])],
          closeup=closeup("waits", [0.40, 0.45], 1.8, [write("$48", on="pay.", x=0.40, y=0.45, w=0.10, h=0.08)])))
 
@@ -222,15 +243,15 @@ beat("a9", S_EXP, "They were fourteen point one percent more likely to buy at al
      stat(14.1, "more likely to buy · NBER w25186 · 2015 test", decimals=1, suffix="%"),
      pause_at={"word": "fourteen", "sec": 0.6, "hit": "stamp"})
 beat("a10", S_EXP, "And the buyers among them picked seats about five percent pricier.",
-     img("a 1950s concert hall seen from the stage, rows of red velvet seats, the front rows lit by a warm spotlight, empty hall",
-         motion="static", hand_marks=True, marks=[write("+5 %", on="five", x=0.50, y=0.30, w=0.12, h=0.08)]),
+     manual(img("a 1950s concert hall seen from the stage, rows of red velvet seats, the front rows lit by a warm spotlight, empty hall",
+         motion="static", hand_marks=True, marks=[write("+5 %", on="five", x=0.50, y=0.30, w=0.12, h=0.08)]), clip=True),
      pause_at={"word": "five", "sec": 0.5, "hit": "stamp"})
 beat("a11", S_EXP, "A seat looks cheaper when its fees are still offstage, so you pick a better one.",
      reuse("a10", push={"center": [0.50, 0.55], "zoom": 1.6}),
      label="Seat choice = at least 28 % of the revenue gap · NBER w25186")
 beat("a12", S_EXP, "Then the fees walk on.",
-     img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
-         motion="static"))
+     manual(img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
+         motion="static"), clip=True))
 beat("a13", S_EXP, "Twelve days of science. Then the science went live.", kin())
 beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the end, for everyone.",
      arch("radio_city_crowd_1942.jpg", "Crowd waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress", motion="zoom_in"),
@@ -239,8 +260,8 @@ beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the
 # ------------------------------------------------------------------ Wednesday 10:00 AM — $16.4 billion (Ticketmaster, ALLEGED)
 chapter("t2", S_TM, "Wednesday, ten a.m.", "Wednesday 10:00 AM — $16.4 billion")
 beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
-     img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Eighteen", x=0.78, y=0.22, w=0.18, h=0.07)]),
+     manual(img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
+         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Eighteen", x=0.78, y=0.22, w=0.18, h=0.07)]), clip=True),
      ledger=[tab("HIDDEN", "$18.00", "Eighteen", loss=True, circle=True)])
 beat("b2", S_TM, "That's thirty-seven and a half percent of what he paid.",
      stat(37.5, "of Larry's total was fees · Illustration", decimals=1, suffix="%"),
@@ -275,15 +296,15 @@ beat("b9b", S_TM, "Until a court decides, every word of it is an allegation.",
 # ------------------------------------------------------------------ Thursday 11:40 PM — The resort fee (Marriott, ALLEGED)
 chapter("t3", S_HOTEL, "Thursday, eleven-forty p.m.", "Thursday 11:40 PM — The resort fee")
 beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
-     img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
-         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.20, y=0.15, w=0.20, h=0.06)]))
+     manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
+         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.20, y=0.15, w=0.20, h=0.06)])))
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
      {"type": "mugshot", "prompt": "an old hotel room key with a large brass key fob hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The resort fee", "alias": "Amenity fee · Destination fee", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
                   "type_on": ["Name:", "Aliases:"]}})
 beat("m2b", S_HOTEL, "Known associates: a pool you will never swim in.",
-     img("a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with city lights behind, playful print-ad style",
-         motion="static"))
+     manual(img("a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with city lights behind, playful print-ad style",
+         motion="static"), clip=True))
 beat("c2", S_HOTEL, "In 2019, the Attorney General for Washington, D.C., sued Marriott.",
      arch("hotel_clerk_dover_1938.jpg", "Hotel clerk at desk, Dover, Delaware, 1938 · Library of Congress", motion="zoom_in"),
      label="DC Attorney General v. Marriott · July 2019", alleged=True)
@@ -352,10 +373,10 @@ beat("d7", S_DEF, "The fee may be fair. Hiding it isn't.", kin())
 chapter("t5", S_LAW, "Friday, nine a.m.", "Friday 9:00 AM — One fee, three laws")
 DESK = "a 1950s customs desk seen from above with a wooden rubber-stamp rack, an ink pad and a blank passport-style form, lots of empty desk space in the middle, plain wood, warm light"
 beat("l1", S_LAW, "Larry's ticket goes on a trip. Three borders. Three stamps.",
-     img(DESK + " (hand-made frame: the code-drawn $30 ticket composited in the middle)", motion="static",
+     img(DESK, note="after the storyboard: the code-drawn $30 ticket is composited in the middle (images/l1.png)", motion="static",
          closeup=closeup("borders.", [0.50, 0.50], 1.4, motion="zoom_out")))
 beat("l2", S_LAW, "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront.",
-     reuse("l1", hand_marks=True, stamps=[{"text": "USA · TOTAL UPFRONT · MAY 2025", "on": "total", "x": 0.42, "y": 0.40, "angle": -8}],
+     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, on='total', angle=-8)],
            closeup=closeup("short", [0.45, 0.45], 1.5)),
      pause_at={"word": "May", "sec": 0.4, "hit": None})
 beat("l3", S_LAW, "In April 2026, StubHub agreed to pay ten million dollars back to buyers,",
@@ -380,11 +401,11 @@ beat("l6", S_LAW, "Cars got the total sixty-seven years before concert tickets d
                                          write("67 YEARS", on="sixty-seven", x=0.80, y=0.62, w=0.16, h=0.06)]),
      pause_at={"word": "sixty-seven", "sec": 0.4, "hit": None})
 beat("l7", S_LAW, "Border two: Britain. Since April 2025, the price must include every fee you can't avoid.",
-     reuse("l1", hand_marks=True, stamps=[{"text": "USA · TOTAL UPFRONT · MAY 2025", "at": 0.0, "x": 0.42, "y": 0.40, "angle": -8},
-                                          {"text": "UK · ALL FEES IN · APRIL 2025", "on": "include", "x": 0.58, "y": 0.55, "angle": 6}]))
+     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, on='include', angle=6)]))
 beat("l8", S_LAW, "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.",
-     img("a small 1950s learner car with a red L plate on the bumper parked on a quiet British street, cheerful print-ad style",
-         motion="static", hand_marks=True, marks=[write("£3 FEE", on="three-pound", x=0.78, y=0.22, w=0.14, h=0.07)]),
+     img("a small 1950s family car with a blank white square plate on the front bumper, parked on a quiet British street, cheerful print-ad style",
+         motion="static", hand_marks=True, marks=[write("L", at=0.0, x=0.40, y=0.70, w=0.03, h=0.05),
+                                                  write("£3 FEE", on="three-pound", x=0.78, y=0.22, w=0.14, h=0.07)]),
      label="CMA · April 2026")
 beat("l9", S_LAW, "It paid a four point two million pound fine,",
      stat(4.2, "fine · CMA, April 2026", decimals=1, prefix="£", suffix="m"),
@@ -392,28 +413,25 @@ beat("l9", S_LAW, "It paid a four point two million pound fine,",
 beat("l9b", S_LAW, "and over seven hundred and sixty thousand pounds in refunds.",
      stat(760, "refunded to learners · CMA, April 2026", prefix="over £", suffix="k"))
 beat("l10", S_LAW, "In June, StubHub's British arm was fined too.",
-     reuse("a2", motion="zoom_out"), label="CMA · June 2026")
+     reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), stamp('UK · FINED · JUNE 2026', 0.615, 0.70, on='fined', angle=-12, w=0.20)]),
+     label="CMA · June 2026")
 beat("l11", S_LAW, "Three pounds. Very expensive pounds.",
      reuse("l8", push={"center": [0.60, 0.40], "zoom": 1.6}, hand_marks=True, marks=[write("£3 FEE", at=0.0, x=0.78, y=0.22, w=0.14, h=0.07),
                                                                                     circle(0.78, 0.22, 0.18, 0.11, "Very", target=[0.71, 0.185, 0.85, 0.255])]))
 beat("l12", S_LAW, "Border three: the European Union. The total price, taxes included, before you pay.",
-     reuse("l1", hand_marks=True, stamps=[{"text": "USA · TOTAL UPFRONT · MAY 2025", "at": 0.0, "x": 0.42, "y": 0.40, "angle": -8},
-                                          {"text": "UK · ALL FEES IN · APRIL 2025", "at": 0.0, "x": 0.58, "y": 0.55, "angle": 6},
-                                          {"text": "EU · TOTAL BEFORE YOU PAY", "on": "total", "x": 0.46, "y": 0.68, "angle": -4}]))
+     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, at=0.0, angle=6), stamp('EU · TOTAL BEFORE YOU PAY', 0.46, 0.68, on='total', angle=-4)]))
 beat("l13", S_LAW, "And any extra charge needs your clear yes. A pre-ticked box is not a yes.",
      img("a 1950s paper order form on a desk with three empty lines and small square checkboxes, the last checkbox already ticked in black ink, plain cream background",
          motion="static", hand_marks=True, marks=[circle(0.30, 0.66, 0.08, 0.10, "pre-ticked", target=[0.27, 0.62, 0.33, 0.70]),
                                                   write("NOT A YES", on="not", x=0.55, y=0.66, w=0.22, h=0.07)]))
 beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
-     reuse("l1", motion="zoom_out", stamps=[{"text": "USA · TOTAL UPFRONT · MAY 2025", "at": 0.0, "x": 0.42, "y": 0.40, "angle": -8},
-                                            {"text": "UK · ALL FEES IN · APRIL 2025", "at": 0.0, "x": 0.58, "y": 0.55, "angle": 6},
-                                            {"text": "EU · TOTAL BEFORE YOU PAY", "at": 0.0, "x": 0.46, "y": 0.68, "angle": -4}]))
+     reuse("l1", motion="zoom_out", marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, at=0.0, angle=6), stamp('EU · TOTAL BEFORE YOU PAY', 0.46, 0.68, at=0.0, angle=-4)]))
 
 # ------------------------------------------------------------------ Saturday 10:00 AM — Three checks
 chapter("t6", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
 beat("x1", S_CHECK, "Three checks before you pay. One. Look for the all-in switch.",
-     img("a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
-         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="all-in", x=0.50, y=0.18, w=0.30, h=0.07, color="ink")]))
+     manual(img("a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
+         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="all-in", x=0.50, y=0.18, w=0.30, h=0.07, color="ink")]), clip=True))
 beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
      reuse("x1", hand_marks=True, marks=[write("ALL-IN PRICES", at=0.0, x=0.50, y=0.18, w=0.30, h=0.07, color="ink"), write("ON", on="on", x=0.72, y=0.50, w=0.08, h=0.08)],
            closeup=closeup("before", [0.50, 0.50], 1.6)))
@@ -427,8 +445,8 @@ beat("x5", S_CHECK, "The cheapest ticket is the one with the smallest last numbe
 
 # ------------------------------------------------------------------ Case closed + end screen (Ep.5 teaser: tip screens)
 beat("z0", S_CLOSE, "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.",
-     img(f"{LARRY} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light",
-         motion="zoom_in"), stamp={"text": "Case closed", "on": "Case", "big": True},
+     manual(img(f"{LARRY} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light",
+         motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True},
      ledger=[tab("PAID", "$48.00 for a $30 ticket", "forty-eight", note=True)])
 beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
      reuse("z0", push={"center": [0.45, 0.40], "zoom": 1.6}, closeup=closeup("checkout", [0.58, 0.62], 2.0)), hero=True)

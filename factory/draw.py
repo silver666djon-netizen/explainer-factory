@@ -311,7 +311,7 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
     """Pencil tip (base px) of the mark being drawn at time t, with the hand's in/out timing."""
     from .shots import mark_strokes
     for i, m in enumerate(marks):
-        if not m.get("hand") or m.get("type") == "led":
+        if not m.get("hand") or m.get("type") in ("led", "stamp", "dot"):
             continue
         at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))
         strokes = m.get("_strokes")

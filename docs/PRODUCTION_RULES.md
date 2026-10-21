@@ -117,3 +117,7 @@ must report zero before a final render.
       Drop a clip in as `episodes/<slug>/clips/<beat id>.mp4` (visual type "clip"; the 8-second rule still applies).
     At the scene-list stage Claude marks which frames go to GPT and which become Grok clips, and sends the prompts
     one stage at a time.
+20. No generated text inside any picture (signs, screens, plates, letters, numbers). Every word, number, price, button
+    label or plate letter is code-drawn on top (marks, plates, composited props in make_edits.py) — e.g. Ep.4's laptop
+    screen is generated blank and the checkout page is drawn on it; the learner car's "L" is written by our hand.
+    Prompts carry no notes in brackets: production notes go in the visual's "note" field.

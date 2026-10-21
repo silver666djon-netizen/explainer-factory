@@ -91,6 +91,8 @@ def contact_sheets(episode: dict, images: dict[str, Path], out_dir: Path, cfg: d
 
 
 def main(argv=None) -> int:
+    import os
+    os.environ.setdefault("FACTORY_SKIP_MANUAL", "1")  # hand-made frames (rule 19) are not generated here
     ap = argparse.ArgumentParser()
     ap.add_argument("episode")
     ap.add_argument("--redo", default="")
