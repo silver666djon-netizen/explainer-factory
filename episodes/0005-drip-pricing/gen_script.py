@@ -180,7 +180,7 @@ beat("o2", S_OPEN, "Then the fees. Eight. Six. Four.",
      ledger=[tab("SERVICE FEE", "+$8.00", "Eight."), tab("FACILITY FEE", "+$6.00", "Six."), tab("PROCESSING FEE", "+$4.00", "Four.")],
      label="Illustration")
 beat("o3", S_OPEN, "Total: forty-eight.",
-     reuse("o1", push={"center": [0.62, 0.48], "zoom": 1.25}, hand_marks=True,
+     reuse("o1", push={"center": [0.62, 0.46], "zoom": 1.15}, hand_marks=True,  # fee column stays clear of Larry's tab
            marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
                   write("+ $8 fee", at=0.0, x=0.86, y=0.30, w=0.16, h=0.07), write("+ $6 fee", at=0.0, x=0.86, y=0.42, w=0.16, h=0.07),
                   write("+ $4 fee", at=0.0, x=0.86, y=0.54, w=0.16, h=0.07), write("= $48", on="forty-eight.", x=0.86, y=0.68, w=0.16, h=0.09)]),
@@ -222,7 +222,7 @@ beat("a3", S_EXP, "StubHub, the ticket resale site, was owned by eBay back then.
 beat("a4", S_EXP, "For a couple of years before that summer, it showed every fee upfront. The price on the screen was the price you paid.",
      img("a 1950s theatre ticket window with a large blank cream price board above the glass, warm light, nobody inside, plain cream wall",
          motion="static", hand_marks=True, marks=[write("TOTAL $48", on="every", x=0.50, y=0.22, w=0.26, h=0.09, color="ink")],
-         closeup=closeup("price", [0.50, 0.30], 1.8, [write("TOTAL $48", at=0.0, x=0.50, y=0.22, w=0.26, h=0.09, color="ink"),
+         closeup=closeup("price", [0.50, 0.28], 1.5, [write("TOTAL $48", at=0.0, x=0.50, y=0.22, w=0.26, h=0.09, color="ink"),
                                                        circle(0.50, 0.22, 0.30, 0.13, "paid.", target=[0.37, 0.17, 0.63, 0.27])])),
      label="Illustration")
 beat("a5", S_EXP, "Then, for twelve days in August 2015, it split its buyers in two.",
@@ -404,8 +404,7 @@ beat("l7", S_LAW, "Border two: Britain. Since April 2025, the price must include
      reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, on='include', angle=6, w=0.18)]))
 beat("l8", S_LAW, "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.",
      img("a small 1950s family car with a blank white square plate on the front bumper, parked on a quiet British street, cheerful print-ad style",
-         motion="static", hand_marks=True, marks=[write("L", at=0.0, x=0.40, y=0.70, w=0.03, h=0.05),
-                                                  write("£3 FEE", on="three-pound", x=0.78, y=0.22, w=0.14, h=0.07)]),
+         motion="static", hand_marks=True, marks=[write("£3 FEE", on="three-pound", x=0.36, y=0.085, w=0.15, h=0.07)]),  # clean sky, clear of the tab
      label="CMA · April 2026")
 beat("l9", S_LAW, "It paid a four point two million pound fine,",
      stat(4.2, "fine · CMA, April 2026", decimals=1, prefix="£", suffix="m"),
@@ -416,8 +415,8 @@ beat("l10", S_LAW, "In June, StubHub's British arm was fined too.",
      reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), stamp('UK · FINED · JUNE 2026', 0.615, 0.70, on='fined', angle=-12, w=0.20)]),
      label="CMA · June 2026")
 beat("l11", S_LAW, "Three pounds. Very expensive pounds.",
-     reuse("l8", push={"center": [0.60, 0.40], "zoom": 1.6}, hand_marks=True, marks=[write("£3 FEE", at=0.0, x=0.78, y=0.22, w=0.14, h=0.07),
-                                                                                    circle(0.78, 0.22, 0.18, 0.11, "Very", target=[0.71, 0.185, 0.85, 0.255])]))
+     reuse("l8", push={"center": [0.45, 0.30], "zoom": 1.35}, hand_marks=True, marks=[write("£3 FEE", at=0.0, x=0.36, y=0.085, w=0.15, h=0.07),
+                                                                                    circle(0.36, 0.085, 0.20, 0.115, "Very", target=[0.285, 0.05, 0.435, 0.12])]))
 beat("l12", S_LAW, "Border three: the European Union. The total price, taxes included, before you pay.",
      reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, at=0.0, angle=6, w=0.18), stamp('EU · TOTAL BEFORE YOU PAY', 0.655, 0.44, on='total', angle=-4, w=0.16)]))
 beat("l13", S_LAW, "And any extra charge needs your clear yes. A pre-ticked box is not a yes.",

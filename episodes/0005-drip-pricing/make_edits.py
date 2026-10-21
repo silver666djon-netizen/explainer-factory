@@ -1,5 +1,5 @@
 """Episode 0005 — hand-made frames from the storyboard pictures (no new generations, rule 20: no generated text).
-Writes episodes/0005-drip-pricing/images/{c4,l1,m1b,m2,n4}.png. Run from the repo root after the storyboard is downloaded:
+Writes episodes/0005-drip-pricing/images/{c4,l1,m1b,m2,n4,l8}.png. Run from the repo root after the storyboard is downloaded:
   gh release download frames-0005-drip-pricing -D .cache/images/0005-drip-pricing --pattern "*.png"
   python episodes/0005-drip-pricing/make_edits.py"""
 from pathlib import Path
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HERE = Path(__file__).resolve().parent
 CACHE = ROOT / ".cache" / "images" / "0005-drip-pricing"
 OUT = HERE / "images"
-FRAMES = {"c4": "c4-f978b0455f", "l1": "l1-8b76d60501", "m1b": "m1b-1fea7e9bcd", "m2": "m2-8d6150208a", "n4": "n4-047244334d"}
+FRAMES = {"c4": "c4-f978b0455f", "l1": "l1-8b76d60501", "m1b": "m1b-1fea7e9bcd", "m2": "m2-8d6150208a", "n4": "n4-047244334d", "l8": "l8-03088a947b"}
 INK, RED, PAPER = (30, 27, 24), (210, 69, 47), (252, 247, 233)
 
 
@@ -123,4 +123,10 @@ new = np.clip(cream[None, None, :] * (lum / ref)[..., None] ** 0.6, 0, 255)
 m = cv2.GaussianBlur(card.astype(np.float32), (0, 0), 0.8)[..., None]
 im = (f * (1 - m) + new * m).astype(np.uint8)
 Image.fromarray(im).save(OUT / "n4.png")
+# ---- l8: the learner "L" painted on the blank bumper plate (part of the car, so subtitles may pass over it)
+car = Image.open(CACHE / f"{FRAMES['l8']}.png").convert("RGB")
+W, H = car.size
+ImageDraw.Draw(car).text((0.697 * W, 0.812 * H), "L", font=fnt("ArchivoBlack-Regular.ttf", int(0.062 * H)), fill=RED, anchor="mm")
+car.save(OUT / "l8.png")
+
 print("written:", ", ".join(f"images/{k}.png" for k in FRAMES))
