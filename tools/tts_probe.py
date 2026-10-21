@@ -48,6 +48,10 @@ def main():
             voiced.append(None)
         print(f"[{time.time() - T0:6.0f}] {line}", flush=True)
     msg = "%0A".join(slow) if slow else f"no slow beats ({time.time() - T0:.0f}s total)"
+    print("::warning title=TTS synth::" + msg, flush=True)
+    msg = ""
+    for b in ep["beats"]:
+        b["_music"] = b.get("music") or (ep.get("music") or {}).get(b.get("section") or "", (ep.get("music") or {}).get("_default", "noir"))
     if all(v is not None for v in voiced):
         import os
         os.environ.setdefault("FACTORY_SKIP_MANUAL", "placeholder")
@@ -69,12 +73,17 @@ def main():
             ids = [b["id"] for b in ep["beats"]]
             z1 = plan.beat_starts["z1"]
             msg += f"%0Aend screen z1..end = {plan.total - z1:.1f}s; z0..end = {plan.total - plan.beat_starts['z0']:.1f}s"
-        except Timeout:
-            msg += "%0Abuild_plan HANGS (>300s)"
+        except BaseException as exc:  # noqa: BLE001
             import traceback
-            msg += "%0A" + "%0A".join(traceback.format_exc().splitlines()[-12:])
+            msg += f"%0Abuild_plan {'HANGS (>300s)' if isinstance(exc, Timeout) else 'FAILED'}"
+            msg += "%0A" + "%0A".join(traceback.format_exc().splitlines()[-14:])
     print("::warning title=TTS probe::" + msg)
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except BaseException:  # noqa: BLE001
+        import traceback
+        print("::error title=TTS probe crashed::" + "%0A".join(traceback.format_exc().splitlines()[-14:]))
+        raise
