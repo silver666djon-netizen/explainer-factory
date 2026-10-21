@@ -198,7 +198,7 @@ class EndScreenShot(Shot):
                 x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
                 crop, mcrop = src[y0:y1 + 1, x0:x1 + 1], m[y0:y1 + 1, x0:x1 + 1]
                 copies = int(nx.get("copies", 2))
-                area_w, area_h = sw * 0.94 / copies, sh * 0.50
+                area_w, area_h = sw * 0.94 / copies, sh * (0.36 if nx.get("label_under") else 0.50)
                 k = min(area_w * (0.52 if nx.get("fees") else 0.62) / crop.shape[1], area_h / crop.shape[0])
                 cw, ch = int(crop.shape[1] * k), int(crop.shape[0] * k)
                 crop = cv2.resize(crop, (cw, ch), interpolation=cv2.INTER_AREA)
@@ -208,6 +208,8 @@ class EndScreenShot(Shot):
                 self.slots = []
                 for i in range(copies):
                     px, py = int(sw * 0.03 + area_w * i), int(sh * 0.43)
+                    if copies == 1 and not nx.get("fees"):  # a single subject sits in the middle of the sheet
+                        px = int((sw - cw) / 2)
                     a = mcrop[..., None]
                     reg = base[py:py + ch, px:px + cw].astype(np.float32)
                     base[py:py + ch, px:px + cw] = (reg * (1 - a) + crop * a).astype(np.uint8)
@@ -277,14 +279,23 @@ class EndScreenShot(Shot):
                 wr = Writing(str(wdef["text"]), font(fpath, max(12, int(ch * float(wdef.get("h", 0.06))))), pal["red"])
                 self.nwrites.append((wr, (int(sx0 + px + float(wdef["x"]) * cw - wr.w / 2), int(sy0 + py + float(wdef["y"]) * ch - wr.h / 2))))
         self.plate = None
-        if nx.get("label"):  # small typed plate, bottom-right of the sheet (drawn over the sketch, every frame)
-            lf = font(typew, int(sh * 0.045))
-            txt = str(nx["label"]).upper()
-            tw = int(lf.getlength(txt))
-            pl = Image.new("RGBA", (tw + 20, lf.size + 14), pal["ink"] + (230,))
-            ImageDraw.Draw(pl).text((10, 6), txt, font=lf, fill=(250, 246, 236, 255))
-            px_ = int(sw * 0.04) if nx.get("fees") or int(nx.get("copies", 2)) > 1 else sw - pl.width - int(sw * 0.04)
-            self.plate = (np.array(pl), px_, sh - int(sh * 0.06) - pl.height)  # bottom-left (bottom-right beside a single subject)
+        if nx.get("label"):  # small typed plate on the sheet (drawn over the sketch); a list = one line per item
+            lines = [str(x).upper() for x in (nx["label"] if isinstance(nx["label"], list) else [nx["label"]])]
+            size = int(sh * 0.045)
+            while size > 10 and max(font(typew, size).getlength(l) for l in lines) > sw * 0.90:
+                size -= 1
+            lf = font(typew, size)
+            tw = int(max(lf.getlength(l) for l in lines))
+            lh = int(lf.size * 1.25)
+            pl = Image.new("RGBA", (tw + 20, lh * len(lines) + 12), pal["ink"] + (230,))
+            for k, l in enumerate(lines):
+                ImageDraw.Draw(pl).text((10, 6 + k * lh), l, font=lf, fill=(250, 246, 236, 255))
+            if nx.get("label_under") and getattr(self, "slots", None):  # centred under the sketched subject
+                px, py, cw, ch = self.slots[0]
+                self.plate = (np.array(pl), int(max(sw * 0.02, min(sw * 0.98 - pl.width, px + cw / 2 - pl.width / 2))), int(py + ch + sh * 0.025))
+            else:
+                px_ = int(sw * 0.04) if nx.get("fees") or int(nx.get("copies", 2)) > 1 else sw - pl.width - int(sw * 0.04)
+                self.plate = (np.array(pl), px_, sh - int(sh * 0.06) - pl.height)  # bottom-left (bottom-right beside a single subject)
         self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5, max_h=int(sh * 0.11)) if nx.get("tagline") else None
         self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * 0.27))
         # ---- end-screen furniture
@@ -371,8 +382,9 @@ class EndScreenShot(Shot):
             shadow[..., 3] = 120
             blend(out, cv2.GaussianBlur(shadow, (0, 0), 12), sx + dx + 10, sy + 14)
             blend(out, sheet, sx + dx, sy)
-            if self.plate is not None:
-                blend(out, self.plate[0], sx + dx + self.plate[1], sy + self.plate[2])
+            if self.plate is not None and t >= tt.get("label", 0.0):  # "label" time: the plate appears then (fade)
+                blend(out, self.plate[0], sx + dx + self.plate[1], sy + self.plate[2],
+                      opacity=min(1.0, (t - tt.get("label", 0.0)) / 0.25) if tt.get("label") else 1.0)
             if self.draw is not None and 0 < (t - tt["draw"]) / tt["ddur"] < 1.08:
                 q = (t - tt["draw"]) / tt["ddur"]
                 kind = "pencil" if q < (LINES_END + COLOR_START) / 2 else "colour"

@@ -453,14 +453,15 @@ beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. 
 ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
       "verdict": ["Guilty: the checkout fee and its cousin, the resort fee.", "Accomplice: the first number on the screen."],
       "next": {"number": "005", "title": "Tip screens", "tagline": "18 % · 22 % · 25 % · No tip?", "image_file": "next_tablet.png",
-               "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.86, "h": 0.035}], "label": "Pew Research Center · Nov 2023"},
-      "times": {"swap": 5.8, "draw": 6.4, "ddur": 3.4, "tagline": 14.4, "zone": 14.7, "sketch": 15.2, "skdur": 1.0,
-                "sub": 16.2, "click": 17.3, "push": 18.0}}
+               "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.86, "h": 0.035}],
+               "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True},
+      "times": {"swap": 5.8, "draw": 6.4, "ddur": 3.0, "writes": 9.6, "tagline": 10.4, "zone": 11.0, "sketch": 11.4,
+                "skdur": 1.0, "label": 12.6, "sub": 13.2, "click": 14.3, "push": 15.0}}
 beat("z1", S_CLOSE, "The verdict. Guilty: the checkout fee and its cousin, the resort fee. Accomplice: the first number on the screen.",
      {"type": "endscreen", "endscreen": ES}, block_start=True, sting="ub_sting_brass", sting_at=0.1)
-beat("z4", S_CLOSE, "Next case: the screen that asks how much you'd like to tip, before you've had your coffee. Seventy-two percent of Americans say tipping is expected in more places than five years ago.",
-     {"type": "continue"}, block_at=7.0)
-beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=19.0, block_end=22.0)
+beat("z4", S_CLOSE, "Next case: the screen that asks how much you'd like to tip, before you've had your coffee.",
+     {"type": "continue"}, block_at=7.0)  # the Pew figure is on screen only (plate under the tablet sketch)
+beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "continue"}, block_at=12.8, block_end=18.5)
 
 # ------------------------------------------------------------------ 7 Shorts (frame 0 = hook text over the Short's strongest picture)
 LONG = {b["id"]: b for b in B}

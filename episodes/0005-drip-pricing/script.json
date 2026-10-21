@@ -2528,19 +2528,25 @@
                 "h": 0.035
               }
             ],
-            "label": "Pew Research Center · Nov 2023"
+            "label": [
+              "72 % say tipping is expected in more places",
+              "Pew Research Center · Nov 2023"
+            ],
+            "label_under": true
           },
           "times": {
             "swap": 5.8,
             "draw": 6.4,
-            "ddur": 3.4,
-            "tagline": 14.4,
-            "zone": 14.7,
-            "sketch": 15.2,
+            "ddur": 3.0,
+            "writes": 9.6,
+            "tagline": 10.4,
+            "zone": 11.0,
+            "sketch": 11.4,
             "skdur": 1.0,
-            "sub": 16.2,
-            "click": 17.3,
-            "push": 18.0
+            "label": 12.6,
+            "sub": 13.2,
+            "click": 14.3,
+            "push": 15.0
           }
         }
       },
@@ -2551,7 +2557,7 @@
     {
       "id": "z4",
       "section": "Case closed",
-      "text": "Next case: the screen that asks how much you'd like to tip, before you've had your coffee. Seventy-two percent of Americans say tipping is expected in more places than five years ago.",
+      "text": "Next case: the screen that asks how much you'd like to tip, before you've had your coffee.",
       "visual": {
         "type": "continue"
       },
@@ -2564,8 +2570,8 @@
       "visual": {
         "type": "continue"
       },
-      "block_at": 19.0,
-      "block_end": 22.0
+      "block_at": 12.8,
+      "block_end": 18.5
     }
   ],
   "shorts": [
