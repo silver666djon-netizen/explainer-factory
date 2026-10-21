@@ -607,7 +607,12 @@
           "y": 0.255,
           "w": 0.3,
           "angle": 3,
-          "slip_angle": -4
+          "slip_angle": -4,
+          "short": {
+            "x": 0.66,
+            "y": 0.27,
+            "w": 0.58
+          }
         }
       }
     },
@@ -1074,7 +1079,13 @@
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "hundred"
+            "on": "hundred",
+            "short": {
+              "x": 0.36,
+              "y": 0.685,
+              "w": 0.18,
+              "h": 0.055
+            }
           }
         ]
       },
@@ -3314,7 +3325,12 @@
               "y": 0.255,
               "w": 0.3,
               "angle": 3,
-              "slip_angle": -4
+              "slip_angle": -4,
+              "short": {
+                "x": 0.66,
+                "y": 0.27,
+                "w": 0.58
+              }
             }
           },
           "id": "s2_5"
@@ -3574,7 +3590,13 @@
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "hundred"
+                "on": "hundred",
+                "short": {
+                  "x": 0.36,
+                  "y": 0.685,
+                  "w": 0.18,
+                  "h": 0.055
+                }
               }
             ],
             "hand_marks": true

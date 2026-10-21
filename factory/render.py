@@ -409,7 +409,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 capv = visual if vtype == "archive" else beat_lookup[visual["beat"]]["visual"]
                 if capv.get("caption"):
                     plan.plates.append((shot_start, shot_end, str(capv["caption"])))  # captioned archive prints: a big push would slide the caption into the subtitles
-            marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in (visual.get("marks") or [])]
+            marks = [dict({**m, **((m.get("short") or {}) if kind == "short" else {})}, at=_timed(m, v["words"], 0.6) + lead_in)
+                     for m in (visual.get("marks") or [])]  # "short": {x, y, ...} = the mark's place in the Shorts' square window
             for m in marks:  # a label that is replaced when another word is spoken
                 if m.get("until_on"):
                     wt = word_time(v["words"], m["until_on"])
@@ -1030,6 +1031,8 @@ class Overlay:
                 blend(frame, im, x, y)
                 break
         for s0, s1, txt, slip in self.plan.stamps:
+            if slip and self.plan.kind == "short" and slip.get("short"):
+                slip = {**slip, **slip["short"]}
             if s0 <= t < s1:
                 key = ("stamp", txt, bool(slip))
                 if key not in self.cache:

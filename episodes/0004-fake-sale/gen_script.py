@@ -216,7 +216,8 @@ beat("p8", S_PEN, "That year, sales fell by a quarter.",
 beat("p9", S_PEN, "The company lost nine hundred and eighty-five million dollars.",
      img("an old brass cash register with its drawer wide open and completely empty, a single moth fluttering out, dark shop at night", motion="zoom_in"),
      pause_at={"word": "nine", "sec": 0.8, "hit": "stamp"}, stamp={"text": "−$985,000,000", "on": "dollars.",
-                                                                   "slip": {"x": 0.745, "y": 0.255, "w": 0.30, "angle": 3, "slip_angle": -4}})  # cream slip on the dark wall
+                                                                   "slip": {"x": 0.745, "y": 0.255, "w": 0.30, "angle": 3, "slip_angle": -4,
+                                                                            "short": {"x": 0.66, "y": 0.27, "w": 0.58}}})  # cream slip on the dark wall
 beat("p10", S_PEN, "Even before Johnson was fired in April 2013, the old game was back.",
      arch("chain_store_window_signs_1940.jpg", "Signs on a chain store window, 1940", motion="zoom_in", crop=[0.02, 0.03, 0.96, 0.93]), label="April 2013")
 beat("p11", S_PEN, "A five-dollar T-shirt got a six-dollar tag, so it could be marked down to five again.",
@@ -268,7 +269,7 @@ beat("k6", S_KOHL, "Larry's saving: sixty dollars. His real overpay: ninety.",
      ledger=[{"label": "OVERPAID", "amount": "$90.00", "loss": True, "circle": True, "on": "ninety."}])
 beat("k7", S_KOHL, "So how regular is regular? One consumer advocate tracked twenty Kohl's items for a hundred and three days.",
      img("a 1950s desk wall calendar with many days crossed out in red pencil, next to a notebook full of handwritten price columns and a pencil", motion="static",
-         hand_marks=True, marks=[circle(0.37, 0.35, 0.38, 0.58, "tracked", target=[0.20, 0.12, 0.53, 0.62]), write("103 DAYS", on="hundred", x=0.76, y=0.37, w=0.20, h=0.08)]),
+         hand_marks=True, marks=[circle(0.37, 0.35, 0.38, 0.58, "tracked", target=[0.20, 0.12, 0.53, 0.62]), write("103 DAYS", on="hundred", x=0.76, y=0.37, w=0.20, h=0.08, short={"x": 0.36, "y": 0.685, "w": 0.18, "h": 0.055})]),
      label="tracked 2003")
 beat("k8", S_KOHL, "They were on sale eighty-six percent of the time.",
      {"type": "stat", "stat": {"value": 86, "suffix": "%", "label": "of the time on sale · tracked 2003"}},
