@@ -378,34 +378,34 @@
         "marks": [
           {
             "type": "circle",
-            "x": 0.62,
-            "y": 0.7,
-            "w": 0.22,
-            "h": 0.14,
+            "x": 0.55,
+            "y": 0.4635,
+            "w": 0.14,
+            "h": 0.085,
             "on": "Pay.",
             "target": [
-              0.53,
-              0.65,
-              0.71,
-              0.75
+              0.5,
+              0.44,
+              0.6,
+              0.487
             ]
           }
         ],
         "closeup": {
           "on": "waits",
           "center": [
-            0.4,
-            0.45
+            0.5,
+            0.4
           ],
           "zoom": 1.8,
           "marks": [
             {
               "type": "write",
               "text": "$48",
-              "x": 0.4,
-              "y": 0.45,
-              "w": 0.1,
-              "h": 0.08,
+              "x": 0.535,
+              "y": 0.4,
+              "w": 0.09,
+              "h": 0.04,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -1684,27 +1684,26 @@
         "index": 0,
         "motion": "static",
         "hand_marks": true,
-        "marks": [
-          {
-            "type": "stamp",
-            "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.42,
-            "y": 0.4,
-            "w": 0.3,
-            "angle": -8,
-            "dur": 0.45,
-            "on": "total",
-            "hand": true
-          }
-        ],
         "closeup": {
           "on": "short",
           "center": [
-            0.45,
-            0.45
+            0.47,
+            0.43
           ],
-          "zoom": 1.5,
-          "marks": [],
+          "zoom": 1.45,
+          "marks": [
+            {
+              "type": "stamp",
+              "text": "USA · TOTAL UPFRONT · MAY 2025",
+              "x": 0.35,
+              "y": 0.445,
+              "w": 0.18,
+              "angle": -8,
+              "dur": 0.45,
+              "on": "total",
+              "hand": true
+            }
+          ],
           "motion": "zoom_in"
         }
       },
@@ -1951,9 +1950,9 @@
           {
             "type": "stamp",
             "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.42,
-            "y": 0.4,
-            "w": 0.3,
+            "x": 0.35,
+            "y": 0.445,
+            "w": 0.18,
             "angle": -8,
             "dur": 0.45,
             "at": 0.0,
@@ -1962,9 +1961,9 @@
           {
             "type": "stamp",
             "text": "UK · ALL FEES IN · APRIL 2025",
-            "x": 0.58,
-            "y": 0.55,
-            "w": 0.3,
+            "x": 0.585,
+            "y": 0.58,
+            "w": 0.18,
             "angle": 6,
             "dur": 0.45,
             "on": "include",
@@ -2151,9 +2150,9 @@
           {
             "type": "stamp",
             "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.42,
-            "y": 0.4,
-            "w": 0.3,
+            "x": 0.35,
+            "y": 0.445,
+            "w": 0.18,
             "angle": -8,
             "dur": 0.45,
             "at": 0.0,
@@ -2162,9 +2161,9 @@
           {
             "type": "stamp",
             "text": "UK · ALL FEES IN · APRIL 2025",
-            "x": 0.58,
-            "y": 0.55,
-            "w": 0.3,
+            "x": 0.585,
+            "y": 0.58,
+            "w": 0.18,
             "angle": 6,
             "dur": 0.45,
             "at": 0.0,
@@ -2173,9 +2172,9 @@
           {
             "type": "stamp",
             "text": "EU · TOTAL BEFORE YOU PAY",
-            "x": 0.46,
-            "y": 0.68,
-            "w": 0.3,
+            "x": 0.655,
+            "y": 0.44,
+            "w": 0.16,
             "angle": -4,
             "dur": 0.45,
             "on": "total",
@@ -2237,9 +2236,9 @@
           {
             "type": "stamp",
             "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.42,
-            "y": 0.4,
-            "w": 0.3,
+            "x": 0.35,
+            "y": 0.445,
+            "w": 0.18,
             "angle": -8,
             "dur": 0.45,
             "at": 0.0,
@@ -2248,9 +2247,9 @@
           {
             "type": "stamp",
             "text": "UK · ALL FEES IN · APRIL 2025",
-            "x": 0.58,
-            "y": 0.55,
-            "w": 0.3,
+            "x": 0.585,
+            "y": 0.58,
+            "w": 0.18,
             "angle": 6,
             "dur": 0.45,
             "at": 0.0,
@@ -2259,9 +2258,9 @@
           {
             "type": "stamp",
             "text": "EU · TOTAL BEFORE YOU PAY",
-            "x": 0.46,
-            "y": 0.68,
-            "w": 0.3,
+            "x": 0.655,
+            "y": 0.44,
+            "w": 0.16,
             "angle": -4,
             "dur": 0.45,
             "at": 0.0,
@@ -2375,9 +2374,9 @@
           {
             "type": "write",
             "text": "LAST SCREEN",
-            "x": 0.4,
-            "y": 0.18,
-            "w": 0.24,
+            "x": 0.17,
+            "y": 0.3,
+            "w": 0.22,
             "h": 0.06,
             "angle": 0,
             "color": "red",
@@ -2389,18 +2388,18 @@
         "closeup": {
           "on": "real",
           "center": [
-            0.45,
-            0.5
+            0.5,
+            0.4
           ],
           "zoom": 1.6,
           "marks": [
             {
               "type": "write",
               "text": "$48",
-              "x": 0.4,
-              "y": 0.45,
-              "w": 0.1,
-              "h": 0.08,
+              "x": 0.535,
+              "y": 0.4,
+              "w": 0.09,
+              "h": 0.04,
               "angle": 0,
               "color": "red",
               "font": "marker",
@@ -3929,9 +3928,9 @@
               {
                 "type": "write",
                 "text": "LAST SCREEN",
-                "x": 0.4,
-                "y": 0.18,
-                "w": 0.24,
+                "x": 0.17,
+                "y": 0.3,
+                "w": 0.22,
                 "h": 0.06,
                 "angle": 0,
                 "color": "red",
@@ -3943,18 +3942,18 @@
             "closeup": {
               "on": "real",
               "center": [
-                0.45,
-                0.5
+                0.5,
+                0.4
               ],
               "zoom": 1.6,
               "marks": [
                 {
                   "type": "write",
                   "text": "$48",
-                  "x": 0.4,
-                  "y": 0.45,
-                  "w": 0.1,
-                  "h": 0.08,
+                  "x": 0.535,
+                  "y": 0.4,
+                  "w": 0.09,
+                  "h": 0.04,
                   "angle": 0,
                   "color": "red",
                   "font": "marker",

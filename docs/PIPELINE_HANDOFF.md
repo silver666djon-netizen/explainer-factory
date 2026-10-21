@@ -120,9 +120,18 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   California dot + EU plate, one typed list on the front index card, stat lands before the spoken number, plate appears
   with the pen). Long −14.2 LUFS / −1.5 dBTP, Shorts −14.2…−14.3 / −2.0…−2.6; mark audit 0 (new full-path subtitle
   check), handcheck 0. Waiting for Klot's frame check on r64.
-- **Episode 4**: structure and script approved; scene list sent 2026-10-21 (episodes/0005-drip-pricing/scene_list.md,
-  gen_script.py, 20 generations, 0 stills > 8 s), waiting for approval; then engine work (ALLEGED plate, stamp-hand stamps,
-  desk composite, verdict/No-tip writes, Shorts hook over picture) and cold-open + end-screen previews.
+- **Episode 4** (episodes/0005-drip-pricing): scene list approved 2026-10-21 with changes.
+  - Hand-made by Klot (rule 19, NOT generated; storyboard skips them): GPT stills o4, b1, c1, z0, a10, a12, x1, m2b →
+    images/<beat>.png (Larry reference sheet first, made from the review chat's prompt). Grok clips from those stills:
+    b1, m2b, x1, z0, a10, a12 → clips/<beat>.mp4 (ClipImageShot: muted, trimmed, our overlays on top; still = fallback).
+    Reference pack sent to Telegram (refs/0005-pack via send-pack.yml).
+  - Pipeline storyboard done (frames-0005-drip-pricing): 12 pictures (11 + customs desk). m2, c4, l1, l13 re-prompted
+    for rule 20; c4 words painted out and the desk/ticket and laptop checkout page composited in make_edits.py
+    (images/c4.png, l1.png, m1b.png).
+  - Engine added: manual stills, ClipImageShot, stamp marks pressed by the stamp hand, ALLEGED plate, end-screen
+    "writes" (No tip), labels from a word (label_on), map dot.
+  - NEXT: when images/o4.png arrives → cold-open + end-screen previews (render.yml preview=yes, upto=cf1 for the cold
+    open; the end screen needs z0 too, use its fallback-free path once z0.png exists).
 - (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
   teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);

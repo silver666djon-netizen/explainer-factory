@@ -202,8 +202,8 @@ beat("m1", S_OPEN, "Suspect number one. Name: the checkout fee. Aliases: service
 beat("m1b", S_OPEN, "Last seen: one click before Pay. It never touches the price you see. It waits for the price you pay.",
      img("a cream 1950s-styled retro laptop seen from the front, its screen completely blank and softly lit, plain cream background",
          note="after the storyboard: code-drawn checkout page (red PAY button, empty total box) composited on the screen (images/m1b.png)",
-         motion="static", hand_marks=True, marks=[circle(0.62, 0.70, 0.22, 0.14, "Pay.", target=[0.53, 0.65, 0.71, 0.75])],
-         closeup=closeup("waits", [0.40, 0.45], 1.8, [write("$48", on="pay.", x=0.40, y=0.45, w=0.10, h=0.08)])))
+         motion="static", hand_marks=True, marks=[circle(0.55, 0.4635, 0.14, 0.085, "Pay.", target=[0.50, 0.44, 0.60, 0.487])],
+         closeup=closeup("waits", [0.50, 0.40], 1.8, [write("$48", on="pay.", x=0.535, y=0.40, w=0.09, h=0.04)])))
 
 # ------------------------------------------------------------------ Tuesday 8:12 PM — The experiment (StubHub, spine)
 chapter("t1", S_EXP, "Tuesday, eight-twelve p.m.", "Tuesday 8:12 PM — The experiment")
@@ -376,8 +376,8 @@ beat("l1", S_LAW, "Larry's ticket goes on a trip. Three borders. Three stamps.",
      img(DESK, note="after the storyboard: the code-drawn $30 ticket is composited in the middle (images/l1.png)", motion="static",
          closeup=closeup("borders.", [0.50, 0.50], 1.4, motion="zoom_out")))
 beat("l2", S_LAW, "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront.",
-     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, on='total', angle=-8)],
-           closeup=closeup("short", [0.45, 0.45], 1.5)),
+     reuse("l1", hand_marks=True,
+           closeup=closeup("short", [0.47, 0.43], 1.45, [stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, on='total', angle=-8, w=0.18)])),
      pause_at={"word": "May", "sec": 0.4, "hit": None})
 beat("l3", S_LAW, "In April 2026, StubHub agreed to pay ten million dollars back to buyers,",
      stat(10, "StubHub settlement · FTC · April 2026", prefix="$", suffix="m"),
@@ -401,7 +401,7 @@ beat("l6", S_LAW, "Cars got the total sixty-seven years before concert tickets d
                                          write("67 YEARS", on="sixty-seven", x=0.80, y=0.62, w=0.16, h=0.06)]),
      pause_at={"word": "sixty-seven", "sec": 0.4, "hit": None})
 beat("l7", S_LAW, "Border two: Britain. Since April 2025, the price must include every fee you can't avoid.",
-     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, on='include', angle=6)]))
+     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, on='include', angle=6, w=0.18)]))
 beat("l8", S_LAW, "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.",
      img("a small 1950s family car with a blank white square plate on the front bumper, parked on a quiet British street, cheerful print-ad style",
          motion="static", hand_marks=True, marks=[write("L", at=0.0, x=0.40, y=0.70, w=0.03, h=0.05),
@@ -419,13 +419,13 @@ beat("l11", S_LAW, "Three pounds. Very expensive pounds.",
      reuse("l8", push={"center": [0.60, 0.40], "zoom": 1.6}, hand_marks=True, marks=[write("£3 FEE", at=0.0, x=0.78, y=0.22, w=0.14, h=0.07),
                                                                                     circle(0.78, 0.22, 0.18, 0.11, "Very", target=[0.71, 0.185, 0.85, 0.255])]))
 beat("l12", S_LAW, "Border three: the European Union. The total price, taxes included, before you pay.",
-     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, at=0.0, angle=6), stamp('EU · TOTAL BEFORE YOU PAY', 0.46, 0.68, on='total', angle=-4)]))
+     reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, at=0.0, angle=6, w=0.18), stamp('EU · TOTAL BEFORE YOU PAY', 0.655, 0.44, on='total', angle=-4, w=0.16)]))
 beat("l13", S_LAW, "And any extra charge needs your clear yes. A pre-ticked box is not a yes.",
      img("a 1950s paper order form on a desk with three plain empty lines, each line ending in a small square checkbox, the last checkbox already ticked in black ink, plain cream background",
          motion="static", hand_marks=True, marks=[circle(0.30, 0.66, 0.08, 0.10, "pre-ticked", target=[0.27, 0.62, 0.33, 0.70]),
                                                   write("NOT A YES", on="not", x=0.55, y=0.66, w=0.22, h=0.07)]))
 beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
-     reuse("l1", motion="zoom_out", marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.42, 0.4, at=0.0, angle=-8), stamp('UK · ALL FEES IN · APRIL 2025', 0.58, 0.55, at=0.0, angle=6), stamp('EU · TOTAL BEFORE YOU PAY', 0.46, 0.68, at=0.0, angle=-4)]))
+     reuse("l1", motion="zoom_out", marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, at=0.0, angle=6, w=0.18), stamp('EU · TOTAL BEFORE YOU PAY', 0.655, 0.44, at=0.0, angle=-4, w=0.16)]))
 
 # ------------------------------------------------------------------ Saturday 10:00 AM — Three checks
 chapter("t6", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
@@ -436,8 +436,8 @@ beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn 
      reuse("x1", hand_marks=True, marks=[write("ALL-IN PRICES", at=0.0, x=0.50, y=0.18, w=0.30, h=0.07, color="ink"), write("ON", on="on", x=0.72, y=0.50, w=0.08, h=0.08)],
            closeup=closeup("before", [0.50, 0.50], 1.6)))
 beat("x3", S_CHECK, "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
-     reuse("m1b", hand_marks=True, marks=[write("LAST SCREEN", on="last", x=0.40, y=0.18, w=0.24, h=0.06)],
-           closeup=closeup("real", [0.45, 0.50], 1.6, [write("$48", on="price", x=0.40, y=0.45, w=0.10, h=0.08)])))
+     reuse("m1b", hand_marks=True, marks=[write("LAST SCREEN", on="last", x=0.17, y=0.30, w=0.22, h=0.06)],
+           closeup=closeup("real", [0.50, 0.40], 1.6, [write("$48", on="price", x=0.535, y=0.40, w=0.09, h=0.04)])))
 beat("x4", S_CHECK, "Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.",
      {"type": "chart", "chart": {"kind": "bar", "title": "What you actually pay", "labels": ["$40 · no fees", "$30 + $18 fees"], "values": [40, 48],
                                  "unit": "$", "highlight": 0, "value_labels": True, "note": "Illustration"}})
