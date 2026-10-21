@@ -1,0 +1,3777 @@
+{
+  "slug": "0005-drip-pricing",
+  "title": "The $30 Ticket That Costs $48",
+  "description": "Case file #004: the fee at the end. Larry (fictional) buys a $30 concert ticket and pays $48. StubHub's own 2015 experiment, the FTC's case against Ticketmaster (alleged), Marriott's city-hotel resort fees (alleged), why a split price feels cheaper, one ticket stamped by three laws — and three checks before you pay.",
+  "tags": [
+    "drip pricing",
+    "junk fees",
+    "hidden fees",
+    "ticket fees",
+    "resort fees",
+    "stubhub",
+    "ticketmaster",
+    "consumer rights",
+    "psychology of money",
+    "behavioral economics"
+  ],
+  "characters": {
+    "larry": "a cheerful middle-aged man with a round face and a thin moustache, wearing a loud yellow checked sports jacket and a red fedora"
+  },
+  "music": {
+    "_default": "ub_private_detective",
+    "_shorts": "ub_wells_street",
+    "The case": "ub_private_detective",
+    "Tuesday 8:12 PM: The experiment": "ub_mechanisms_of_action",
+    "Wednesday 10:00 AM: $16.4 billion": "ub_tunnel_vision",
+    "Thursday 11:40 PM: The resort fee": "ub_night_spot",
+    "Why a split price feels cheaper": "ub_mechanisms_of_action",
+    "In defence of the accused": "ub_usual_suspects",
+    "Friday 9:00 AM: One fee, three laws": "ub_secret_report",
+    "Saturday 10:00 AM: Three checks": "ub_wells_street",
+    "Case closed": "ub_jazz_rumble"
+  },
+  "sources": [
+    "Blake, Moshary, Sweeney & Tadelis, Price Salience and Product Choice, NBER Working Paper 25186 (pp. 8, 14, 16, 22, 27).",
+    "StubHub remarks, White House convening on junk fees, 21 March 2023.",
+    "FTC v. Live Nation Entertainment, Inc., No. 2:25-cv-08884 (C.D. Cal.), complaint ¶36 (filed 18 Sept 2025) — allegations; order denying motion to dismiss, 28 Sept 2026.",
+    "FTC (9 April 2026): StubHub to pay $10 million to settle charges under the FTC Act and the Rule on Unfair or Deceptive Fees.",
+    "FTC Rule on Unfair or Deceptive Fees, 16 CFR Part 464 (90 FR 2066), effective 12 May 2025.",
+    "District of Columbia v. Marriott International (complaint and press release, 9 July 2019) — allegations. Texas Attorney General agreement with Marriott, 16 May 2023.",
+    "Morwitz, Greenleaf & Johnson (1998), Divide and Prosper, Journal of Marketing Research 35(4), 453–463.",
+    "Automobile Information Disclosure Act of 1958, 15 U.S.C. 1232.",
+    "Digital Markets, Competition and Consumers Act 2024, s.230; CMA: The AA and BSM (15 April 2026); StubHub UK (23 June 2026).",
+    "EU: Consumer Rights Directive 2011/83/EU Arts. 6(1)(e), 22; Unfair Commercial Practices Directive 2005/29/EC Art. 7(4)(c); Regulation 1008/2008 Art. 23.",
+    "Pew Research Center (9 Nov 2023), Tipping Culture in America.",
+    "Larry is a fictional character. Scenes marked 'Illustration' are illustrations."
+  ],
+  "beats": [
+    {
+      "id": "o1",
+      "section": "The case",
+      "text": "A concert ticket. Thirty dollars.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "the code-drawn $30 concert ticket (hand-made frame: images/o1.png)",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.43,
+            "y": 0.62,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Thirty"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "Thirty",
+        "sec": 0.45,
+        "hit": "stamp"
+      },
+      "ledger": [
+        {
+          "label": "TICKET",
+          "amount": "$30.00",
+          "on": "Thirty"
+        }
+      ],
+      "label": "Illustration"
+    },
+    {
+      "id": "o2",
+      "section": "The case",
+      "text": "Then the fees. Eight. Six. Four.",
+      "visual": {
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.43,
+            "y": 0.62,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $8 fee",
+            "x": 0.86,
+            "y": 0.3,
+            "w": 0.16,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Eight."
+          },
+          {
+            "type": "write",
+            "text": "+ $6 fee",
+            "x": 0.86,
+            "y": 0.42,
+            "w": 0.16,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Six."
+          },
+          {
+            "type": "write",
+            "text": "+ $4 fee",
+            "x": 0.86,
+            "y": 0.54,
+            "w": 0.16,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Four."
+          }
+        ]
+      },
+      "ledger": [
+        {
+          "label": "SERVICE FEE",
+          "amount": "+$8.00",
+          "on": "Eight."
+        },
+        {
+          "label": "FACILITY FEE",
+          "amount": "+$6.00",
+          "on": "Six."
+        },
+        {
+          "label": "PROCESSING FEE",
+          "amount": "+$4.00",
+          "on": "Four."
+        }
+      ],
+      "label": "Illustration"
+    },
+    {
+      "id": "o3",
+      "section": "The case",
+      "text": "Total: forty-eight.",
+      "visual": {
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
+        "motion": "static",
+        "push": {
+          "center": [
+            0.62,
+            0.48
+          ],
+          "zoom": 1.25
+        },
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.43,
+            "y": 0.62,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $8 fee",
+            "x": 0.86,
+            "y": 0.3,
+            "w": 0.16,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $6 fee",
+            "x": 0.86,
+            "y": 0.42,
+            "w": 0.16,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $4 fee",
+            "x": 0.86,
+            "y": 0.54,
+            "w": 0.16,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "= $48",
+            "x": 0.86,
+            "y": 0.68,
+            "w": 0.16,
+            "h": 0.09,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "forty-eight."
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "forty-eight.",
+        "sec": 0.45,
+        "hit": "stamp"
+      },
+      "ledger": [
+        {
+          "label": "PAID",
+          "amount": "$48.00",
+          "on": "forty-eight."
+        }
+      ],
+      "label": "Illustration"
+    },
+    {
+      "id": "o4",
+      "section": "The case",
+      "text": "Larry is made up. The fees are not.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "{larry} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "FICTIONAL",
+            "x": 0.22,
+            "y": 0.18,
+            "w": 0.18,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "made"
+          },
+          {
+            "type": "write",
+            "text": "REAL",
+            "x": 0.8,
+            "y": 0.3,
+            "w": 0.1,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "fees"
+          }
+        ]
+      }
+    },
+    {
+      "id": "cf1",
+      "section": "The case",
+      "text": "Case file number four. The fee at the end.",
+      "visual": {
+        "type": "casefile",
+        "casefile": {
+          "mode": "open",
+          "number": "004",
+          "title": "The fee at the end",
+          "typed": false,
+          "open_stamp_on": "end.",
+          "inside": [
+            "SUBJECT: Larry (fictional)",
+            "EXHIBIT: one $30 ticket",
+            "",
+            "SUSPECTS: 2",
+            "STATUS: open"
+          ],
+          "writes": [
+            {
+              "line": 2,
+              "text": "paid: $48",
+              "on": "end."
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "m1",
+      "section": "The case",
+      "text": "Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee.",
+      "visual": {
+        "type": "mugshot",
+        "prompt": "a long curling blank paper till receipt hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+        "suspect": {
+          "number": 1,
+          "name": "The checkout fee",
+          "alias": "Service · Processing · Convenience",
+          "tag": "SUSPECT",
+          "stamp_pos": [
+            0.7,
+            0.12
+          ],
+          "type_on": [
+            "Name:",
+            "Aliases:"
+          ]
+        }
+      }
+    },
+    {
+      "id": "m1b",
+      "section": "The case",
+      "text": "Last seen: one click before Pay. It never touches the price you see. It waits for the price you pay.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a close-up of a cream retro laptop screen showing a simple checkout page with a large red rounded PAY button and an empty total box, a finger hovering above the button, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.62,
+            "y": 0.7,
+            "w": 0.22,
+            "h": 0.14,
+            "on": "Pay.",
+            "target": [
+              0.53,
+              0.65,
+              0.71,
+              0.75
+            ]
+          }
+        ],
+        "closeup": {
+          "on": "waits",
+          "center": [
+            0.4,
+            0.45
+          ],
+          "zoom": 1.8,
+          "marks": [
+            {
+              "type": "write",
+              "text": "$48",
+              "x": 0.4,
+              "y": 0.45,
+              "w": 0.1,
+              "h": 0.08,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "pay."
+            }
+          ],
+          "motion": "zoom_in"
+        }
+      }
+    },
+    {
+      "id": "t1",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Tuesday, eight-twelve p.m.",
+      "visual": {
+        "type": "title",
+        "text": "Tuesday 8:12 PM — The experiment"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "a1",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Larry has a ticket in his basket.",
+      "visual": {
+        "type": "reuse",
+        "beat": "o4",
+        "index": 0,
+        "motion": "static",
+        "push": {
+          "center": [
+            0.62,
+            0.45
+          ],
+          "zoom": 1.5
+        }
+      },
+      "hero": true
+    },
+    {
+      "id": "a2",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "To see how the fees got there, we go back to 2015, and a company that tested them on its own customers.",
+      "visual": {
+        "type": "archive",
+        "file": "box_office_loews_capitol_1939.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Ticket line, Loew's Capitol, Washington, D.C., 1939 · Library of Congress"
+      },
+      "label": "StubHub · 2015"
+    },
+    {
+      "id": "a3",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "StubHub, the ticket resale site, was owned by eBay back then.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "NBER Working Paper 25186 · Blake, Moshary, Sweeney & Tadelis",
+          "headline": "Price Salience and Product Choice",
+          "body": "Between August 19 and August 31 of 2015, the firm ran an experiment where treated consumers were initially shown ticket prices without fees.",
+          "highlight": "shown ticket prices without fees",
+          "on": "StubHub,",
+          "mark": "underline",
+          "seed": 71,
+          "kicker": "WORKING PAPER  ·  QUOTED",
+          "lead": 0.4
+        }
+      }
+    },
+    {
+      "id": "a4",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "For a couple of years before that summer, it showed every fee upfront. The price on the screen was the price you paid.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a 1950s theatre ticket window with a large blank cream price board above the glass, warm light, nobody inside, plain cream wall",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "TOTAL $48",
+            "x": 0.5,
+            "y": 0.22,
+            "w": 0.26,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "every"
+          }
+        ],
+        "closeup": {
+          "on": "price",
+          "center": [
+            0.5,
+            0.3
+          ],
+          "zoom": 1.8,
+          "marks": [
+            {
+              "type": "write",
+              "text": "TOTAL $48",
+              "x": 0.5,
+              "y": 0.22,
+              "w": 0.26,
+              "h": 0.09,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "circle",
+              "x": 0.5,
+              "y": 0.22,
+              "w": 0.3,
+              "h": 0.13,
+              "on": "paid.",
+              "target": [
+                0.37,
+                0.17,
+                0.63,
+                0.27
+              ]
+            }
+          ],
+          "motion": "zoom_in"
+        }
+      },
+      "label": "Illustration"
+    },
+    {
+      "id": "a5",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Then, for twelve days in August 2015, it split its buyers in two.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a 1950s theatre lobby with a velvet rope splitting a queue of cheerful cartoon ticket buyers into two lines in front of two identical ticket windows, front view",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "A",
+            "x": 0.3,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "split"
+          },
+          {
+            "type": "write",
+            "text": "B",
+            "x": 0.7,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "two."
+          }
+        ]
+      },
+      "label": "Aug 19–31, 2015"
+    },
+    {
+      "id": "a6",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout.",
+      "visual": {
+        "type": "reuse",
+        "beat": "a5",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "A",
+            "x": 0.3,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "B",
+            "x": 0.7,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$48",
+            "x": 0.3,
+            "y": 0.3,
+            "w": 0.09,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "full"
+          },
+          {
+            "type": "write",
+            "text": "$30…",
+            "x": 0.7,
+            "y": 0.3,
+            "w": 0.1,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "alone,"
+          }
+        ],
+        "closeup": {
+          "on": "fees",
+          "center": [
+            0.7,
+            0.4
+          ],
+          "zoom": 1.8,
+          "marks": [
+            {
+              "type": "write",
+              "text": "B",
+              "x": 0.7,
+              "y": 0.2,
+              "w": 0.05,
+              "h": 0.08,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "write",
+              "text": "$30…",
+              "x": 0.7,
+              "y": 0.3,
+              "w": 0.1,
+              "h": 0.07,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.01,
+              "at": 0.0,
+              "hand": false
+            },
+            {
+              "type": "write",
+              "text": "+ fees at checkout",
+              "x": 0.7,
+              "y": 0.4,
+              "w": 0.2,
+              "h": 0.05,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "checkout."
+            }
+          ],
+          "motion": "zoom_in"
+        }
+      },
+      "label": "Aug 19–31, 2015"
+    },
+    {
+      "id": "a7",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Same tickets. Same fees. The only thing that changed was the moment you saw them.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "a8",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "The ones who met the fees late spent almost twenty-one percent more.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 21,
+          "label": "more spent when fees came at checkout · NBER w25186 · 2015 test",
+          "prefix": "≈",
+          "suffix": "%"
+        }
+      },
+      "pause_at": {
+        "word": "twenty-one",
+        "sec": 0.6,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "a9",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "They were fourteen point one percent more likely to buy at all.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 14.1,
+          "label": "more likely to buy · NBER w25186 · 2015 test",
+          "decimals": 1,
+          "suffix": "%"
+        }
+      },
+      "pause_at": {
+        "word": "fourteen",
+        "sec": 0.6,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "a10",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "And the buyers among them picked seats about five percent pricier.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a 1950s concert hall seen from the stage, rows of red velvet seats, the front rows lit by a warm spotlight, empty hall",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "+5 %",
+            "x": 0.5,
+            "y": 0.3,
+            "w": 0.12,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "five"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "five",
+        "sec": 0.5,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "a11",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "A seat looks cheaper when its fees are still offstage, so you pick a better one.",
+      "visual": {
+        "type": "reuse",
+        "beat": "a10",
+        "index": 0,
+        "motion": "static",
+        "push": {
+          "center": [
+            0.5,
+            0.55
+          ],
+          "zoom": 1.6
+        }
+      },
+      "label": "Seat choice = at least 28 % of the revenue gap · NBER w25186"
+    },
+    {
+      "id": "a12",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Then the fees walk on.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style"
+      }
+    },
+    {
+      "id": "a13",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "Twelve days of science. Then the science went live.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "a14",
+      "section": "Tuesday 8:12 PM: The experiment",
+      "text": "On September the first, the whole site switched. Fees at the end, for everyone.",
+      "visual": {
+        "type": "archive",
+        "file": "radio_city_crowd_1942.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Crowd waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress"
+      },
+      "stamp": {
+        "text": "Sept 1, 2015",
+        "on": "first,"
+      },
+      "label": "NBER w25186"
+    },
+    {
+      "id": "t2",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "Wednesday, ten a.m.",
+      "visual": {
+        "type": "title",
+        "text": "Wednesday 10:00 AM — $16.4 billion"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "b1",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "{larry} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$18 FEES",
+            "x": 0.78,
+            "y": 0.22,
+            "w": 0.18,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Eighteen"
+          }
+        ]
+      }
+    },
+    {
+      "id": "b2",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "That's thirty-seven and a half percent of what he paid.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 37.5,
+          "label": "of Larry's total was fees · Illustration",
+          "decimals": 1,
+          "suffix": "%"
+        }
+      },
+      "pause_at": {
+        "word": "thirty-seven",
+        "sec": 0.6,
+        "hit": "stamp"
+      },
+      "ledger": [
+        {
+          "label": "HIDDEN",
+          "amount": "$18.00",
+          "on": "thirty-seven",
+          "loss": true,
+          "circle": true
+        },
+        {
+          "label": "= 37.5 % of the total",
+          "amount": "",
+          "on": "half",
+          "note": true
+        }
+      ]
+    },
+    {
+      "id": "b3",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "Is that unusual? In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
+      "visual": {
+        "type": "archive",
+        "file": "ftc_statue_1943.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Statue in front of the Federal Trade Commission building, Washington, D.C., 1943 · Library of Congress"
+      },
+      "label": "FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending",
+      "alleged": true
+    },
+    {
+      "id": "b4",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "They allege the fees run from twenty-four to forty-four percent of the total price.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "FTC complaint · C.D. Cal. · Sept 2025 · ¶36",
+          "headline": "Ticketmaster fees",
+          "body": "The average percentage of fees charged on tickets ranges from 24% to 44% of the total price.",
+          "highlight": "24% to 44% of the total price",
+          "on": "twenty-four",
+          "mark": "underline",
+          "seed": 72,
+          "kicker": "COMPLAINT  ·  ALLEGED  ·  QUOTED",
+          "lead": 0.6
+        }
+      },
+      "pause_at": {
+        "word": "twenty-four",
+        "sec": 0.4,
+        "hit": null
+      }
+    },
+    {
+      "id": "b5",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "And that fans paid over sixteen point four billion dollars in mandatory fees.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 16.4,
+          "label": "in mandatory fees · FTC complaint, Sept 2025 · ALLEGED",
+          "decimals": 1,
+          "prefix": "$",
+          "suffix": "bn"
+        }
+      },
+      "pause_at": {
+        "word": "sixteen",
+        "sec": 0.6,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "b6",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "Larry's thirty-seven and a half percent sits right inside that range.",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "bar",
+          "title": "Fees as a share of the total",
+          "labels": [
+            "Low (alleged)",
+            "Larry",
+            "High (alleged)"
+          ],
+          "values": [
+            24,
+            37.5,
+            44
+          ],
+          "unit": "%",
+          "highlight": 1,
+          "value_labels": true,
+          "note": "FTC complaint ¶36 (alleged) · Larry: illustration"
+        }
+      }
+    },
+    {
+      "id": "b7",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "His thirty-dollar ticket grew by sixty percent between the first screen and the last.",
+      "visual": {
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.43,
+            "y": 0.62,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+60 %",
+            "x": 0.86,
+            "y": 0.4,
+            "w": 0.16,
+            "h": 0.1,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "sixty"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "sixty",
+        "sec": 0.5,
+        "hit": "stamp"
+      },
+      "label": "Illustration"
+    },
+    {
+      "id": "b8",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "Larry, it turns out, is perfectly average.",
+      "visual": {
+        "type": "reuse",
+        "beat": "b1",
+        "index": 0,
+        "motion": "static",
+        "push": {
+          "center": [
+            0.4,
+            0.35
+          ],
+          "zoom": 1.7
+        }
+      },
+      "hero": true
+    },
+    {
+      "id": "b9",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "In September 2026, a judge refused to throw the case out. It goes on. Until a court decides, every word of it is an allegation.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "U.S. District Court, C.D. Cal. · Order · Sept 28, 2026",
+          "headline": "Motion to dismiss",
+          "body": "For the reasons stated herein, Defendant's Motion is DENIED as to each claim.",
+          "highlight": "DENIED as to each claim",
+          "on": "refused",
+          "mark": "underline",
+          "seed": 73,
+          "kicker": "COURT ORDER  ·  QUOTED",
+          "lead": 0.6
+        }
+      },
+      "alleged": true
+    },
+    {
+      "id": "t3",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "Thursday, eleven-forty p.m.",
+      "visual": {
+        "type": "title",
+        "text": "Thursday 11:40 PM — The resort fee"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "c1",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "{larry} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "DOWNTOWN",
+            "x": 0.2,
+            "y": 0.15,
+            "w": 0.2,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "Downtown."
+          }
+        ]
+      }
+    },
+    {
+      "id": "m2",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
+      "visual": {
+        "type": "mugshot",
+        "prompt": "an old hotel room key with a large brass key fob hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+        "suspect": {
+          "number": 2,
+          "name": "The resort fee",
+          "alias": "Amenity fee · Destination fee",
+          "tag": "SUSPECT",
+          "stamp_pos": [
+            0.7,
+            0.12
+          ],
+          "type_on": [
+            "Name:",
+            "Aliases:"
+          ]
+        }
+      }
+    },
+    {
+      "id": "m2b",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "Known associates: a pool you will never swim in.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with city lights behind, playful print-ad style"
+      }
+    },
+    {
+      "id": "c2",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "In 2019, the Attorney General for Washington, D.C., sued Marriott.",
+      "visual": {
+        "type": "archive",
+        "file": "hotel_clerk_dover_1938.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Hotel clerk at desk, Dover, Delaware, 1938 · Library of Congress"
+      },
+      "label": "DC Attorney General v. Marriott · July 2019",
+      "alleged": true
+    },
+    {
+      "id": "c3",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 189,
+          "label": "Marriott hotels with resort fees · DC complaint, 2019 · ALLEGED"
+        }
+      },
+      "pause_at": {
+        "word": "one",
+        "sec": 0.5,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "c4",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "from nine to ninety-five dollars, per room, per day.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a 1950s hotel bill on a desk with ruled lines and empty amount columns, a fountain pen beside it, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$9 – $95 / night",
+            "x": 0.5,
+            "y": 0.4,
+            "w": 0.3,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "nine"
+          }
+        ]
+      },
+      "alleged": true
+    },
+    {
+      "id": "c5",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.",
+      "visual": {
+        "type": "reuse",
+        "beat": "c4",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$9 – $95 / night",
+            "x": 0.5,
+            "y": 0.4,
+            "w": 0.3,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          }
+        ],
+        "closeup": {
+          "on": "official:",
+          "center": [
+            0.5,
+            0.62
+          ],
+          "zoom": 1.8,
+          "marks": [
+            {
+              "type": "write",
+              "text": "TAXES AND FEES",
+              "x": 0.42,
+              "y": 0.62,
+              "w": 0.26,
+              "h": 0.06,
+              "angle": 0,
+              "color": "ink",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "Taxes"
+            },
+            {
+              "type": "circle",
+              "x": 0.42,
+              "y": 0.62,
+              "w": 0.3,
+              "h": 0.1,
+              "on": "Fees.",
+              "target": [
+                0.29,
+                0.59,
+                0.55,
+                0.65
+              ]
+            }
+          ],
+          "motion": "zoom_in"
+        }
+      }
+    },
+    {
+      "id": "c6",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "From customers in D.C. alone, the Attorney General says, that came to millions of dollars.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "DC Attorney General · press release · July 9, 2019",
+          "headline": "Marriott resort fees",
+          "body": "Marriott has charged resort fees to tens of thousands of District consumers over the years, totaling millions of dollars.",
+          "highlight": "totaling millions of dollars",
+          "on": "millions",
+          "mark": "underline",
+          "seed": 74,
+          "kicker": "PRESS RELEASE  ·  ALLEGED  ·  QUOTED",
+          "lead": 0.6
+        }
+      }
+    },
+    {
+      "id": "c7",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "Resort fees aren't taxes. They just like to sit next to them.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "c8",
+      "section": "Thursday 11:40 PM: The resort fee",
+      "text": "In 2023, Marriott agreed with Texas to show the total price most prominently.",
+      "visual": {
+        "type": "archive",
+        "file": "hotel_sign_cooperstown_1937.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Hotel sign, Cooperstown, New York, 1937 · Library of Congress"
+      },
+      "label": "Texas Attorney General · May 2023"
+    },
+    {
+      "id": "n1",
+      "section": "Why a split price feels cheaper",
+      "text": "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a cream paper price tag being cut into two pieces by a pair of red-handled scissors, plain cream background, 1950s print-ad style",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "BASE",
+            "x": 0.35,
+            "y": 0.7,
+            "w": 0.12,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "base"
+          },
+          {
+            "type": "write",
+            "text": "+ SURCHARGE",
+            "x": 0.68,
+            "y": 0.7,
+            "w": 0.22,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "surcharge."
+          }
+        ]
+      },
+      "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998"
+    },
+    {
+      "id": "n2",
+      "section": "Why a split price feels cheaper",
+      "text": "The total price was the same. It was just served in pieces.",
+      "visual": {
+        "type": "reuse",
+        "beat": "n1",
+        "index": 0,
+        "motion": "static",
+        "closeup": {
+          "on": "served",
+          "center": [
+            0.5,
+            0.5
+          ],
+          "zoom": 1.6,
+          "marks": [
+            {
+              "type": "write",
+              "text": "SAME TOTAL",
+              "x": 0.5,
+              "y": 0.22,
+              "w": 0.24,
+              "h": 0.07,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "same."
+            }
+          ],
+          "motion": "zoom_in"
+        }
+      },
+      "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998"
+    },
+    {
+      "id": "n3",
+      "section": "Why a split price feels cheaper",
+      "text": "People remembered paying less in total. And they bought more.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "n4",
+      "section": "Why a split price feels cheaper",
+      "text": "Your brain files the first number. Everything after it is small print.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "an open 1950s office filing drawer with one large blank index card standing at the front and a few tiny crumpled paper slips at the very back, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.5,
+            "y": 0.4,
+            "w": 0.12,
+            "h": 0.09,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "first"
+          },
+          {
+            "type": "write",
+            "text": "+ fees",
+            "x": 0.72,
+            "y": 0.3,
+            "w": 0.06,
+            "h": 0.025,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "small"
+          }
+        ]
+      }
+    },
+    {
+      "id": "sub",
+      "section": "Why a split price feels cheaper",
+      "text": "If you like catching prices in the act, subscribe. The Inspector has more files.",
+      "visual": {
+        "type": "reuse",
+        "beat": "o4",
+        "index": 0,
+        "motion": "zoom_in"
+      },
+      "cta": {
+        "on": "subscribe.",
+        "click_on": "Inspector",
+        "pos": [
+          0.64,
+          0.62
+        ]
+      }
+    },
+    {
+      "id": "t4",
+      "section": "In defence of the accused",
+      "text": "In defence of the accused.",
+      "visual": {
+        "type": "title",
+        "text": "In defence of the accused"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "d1",
+      "section": "In defence of the accused",
+      "text": "One: StubHub says it tried honesty.",
+      "visual": {
+        "type": "archive",
+        "file": "radio_city_ticket_booth_1942.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress"
+      }
+    },
+    {
+      "id": "d2",
+      "section": "In defence of the accused",
+      "text": "In 2014, it says, it moved to all-in prices, and lost customers to rivals who kept their fees.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "StubHub statement · White House event · March 2023",
+          "headline": "Why StubHub went back",
+          "body": "In 2014, the company voluntarily moved to all-in pricing ... The result was a significant shift in market share away from StubHub to our competitors.",
+          "highlight": "significant shift in market share",
+          "on": "lost",
+          "mark": "underline",
+          "seed": 75,
+          "kicker": "COMPANY STATEMENT  ·  QUOTED",
+          "lead": 0.6
+        }
+      },
+      "label": "StubHub statement · White House event · March 2023"
+    },
+    {
+      "id": "d2b",
+      "section": "In defence of the accused",
+      "text": "It went back in the fall of 2015.",
+      "visual": {
+        "type": "reuse",
+        "beat": "a2",
+        "index": 0,
+        "motion": "zoom_out"
+      },
+      "stamp": {
+        "text": "Fees back · fall 2015",
+        "on": "back"
+      },
+      "label": "StubHub statement · White House event · March 2023"
+    },
+    {
+      "id": "d3",
+      "section": "In defence of the accused",
+      "text": "Two: its own economists saw it differently. Their finding on the switch to late fees: market-expanding, rather than pure business-stealing.",
+      "visual": {
+        "type": "doc",
+        "doc": {
+          "source": "NBER Working Paper 25186 · p. 27",
+          "headline": "What the switch did",
+          "body": "These findings suggest that the switch to BF at StubHub was market-expanding, rather than pure business-stealing.",
+          "highlight": "market-expanding, rather than pure business-stealing",
+          "on": "market-expanding,",
+          "mark": "underline",
+          "seed": 76,
+          "kicker": "WORKING PAPER  ·  QUOTED",
+          "lead": 0.6
+        }
+      },
+      "label": "NBER w25186"
+    },
+    {
+      "id": "d4",
+      "section": "In defence of the accused",
+      "text": "In plain English, hidden fees didn't just win buyers from rivals. They made people spend more.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "d5",
+      "section": "In defence of the accused",
+      "text": "Three: fees pay for real things. Card payments, staff, the venue.",
+      "visual": {
+        "type": "archive",
+        "file": "giant_food_cashier_1942.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "zoom_in",
+        "caption": "Cashier checking out a customer, Giant Food, Washington, D.C., 1942 · Library of Congress"
+      }
+    },
+    {
+      "id": "d6",
+      "section": "In defence of the accused",
+      "text": "America's new rule bans no fee at all. It only wants the total, upfront.",
+      "visual": {
+        "type": "archive",
+        "file": "briggs_stadium_tickets_1942.jpg",
+        "look": "print",
+        "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
+        "motion": "static",
+        "caption": "Buying tickets for the ball game, Briggs Stadium, Detroit, 1942 · Library of Congress"
+      },
+      "label": "FTC rule · in force May 2025"
+    },
+    {
+      "id": "d7",
+      "section": "In defence of the accused",
+      "text": "The fee may be fair. Hiding it isn't.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "t5",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Friday, nine a.m.",
+      "visual": {
+        "type": "title",
+        "text": "Friday 9:00 AM — One fee, three laws"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "l1",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Larry's ticket goes on a trip. Three borders. Three stamps.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a 1950s customs desk seen from above with a wooden rubber-stamp rack, an ink pad and a blank passport-style form, lots of empty desk space in the middle, plain wood, warm light (hand-made frame: the code-drawn $30 ticket composited in the middle)"
+      }
+    },
+    {
+      "id": "l2",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront.",
+      "visual": {
+        "type": "reuse",
+        "beat": "l1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "stamps": [
+          {
+            "text": "USA · TOTAL UPFRONT · MAY 2025",
+            "on": "total",
+            "x": 0.42,
+            "y": 0.4,
+            "angle": -8
+          }
+        ],
+        "closeup": {
+          "on": "Since",
+          "center": [
+            0.45,
+            0.45
+          ],
+          "zoom": 1.5,
+          "marks": [],
+          "motion": "zoom_in"
+        }
+      },
+      "pause_at": {
+        "word": "May",
+        "sec": 0.4,
+        "hit": null
+      }
+    },
+    {
+      "id": "l3",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "In April 2026, StubHub agreed to pay ten million dollars back to buyers, over fees it showed too late.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 10,
+          "label": "StubHub settlement · FTC · April 2026",
+          "prefix": "$",
+          "suffix": "m"
+        }
+      },
+      "pause_at": {
+        "word": "ten",
+        "sec": 0.6,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "l4",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "America has done this before. In 1958, a law put a sticker on the window of every new car:",
+      "visual": {
+        "type": "archive",
+        "file": "car_showroom_1958.jpg",
+        "look": "print",
+        "credit": "Library of Congress, U.S. News & World Report Collection (no known restrictions on publication)",
+        "motion": "zoom_in",
+        "caption": "Automobile showroom, Washington, D.C., 1958 · Library of Congress"
+      },
+      "label": "Automobile Information Disclosure Act · 1958"
+    },
+    {
+      "id": "l5",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "the price, every option, the delivery charge, and the total.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "the side window of a 1950s two-tone sedan in a showroom with a large blank paper sticker taped inside the glass, close view",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "PRICE",
+            "x": 0.5,
+            "y": 0.3,
+            "w": 0.16,
+            "h": 0.05,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "price,"
+          },
+          {
+            "type": "write",
+            "text": "OPTIONS",
+            "x": 0.5,
+            "y": 0.4,
+            "w": 0.18,
+            "h": 0.05,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "option,"
+          },
+          {
+            "type": "write",
+            "text": "DELIVERY",
+            "x": 0.5,
+            "y": 0.5,
+            "w": 0.18,
+            "h": 0.05,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "delivery"
+          },
+          {
+            "type": "write",
+            "text": "TOTAL",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.16,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "total."
+          }
+        ]
+      },
+      "label": "15 U.S.C. 1232 · 1958"
+    },
+    {
+      "id": "l6",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Cars got the total sixty-seven years before concert tickets did.",
+      "visual": {
+        "type": "reuse",
+        "beat": "l5",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "TOTAL",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.16,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "circle",
+            "x": 0.5,
+            "y": 0.62,
+            "w": 0.22,
+            "h": 0.1,
+            "on": "total",
+            "target": [
+              0.42,
+              0.59,
+              0.58,
+              0.65
+            ]
+          },
+          {
+            "type": "write",
+            "text": "67 YEARS",
+            "x": 0.8,
+            "y": 0.62,
+            "w": 0.16,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "sixty-seven"
+          }
+        ]
+      },
+      "pause_at": {
+        "word": "sixty-seven",
+        "sec": 0.4,
+        "hit": null
+      }
+    },
+    {
+      "id": "l7",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Border two: Britain. Since April 2025, the price must include every fee you can't avoid.",
+      "visual": {
+        "type": "reuse",
+        "beat": "l1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "stamps": [
+          {
+            "text": "USA · TOTAL UPFRONT · MAY 2025",
+            "at": 0.0,
+            "x": 0.42,
+            "y": 0.4,
+            "angle": -8
+          },
+          {
+            "text": "UK · ALL FEES IN · APRIL 2025",
+            "on": "include",
+            "x": 0.58,
+            "y": 0.55,
+            "angle": 6
+          }
+        ]
+      }
+    },
+    {
+      "id": "l8",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a small 1950s learner car with a red L plate on the bumper parked on a quiet British street, cheerful print-ad style",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "£3 FEE",
+            "x": 0.78,
+            "y": 0.22,
+            "w": 0.14,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "three-pound"
+          }
+        ]
+      },
+      "label": "CMA · April 2026"
+    },
+    {
+      "id": "l9",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "It paid a four point two million pound fine, and over seven hundred and sixty thousand pounds in refunds.",
+      "visual": {
+        "type": "stat",
+        "stat": {
+          "value": 4.2,
+          "label": "fine · + over £760,000 refunded · CMA, April 2026",
+          "decimals": 1,
+          "prefix": "£",
+          "suffix": "m"
+        }
+      },
+      "pause_at": {
+        "word": "four",
+        "sec": 0.6,
+        "hit": "stamp"
+      }
+    },
+    {
+      "id": "l10",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "In June, StubHub's British arm was fined too.",
+      "visual": {
+        "type": "reuse",
+        "beat": "a2",
+        "index": 0,
+        "motion": "zoom_out"
+      },
+      "label": "CMA · June 2026"
+    },
+    {
+      "id": "l11",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Three pounds. Very expensive pounds.",
+      "visual": {
+        "type": "reuse",
+        "beat": "l8",
+        "index": 0,
+        "motion": "static",
+        "push": {
+          "center": [
+            0.6,
+            0.4
+          ],
+          "zoom": 1.6
+        },
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "£3 FEE",
+            "x": 0.78,
+            "y": 0.22,
+            "w": 0.14,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "circle",
+            "x": 0.78,
+            "y": 0.22,
+            "w": 0.18,
+            "h": 0.11,
+            "on": "Very",
+            "target": [
+              0.71,
+              0.185,
+              0.85,
+              0.255
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "id": "l12",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "Border three: the European Union. The total price, taxes included, before you pay.",
+      "visual": {
+        "type": "reuse",
+        "beat": "l1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "stamps": [
+          {
+            "text": "USA · TOTAL UPFRONT · MAY 2025",
+            "at": 0.0,
+            "x": 0.42,
+            "y": 0.4,
+            "angle": -8
+          },
+          {
+            "text": "UK · ALL FEES IN · APRIL 2025",
+            "at": 0.0,
+            "x": 0.58,
+            "y": 0.55,
+            "angle": 6
+          },
+          {
+            "text": "EU · TOTAL BEFORE YOU PAY",
+            "on": "total",
+            "x": 0.46,
+            "y": 0.68,
+            "angle": -4
+          }
+        ]
+      }
+    },
+    {
+      "id": "l13",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "And any extra charge needs your clear yes. A pre-ticked box is not a yes.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a 1950s paper order form on a desk with three empty lines and small square checkboxes, the last checkbox already ticked in black ink, plain cream background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "circle",
+            "x": 0.3,
+            "y": 0.66,
+            "w": 0.08,
+            "h": 0.1,
+            "on": "pre-ticked",
+            "target": [
+              0.27,
+              0.62,
+              0.33,
+              0.7
+            ]
+          },
+          {
+            "type": "write",
+            "text": "NOT A YES",
+            "x": 0.55,
+            "y": 0.66,
+            "w": 0.22,
+            "h": 0.07,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "not"
+          }
+        ]
+      }
+    },
+    {
+      "id": "l14",
+      "section": "Friday 9:00 AM: One fee, three laws",
+      "text": "One ticket. Three stamps. One message: show the total.",
+      "visual": {
+        "type": "reuse",
+        "beat": "l1",
+        "index": 0,
+        "motion": "zoom_out",
+        "stamps": [
+          {
+            "text": "USA · TOTAL UPFRONT · MAY 2025",
+            "at": 0.0,
+            "x": 0.42,
+            "y": 0.4,
+            "angle": -8
+          },
+          {
+            "text": "UK · ALL FEES IN · APRIL 2025",
+            "at": 0.0,
+            "x": 0.58,
+            "y": 0.55,
+            "angle": 6
+          },
+          {
+            "text": "EU · TOTAL BEFORE YOU PAY",
+            "at": 0.0,
+            "x": 0.46,
+            "y": 0.68,
+            "angle": -4
+          }
+        ]
+      }
+    },
+    {
+      "id": "t6",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Saturday, ten a.m.",
+      "visual": {
+        "type": "title",
+        "text": "Saturday 10:00 AM — Three checks"
+      },
+      "pause_before": 1.0,
+      "sting": "ub_sting_trumpet",
+      "sting_at": -1.0
+    },
+    {
+      "id": "x1",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Three checks before you pay. One. Look for the all-in switch.",
+      "visual": {
+        "type": "image",
+        "motion": "static",
+        "prompt": "a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "ALL-IN PRICES",
+            "x": 0.5,
+            "y": 0.18,
+            "w": 0.3,
+            "h": 0.07,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "all-in"
+          }
+        ]
+      }
+    },
+    {
+      "id": "x2",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
+      "visual": {
+        "type": "reuse",
+        "beat": "x1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "ALL-IN PRICES",
+            "x": 0.5,
+            "y": 0.18,
+            "w": 0.3,
+            "h": 0.07,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "ON",
+            "x": 0.72,
+            "y": 0.5,
+            "w": 0.08,
+            "h": 0.08,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "on"
+          }
+        ],
+        "closeup": {
+          "on": "before",
+          "center": [
+            0.5,
+            0.5
+          ],
+          "zoom": 1.6,
+          "marks": [],
+          "motion": "zoom_in"
+        }
+      }
+    },
+    {
+      "id": "x3",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
+      "visual": {
+        "type": "reuse",
+        "beat": "m1b",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "LAST SCREEN",
+            "x": 0.4,
+            "y": 0.18,
+            "w": 0.24,
+            "h": 0.06,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "last"
+          }
+        ],
+        "closeup": {
+          "on": "real",
+          "center": [
+            0.45,
+            0.5
+          ],
+          "zoom": 1.6,
+          "marks": [
+            {
+              "type": "write",
+              "text": "$48",
+              "x": 0.4,
+              "y": 0.45,
+              "w": 0.1,
+              "h": 0.08,
+              "angle": 0,
+              "color": "red",
+              "font": "marker",
+              "dur": 0.7,
+              "on": "price"
+            }
+          ],
+          "motion": "zoom_in"
+        }
+      }
+    },
+    {
+      "id": "x4",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.",
+      "visual": {
+        "type": "chart",
+        "chart": {
+          "kind": "bar",
+          "title": "What you actually pay",
+          "labels": [
+            "$40 · no fees",
+            "$30 + $18 fees"
+          ],
+          "values": [
+            40,
+            48
+          ],
+          "unit": "$",
+          "highlight": 0,
+          "value_labels": true,
+          "note": "Illustration"
+        }
+      }
+    },
+    {
+      "id": "x5",
+      "section": "Saturday 10:00 AM: Three checks",
+      "text": "The cheapest ticket is the one with the smallest last number.",
+      "visual": {
+        "type": "kinetic",
+        "kinetic": {
+          "bg": "paper"
+        }
+      }
+    },
+    {
+      "id": "z0",
+      "section": "Case closed",
+      "text": "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.",
+      "visual": {
+        "type": "image",
+        "motion": "zoom_in",
+        "prompt": "{larry} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light"
+      },
+      "stamp": {
+        "text": "Case closed",
+        "on": "Case",
+        "big": true
+      },
+      "ledger": [
+        {
+          "label": "PAID",
+          "amount": "$48.00 for a $30 ticket",
+          "on": "forty-eight",
+          "note": true
+        }
+      ]
+    },
+    {
+      "id": "z0b",
+      "section": "Case closed",
+      "text": "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
+      "visual": {
+        "type": "reuse",
+        "beat": "z0",
+        "index": 0,
+        "motion": "static",
+        "push": {
+          "center": [
+            0.45,
+            0.4
+          ],
+          "zoom": 1.6
+        }
+      },
+      "hero": true
+    },
+    {
+      "id": "z1",
+      "section": "Case closed",
+      "text": "The verdict. Guilty: the checkout fee and its cousin, the resort fee. Accomplice: the first number on the screen.",
+      "visual": {
+        "type": "endscreen",
+        "endscreen": {
+          "number": "004",
+          "title": "The fee at the end",
+          "stamp": "Case closed",
+          "verdict": [
+            "Guilty: the checkout fee and its cousin, the resort fee.",
+            "Accomplice: the first number on the screen."
+          ],
+          "next": {
+            "number": "005",
+            "title": "Tip screens",
+            "tagline": "18 % · 22 % · 25 % · No tip?",
+            "image_file": "next_tablet.png",
+            "copies": 1,
+            "writes": [
+              {
+                "text": "No tip",
+                "x": 0.5,
+                "y": 0.86,
+                "h": 0.035
+              }
+            ],
+            "label": "Pew Research Center · Nov 2023"
+          },
+          "times": {
+            "swap": 5.8,
+            "draw": 6.4,
+            "ddur": 3.4,
+            "tagline": 14.4,
+            "zone": 14.7,
+            "sketch": 15.2,
+            "skdur": 1.0,
+            "sub": 16.2,
+            "click": 17.3,
+            "push": 18.0
+          }
+        }
+      },
+      "block_start": true,
+      "sting": "ub_sting_brass",
+      "sting_at": 0.1
+    },
+    {
+      "id": "z4",
+      "section": "Case closed",
+      "text": "Next case: the screen that asks how much you'd like to tip, before you've had your coffee. Seventy-two percent of Americans say tipping is expected in more places than five years ago.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 7.0
+    },
+    {
+      "id": "z5",
+      "section": "Case closed",
+      "text": "Subscribe, so the next case file finds you.",
+      "visual": {
+        "type": "continue"
+      },
+      "block_at": 19.0,
+      "block_end": 22.0
+    }
+  ],
+  "shorts": [
+    {
+      "id": "s1",
+      "title": "The $30 ticket that costs $48 #shorts",
+      "hook": "$30 → $48",
+      "hook_on": "o3",
+      "beats": [
+        {
+          "text": "A concert ticket. Thirty dollars.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.43,
+                "y": 0.62,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Thirty"
+              }
+            ],
+            "hand_marks": true
+          },
+          "pause_at": {
+            "word": "Thirty",
+            "sec": 0.45,
+            "hit": "stamp"
+          },
+          "label": "Illustration",
+          "ledger": [
+            {
+              "label": "TICKET",
+              "amount": "$30.00",
+              "on": "Thirty"
+            }
+          ],
+          "id": "s1_0"
+        },
+        {
+          "text": "Then the fees. Eight. Six. Four.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.43,
+                "y": 0.62,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $8 fee",
+                "x": 0.86,
+                "y": 0.3,
+                "w": 0.16,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Eight."
+              },
+              {
+                "type": "write",
+                "text": "+ $6 fee",
+                "x": 0.86,
+                "y": 0.42,
+                "w": 0.16,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Six."
+              },
+              {
+                "type": "write",
+                "text": "+ $4 fee",
+                "x": 0.86,
+                "y": 0.54,
+                "w": 0.16,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Four."
+              }
+            ]
+          },
+          "label": "Illustration",
+          "ledger": [
+            {
+              "label": "SERVICE FEE",
+              "amount": "+$8.00",
+              "on": "Eight."
+            },
+            {
+              "label": "FACILITY FEE",
+              "amount": "+$6.00",
+              "on": "Six."
+            },
+            {
+              "label": "PROCESSING FEE",
+              "amount": "+$4.00",
+              "on": "Four."
+            }
+          ],
+          "id": "s1_1"
+        },
+        {
+          "text": "Total: forty-eight.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "index": 0,
+            "motion": "static",
+            "push": {
+              "center": [
+                0.62,
+                0.48
+              ],
+              "zoom": 1.25
+            },
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.43,
+                "y": 0.62,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $8 fee",
+                "x": 0.86,
+                "y": 0.3,
+                "w": 0.16,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $6 fee",
+                "x": 0.86,
+                "y": 0.42,
+                "w": 0.16,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $4 fee",
+                "x": 0.86,
+                "y": 0.54,
+                "w": 0.16,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "= $48",
+                "x": 0.86,
+                "y": 0.68,
+                "w": 0.16,
+                "h": 0.09,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "forty-eight."
+              }
+            ]
+          },
+          "pause_at": {
+            "word": "forty-eight.",
+            "sec": 0.45,
+            "hit": "stamp"
+          },
+          "label": "Illustration",
+          "ledger": [
+            {
+              "label": "PAID",
+              "amount": "$48.00",
+              "on": "forty-eight."
+            }
+          ],
+          "id": "s1_2"
+        },
+        {
+          "text": "Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee.",
+          "visual": {
+            "type": "mugshot",
+            "prompt": "a long curling blank paper till receipt hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+            "suspect": {
+              "number": 1,
+              "name": "The checkout fee",
+              "alias": "Service · Processing · Convenience",
+              "tag": "SUSPECT",
+              "stamp_pos": [
+                0.7,
+                0.12
+              ],
+              "type_on": [
+                "Name:",
+                "Aliases:"
+              ]
+            },
+            "from_beat": "m1"
+          },
+          "id": "s1_3"
+        },
+        {
+          "text": "Larry's thirty-seven and a half percent sits right inside that range.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "Fees as a share of the total",
+              "labels": [
+                "Low (alleged)",
+                "Larry",
+                "High (alleged)"
+              ],
+              "values": [
+                24,
+                37.5,
+                44
+              ],
+              "unit": "%",
+              "highlight": 1,
+              "value_labels": true,
+              "note": "FTC complaint ¶36 (alleged) · Larry: illustration"
+            }
+          },
+          "id": "s1_4"
+        },
+        {
+          "text": "So before you pay thirty, ask what it costs.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.43,
+                "y": 0.62,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Thirty"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s1_5"
+        }
+      ]
+    },
+    {
+      "id": "s2",
+      "title": "StubHub tested hidden fees on its own buyers #shorts",
+      "hook": "THEY TESTED IT ON YOU",
+      "hook_on": "a5",
+      "beats": [
+        {
+          "text": "StubHub showed every fee upfront. Then, for twelve days in August 2015, it split its buyers in two.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a5",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "A",
+                "x": 0.3,
+                "y": 0.2,
+                "w": 0.05,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "split"
+              },
+              {
+                "type": "write",
+                "text": "B",
+                "x": 0.7,
+                "y": 0.2,
+                "w": 0.05,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "two."
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s2_0"
+        },
+        {
+          "text": "Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a5",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "A",
+                "x": 0.3,
+                "y": 0.2,
+                "w": 0.05,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "B",
+                "x": 0.7,
+                "y": 0.2,
+                "w": 0.05,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "$48",
+                "x": 0.3,
+                "y": 0.3,
+                "w": 0.09,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "full"
+              },
+              {
+                "type": "write",
+                "text": "$30…",
+                "x": 0.7,
+                "y": 0.3,
+                "w": 0.1,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "alone,"
+              }
+            ],
+            "closeup": {
+              "on": "fees",
+              "center": [
+                0.7,
+                0.4
+              ],
+              "zoom": 1.8,
+              "marks": [
+                {
+                  "type": "write",
+                  "text": "B",
+                  "x": 0.7,
+                  "y": 0.2,
+                  "w": 0.05,
+                  "h": 0.08,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.01,
+                  "at": 0.0,
+                  "hand": false
+                },
+                {
+                  "type": "write",
+                  "text": "$30…",
+                  "x": 0.7,
+                  "y": 0.3,
+                  "w": 0.1,
+                  "h": 0.07,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.01,
+                  "at": 0.0,
+                  "hand": false
+                },
+                {
+                  "type": "write",
+                  "text": "+ fees at checkout",
+                  "x": 0.7,
+                  "y": 0.4,
+                  "w": 0.2,
+                  "h": 0.05,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.7,
+                  "on": "checkout."
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "label": "Aug 19–31, 2015",
+          "id": "s2_1"
+        },
+        {
+          "text": "The ones who met the fees late spent almost twenty-one percent more.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 21,
+              "label": "more spent when fees came at checkout · NBER w25186 · 2015 test",
+              "prefix": "≈",
+              "suffix": "%"
+            }
+          },
+          "pause_at": {
+            "word": "twenty-one",
+            "sec": 0.6,
+            "hit": "stamp"
+          },
+          "id": "s2_2"
+        },
+        {
+          "text": "They were fourteen point one percent more likely to buy at all.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 14.1,
+              "label": "more likely to buy · NBER w25186 · 2015 test",
+              "decimals": 1,
+              "suffix": "%"
+            }
+          },
+          "pause_at": {
+            "word": "fourteen",
+            "sec": 0.6,
+            "hit": "stamp"
+          },
+          "id": "s2_3"
+        },
+        {
+          "text": "And the buyers among them picked seats about five percent pricier.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a10",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "+5 %",
+                "x": 0.5,
+                "y": 0.3,
+                "w": 0.12,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "five"
+              }
+            ],
+            "hand_marks": true
+          },
+          "pause_at": {
+            "word": "five",
+            "sec": 0.5,
+            "hit": "stamp"
+          },
+          "id": "s2_4"
+        },
+        {
+          "text": "Then the fees walk on.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a12",
+            "motion": "static"
+          },
+          "id": "s2_5"
+        },
+        {
+          "text": "On September the first, the whole site switched. Fees at the end, for everyone.",
+          "visual": {
+            "type": "reuse",
+            "beat": "a14",
+            "motion": "zoom_in"
+          },
+          "stamp": {
+            "text": "Sept 1, 2015",
+            "on": "first,"
+          },
+          "label": "NBER w25186",
+          "id": "s2_6"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "title": "$16.4 billion in fees (alleged) #shorts",
+      "hook": "$16.4 BILLION",
+      "hook_on": "b5",
+      "beats": [
+        {
+          "text": "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$18 FEES",
+                "x": 0.78,
+                "y": 0.22,
+                "w": 0.18,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Eighteen"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s3_0"
+        },
+        {
+          "text": "That's thirty-seven and a half percent of what he paid.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 37.5,
+              "label": "of Larry's total was fees · Illustration",
+              "decimals": 1,
+              "suffix": "%"
+            }
+          },
+          "pause_at": {
+            "word": "thirty-seven",
+            "sec": 0.6,
+            "hit": "stamp"
+          },
+          "ledger": [
+            {
+              "label": "HIDDEN",
+              "amount": "$18.00",
+              "on": "thirty-seven",
+              "loss": true,
+              "circle": true
+            },
+            {
+              "label": "= 37.5 % of the total",
+              "amount": "",
+              "on": "half",
+              "note": true
+            }
+          ],
+          "id": "s3_1"
+        },
+        {
+          "text": "Is that unusual? In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
+          "visual": {
+            "type": "reuse",
+            "beat": "b3",
+            "motion": "zoom_in"
+          },
+          "label": "FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending",
+          "alleged": true,
+          "id": "s3_2"
+        },
+        {
+          "text": "They allege the fees run from twenty-four to forty-four percent of the total price.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "FTC complaint · C.D. Cal. · Sept 2025 · ¶36",
+              "headline": "Ticketmaster fees",
+              "body": "The average percentage of fees charged on tickets ranges from 24% to 44% of the total price.",
+              "highlight": "24% to 44% of the total price",
+              "on": "twenty-four",
+              "mark": "underline",
+              "seed": 72,
+              "kicker": "COMPLAINT  ·  ALLEGED  ·  QUOTED",
+              "lead": 0.6
+            }
+          },
+          "pause_at": {
+            "word": "twenty-four",
+            "sec": 0.4,
+            "hit": null
+          },
+          "id": "s3_3"
+        },
+        {
+          "text": "And that fans paid over sixteen point four billion dollars in mandatory fees.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 16.4,
+              "label": "in mandatory fees · FTC complaint, Sept 2025 · ALLEGED",
+              "decimals": 1,
+              "prefix": "$",
+              "suffix": "bn"
+            }
+          },
+          "pause_at": {
+            "word": "sixteen",
+            "sec": 0.6,
+            "hit": "stamp"
+          },
+          "id": "s3_4"
+        },
+        {
+          "text": "In September 2026, a judge refused to throw the case out. It goes on. Until a court decides, every word of it is an allegation.",
+          "visual": {
+            "type": "doc",
+            "doc": {
+              "source": "U.S. District Court, C.D. Cal. · Order · Sept 28, 2026",
+              "headline": "Motion to dismiss",
+              "body": "For the reasons stated herein, Defendant's Motion is DENIED as to each claim.",
+              "highlight": "DENIED as to each claim",
+              "on": "refused",
+              "mark": "underline",
+              "seed": 73,
+              "kicker": "COURT ORDER  ·  QUOTED",
+              "lead": 0.6
+            }
+          },
+          "alleged": true,
+          "id": "s3_5"
+        },
+        {
+          "text": "Larry's thirty-seven and a half percent sits right inside that range.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "Fees as a share of the total",
+              "labels": [
+                "Low (alleged)",
+                "Larry",
+                "High (alleged)"
+              ],
+              "values": [
+                24,
+                37.5,
+                44
+              ],
+              "unit": "%",
+              "highlight": 1,
+              "value_labels": true,
+              "note": "FTC complaint ¶36 (alleged) · Larry: illustration"
+            }
+          },
+          "id": "s3_6"
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "title": "A resort fee at a city hotel #shorts",
+      "hook": "RESORT FEE?",
+      "hook_on": "c1",
+      "beats": [
+        {
+          "text": "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "DOWNTOWN",
+                "x": 0.2,
+                "y": 0.15,
+                "w": 0.2,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Downtown."
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s4_0"
+        },
+        {
+          "text": "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
+          "visual": {
+            "type": "mugshot",
+            "prompt": "an old hotel room key with a large brass key fob hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
+            "suspect": {
+              "number": 2,
+              "name": "The resort fee",
+              "alias": "Amenity fee · Destination fee",
+              "tag": "SUSPECT",
+              "stamp_pos": [
+                0.7,
+                0.12
+              ],
+              "type_on": [
+                "Name:",
+                "Aliases:"
+              ]
+            },
+            "from_beat": "m2"
+          },
+          "id": "s4_1"
+        },
+        {
+          "text": "Known associates: a pool you will never swim in.",
+          "visual": {
+            "type": "reuse",
+            "beat": "m2b",
+            "motion": "static"
+          },
+          "id": "s4_2"
+        },
+        {
+          "text": "In 2019, the Attorney General for Washington, D.C., sued Marriott.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c2",
+            "motion": "zoom_in"
+          },
+          "label": "DC Attorney General v. Marriott · July 2019",
+          "alleged": true,
+          "id": "s4_3"
+        },
+        {
+          "text": "The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 189,
+              "label": "Marriott hotels with resort fees · DC complaint, 2019 · ALLEGED"
+            }
+          },
+          "pause_at": {
+            "word": "one",
+            "sec": 0.5,
+            "hit": "stamp"
+          },
+          "id": "s4_4"
+        },
+        {
+          "text": "from nine to ninety-five dollars, per room, per day.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c4",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$9 – $95 / night",
+                "x": 0.5,
+                "y": 0.4,
+                "w": 0.3,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "nine"
+              }
+            ],
+            "hand_marks": true
+          },
+          "alleged": true,
+          "id": "s4_5"
+        },
+        {
+          "text": "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.",
+          "visual": {
+            "type": "reuse",
+            "beat": "c4",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "$9 – $95 / night",
+                "x": 0.5,
+                "y": 0.4,
+                "w": 0.3,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              }
+            ],
+            "closeup": {
+              "on": "official:",
+              "center": [
+                0.5,
+                0.62
+              ],
+              "zoom": 1.8,
+              "marks": [
+                {
+                  "type": "write",
+                  "text": "TAXES AND FEES",
+                  "x": 0.42,
+                  "y": 0.62,
+                  "w": 0.26,
+                  "h": 0.06,
+                  "angle": 0,
+                  "color": "ink",
+                  "font": "marker",
+                  "dur": 0.7,
+                  "on": "Taxes"
+                },
+                {
+                  "type": "circle",
+                  "x": 0.42,
+                  "y": 0.62,
+                  "w": 0.3,
+                  "h": 0.1,
+                  "on": "Fees.",
+                  "target": [
+                    0.29,
+                    0.59,
+                    0.55,
+                    0.65
+                  ]
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "id": "s4_6"
+        },
+        {
+          "text": "Resort fees aren't taxes. They just like to sit next to them.",
+          "visual": {
+            "type": "kinetic",
+            "kinetic": {
+              "bg": "paper"
+            }
+          },
+          "id": "s4_7"
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "title": "Why a split price feels cheaper #shorts",
+      "hook": "YOUR BRAIN FILES THE FIRST NUMBER",
+      "hook_on": "n4",
+      "beats": [
+        {
+          "text": "Thirty dollars. Then the fees.",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.43,
+                "y": 0.62,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "Thirty"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s5_0"
+        },
+        {
+          "text": "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
+          "visual": {
+            "type": "reuse",
+            "beat": "n1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "BASE",
+                "x": 0.35,
+                "y": 0.7,
+                "w": 0.12,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "base"
+              },
+              {
+                "type": "write",
+                "text": "+ SURCHARGE",
+                "x": 0.68,
+                "y": 0.7,
+                "w": 0.22,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "surcharge."
+              }
+            ],
+            "hand_marks": true
+          },
+          "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
+          "id": "s5_1"
+        },
+        {
+          "text": "The total price was the same. It was just served in pieces.",
+          "visual": {
+            "type": "reuse",
+            "beat": "n1",
+            "index": 0,
+            "motion": "static",
+            "closeup": {
+              "on": "served",
+              "center": [
+                0.5,
+                0.5
+              ],
+              "zoom": 1.6,
+              "marks": [
+                {
+                  "type": "write",
+                  "text": "SAME TOTAL",
+                  "x": 0.5,
+                  "y": 0.22,
+                  "w": 0.24,
+                  "h": 0.07,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.7,
+                  "on": "same."
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
+          "id": "s5_2"
+        },
+        {
+          "text": "People remembered paying less in total. And they bought more.",
+          "visual": {
+            "type": "kinetic",
+            "kinetic": {
+              "bg": "paper"
+            }
+          },
+          "id": "s5_3"
+        },
+        {
+          "text": "Your brain files the first number. Everything after it is small print.",
+          "visual": {
+            "type": "reuse",
+            "beat": "n4",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.5,
+                "y": 0.4,
+                "w": 0.12,
+                "h": 0.09,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "first"
+              },
+              {
+                "type": "write",
+                "text": "+ fees",
+                "x": 0.72,
+                "y": 0.3,
+                "w": 0.06,
+                "h": 0.025,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "small"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s5_4"
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "title": "The £3 fee that cost £4.2 million #shorts",
+      "hook": "£3 → £4,200,000",
+      "hook_on": "l8",
+      "beats": [
+        {
+          "text": "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.",
+          "visual": {
+            "type": "reuse",
+            "beat": "l8",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "£3 FEE",
+                "x": 0.78,
+                "y": 0.22,
+                "w": 0.14,
+                "h": 0.07,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "three-pound"
+              }
+            ],
+            "hand_marks": true
+          },
+          "label": "CMA · April 2026",
+          "id": "s6_0"
+        },
+        {
+          "text": "It paid a four point two million pound fine, and over seven hundred and sixty thousand pounds in refunds.",
+          "visual": {
+            "type": "stat",
+            "stat": {
+              "value": 4.2,
+              "label": "fine · + over £760,000 refunded · CMA, April 2026",
+              "decimals": 1,
+              "prefix": "£",
+              "suffix": "m"
+            }
+          },
+          "pause_at": {
+            "word": "four",
+            "sec": 0.6,
+            "hit": "stamp"
+          },
+          "id": "s6_1"
+        },
+        {
+          "text": "America has done this before. In 1958, a law put a sticker on the window of every new car:",
+          "visual": {
+            "type": "reuse",
+            "beat": "l4",
+            "motion": "zoom_in"
+          },
+          "label": "Automobile Information Disclosure Act · 1958",
+          "id": "s6_2"
+        },
+        {
+          "text": "the price, every option, the delivery charge, and the total.",
+          "visual": {
+            "type": "reuse",
+            "beat": "l5",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "PRICE",
+                "x": 0.5,
+                "y": 0.3,
+                "w": 0.16,
+                "h": 0.05,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "price,"
+              },
+              {
+                "type": "write",
+                "text": "OPTIONS",
+                "x": 0.5,
+                "y": 0.4,
+                "w": 0.18,
+                "h": 0.05,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "option,"
+              },
+              {
+                "type": "write",
+                "text": "DELIVERY",
+                "x": 0.5,
+                "y": 0.5,
+                "w": 0.18,
+                "h": 0.05,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "delivery"
+              },
+              {
+                "type": "write",
+                "text": "TOTAL",
+                "x": 0.5,
+                "y": 0.62,
+                "w": 0.16,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "total."
+              }
+            ],
+            "hand_marks": true
+          },
+          "label": "15 U.S.C. 1232 · 1958",
+          "id": "s6_3"
+        },
+        {
+          "text": "Cars got the total sixty-seven years before concert tickets did.",
+          "visual": {
+            "type": "reuse",
+            "beat": "l5",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "TOTAL",
+                "x": 0.5,
+                "y": 0.62,
+                "w": 0.16,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "circle",
+                "x": 0.5,
+                "y": 0.62,
+                "w": 0.22,
+                "h": 0.1,
+                "on": "total",
+                "target": [
+                  0.42,
+                  0.59,
+                  0.58,
+                  0.65
+                ]
+              },
+              {
+                "type": "write",
+                "text": "67 YEARS",
+                "x": 0.8,
+                "y": 0.62,
+                "w": 0.16,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "sixty-seven"
+              }
+            ]
+          },
+          "pause_at": {
+            "word": "sixty-seven",
+            "sec": 0.4,
+            "hit": null
+          },
+          "id": "s6_4"
+        }
+      ]
+    },
+    {
+      "id": "s7",
+      "title": "3 checks before you pay #shorts",
+      "hook": "3 CHECKS",
+      "hook_on": "x1",
+      "beats": [
+        {
+          "text": "Three checks before you pay. One. Look for the all-in switch.",
+          "visual": {
+            "type": "reuse",
+            "beat": "x1",
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "ALL-IN PRICES",
+                "x": 0.5,
+                "y": 0.18,
+                "w": 0.3,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "all-in"
+              }
+            ],
+            "hand_marks": true
+          },
+          "id": "s7_0"
+        },
+        {
+          "text": "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
+          "visual": {
+            "type": "reuse",
+            "beat": "x1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "ALL-IN PRICES",
+                "x": 0.5,
+                "y": 0.18,
+                "w": 0.3,
+                "h": 0.07,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "ON",
+                "x": 0.72,
+                "y": 0.5,
+                "w": 0.08,
+                "h": 0.08,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "on"
+              }
+            ],
+            "closeup": {
+              "on": "before",
+              "center": [
+                0.5,
+                0.5
+              ],
+              "zoom": 1.6,
+              "marks": [],
+              "motion": "zoom_in"
+            }
+          },
+          "id": "s7_1"
+        },
+        {
+          "text": "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
+          "visual": {
+            "type": "reuse",
+            "beat": "m1b",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "LAST SCREEN",
+                "x": 0.4,
+                "y": 0.18,
+                "w": 0.24,
+                "h": 0.06,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "last"
+              }
+            ],
+            "closeup": {
+              "on": "real",
+              "center": [
+                0.45,
+                0.5
+              ],
+              "zoom": 1.6,
+              "marks": [
+                {
+                  "type": "write",
+                  "text": "$48",
+                  "x": 0.4,
+                  "y": 0.45,
+                  "w": 0.1,
+                  "h": 0.08,
+                  "angle": 0,
+                  "color": "red",
+                  "font": "marker",
+                  "dur": 0.7,
+                  "on": "price"
+                }
+              ],
+              "motion": "zoom_in"
+            }
+          },
+          "id": "s7_2"
+        },
+        {
+          "text": "Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.",
+          "visual": {
+            "type": "chart",
+            "chart": {
+              "kind": "bar",
+              "title": "What you actually pay",
+              "labels": [
+                "$40 · no fees",
+                "$30 + $18 fees"
+              ],
+              "values": [
+                40,
+                48
+              ],
+              "unit": "$",
+              "highlight": 0,
+              "value_labels": true,
+              "note": "Illustration"
+            }
+          },
+          "id": "s7_3"
+        },
+        {
+          "text": "The cheapest ticket is the one with the smallest last number.",
+          "visual": {
+            "type": "kinetic",
+            "kinetic": {
+              "bg": "paper"
+            }
+          },
+          "id": "s7_4"
+        }
+      ]
+    }
+  ]
+}
