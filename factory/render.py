@@ -811,9 +811,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 moved = False
                 w0, w1 = at + 0.15 - HAND_IN, at + 0.15 + Ledger.WRITE + HAND_OUT
                 for b0, b1 in busy:
-                    if w0 < b1 + HAND_GAP and b0 < w1 + HAND_GAP:
-                        at = b1 + HAND_GAP + HAND_IN - 0.15
-                        moved = True
+                    if w0 < b1 + HAND_GAP - 1e-6 and b0 < w1 + HAND_GAP:
+                        nat = b1 + HAND_GAP + HAND_IN - 0.15
+                        if nat > at + 1e-6:  # float rounding once re-matched the same window forever
+                            at, moved = nat, True
             row["at"] = at
             last = at + 0.15 + Ledger.WRITE + HAND_OUT
             plan.hand_windows.append((at + 0.15 - HAND_IN, last))
