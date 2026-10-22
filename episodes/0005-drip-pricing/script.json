@@ -782,15 +782,19 @@
           {
             "type": "write",
             "text": "+5 %",
-            "x": 0.84,
-            "y": 0.89,
-            "w": 0.14,
-            "h": 0.08,
+            "x": 0.7,
+            "y": 0.4,
+            "w": 0.1,
+            "h": 0.07,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "five"
+            "on": "five",
+            "plate": [
+              1.35,
+              1.45
+            ]
           }
         ],
         "manual": true,
@@ -830,52 +834,54 @@
         "motion": "static",
         "prompt": "three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
         "hand_marks": true,
+        "clip_until": 4.0,
         "marks": [
           {
             "type": "write",
             "text": "$8",
-            "x": 0.184,
-            "y": 0.544,
+            "x": 0.3742,
+            "y": 0.551,
             "w": 0.06,
             "h": 0.075,
-            "angle": -6,
+            "angle": -3,
             "color": "ink",
             "font": "marker",
-            "dur": 0.35,
-            "on": "Then"
+            "dur": 0.3,
+            "at": 4.05
           },
           {
             "type": "write",
             "text": "$6",
-            "x": 0.3,
-            "y": 0.547,
+            "x": 0.4958,
+            "y": 0.551,
             "w": 0.06,
             "h": 0.075,
-            "angle": -6,
+            "angle": 2,
             "color": "ink",
             "font": "marker",
-            "dur": 0.35,
-            "on": "fees",
+            "dur": 0.3,
+            "at": 4.47,
             "chain": true
           },
           {
             "type": "write",
             "text": "$4",
-            "x": 0.424,
-            "y": 0.543,
+            "x": 0.6193,
+            "y": 0.553,
             "w": 0.06,
             "h": 0.075,
-            "angle": 11,
+            "angle": -5,
             "color": "ink",
             "font": "marker",
-            "dur": 0.35,
-            "on": "walk",
+            "dur": 0.3,
+            "at": 4.89,
             "chain": true
           }
         ],
         "manual": true,
         "clip": true
-      }
+      },
+      "hold": 3.6
     },
     {
       "id": "a13",
@@ -2345,6 +2351,20 @@
             "font": "marker",
             "dur": 0.7,
             "on": "One."
+          },
+          {
+            "type": "write",
+            "text": "ON",
+            "x": 0.6289,
+            "y": 0.4876,
+            "w": 0.04,
+            "h": 0.05,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.35,
+            "at": 4.25,
+            "chain": true
           }
         ],
         "manual": true,
@@ -2356,19 +2376,19 @@
       "section": "Saturday 10:00 AM: Three checks",
       "text": "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
       "visual": {
-        "type": "reuse",
-        "beat": "x1",
-        "index": 0,
+        "type": "image",
         "motion": "static",
+        "prompt": "the last frame of the x1 clip: the switch now set to the right (ON)",
+        "note": "images/x2.png = last frame of clips/x1.mp4",
         "hand_marks": true,
         "marks": [
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.398,
-            "y": 0.203,
-            "w": 0.25,
-            "h": 0.065,
+            "x": 0.397,
+            "y": 0.1986,
+            "w": 0.254,
+            "h": 0.066,
             "angle": 2,
             "color": "ink",
             "font": "marker",
@@ -2379,10 +2399,10 @@
           {
             "type": "write",
             "text": "OFF",
-            "x": 0.19,
-            "y": 0.522,
-            "w": 0.085,
-            "h": 0.034,
+            "x": 0.186,
+            "y": 0.5224,
+            "w": 0.086,
+            "h": 0.035,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -2393,15 +2413,16 @@
           {
             "type": "write",
             "text": "ON",
-            "x": 0.594,
-            "y": 0.487,
-            "w": 0.1,
-            "h": 0.065,
+            "x": 0.6315,
+            "y": 0.4875,
+            "w": 0.041,
+            "h": 0.051,
             "angle": 0,
             "color": "ink",
             "font": "marker",
-            "dur": 0.7,
-            "on": "on"
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
           }
         ],
         "closeup": {
@@ -2413,7 +2434,8 @@
           "zoom": 1.6,
           "marks": [],
           "motion": "zoom_in"
-        }
+        },
+        "manual": true
       }
     },
     {
@@ -3161,15 +3183,19 @@
               {
                 "type": "write",
                 "text": "+5 %",
-                "x": 0.84,
-                "y": 0.89,
-                "w": 0.14,
-                "h": 0.08,
+                "x": 0.7,
+                "y": 0.4,
+                "w": 0.1,
+                "h": 0.07,
                 "angle": 0,
-                "color": "#FFFFFF",
+                "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "five"
+                "on": "five",
+                "plate": [
+                  1.35,
+                  1.45
+                ]
               }
             ],
             "hand_marks": true
@@ -3191,42 +3217,42 @@
               {
                 "type": "write",
                 "text": "$8",
-                "x": 0.184,
-                "y": 0.544,
+                "x": 0.3742,
+                "y": 0.551,
                 "w": 0.06,
                 "h": 0.075,
-                "angle": -6,
+                "angle": -3,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.35,
-                "on": "Then"
+                "dur": 0.3,
+                "at": 4.05
               },
               {
                 "type": "write",
                 "text": "$6",
-                "x": 0.3,
-                "y": 0.547,
+                "x": 0.4958,
+                "y": 0.551,
                 "w": 0.06,
                 "h": 0.075,
-                "angle": -6,
+                "angle": 2,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.35,
-                "on": "fees",
+                "dur": 0.3,
+                "at": 4.47,
                 "chain": true
               },
               {
                 "type": "write",
                 "text": "$4",
-                "x": 0.424,
-                "y": 0.543,
+                "x": 0.6193,
+                "y": 0.553,
                 "w": 0.06,
                 "h": 0.075,
-                "angle": 11,
+                "angle": -5,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.35,
-                "on": "walk",
+                "dur": 0.3,
+                "at": 4.89,
                 "chain": true
               }
             ],
@@ -3980,6 +4006,20 @@
                 "font": "marker",
                 "dur": 0.7,
                 "on": "One."
+              },
+              {
+                "type": "write",
+                "text": "ON",
+                "x": 0.6289,
+                "y": 0.4876,
+                "w": 0.04,
+                "h": 0.05,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.35,
+                "at": 4.25,
+                "chain": true
               }
             ],
             "hand_marks": true
@@ -3990,18 +4030,16 @@
           "text": "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
           "visual": {
             "type": "reuse",
-            "beat": "x1",
-            "index": 0,
+            "beat": "x2",
             "motion": "static",
-            "hand_marks": true,
             "marks": [
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.398,
-                "y": 0.203,
-                "w": 0.25,
-                "h": 0.065,
+                "x": 0.397,
+                "y": 0.1986,
+                "w": 0.254,
+                "h": 0.066,
                 "angle": 2,
                 "color": "ink",
                 "font": "marker",
@@ -4012,10 +4050,10 @@
               {
                 "type": "write",
                 "text": "OFF",
-                "x": 0.19,
-                "y": 0.522,
-                "w": 0.085,
-                "h": 0.034,
+                "x": 0.186,
+                "y": 0.5224,
+                "w": 0.086,
+                "h": 0.035,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
@@ -4026,17 +4064,19 @@
               {
                 "type": "write",
                 "text": "ON",
-                "x": 0.594,
-                "y": 0.487,
-                "w": 0.1,
-                "h": 0.065,
+                "x": 0.6315,
+                "y": 0.4875,
+                "w": 0.041,
+                "h": 0.051,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.7,
-                "on": "on"
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
               }
             ],
+            "hand_marks": true,
             "closeup": {
               "on": "before",
               "center": [

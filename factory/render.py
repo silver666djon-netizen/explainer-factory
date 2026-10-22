@@ -523,7 +523,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 if live is not None:  # Grok/hand-made clip plays under the same marks, hand and plates as the still
                     from .shots import ClipImageShot
                     shot = ClipImageShot(shot_start + k * seg, seg, pil(path), "static", size, cfg, marks=shot_marks,
-                                         seed=i * 7 + k, clip=live)
+                                         seed=i * 7 + k, clip=live, until=visual.get("clip_until"))
                 else:
                     shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                      marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,

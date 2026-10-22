@@ -1066,18 +1066,72 @@ class ClipShot(Shot):
         return np.ascontiguousarray(out)
 
 
+_TRACK_CACHE: dict = {}
+
+
+def clip_tracks(clip: str, still_base: np.ndarray, BW: int, BH: int, focus) -> list:
+    """Per clip frame: 2x3 similarity mapping still-picture px (the covered still) -> clip-frame px (same cover).
+    ORB features on the static background, RANSAC (moving subjects are outliers), then a 7-frame moving average."""
+    key = (clip, BW, BH, tuple(focus))
+    if key in _TRACK_CACHE:
+        return _TRACK_CACHE[key]
+    sc = 960.0 / BW
+    small = lambda im: cv2.cvtColor(cv2.resize(im, (int(BW * sc), int(BH * sc)), interpolation=cv2.INTER_AREA), cv2.COLOR_RGB2GRAY)
+    orb = cv2.ORB_create(3000)
+    k0, d0 = orb.detectAndCompute(small(still_base), None)
+    bf = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+    cap = cv2.VideoCapture(clip)
+    raw, prev = [], np.float32([[1, 0, 0], [0, 1, 0]])
+    while True:
+        ok, fr = cap.read()
+        if not ok:
+            break
+        rgb = cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)), BW, BH, *focus)
+        k1, d1 = orb.detectAndCompute(small(rgb), None)
+        A = None
+        if d0 is not None and d1 is not None and len(k1) > 20:
+            ms = sorted(bf.match(d0, d1), key=lambda m: m.distance)[:800]
+            if len(ms) >= 12:
+                p0 = np.float32([k0[m.queryIdx].pt for m in ms])
+                p1 = np.float32([k1[m.trainIdx].pt for m in ms])
+                A, inl = cv2.estimateAffinePartial2D(p0, p1, method=cv2.RANSAC, ransacReprojThreshold=3.0, maxIters=4000)
+                if A is not None and (inl is None or int(inl.sum()) < 12):
+                    A = None
+        if A is None:
+            A = prev
+        prev = A
+        raw.append(A.astype(np.float32))
+    cap.release()
+    if not raw:
+        _TRACK_CACHE[key] = []
+        return []
+    arr = np.stack(raw)
+    sm = np.stack([arr[max(0, i - 3):i + 4].mean(0) for i in range(len(arr))])
+    S, Si = np.diag([sc, sc, 1.0]), np.diag([1 / sc, 1 / sc, 1.0])
+    out = []
+    for A in sm:  # back to full-size px: A_full = S^-1 . A_small . S
+        A3 = np.vstack([A, [0, 0, 1]])
+        out.append((Si @ A3 @ S)[:2].astype(np.float32))
+    _TRACK_CACHE[key] = out
+    return out
+
+
 class ClipImageShot(ImageShot):
     """A hand-made live clip (episodes/<slug>/clips/<beat id>.mp4, e.g. Grok image-to-video from the approved still)
-    played muted under exactly the same marks, drawing hand, plates and camera as the still it replaces. The still's
-    geometry is kept (the clip is made from it), so marks land where they were measured. Holds the last frame if
-    the beat is longer than the clip."""
+    played muted under the same marks, drawing hand and plates as the still it replaces. The clip's own camera
+    (a Grok push-in, a drift) is tracked against the still (ORB + RANSAC similarity per frame, smoothed): the ink is
+    drawn in the still's coordinates and carried with the picture, and the pen hand follows it. Holds the last frame
+    if the beat is longer than the clip."""
 
-    def __init__(self, start, duration, image, motion, size, cfg, marks=None, seed=0, clip=None):
+    def __init__(self, start, duration, image, motion, size, cfg, marks=None, seed=0, clip=None, until=None):
         super().__init__(start, duration, image, motion, size, cfg, marks=marks, photo=False, seed=seed)
         self.clip = str(clip)
+        self.until = until  # clip seconds: the picture freezes on this frame (e.g. walking slips stop before we write)
         self._cap = None
         self._idx = -1
         self._last = None
+        self._A = None
+        self._cur = np.float32([[1, 0, 0], [0, 1, 0]])
 
     def _prepare(self) -> None:
         super()._prepare()
@@ -1086,9 +1140,13 @@ class ClipImageShot(ImageShot):
         self._fps = self._cap.get(cv2.CAP_PROP_FPS) or 24.0
         self._n = int(self._cap.get(cv2.CAP_PROP_FRAME_COUNT) or 0)
         self._grain = float(self.cfg["style"].get("grain", 0))
+        if self._A is None:
+            self._A = clip_tracks(self.clip, self.base, self.BW, self.BH, self.focus)
 
     def _clip_frame(self, t: float):
         i = int(t * self._fps)
+        if self.until is not None:
+            i = min(i, int(float(self.until) * self._fps))
         if self._n:
             i = min(i, self._n - 1)
         if i < self._idx:
@@ -1110,7 +1168,28 @@ class ClipImageShot(ImageShot):
         if fr is not None:
             rgb = Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB))
             self.base = add_grain(cover(rgb, self.BW, self.BH, *self.focus), self._grain, 0)
+            if self._A:
+                self._cur = self._A[min(max(self._idx, 0), len(self._A) - 1)]
         return super().frame(t)
+
+    def _screen(self, bx: float, by: float, t: float) -> tuple[float, float]:
+        A = self._cur
+        return super()._screen(float(A[0, 0] * bx + A[0, 1] * by + A[0, 2]), float(A[1, 0] * bx + A[1, 1] * by + A[1, 2]), t)
+
+    def _view(self, t: float) -> np.ndarray:
+        p, s, M = self._matrix(t)
+        src = self.base
+        if self.marks:
+            z = np.zeros_like(src)
+            b = draw_marks(z, self.marks, t, self.red, self.cfg)
+            if b is not z:  # ink on screen: matte it (drawn on black and on white) and carry it with the picture
+                w = draw_marks(np.full_like(src, 255), self.marks, t, self.red, self.cfg)
+                a = np.clip(1.0 - (w.astype(np.float32) - b.astype(np.float32)).mean(2, keepdims=True) / 255.0, 0, 1)
+                A = self._cur
+                bw = cv2.warpAffine(b, A, (self.BW, self.BH), flags=cv2.INTER_LINEAR)
+                aw = cv2.warpAffine(a, A, (self.BW, self.BH), flags=cv2.INTER_LINEAR)[..., None]
+                src = (src.astype(np.float32) * (1 - aw) + bw.astype(np.float32)).clip(0, 255).astype(np.uint8)
+        return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 
     def release(self) -> None:
         super().release()
