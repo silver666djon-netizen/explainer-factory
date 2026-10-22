@@ -30,6 +30,7 @@ class Caption:
     words: list[str]
     word_times: list[tuple[float, float]]
     speaker: str = "narrator"
+    cx: float | None = None  # centre x (fraction of the width); None = centred. A beat's "caption_x" keeps a prop clear.
 
 
 @dataclass
@@ -770,7 +771,11 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     break
 
         if vtype not in ("title", "kinetic"):  # those already show the words
-            plan.captions.extend(group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator")))
+            caps_b = group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator"))
+            if beat.get("caption_x") is not None and kind != "short":
+                for c in caps_b:
+                    c.cx = float(beat["caption_x"])
+            plan.captions.extend(caps_b)
         if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
         if beat.get("label"):
@@ -787,7 +792,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         if beat.get("stamp"):  # a quick verdict stamp over any picture
             stp = beat["stamp"]
             sat = start + _timed(stp, v["words"], 0.3)
-            plan.stamps.append((sat, shot_end, str(stp["text"]), stp.get("slip")))
+            plan.stamps.append((sat, shot_end, str(stp["text"]), stp.get("slip"), (stp.get("x"), stp.get("y"), stp.get("w"))))
             plan.timeline.add_sfx(sat, "stamp", seed=i + 41)
         for row in beat.get("ledger") or []:
             ledger_rows.append({**row, "at": start + _timed(row, v["words"], 0.5)})
@@ -1030,14 +1035,15 @@ class Overlay:
                 y = int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01)
                 blend(frame, im, x, y)
                 break
-        for s0, s1, txt, slip in self.plan.stamps:
+        for s0, s1, txt, slip, pos in self.plan.stamps:
             if slip and self.plan.kind == "short" and slip.get("short"):
                 slip = {**slip, **slip["short"]}
             if s0 <= t < s1:
-                key = ("stamp", txt, bool(slip))
+                key = ("stamp", txt, bool(slip), pos[2])
                 if key not in self.cache:
                     from .endscreen import _stamp
-                    sw = int(self.W * float(slip.get("w", 0.30))) if slip else int(min(self.W, self.H) * 0.62)
+                    sw = (int(self.W * float(slip.get("w", 0.30))) if slip else
+                          int(self.W * float(pos[2])) if pos[2] and self.plan.kind != "short" else int(min(self.W, self.H) * 0.62))
                     self.cache[key] = _stamp(txt, self.cfg, sw, self.pal["red"], float(slip.get("angle", 3)) if slip else -10, 7)
                     if slip:  # red numerals over a busy picture: a cream paper slip lies under the stamp from the press
                         h0, w0 = self.cache[key].shape[:2]
@@ -1061,7 +1067,10 @@ class Overlay:
                     blend(frame, im, cx - im.shape[1] // 2, cy - im.shape[0] // 2, opacity=min(1.0, 0.3 + p))
                     continue
                 cy = int(self.H * (0.42 if self.H < self.W else 0.45))
-                blend(frame, im, (self.W - im.shape[1]) // 2, cy - im.shape[0] // 2, opacity=min(1.0, 0.3 + p))
+                cx = self.W // 2
+                if pos[0] is not None and self.plan.kind != "short":  # "x"/"y": the stamp drops into a quiet area of the picture
+                    cx, cy = int(self.W * float(pos[0])), int(self.H * float(pos[1]))
+                blend(frame, im, cx - im.shape[1] // 2, cy - im.shape[0] // 2, opacity=min(1.0, 0.3 + p))
         if self.plan.ctas:
             self._draw_ctas(frame, t)
         for c in self.plan.counters:
@@ -1102,7 +1111,8 @@ class Overlay:
                 if t >= s:
                     active = k
             img = self.caption_img(cap, active)
-            blend(frame, img, (self.W - img.shape[1]) // 2, self.cap_y - img.shape[0] // 2)
+            cxp = int(self.W * cap.cx) if cap.cx is not None else self.W // 2
+            blend(frame, img, cxp - img.shape[1] // 2, self.cap_y - img.shape[0] // 2)
 
 
 def _loudnorm_filter(wav_path: Path, lufs: float) -> str:

@@ -169,7 +169,7 @@ beat("cf1", S_OPEN, "Case file number three. The sale that never was. Larry is m
                                                    {"line": 2, "text": "£49.99 — also fictional", "on": "forty-nine"}]}})
 beat("m1", S_OPEN, "Suspect number one. Name: the was price. Aliases: original, regular, compare at.",
      {"type": "mugshot", "prompt": "a single cream paper price tag with a thick red border hanging on a string from a small nail, a bold black line struck through its upper half, plain light grey wall, nothing else in the picture, studio lighting",
-      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "tag": "SUSPECT", "stamp_pos": [0.50, 0.68], "stamp_angle": -15, "stamp_w": 0.72,
+      "suspect": {"number": 1, "name": "The WAS price", "alias": "Original · Regular · Compare at", "tag": "SUSPECT", "stamp_pos": [0.505, 0.75], "stamp_angle": -20, "stamp_w": 0.40,
                   "type_on": ["Name:", "Aliases:"]},
       "photo_marks": [write("WAS", at=0.35, x=0.5, y=0.47, w=0.30, h=0.13, color="ink"),  # passes chain one after another
                       write("$—", on="number", x=0.5, y=0.62, w=0.24, h=0.13, color="ink"),

@@ -187,8 +187,10 @@ beat("o3", S_OPEN, "Total: forty-eight.",
      pause_at={"word": "forty-eight.", "sec": 0.45, "hit": "stamp"}, ledger=[tab("PAID", "$48.00", "forty-eight.")], label="Illustration")
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.22, y=0.18, w=0.18, h=0.06),
-                                                  write("REAL", on="fees", x=0.80, y=0.30, w=0.10, h=0.06)])))
+         motion="static",
+         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.14, y=0.12, w=0.20, h=0.065, color="#FFFFFF", align="left"),
+                                 write("REAL", on="fees", x=0.14, y=0.215, w=0.20, h=0.065, color="#FFFFFF", align="left")])),  # dark cabinets above the kettle: white pen
+     caption_x=0.64)  # the ticket sits low-left: this beat's subtitles move right, clear of it
 
 # ------------------------------------------------------------------ the case + suspect no. 1
 beat("cf1", S_OPEN, "Case file number four. The fee at the end.",
@@ -261,7 +263,7 @@ beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the
 chapter("t2", S_TM, "Wednesday, ten a.m.", "Wednesday 10:00 AM — $16.4 billion")
 beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
      manual(img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Eighteen", x=0.78, y=0.22, w=0.18, h=0.07)]), clip=True),
+         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Eighteen", x=0.855, y=0.56, w=0.18, h=0.07)]), clip=True),
      ledger=[tab("HIDDEN", "$18.00", "Eighteen", loss=True, circle=True)])
 beat("b2", S_TM, "That's thirty-seven and a half percent of what he paid.",
      stat(37.5, "of Larry's total was fees · Illustration", decimals=1, suffix="%"),
@@ -297,7 +299,7 @@ beat("b9b", S_TM, "Until a court decides, every word of it is an allegation.",
 chapter("t3", S_HOTEL, "Thursday, eleven-forty p.m.", "Thursday 11:40 PM — The resort fee")
 beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
      manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
-         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.20, y=0.15, w=0.20, h=0.06)])))
+         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.885, y=0.36, w=0.17, h=0.065, color="#FFFFFF")])))
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
      {"type": "mugshot", "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The resort fee", "alias": "Amenity fee · Destination fee", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
@@ -340,7 +342,7 @@ beat("n3", S_BRAIN, "People remembered paying less in total. And they bought mor
 beat("n4", S_BRAIN, "Your brain files the first number. Everything after it is small print.",
      img("an open 1950s office filing drawer with one large blank index card standing at the front and a few tiny crumpled paper slips at the very back, plain cream background",
          motion="static", hand_marks=True, marks=[write("$30", on="first", x=0.50, y=0.40, w=0.12, h=0.09, color="ink"),
-                                                  write("+ fees", on="small", x=0.50, y=0.50, w=0.09, h=0.035, color="ink")]))
+                                                  write("+ fees", on="small", x=0.50, y=0.478, w=0.10, h=0.045, color="ink")]))
 beat("sub", S_BRAIN, "If you like catching prices in the act, subscribe. The Inspector has more files.",
      reuse("o4", motion="zoom_in"), cta={"on": "subscribe.", "click_on": "Inspector", "pos": [0.64, 0.62]})
 
@@ -445,7 +447,7 @@ beat("x5", S_CHECK, "The cheapest ticket is the one with the smallest last numbe
 # ------------------------------------------------------------------ Case closed + end screen (Ep.5 teaser: tip screens)
 beat("z0", S_CLOSE, "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.",
      manual(img(f"{LARRY} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light",
-         motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True},
+         motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True, "x": 0.84, "y": 0.40, "w": 0.26},  # dark upper right, under the tab
      ledger=[tab("PAID", "$48.00 for a $30 ticket", "forty-eight", note=True)])
 beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
      reuse("z0", push={"center": [0.45, 0.40], "zoom": 1.6}, closeup=closeup("checkout", [0.58, 0.62], 2.0)), hero=True)

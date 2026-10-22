@@ -178,7 +178,8 @@ def main(argv):
         for cap in plan.captions:
             ci = ov.caption_img(cap, 0)
             ch, cw = ci.shape[:2]
-            cap_boxes.append((cap.start, cap.end, (Wf - cw) / 2, ov.cap_y - ch / 2, (Wf + cw) / 2, ov.cap_y + ch / 2))
+            ccx = Wf * cap.cx if getattr(cap, "cx", None) is not None else Wf / 2
+            cap_boxes.append((cap.start, cap.end, ccx - cw / 2, ov.cap_y - ch / 2, ccx + cw / 2, ov.cap_y + ch / 2))
         for sh in plan.shots:
             if not hasattr(sh, "_screen"):
                 continue

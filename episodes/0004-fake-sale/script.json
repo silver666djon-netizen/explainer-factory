@@ -232,11 +232,11 @@
           "alias": "Original · Regular · Compare at",
           "tag": "SUSPECT",
           "stamp_pos": [
-            0.5,
-            0.68
+            0.505,
+            0.75
           ],
-          "stamp_angle": -15,
-          "stamp_w": 0.72,
+          "stamp_angle": -20,
+          "stamp_w": 0.4,
           "type_on": [
             "Name:",
             "Aliases:"
