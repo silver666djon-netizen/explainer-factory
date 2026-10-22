@@ -348,7 +348,10 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
                     (x0, y0), (x1, y1) = pp[-1], pts[0]
                     return float(x0 + (x1 - x0) * u), float(y0 + (y1 - y0) * u - math.sin(u * math.pi) * H * 0.03)
             return float(g[-1][2][-1][0]), float(g[-1][2][-1][1])
-        return tip, a0, a1, pen_for(g[0][3])
+        kind = pen_for(g[0][3])
+        if g[0][3].get("hand_scale"):  # a smaller hand for a note written near the frame edge
+            kind = (kind, float(g[0][3]["hand_scale"]))
+        return tip, a0, a1, kind
     return None
 
 

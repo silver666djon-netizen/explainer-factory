@@ -257,30 +257,32 @@
           {
             "type": "write",
             "text": "FICTIONAL",
-            "x": 0.245,
-            "y": 0.1,
-            "w": 0.15,
-            "h": 0.06,
+            "x": 0.262,
+            "y": 0.15,
+            "w": 0.118,
+            "h": 0.047,
             "angle": 0,
             "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
             "on": "made",
-            "align": "left"
+            "align": "left",
+            "hand_scale": 0.6
           },
           {
             "type": "write",
             "text": "REAL",
-            "x": 0.245,
-            "y": 0.185,
-            "w": 0.15,
-            "h": 0.06,
+            "x": 0.262,
+            "y": 0.222,
+            "w": 0.118,
+            "h": 0.047,
             "angle": 0,
             "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
             "on": "fees",
-            "align": "left"
+            "align": "left",
+            "hand_scale": 0.6
           }
         ],
         "manual": true

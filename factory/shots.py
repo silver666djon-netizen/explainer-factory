@@ -579,10 +579,13 @@ class ImageShot(Shot):
             pen = mark_pen(self.marks, t, self.BW, self.BH)
             if pen:
                 ftip, t0, t1, kind = pen
+                hs = 1.0
+                if isinstance(kind, tuple):
+                    kind, hs = kind
                 mirrored = ftip(t0)[0] < self.BW * 0.4
                 pos = hand_path(lambda tt: self._screen(*ftip(tt), tt), t0, t1, t, FW, FH, mirrored)
                 if pos:
-                    paste_hand(out, kind, pos[0], pos[1], mirrored)
+                    paste_hand(out, kind, pos[0], pos[1], mirrored, scale=hs)
             from .draw import stamp_press, stamp_window
             for m in self.marks:  # the stamp hand presses small stamps (never a pen hand, never a drop-in)
                 if m.get("type") != "stamp" or not m.get("hand"):

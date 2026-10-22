@@ -196,8 +196,8 @@ beat("o3", S_OPEN, "Total: forty-eight.",
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
          motion="static",
-         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.245, y=0.10, w=0.15, h=0.06, color="#FFFFFF", align="left"),
-                                 write("REAL", on="fees", x=0.245, y=0.185, w=0.15, h=0.06, color="#FFFFFF", align="left")])),  # dark cabinets above the kettle: white pen
+         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.262, y=0.15, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6),
+                                 write("REAL", on="fees", x=0.262, y=0.222, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6)])),  # dark cabinets above the kettle: white pen
      caption_x=0.64)  # the ticket sits low-left: this beat's subtitles move right, clear of it
 
 # ------------------------------------------------------------------ the case + suspect no. 1
