@@ -812,20 +812,24 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         # one hand at a time: Larry's tab is written only when no other hand is on screen
         busy = sorted(plan.hand_windows)
         last = -1e9
+        last_write = -1e9
         for row in sorted(ledger_rows, key=lambda r: r["at"]):
-            at = max(row["at"], last + HAND_GAP + HAND_IN - 0.15)
+            wd = float(row.get("dur", Ledger.WRITE))
+            # "chain": the tab hand stays on the card and writes this row straight after the previous one
+            at = max(row["at"], last_write + 0.08 - 0.15) if row.get("chain") else max(row["at"], last + HAND_GAP + HAND_IN - 0.15)
             moved = True
             while moved:
                 moved = False
-                w0, w1 = at + 0.15 - HAND_IN, at + 0.15 + Ledger.WRITE + HAND_OUT
+                w0, w1 = at + 0.15 - (0.0 if row.get("chain") else HAND_IN), at + 0.15 + wd + HAND_OUT
                 for b0, b1 in busy:
                     if w0 < b1 + HAND_GAP - 1e-6 and b0 < w1 + HAND_GAP:
                         nat = b1 + HAND_GAP + HAND_IN - 0.15
                         if nat > at + 1e-6:  # float rounding once re-matched the same window forever
                             at, moved = nat, True
             row["at"] = at
-            last = at + 0.15 + Ledger.WRITE + HAND_OUT
-            plan.hand_windows.append((at + 0.15 - HAND_IN, last))
+            last = at + 0.15 + wd + HAND_OUT
+            last_write = at + 0.15 + wd
+            plan.hand_windows.append((at + 0.15 - (0.0 if row.get("chain") else HAND_IN), last))
         plan.ledger = Ledger(ledger_rows, cfg, size, hide=plan.ledger_hide)
         for at, k_ in plan.ledger.sfx():
             plan.timeline.add_sfx(at, k_, seed=int(at * 10))

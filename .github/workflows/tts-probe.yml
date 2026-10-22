@@ -33,7 +33,7 @@ jobs:
           ep="${{ github.event.inputs.episode }}"
           mkdir -p assets/archive ".cache/images/$ep"
           gh release download archive -D assets/archive --clobber || true
-          gh release download "frames-$ep" -D ".cache/images/$ep" --clobber --pattern "*.png" || true
+          tools/rel.sh download "frames-$ep" ".cache/images/$ep" "*.png" || true
       - uses: actions/cache/restore@v4
         with:
           path: .cache/images
@@ -47,5 +47,5 @@ jobs:
         run: |
           ep="${{ github.event.inputs.episode }}"
           [ -s voiced.json ] || exit 0
-          gh release delete "probe-$ep" -y --cleanup-tag 2>/dev/null || true
+          tools/rel.sh delete "probe-$ep" || true
           gh release create "probe-$ep" voiced.json --title "TTS probe $ep" --notes "real narration timings" --prerelease --draft

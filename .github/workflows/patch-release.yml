@@ -20,5 +20,5 @@ jobs:
         run: |
           t="${{ github.event.inputs.tag }}"
           test -d "patches/$t"
-          for f in patches/$t/*; do gh release upload "$t" "$f" --clobber; done
-          if [ -f "patches/$t/description.txt" ]; then gh release edit "$t" --notes-file "patches/$t/description.txt"; fi
+          tools/rel.sh upload "$t" patches/$t/*
+          if [ -f "patches/$t/description.txt" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$(tools/rel.sh id "$t")" -F "body=@patches/$t/description.txt" >/dev/null; fi

@@ -33,7 +33,7 @@ jobs:
         run: |
           ep="${{ github.event.inputs.episode }}"
           mkdir -p ".cache/images/$ep"
-          gh release download "frames-$ep" -D ".cache/images/$ep" --clobber --pattern "*.png"
+          tools/rel.sh download "frames-$ep" ".cache/images/$ep" "*.png"
       - name: Thumbnails
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
@@ -44,5 +44,5 @@ jobs:
         run: |
           ep="${{ github.event.inputs.episode }}"
           python -m factory.thumbs "episodes/$ep" --out out/thumbs --send
-          tag=$(gh release list --limit 30 --json tagName -q '.[].tagName' | grep "^$ep-r" | head -1)
-          [ -n "$tag" ] && gh release upload "$tag" out/thumbs/*.jpg --clobber || true
+          tag=$(gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" -q '.[].tag_name' | grep "^$ep-r" | head -1)
+          [ -n "$tag" ] && tools/rel.sh upload "$tag" out/thumbs/*.jpg || true

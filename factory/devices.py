@@ -86,6 +86,9 @@ class Ledger:
         self.tape = np.array(tape_strip(int(cw * 0.30), int(rh * 0.55), 5).rotate(-4, expand=True))
         self._cache = {}
 
+    def _wd(self, r) -> float:
+        return float(r.get("dur", self.WRITE))
+
     def visible(self, t: float) -> bool:
         if not self.rows or t < self.rows[0]["at"] - 0.3:
             return False
@@ -96,7 +99,7 @@ class Ledger:
         best, cur = 0.0, None
         for k, r in enumerate(self.rows):
             a = r["at"] - self.GROW
-            b = r["at"] + 0.15 + self.WRITE + self.HOLD
+            b = r["at"] + 0.15 + self._wd(r) + self.HOLD
             if a <= t <= b + self.GROW:
                 g = min(1.0, (t - a) / self.GROW, (b + self.GROW - t) / self.GROW)
                 if g > best:
@@ -112,13 +115,13 @@ class Ledger:
             lab, wr, x, y = self.items[k]
             if lab is not None:
                 blend(img, lab, 0, y + int(self.row_h * 0.12))
-            p = (t - r["at"] - 0.15) / self.WRITE
+            p = (t - r["at"] - 0.15) / self._wd(r)
             if bold and k in self.bold and p >= 1:
                 wr = self.bold[k]
             if p > 0:
                 blend(img, wr.at(p), x, y)
                 if p < 1.3:
-                    hand = (x, y, wr, r["at"] + 0.15)
+                    hand = k
             if r.get("circle") and p > 1.0:
                 q = min(1.0, (p - 1.0) / 0.6)
                 cxr, cyr = x + wr.w // 2, y + wr.h // 2
@@ -147,10 +150,35 @@ class Ledger:
         blend(frame, np.dstack([small, np.full((h, w), 255, np.uint8)]), x, y, opacity=ease(a))
         tp = cv2.resize(self.tape, (max(1, int(self.tape.shape[1] * k)), max(1, int(self.tape.shape[0] * k))))
         blend(frame, tp, x + w // 2 - tp.shape[1] // 2, y - tp.shape[0] // 3, opacity=ease(a))
-        if hand and g > 0.95:
-            hx, hy, wr, t0 = hand
-            tip = hand_path(lambda q: (x + (hx + wr.tip((q - t0) / self.WRITE)[0]) * k, y + (hy + wr.tip((q - t0) / self.WRITE)[1]) * k),
-                            t0, t0 + self.WRITE, t, self.W, self.H, False, from_below=True)
+        if hand is not None and g > 0.95:
+            # rows chained to this one ("chain") are written in one pass: the hand travels line to line
+            a0 = hand
+            while a0 > 0 and self.rows[a0].get("chain"):
+                a0 -= 1
+            a1 = hand
+            while a1 + 1 < len(self.rows) and self.rows[a1 + 1].get("chain"):
+                a1 += 1
+            grp = list(range(a0, a1 + 1))
+
+            def tipf(q, grp=grp, x=x, y=y, k=k):
+                for j, ri in enumerate(grp):
+                    r = self.rows[ri]
+                    _l, wr, hx, hy = self.items[ri]
+                    t0, d0 = r["at"] + 0.15, self._wd(r)
+                    if q <= t0 + d0 or j == len(grp) - 1:
+                        if q >= t0 or j == 0:
+                            px, py = wr.tip((q - t0) / d0)
+                            return x + (hx + px) * k, y + (hy + py) * k
+                        pr = self.rows[grp[j - 1]]
+                        _l2, pw, phx, phy = self.items[grp[j - 1]]
+                        pt0, pd = pr["at"] + 0.15, self._wd(pr)
+                        u = min(1.0, max(0.0, (q - pt0 - pd) / max(0.05, t0 - pt0 - pd)))
+                        ex, ey = pw.tip(1.0)
+                        sx_, sy_ = wr.tip(0.0)
+                        return (x + (phx + ex + (hx + sx_ - phx - ex) * u) * k, y + (phy + ey + (hy + sy_ - phy - ey) * u) * k)
+                return None
+            r0, r1 = self.rows[grp[0]], self.rows[grp[-1]]
+            tip = hand_path(tipf, r0["at"] + 0.15, r1["at"] + 0.15 + self._wd(r1), t, self.W, self.H, False, from_below=True)
             if tip:
                 paste_hand(frame, "ink_under", tip[0], tip[1], False, scale=0.72)
 
@@ -159,7 +187,7 @@ class Ledger:
         for r in self.rows:
             out += [(r["at"] + 0.15, "marker"), (r["at"] + 0.5, "marker")]
             if r.get("circle"):
-                out += [(r["at"] + 0.15 + self.WRITE, "scribble")]  # (no stamp sound: nothing is stamped here)
+                out += [(r["at"] + 0.15 + self._wd(r), "scribble")]  # (no stamp sound: nothing is stamped here)
         return out
 
 

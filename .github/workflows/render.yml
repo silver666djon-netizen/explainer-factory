@@ -123,7 +123,7 @@ jobs:
         run: |
           for ep in ${{ steps.pick.outputs.list }}; do
             mkdir -p ".cache/images/$ep"
-            gh release download "frames-$ep" -D ".cache/images/$ep" --clobber --pattern "*.png" 2>/dev/null || echo "no storyboard for $ep, frames will be generated now"
+            tools/rel.sh download "frames-$ep" ".cache/images/$ep" "*.png" 2>/dev/null || echo "no storyboard for $ep, frames will be generated now"
           done
 
       - name: Python packages
@@ -176,7 +176,7 @@ jobs:
         run: |
           if [ "${{ github.event.inputs.preview }}" = "yes" ]; then
             for ep in ${{ steps.pick.outputs.list }}; do
-              gh release delete "$ep-preview" -y --cleanup-tag 2>/dev/null || true
+              tools/rel.sh delete "$ep-preview" || true
               gh release create "$ep-preview" out/$ep/*.mp4 $(ls out/$ep/timings.json 2>/dev/null) --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease --draft
             done
             exit 0
@@ -185,7 +185,7 @@ jobs:
             tag="$ep-r${{ github.run_number }}"
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
             gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt" --draft  # unreleased video: private until published
-            url=$(gh release view "$tag" --json url -q .url)
+            url=$(tools/rel.sh url "$tag")
             if [ "${{ github.event.inputs.send }}" != "no" ]; then python -m factory.notify "out/$ep" "$url"; fi
           done
 

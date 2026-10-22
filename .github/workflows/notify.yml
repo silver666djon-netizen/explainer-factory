@@ -8,7 +8,7 @@ on:
         required: true
 
 permissions:
-  contents: read
+  contents: write  # draft releases are visible only with write access
 
 jobs:
   notify:
@@ -26,7 +26,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           mkdir -p out/rel
-          for k in 1 2 3; do gh release download "${{ github.event.inputs.tag }}" -D out/rel --clobber --pattern "*.json" --pattern "*.mp4" --pattern "*.jpg" && break; echo "::warning::download retry $k"; sleep 10; done
+          for k in 1 2 3; do tools/rel.sh download "${{ github.event.inputs.tag }}" out/rel "*.json" "*.mp4" "*.jpg" && break; echo "::warning::download retry $k"; sleep 10; done
           ls -la out/rel || true
-          url=$(gh release view "${{ github.event.inputs.tag }}" --json url -q .url)
+          url=$(tools/rel.sh url "${{ github.event.inputs.tag }}")
           python -m factory.notify out/rel "$url" 2>&1 | tee notify.log || { echo "::error::$(tail -3 notify.log | tr '\n' ' ')"; exit 1; }

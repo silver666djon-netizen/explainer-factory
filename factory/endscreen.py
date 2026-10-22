@@ -210,8 +210,8 @@ class EndScreenShot(Shot):
                 x0, x1, y0, y1 = xs.min(), xs.max(), ys.min(), ys.max()
                 crop, mcrop = src[y0:y1 + 1, x0:x1 + 1], m[y0:y1 + 1, x0:x1 + 1]
                 copies = int(nx.get("copies", 2))
-                area_w, area_h = sw * 0.94 / copies, sh * (0.36 if nx.get("label_under") else 0.50)
-                k = min(area_w * (0.52 if nx.get("fees") else 0.62) / crop.shape[1], area_h / crop.shape[0])
+                area_w, area_h = sw * 0.94 / copies, sh * (0.36 if nx.get("label_under") else 0.50) * float(nx.get("subject_scale", 1.0))
+                k = min(area_w * (0.52 if nx.get("fees") else 0.62) * float(nx.get("subject_scale", 1.0)) / crop.shape[1], area_h / crop.shape[0])
                 cw, ch = int(crop.shape[1] * k), int(crop.shape[0] * k)
                 crop = cv2.resize(crop, (cw, ch), interpolation=cv2.INTER_AREA)
                 mcrop = cv2.resize(mcrop.astype(np.float32), (cw, ch))
@@ -219,7 +219,7 @@ class EndScreenShot(Shot):
                 mask = np.zeros(paper.shape[:2], np.float32)
                 self.slots = []
                 for i in range(copies):
-                    px, py = int(sw * 0.03 + area_w * i), int(sh * 0.43)
+                    px, py = int(sw * 0.03 + area_w * i), int(sh * float(nx.get("subject_top", 0.43)))
                     if copies == 1 and not nx.get("fees"):  # a single subject sits in the middle of the sheet
                         px = int((sw - cw) / 2)
                     a = mcrop[..., None]
@@ -304,12 +304,13 @@ class EndScreenShot(Shot):
                 ImageDraw.Draw(pl).text((10, 6 + k * lh), l, font=lf, fill=(250, 246, 236, 255))
             if nx.get("label_under") and getattr(self, "slots", None):  # centred under the sketched subject
                 px, py, cw, ch = self.slots[0]
-                self.plate = (np.array(pl), int(max(sw * 0.02, min(sw * 0.98 - pl.width, px + cw / 2 - pl.width / 2))), int(py + ch + sh * 0.025))
+                self.plate = (np.array(pl), int(max(sw * 0.02, min(sw * 0.98 - pl.width, px + cw / 2 - pl.width / 2))), int(py + ch + sh * float(nx.get("label_gap", 0.025))))
             else:
                 px_ = int(sw * 0.04) if nx.get("fees") or int(nx.get("copies", 2)) > 1 else sw - pl.width - int(sw * 0.04)
                 self.plate = (np.array(pl), px_, sh - int(sh * 0.06) - pl.height)  # bottom-left (bottom-right beside a single subject)
-        self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5, max_h=int(sh * 0.11)) if nx.get("tagline") else None
-        self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * 0.27))
+        self.tagline = _stamp(nx.get("tagline", ""), cfg, int(sw * 0.90), pal["red"], -2, seed + 5,
+                              max_h=int(sh * float(nx.get("tagline_h", 0.11)))) if nx.get("tagline") else None
+        self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * float(nx.get("tagline_y", 0.27))))
         # ---- end-screen furniture
         self.label = Writing("NEXT CASE  >", font(marker, int(H * 0.055)), pal["paper"])
         bf = font(resolve_font(cfg["fonts"]["headline"]), int(H * 0.062))

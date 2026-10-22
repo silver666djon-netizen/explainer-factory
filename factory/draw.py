@@ -313,7 +313,9 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
     the frame and travels from the end of one to the start of the next (three prices in a row, say)."""
     from .shots import mark_strokes
     groups = []
-    for i, m in enumerate(marks):
+    order = sorted(range(len(marks)), key=lambda j: float(marks[j].get("at", 0.6)))  # chains follow the time order
+    for i in order:
+        m = marks[i]
         if not m.get("hand") or m.get("type") in ("led", "stamp", "dot"):
             continue
         at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))

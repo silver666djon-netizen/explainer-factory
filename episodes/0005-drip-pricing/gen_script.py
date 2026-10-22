@@ -167,13 +167,13 @@ S_OPEN, S_EXP, S_TM, S_HOTEL, S_BRAIN, S_DEF, S_LAW, S_CHECK, S_CLOSE = (
     "Saturday 10:00 AM: Three checks", "Case closed")
 LARRY = "{larry}"
 # x1 toggle panel (Klot's still): top plate, the uncovered lower-right strip of the left plate (lever over it), right plate
-X1_TOP = dict(x=0.398, y=0.203, w=0.25, h=0.065, angle=2, color="ink")
-X1_OFF = dict(x=0.19, y=0.522, w=0.085, h=0.034, color="ink")
-X1_ON = dict(x=0.6289, y=0.4876, w=0.04, h=0.05, color="ink")  # uncovered part of the right plate once the lever lies on it
+X1_TOP = dict(x=0.397, y=0.205, w=0.285, h=0.125, angle=2, color="ink", font="headline")  # plate .245-.551 x .128-.281: caps ~60 % of it
+X1_OFF = dict(x=0.1785, y=0.489, w=0.08, h=0.095, angle=1, color="ink", font="headline")  # between the plate's two screws
+X1_ON = dict(x=0.6353, y=0.4846, w=0.058, h=0.11, angle=1, color="ink", font="headline")  # uncovered part of the right plate once the lever lies on it
 # x2 = the clip's last frame (images/x2.png): same ink, mapped through the clip's own push (scale 1.015)
-X2_TOP = dict(x=0.397, y=0.1986, w=0.254, h=0.066, angle=2, color="ink")
-X2_OFF = dict(x=0.186, y=0.5224, w=0.086, h=0.035, color="ink")
-X2_ON = dict(x=0.6315, y=0.4875, w=0.041, h=0.051, color="ink")
+X2_TOP = dict(x=0.396, y=0.2007, w=0.289, h=0.127, angle=2, color="ink", font="headline")
+X2_OFF = dict(x=0.1744, y=0.489, w=0.081, h=0.096, angle=1, color="ink", font="headline")
+X2_ON = dict(x=0.638, y=0.4845, w=0.059, h=0.112, angle=1, color="ink", font="headline")
 TICKET_PRICE_BOX = dict(x=0.43, y=0.62, w=0.20, h=0.10)  # the blank price box of the code-drawn ticket
 
 # ------------------------------------------------------------------ cold open (≤ 15 s to the folder)
@@ -185,19 +185,19 @@ beat("o2", S_OPEN, "Then the fees. Eight. Six. Four.",
                                          write("+ $8 fee", on="Eight.", dur=0.45, x=0.86, y=0.40, w=0.16, h=0.07),
                                          write("+ $6 fee", on="Six.", chain=True, dur=0.45, x=0.86, y=0.52, w=0.16, h=0.07),
                                          write("+ $4 fee", on="Four.", chain=True, dur=0.45, x=0.86, y=0.64, w=0.16, h=0.07)]),
-     ledger=[tab("SERVICE FEE", "+$8.00", "Eight."), tab("FACILITY FEE", "+$6.00", "Six."), tab("PROCESSING FEE", "+$4.00", "Four.")],
+     # (Klot, option 2: the fee rows and PAID go on Larry's tab in one pass at b1, "Eighteen dollars of fees")
      label="Illustration")
 beat("o3", S_OPEN, "Total: forty-eight.",
      reuse("o1", hand_marks=True,  # no push: the fee column stays clear of Larry's tab and of the ILLUSTRATION plate
            marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
                   write("+ $8 fee", at=0.0, x=0.86, y=0.40, w=0.16, h=0.07), write("+ $6 fee", at=0.0, x=0.86, y=0.52, w=0.16, h=0.07),
                   write("+ $4 fee", at=0.0, x=0.86, y=0.64, w=0.16, h=0.07), write("= $48", on="forty-eight.", x=0.86, y=0.755, w=0.16, h=0.09)]),
-     pause_at={"word": "forty-eight.", "sec": 0.45, "hit": "stamp"}, ledger=[tab("PAID", "$48.00", "forty-eight.")], label="Illustration")
+     pause_at={"word": "forty-eight.", "sec": 0.45, "hit": "stamp"}, label="Illustration")
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
          motion="static",
-         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.14, y=0.12, w=0.20, h=0.065, color="#FFFFFF", align="left"),
-                                 write("REAL", on="fees", x=0.14, y=0.215, w=0.20, h=0.065, color="#FFFFFF", align="left")])),  # dark cabinets above the kettle: white pen
+         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.245, y=0.10, w=0.15, h=0.06, color="#FFFFFF", align="left"),
+                                 write("REAL", on="fees", x=0.245, y=0.185, w=0.15, h=0.06, color="#FFFFFF", align="left")])),  # dark cabinets above the kettle: white pen
      caption_x=0.64)  # the ticket sits low-left: this beat's subtitles move right, clear of it
 
 # ------------------------------------------------------------------ the case + suspect no. 1
@@ -262,9 +262,9 @@ beat("a11", S_EXP, "A seat looks cheaper when its fees are still offstage, so yo
 beat("a12", S_EXP, "Then the fees walk on.",
      manual(img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
          motion="static", hand_marks=True, clip_until=4.0,  # Grok clip: the slips walk to centre stage and stop (frozen at 4.0 s)
-         marks=[write("$8", at=4.05, dur=0.3, x=0.3742, y=0.551, w=0.06, h=0.075, angle=-3, color="ink"),
-                write("$6", at=4.47, dur=0.3, chain=True, x=0.4958, y=0.551, w=0.06, h=0.075, angle=2, color="ink"),
-                write("$4", at=4.89, dur=0.3, chain=True, x=0.6193, y=0.553, w=0.06, h=0.075, angle=-5, color="ink")]), clip=True),
+         marks=[write("$8", at=4.05, dur=0.3, x=0.3732, y=0.5499, w=0.065, h=0.09, angle=5.3, color="ink"),
+                write("$6", at=4.47, dur=0.3, chain=True, x=0.4933, y=0.5499, w=0.065, h=0.09, angle=-1.8, color="ink"),
+                write("$4", at=4.89, dur=0.3, chain=True, x=0.6193, y=0.5548, w=0.065, h=0.09, angle=6.1, color="ink")]), clip=True),
      hold=3.6)  # the line, then the three prices go on the stopped slips
 beat("a13", S_EXP, "Twelve days of science. Then the science went live.", kin())
 beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the end, for everyone.",
@@ -275,8 +275,10 @@ beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the
 chapter("t2", S_TM, "Wednesday, ten a.m.", "Wednesday 10:00 AM — $16.4 billion")
 beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
      manual(img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Eighteen", x=0.855, y=0.56, w=0.18, h=0.07)]), clip=True),
-     ledger=[tab("HIDDEN", "$18.00", "Eighteen", loss=True, circle=True)])
+         motion="static", hand_marks=True, marks=[write("$18 FEES", on="receipt.", x=0.855, y=0.56, w=0.18, h=0.07)]), clip=True),
+     ledger=[tab("SERVICE FEE", "+$8.00", "Eighteen", dur=0.42), tab("FACILITY FEE", "+$6.00", "Eighteen", dur=0.42, chain=True),
+             tab("PROCESSING FEE", "+$4.00", "Eighteen", dur=0.42, chain=True), tab("PAID", "$48.00", "Eighteen", dur=0.42, chain=True),
+             tab("HIDDEN", "$18.00", "Eighteen", dur=0.5, chain=True, loss=True, circle=True)])  # one pass of the tab hand
 beat("b2", S_TM, "That's thirty-seven and a half percent of what he paid.",
      stat(37.5, "of Larry's total was fees · Illustration", decimals=1, suffix="%"),
      pause_at={"word": "thirty-seven", "sec": 0.6, "hit": "stamp"})
@@ -311,7 +313,7 @@ beat("b9b", S_TM, "Until a court decides, every word of it is an allegation.",
 chapter("t3", S_HOTEL, "Thursday, eleven-forty p.m.", "Thursday 11:40 PM — The resort fee")
 beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
      manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
-         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.885, y=0.36, w=0.17, h=0.065, color="#FFFFFF")])))
+         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.895, y=0.47, w=0.18, h=0.085, color="#FFFFFF")])))
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
      {"type": "mugshot", "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The resort fee", "alias": "Amenity fee · Destination fee", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
@@ -462,7 +464,7 @@ beat("x5", S_CHECK, "The cheapest ticket is the one with the smallest last numbe
 beat("z0", S_CLOSE, "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.",
      manual(img(f"{LARRY} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light",
          motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True, "x": 0.685, "y": 0.165, "w": 0.21},  # dark upper right, left of where Larry's tab grows
-     ledger=[tab("PAID", "$48.00 for a $30 ticket", "forty-eight", note=True)])
+     hero=True)  # Larry's hand and ticket fill the frame: the tab steps aside (no hand near his hands)
 beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
      reuse("z0", push={"center": [0.45, 0.40], "zoom": 1.6}, closeup=closeup("checkout", [0.58, 0.62], 2.0)), hero=True)
 ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
@@ -471,7 +473,8 @@ ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
       "verdict_at": [1.4, 3.17, 5.36, 6.25], "verdict_dur": [1.55, 1.9, 0.72, 1.55],
       "next": {"number": "005", "title": "Tip screens", "tagline": "18 % · 22 % · 25 % · No tip?", "image_file": "next_tablet.png",
                "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.880, "h": 0.085}],
-               "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True},
+               "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True,
+               "subject_scale": 1.5, "subject_top": 0.28, "label_gap": 0.03, "tagline_y": 0.19, "tagline_h": 0.09},  # tablet 1.5x for phones, Pew plate under it
       # timed on the real voice (CI timings 2026-10-21): verdict lines written as spoken, swap after "screen.",
       # sketch with "Next case", "No tip" on "tip", Pew plate after "coffee", click on "Subscribe"
       "times": {"v1": 1.4, "v2": 5.36, "vdur": 2.2, "swap": 8.4, "draw": 8.9, "ddur": 3.0, "writes": 11.9, "tagline": 12.5,
