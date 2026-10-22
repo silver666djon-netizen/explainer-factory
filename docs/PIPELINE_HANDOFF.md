@@ -1,6 +1,6 @@
 # Pipeline chat — handoff (read this first in any new chat / any model)
 
-Last updated: 2026-10-22, Episode 3 r71 released (Klot's "r65" list); Episode 4 waiting on o4.png. This file plus `docs/PRODUCTION_RULES.md` is everything a
+Last updated: 2026-10-22, Episode 3 final = r72 (released, NOT yet sent: GitHub Actions blocked by billing); Episode 4 all 8 manual stills in, cold-open preview pending Actions. This file plus `docs/PRODUCTION_RULES.md` is everything a
 new session needs. Do not ask Klot to re-explain the project; continue from "Current state" below.
 
 ## 1. Who and what
@@ -144,7 +144,15 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
     wider folder when >2 lines; "verdict_at"/"verdict_dur" per line, one hand travelling line to line); "No tip" moved
     below the 25 % button (tablet buttons raised); the short white pointer "<" left of SUBSCRIBE removed (shared code:
     Ep.3 gets it at its next rebuild). Shown to Klot as 3 local stills; no CI re-render yet.
-  - NEXT: when images/o4.png arrives → cold-open preview (render.yml preview=yes, upto=cf1).
+  - 2026-10-22: all 8 manual stills in (images/o4 b1 c1 z0 a10 a12 x1 m2b), Larry master sheet refs/larry_sheet.png.
+    New engine bits: mark "chain" (same hand moves on to the next mark), beat "caption_x" (subtitles shifted for one
+    beat), stamp "x"/"y"/"w" (big verdict stamp in a quiet corner), stamp "slip" (cream paper under a stamp), mark
+    "short" override, write align=left, white-ink marks (#FFFFFF) get the white pen hand.
+  - BLOCKER 2026-10-22: GitHub Actions refuses jobs ("recent account payments have failed or spending limit").
+    Waiting for Klot to fix billing. Then: Notify 0004-fake-sale-r72; Ep.4 cold-open preview (upto=cf1) + send the
+    three end-screen stills (scratchpad ep4_endscreen_stills.png, regenerate with es_stills.py if lost).
+  - OPEN: Larry's tab rows SERVICE/FACILITY/PROCESSING/PAID (o2/o3) get written while the tab is hidden (cf1, m1),
+    because the ticket marks take the only hand in the cold open - options sent to Klot.
 - (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
   teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);
