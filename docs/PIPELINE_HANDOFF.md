@@ -1,6 +1,6 @@
 # Pipeline chat — handoff (read this first in any new chat / any model)
 
-Last updated: 2026-10-21, Episode 3 r64 released; Episode 4 scene list awaiting approval. This file plus `docs/PRODUCTION_RULES.md` is everything a
+Last updated: 2026-10-22, Episode 3 r71 released (Klot's "r65" list); Episode 4 waiting on o4.png. This file plus `docs/PRODUCTION_RULES.md` is everything a
 new session needs. Do not ask Klot to re-explain the project; continue from "Current state" below.
 
 ## 1. Who and what
@@ -119,7 +119,12 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   wheel numbers, plain tag circled, WAS/$—/FICTION levels, clean WAS tag plate from make_edits.py, maps reframed with
   California dot + EU plate, one typed list on the front index card, stat lands before the spoken number, plate appears
   with the pen). Long −14.2 LUFS / −1.5 dBTP, Shorts −14.2…−14.3 / −2.0…−2.6; mark audit 0 (new full-path subtitle
-  check), handcheck 0. Waiting for Klot's frame check on r64.
+  check), handcheck 0. Klot verified r64 12/12.
+- **r71 released and sent 2026-10-22** (tag 0004-fake-sale-r71 = Klot's "r65"; r70 is an unsent intermediate - releases
+  can't be deleted from this session): SUSPECT stamp across the tag (stamp_angle -15, stamp_w), -$985M stamp on a cream
+  slip (stamp "slip", own Shorts size), mixer tag lines on the tag angle with align=left, 103 DAYS on the desk (mark
+  "short" override for the Shorts window), x4 list centred on the card's visible face, chevron gone. Long -14.2/-1.6,
+  Shorts -14.2..-14.3 / -1.8..-2.6; mark audit 0, handcheck 0.
 - **Episode 4** (episodes/0005-drip-pricing): scene list approved 2026-10-21 with changes.
   - Hand-made by Klot (rule 19, NOT generated; storyboard skips them): GPT stills o4, b1, c1, z0, a10, a12, x1, m2b →
     images/<beat>.png (Larry reference sheet first, made from the review chat's prompt). Grok clips from those stills:
