@@ -148,11 +148,14 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
     New engine bits: mark "chain" (same hand moves on to the next mark), beat "caption_x" (subtitles shifted for one
     beat), stamp "x"/"y"/"w" (big verdict stamp in a quiet corner), stamp "slip" (cream paper under a stamp), mark
     "short" override, write align=left, white-ink marks (#FFFFFF) get the white pen hand.
-  - BLOCKER 2026-10-22: GitHub Actions refuses jobs ("recent account payments have failed or spending limit").
-    Waiting for Klot to fix billing. Then: Notify 0004-fake-sale-r72; Ep.4 cold-open preview (upto=cf1) + send the
-    three end-screen stills (scratchpad ep4_endscreen_stills.png, regenerate with es_stills.py if lost).
-  - OPEN: Larry's tab rows SERVICE/FACILITY/PROCESSING/PAID (o2/o3) get written while the tab is hidden (cf1, m1),
-    because the ticket marks take the only hand in the cold open - options sent to Klot.
+  - 2026-10-22 REPO IS PUBLIC (free Actions minutes). Rules now: every render/preview/storyboard/probe release is
+    created as a DRAFT (gh release create --draft); all release reads/writes in workflows go through tools/rel.sh
+    (finds drafts; needs contents:write). Existing 0004-*/0005-*/frames-0004/frames-0005/probe-0005 releases were turned
+    into drafts (workflow "Releases to draft"). factory/__init__.py redacts secret env values from everything printed.
+    gitleaks on full history: no secrets; one old commit is authored with Klot's gmail (reported, not rewritten).
+    LICENSE: all rights reserved. Grok clips in episodes/0005-drip-pricing/clips/ (1080p, muted); ClipImageShot tracks
+    marks to the clip's own push (ORB/RANSAC); "clip_until" freezes a clip; ledger rows "chain" = one tab-hand pass.
+  - Cold-open ledger (Klot option 2): fee rows + PAID written in one pass at b1 "Eighteen"; z0 hero (tab hidden).
 - (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
   teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);
