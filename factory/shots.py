@@ -168,7 +168,16 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
             out = base.copy()
         p = min(1.0, p)
         if mark.get("type") == "write":
-            _draw_write(out, mark, p, W, H, red, cfg)
+            fa = mark.get("fade_after")  # seconds after the writing ends: the note fades out over 0.3 s
+            f = 1.0 if fa is None else 1.0 - min(1.0, max(0.0, (t - at - dur - float(fa)) / 0.3))
+            if f <= 0:
+                continue
+            if f < 1.0:
+                lay = out.copy()
+                _draw_write(lay, mark, p, W, H, red, cfg)
+                out[:] = (out.astype(np.float32) * (1 - f) + lay.astype(np.float32) * f).astype(out.dtype)
+            else:
+                _draw_write(out, mark, p, W, H, red, cfg)
             continue
         if mark.get("type") == "stamp":  # small rubber stamp on the picture: the impression appears on the press frame
             imp = mark.get("_imp")
@@ -211,12 +220,16 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
             mark["_strokes"] = strokes
         total = sum(len(s) for s in strokes)
         budget = int(total * p)
+        scol = red
+        if mark.get("color") and mark.get("color") != "red":  # e.g. an ink sum rule
+            pal_ = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+            scol = tuple(int(c) for c in (pal_.get(mark["color"]) or hex_to_rgb(mark["color"])))
         for s in strokes:
             if budget <= 1:
                 break
             seg = s[: min(len(s), budget)]
             budget -= len(seg)
-            cv2.polylines(out, [seg.astype(np.int32).reshape(-1, 1, 2)], False, red, thick, cv2.LINE_AA)
+            cv2.polylines(out, [seg.astype(np.int32).reshape(-1, 1, 2)], False, scol, thick, cv2.LINE_AA)
         if mark.get("text") and p >= 1.0:
             note = mark.get("_note")
             if note is None:
@@ -770,7 +783,8 @@ class ChartShot(Shot):
                     draw.rectangle((bx, top, bx + bw, y1), fill=color, outline=self.pal["ink"], width=3)
                 draw.text((bx + bw / 2, y1 + 12), str(lab), font=lab_font, fill=self.pal["ink"], anchor="ma")
                 if p >= 0.999:
-                    vl = (self.spec.get("value_labels") or [None] * n)[i]
+                    vls = self.spec.get("value_labels")
+                    vl = vls[i] if isinstance(vls, (list, tuple)) and i < len(vls) else None  # True = the plain values
                     draw.text((bx + bw / 2, top - 8), vl or self._fmt(v), font=val_font, fill=self.pal["ink"], anchor="md")
         else:
             p_all = ease(t / g)

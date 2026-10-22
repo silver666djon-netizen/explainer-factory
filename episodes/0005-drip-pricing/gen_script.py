@@ -23,6 +23,9 @@ def _fnt(name, size):
             return ImageFont.truetype(str(q), size)
 
 
+TICKET_DX = -167  # px in the 1376-wide picture (make_edits.py uses the same offset for the l1 desk composite)
+
+
 def make_ticket(path):
     """Code-drawn hero prop (no generation): the same 1950s concert ticket as the Ep.3 teaser, blank price box."""
     from PIL import Image, ImageDraw
@@ -30,7 +33,7 @@ def make_ticket(path):
     im = Image.new("RGB", (W, H), (243, 233, 210))
     d = ImageDraw.Draw(im)
     ink, red, paper = (30, 27, 24), (210, 69, 47), (252, 247, 233)
-    x0, y0, x1, y1 = 250, 190, 1130, 590
+    x0, y0, x1, y1 = 250 + TICKET_DX, 190, 1130 + TICKET_DX, 590  # centre at 38 % of the frame: the fee column fits on the right
     d.rounded_rectangle((x0, y0, x1, y1), radius=26, fill=paper, outline=ink, width=10)
     sx = x1 - 230
     for yy in range(y0 + 24, y1 - 20, 34):
@@ -174,7 +177,13 @@ X1_ON = dict(x=0.6353, y=0.4846, w=0.058, h=0.11, angle=1, color="ink", font="he
 X2_TOP = dict(x=0.396, y=0.2007, w=0.289, h=0.127, angle=2, color="ink", font="headline")
 X2_OFF = dict(x=0.1744, y=0.489, w=0.081, h=0.096, angle=1, color="ink", font="headline")
 X2_ON = dict(x=0.638, y=0.4845, w=0.059, h=0.112, angle=1, color="ink", font="headline")
-TICKET_PRICE_BOX = dict(x=0.43, y=0.62, w=0.20, h=0.10)  # the blank price box of the code-drawn ticket
+TICKET_PRICE_BOX = dict(x=0.2965, y=0.660, w=0.20, h=0.10)  # centred in the price box (.177-.416 x .599-.716), ~60 % of its height
+# the fee column on the clear paper right of the ticket (border at .70): left-aligned from .745, even 11 % line pitch
+FEE = lambda y, **kw: dict(x=0.85, y=y, w=0.21, h=0.075, align="left", **kw)
+FEE_Y = (0.37, 0.48, 0.59)
+SUM_RULE = dict(type="underline", x=0.82, y=0.637, w=0.15, h=0.01, color="ink", target=[0.746, 0.555, 0.90, 0.625])
+SUM = dict(x=0.85, y=0.71, w=0.21, h=0.075, align="left")
+SUM_RING = dict(type="circle", x=0.832, y=0.712, w=0.19, h=0.11, target=[0.76, 0.676, 0.905, 0.748])
 
 # ------------------------------------------------------------------ cold open (≤ 15 s to the folder)
 beat("o1", S_OPEN, "A concert ticket. Thirty dollars.",
@@ -182,16 +191,18 @@ beat("o1", S_OPEN, "A concert ticket. Thirty dollars.",
      pause_at={"word": "Thirty", "sec": 0.45, "hit": "stamp"}, ledger=[tab("TICKET", "$30.00", "Thirty")], label="Illustration")
 beat("o2", S_OPEN, "Then the fees. Eight. Six. Four.",
      reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
-                                         write("+ $8 fee", on="Eight.", dur=0.45, x=0.86, y=0.40, w=0.16, h=0.07),
-                                         write("+ $6 fee", on="Six.", chain=True, dur=0.45, x=0.86, y=0.52, w=0.16, h=0.07),
-                                         write("+ $4 fee", on="Four.", chain=True, dur=0.45, x=0.86, y=0.64, w=0.16, h=0.07)]),
+                                         write("+ $8 fee", on="Eight.", dur=0.45, **FEE(FEE_Y[0])),
+                                         write("+ $6 fee", on="Six.", chain=True, dur=0.45, **FEE(FEE_Y[1])),
+                                         write("+ $4 fee", on="Four.", chain=True, dur=0.45, **FEE(FEE_Y[2]))]),
      # (Klot, option 2: the fee rows and PAID go on Larry's tab in one pass at b1, "Eighteen dollars of fees")
      label="Illustration")
 beat("o3", S_OPEN, "Total: forty-eight.",
      reuse("o1", hand_marks=True,  # no push: the fee column stays clear of Larry's tab and of the ILLUSTRATION plate
            marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
-                  write("+ $8 fee", at=0.0, x=0.86, y=0.40, w=0.16, h=0.07), write("+ $6 fee", at=0.0, x=0.86, y=0.52, w=0.16, h=0.07),
-                  write("+ $4 fee", at=0.0, x=0.86, y=0.64, w=0.16, h=0.07), write("= $48", on="forty-eight.", x=0.86, y=0.755, w=0.16, h=0.09)]),
+                  write("+ $8 fee", at=0.0, **FEE(FEE_Y[0])), write("+ $6 fee", at=0.0, **FEE(FEE_Y[1])),
+                  write("+ $4 fee", at=0.0, **FEE(FEE_Y[2])),
+                  dict(SUM_RULE, on="Total:", dur=0.3, hand=True), write("= $48", on="forty-eight.", dur=0.5, chain=True, **SUM),
+                  dict(SUM_RING, on="forty-eight.", delay=0.6, dur=0.45, chain=True, hand=True)]),  # ruled, written, then ringed in red
      pause_at={"word": "forty-eight.", "sec": 0.45, "hit": "stamp"}, label="Illustration")
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
@@ -203,8 +214,8 @@ beat("o4", S_OPEN, "Larry is made up. The fees are not.",
 # ------------------------------------------------------------------ the case + suspect no. 1
 beat("cf1", S_OPEN, "Case file number four. The fee at the end.",
      {"type": "casefile", "casefile": {"mode": "open", "number": "004", "title": "The fee at the end", "typed": False, "open_stamp_on": "end.",
-                                        "inside": ["SUBJECT: Larry (fictional)", "EXHIBIT: one $30 ticket", "", "SUSPECTS: 2", "STATUS: open"],
-                                        "writes": [{"line": 2, "text": "paid: $48", "on": "end."}]}})
+                                        "inside": ["SUBJECT: Larry (fictional)", "EXHIBIT: one $30 ticket", "", "SUSPECTS: 2", "STATUS: open"]}})
+# (the handwritten "paid: $48" note was dropped: it could only start ~0.3 s before the cut, Klot 22 Oct)
 beat("m1", S_OPEN, "Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee.",
      {"type": "mugshot", "prompt": "a long curling blank paper till receipt hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 1, "name": "The checkout fee", "alias": "Service · Processing · Convenience", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
@@ -275,7 +286,7 @@ beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the
 chapter("t2", S_TM, "Wednesday, ten a.m.", "Wednesday 10:00 AM — $16.4 billion")
 beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
      manual(img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$18 FEES", on="receipt.", x=0.855, y=0.56, w=0.18, h=0.07)]), clip=True),
+         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Larry", fade_after=0.75, x=0.84, y=0.56, w=0.16, h=0.07)]), clip=True),
      ledger=[tab("SERVICE FEE", "+$8.00", "Eighteen", dur=0.42), tab("FACILITY FEE", "+$6.00", "Eighteen", dur=0.42, chain=True),
              tab("PROCESSING FEE", "+$4.00", "Eighteen", dur=0.42, chain=True), tab("PAID", "$48.00", "Eighteen", dur=0.42, chain=True),
              tab("HIDDEN", "$18.00", "Eighteen", dur=0.5, chain=True, loss=True, circle=True)])  # one pass of the tab hand
@@ -298,7 +309,7 @@ beat("b6", S_TM, "Larry's thirty-seven and a half percent sits right inside that
                                  "values": [24, 37.5, 44], "unit": "%", "highlight": 1, "value_labels": True,
                                  "note": "FTC complaint ¶36 (alleged) · Larry: illustration"}})
 beat("b7", S_TM, "His thirty-dollar ticket grew by sixty percent between the first screen and the last.",
-     reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+60 %", on="sixty", x=0.86, y=0.40, w=0.16, h=0.10)]),
+     reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+60 %", on="sixty", x=0.85, y=0.45, w=0.18, h=0.10)]),
      pause_at={"word": "sixty", "sec": 0.5, "hit": "stamp"}, label="Illustration",
      ledger=[tab("= 37.5 % of the total · +60 % on the $30 shown", "", "sixty", note=True)])
 beat("b8", S_TM, "Larry, it turns out, is perfectly average.", reuse("b1", push={"center": [0.40, 0.35], "zoom": 1.7}), hero=True)
@@ -313,7 +324,7 @@ beat("b9b", S_TM, "Until a court decides, every word of it is an allegation.",
 chapter("t3", S_HOTEL, "Thursday, eleven-forty p.m.", "Thursday 11:40 PM — The resort fee")
 beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
      manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
-         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.895, y=0.47, w=0.18, h=0.085, color="#FFFFFF")])))
+         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.874, y=0.45, w=0.145, h=0.085, color="#FFFFFF")])))
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
      {"type": "mugshot", "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The resort fee", "alias": "Amenity fee · Destination fee", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],
@@ -428,7 +439,7 @@ beat("l9", S_LAW, "It paid a four point two million pound fine,",
 beat("l9b", S_LAW, "and over seven hundred and sixty thousand pounds in refunds.",
      stat(760, "refunded to learners · CMA, April 2026", prefix="over £", suffix="k"))
 beat("l10", S_LAW, "In June, StubHub's British arm was fined too.",
-     reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), stamp('UK · FINED · JUNE 2026', 0.615, 0.70, on='fined', angle=-12, w=0.20)]),
+     reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), stamp('UK · FINED · JUNE 2026', 0.503, 0.668, on='fined', angle=-12, w=0.20)]),
      label="CMA · June 2026")
 beat("l11", S_LAW, "Three pounds. Very expensive pounds.",
      reuse("l8", push={"center": [0.45, 0.30], "zoom": 1.35}, hand_marks=True, marks=[write("£3 FEE", at=0.0, x=0.36, y=0.085, w=0.15, h=0.07),
@@ -532,6 +543,7 @@ for sh in SHORTS:
         b["id"] = f"{sh['id']}_{k}"
 
 ep = {
+    "config": {"ledger": {"hand": "ink_cuff", "hand_scale": 0.43, "from": "right"}},  # plain cuff hand, from the right edge
     "slug": "0005-drip-pricing",
     "title": "The $30 Ticket That Costs $48",
     "description": "Case file #004: the fee at the end. Larry (fictional) buys a $30 concert ticket and pays $48. StubHub's own 2015 experiment, the FTC's case against Ticketmaster (alleged), Marriott's city-hotel resort fees (alleged), why a split price feels cheaper, one ticket stamped by three laws — and three checks before you pay.",

@@ -83,6 +83,8 @@ class Ledger:
             self.items.append((np.array(lab), Writing(r["amount"], mf, col), int(cw * 0.62), y - int(rh * 0.12)))
             self.bold[k] = Writing(r["amount"], bf, col)  # sleeping card: heavy print figures, readable on a phone  # thicker figures for the small card
         self.card = np.array(card.convert("RGB"))
+        lh = (cfg.get("ledger") or {})  # episode override: {"hand": "ink_cuff", "hand_scale": 0.43, "from": "right"}
+        self.hand_kind, self.hand_scale, self.hand_from = lh.get("hand", "ink_under"), float(lh.get("hand_scale", 0.72)), lh.get("from", "below")
         self.tape = np.array(tape_strip(int(cw * 0.30), int(rh * 0.55), 5).rotate(-4, expand=True))
         self._cache = {}
 
@@ -178,9 +180,26 @@ class Ledger:
                         return (x + (phx + ex + (hx + sx_ - phx - ex) * u) * k, y + (phy + ey + (hy + sy_ - phy - ey) * u) * k)
                 return None
             r0, r1 = self.rows[grp[0]], self.rows[grp[-1]]
-            tip = hand_path(tipf, r0["at"] + 0.15, r1["at"] + 0.15 + self._wd(r1), t, self.W, self.H, False, from_below=True)
+            ta, tb = r0["at"] + 0.15, r1["at"] + 0.15 + self._wd(r1)
+            if self.hand_from == "right":  # slides in from the right edge, level with the line, only as far as the card
+                tip = None
+                enter, leave = 0.28, 0.32
+                if ta - enter <= t <= tb + leave:
+                    q = tipf(min(max(t, ta), tb))
+                    if q:
+                        off = self.W * 1.12
+                        if t < ta:
+                            u = ease((t - (ta - enter)) / enter)
+                            tip = (off + (q[0] - off) * u, q[1])
+                        elif t > tb:
+                            u = ease((t - tb) / leave)
+                            tip = (q[0] + (off - q[0]) * u, q[1])
+                        else:
+                            tip = q
+            else:
+                tip = hand_path(tipf, ta, tb, t, self.W, self.H, False, from_below=True)
             if tip:
-                paste_hand(frame, "ink_under", tip[0], tip[1], False, scale=0.72)
+                paste_hand(frame, self.hand_kind, tip[0], tip[1], False, scale=self.hand_scale)
 
     def sfx(self) -> list[tuple[float, str]]:
         out = [(self.rows[0]["at"] - 0.3, "paper")] if self.rows else []
