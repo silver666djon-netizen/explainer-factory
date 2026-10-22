@@ -156,6 +156,9 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
     LICENSE: all rights reserved. Grok clips in episodes/0005-drip-pricing/clips/ (1080p, muted); ClipImageShot tracks
     marks to the clip's own push (ORB/RANSAC); "clip_until" freezes a clip; ledger rows "chain" = one tab-hand pass.
   - Cold-open ledger (Klot option 2): fee rows + PAID written in one pass at b1 "Eighteen"; z0 hero (tab hidden).
+  - 2026-10-23: rule 21 (PRODUCTION_RULES): narrator hands never wear Larry's sleeve from Ep.4 on (hand_<kind>_cuff.png,
+    config hands.sleeve=false). r77 = full render before the rule (not sent); r78 = full render with it + QC fixes.
+    Klot does his frame check on the full long video before release.
 - (older) Episode 4 structure sent 2026-10-21 (episodes/0005-drip-pricing/structure.md), waiting for approval of:
   structure, defence (legit-cost per his rule; option to add StubHub's own 2023 statement, attributed), Ep.5
   teaser A–E. Corrections already applied: Ticketmaster = "24–44 % of the total price" (complaint ¶36);
