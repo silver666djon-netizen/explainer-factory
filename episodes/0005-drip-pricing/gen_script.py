@@ -166,6 +166,10 @@ S_OPEN, S_EXP, S_TM, S_HOTEL, S_BRAIN, S_DEF, S_LAW, S_CHECK, S_CLOSE = (
     "Why a split price feels cheaper", "In defence of the accused", "Friday 9:00 AM: One fee, three laws",
     "Saturday 10:00 AM: Three checks", "Case closed")
 LARRY = "{larry}"
+# x1 toggle panel (Klot's still): top plate, the uncovered lower-right strip of the left plate (lever over it), right plate
+X1_TOP = dict(x=0.398, y=0.203, w=0.25, h=0.065, angle=2, color="ink")
+X1_OFF = dict(x=0.19, y=0.522, w=0.085, h=0.034, color="ink")
+X1_ON = dict(x=0.594, y=0.487, w=0.10, h=0.065, color="ink")
 TICKET_PRICE_BOX = dict(x=0.43, y=0.62, w=0.20, h=0.10)  # the blank price box of the code-drawn ticket
 
 # ------------------------------------------------------------------ cold open (≤ 15 s to the folder)
@@ -246,14 +250,17 @@ beat("a9", S_EXP, "They were fourteen point one percent more likely to buy at al
      pause_at={"word": "fourteen", "sec": 0.6, "hit": "stamp"})
 beat("a10", S_EXP, "And the buyers among them picked seats about five percent pricier.",
      manual(img("a 1950s concert hall seen from the stage, rows of red velvet seats, the front rows lit by a warm spotlight, empty hall",
-         motion="static", hand_marks=True, marks=[write("+5 %", on="five", x=0.50, y=0.30, w=0.12, h=0.08)]), clip=True),
+         motion="static", hand_marks=True, marks=[write("+5 %", on="five", x=0.84, y=0.89, w=0.14, h=0.08, color="#FFFFFF")]), clip=True),  # white pen on the dark stage floor
      pause_at={"word": "five", "sec": 0.5, "hit": "stamp"})
 beat("a11", S_EXP, "A seat looks cheaper when its fees are still offstage, so you pick a better one.",
      reuse("a10", push={"center": [0.50, 0.55], "zoom": 1.6}),
      label="Seat choice = at least 28 % of the revenue gap · NBER w25186")
 beat("a12", S_EXP, "Then the fees walk on.",
      manual(img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
-         motion="static"), clip=True))
+         motion="static", hand_marks=True,  # the three blank slips get their prices as the fees walk on
+         marks=[write("$8", on="Then", dur=0.35, x=0.184, y=0.544, w=0.06, h=0.075, angle=-6, color="ink"),
+                write("$6", on="fees", dur=0.35, chain=True, x=0.300, y=0.547, w=0.06, h=0.075, angle=-6, color="ink"),
+                write("$4", on="walk", dur=0.35, chain=True, x=0.424, y=0.543, w=0.06, h=0.075, angle=11, color="ink")]), clip=True))
 beat("a13", S_EXP, "Twelve days of science. Then the science went live.", kin())
 beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the end, for everyone.",
      arch("radio_city_crowd_1942.jpg", "Crowd waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress", motion="zoom_in"),
@@ -306,7 +313,7 @@ beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity 
                   "type_on": ["Name:", "Aliases:"]}})
 beat("m2b", S_HOTEL, "Known associates: a pool you will never swim in.",
      manual(img("a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with city lights behind, playful print-ad style",
-         motion="static"), clip=True))
+         motion="static"), clip=True), ledger_hide=True)  # Larry's tab steps aside: lamp and bed sit top right
 beat("c2", S_HOTEL, "In 2019, the Attorney General for Washington, D.C., sued Marriott.",
      arch("hotel_clerk_dover_1938.jpg", "Hotel clerk at desk, Dover, Delaware, 1938 · Library of Congress", motion="zoom_in"),
      label="DC Attorney General v. Marriott · July 2019", alleged=True)
@@ -432,9 +439,9 @@ beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
 chapter("t6", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
 beat("x1", S_CHECK, "Three checks before you pay. One. Look for the all-in switch.",
      manual(img("a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
-         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="all-in", x=0.50, y=0.18, w=0.30, h=0.07, color="ink")]), clip=True))
+         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="all-in", **X1_TOP), write("OFF", on="One.", **X1_OFF)]), clip=True))
 beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
-     reuse("x1", hand_marks=True, marks=[write("ALL-IN PRICES", at=0.0, x=0.50, y=0.18, w=0.30, h=0.07, color="ink"), write("ON", on="on", x=0.72, y=0.50, w=0.08, h=0.08)],
+     reuse("x1", hand_marks=True, marks=[write("ALL-IN PRICES", at=0.0, **X1_TOP), write("OFF", at=0.0, **X1_OFF), write("ON", on="on", **X1_ON)],
            closeup=closeup("before", [0.50, 0.50], 1.6)))
 beat("x3", S_CHECK, "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
      reuse("m1b", hand_marks=True, marks=[write("LAST SCREEN", on="last", x=0.17, y=0.30, w=0.22, h=0.06)],

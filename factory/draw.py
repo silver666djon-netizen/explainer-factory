@@ -308,8 +308,11 @@ class LineDrawing:
 
 
 def mark_pen(marks: list[dict], t: float, W: int, H: int):
-    """Pencil tip (base px) of the mark being drawn at time t, with the hand's in/out timing."""
+    """Pencil tip (base px) of the mark being drawn at time t, with the hand's in/out timing.
+    A mark with "chain": True is written by the same hand straight after the previous hand mark: the hand stays in
+    the frame and travels from the end of one to the start of the next (three prices in a row, say)."""
     from .shots import mark_strokes
+    groups = []
     for i, m in enumerate(marks):
         if not m.get("hand") or m.get("type") in ("led", "stamp", "dot"):
             continue
@@ -319,14 +322,31 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
             strokes = mark_strokes(m, W, H, seed=17 + i)
             if m.get("type") != "write" or m.get("_lay") is not None:
                 m["_strokes"], m["_strokes_WH"] = strokes, (W, H)
-        pts = np.concatenate(strokes)
+        seg = (at, dur, np.concatenate(strokes), m)
+        if m.get("chain") and groups:
+            groups[-1].append(seg)
+        else:
+            groups.append([seg])
+    for g in groups:
+        g = sorted(g, key=lambda x: x[0])
+        a0, a1 = g[0][0], g[-1][0] + g[-1][1]
+        if not (a0 - 0.3 <= t <= a1 + 0.35):
+            continue
 
-        def tip(tt, pts=pts, at=at, dur=dur):
-            q = min(1.0, max(0.0, (tt - at) / max(dur, 1e-3)))
-            x, y = pts[min(len(pts) - 1, int(q * (len(pts) - 1)))]
-            return float(x), float(y)
-        if at - 0.3 <= t <= at + dur + 0.35:
-            return tip, at, at + dur, pen_for(m)
+        def tip(tt, g=g):
+            for k, (at, dur, pts, _m) in enumerate(g):
+                if tt <= at + dur or k == len(g) - 1:
+                    if tt >= at or k == 0:
+                        q = min(1.0, max(0.0, (tt - at) / max(dur, 1e-3)))
+                        x, y = pts[min(len(pts) - 1, int(q * (len(pts) - 1)))]
+                        return float(x), float(y)
+                    pa, pd, pp, _ = g[k - 1]  # travelling between two marks
+                    u = min(1.0, max(0.0, (tt - pa - pd) / max(0.05, at - pa - pd)))
+                    u = u * u * (3 - 2 * u)
+                    (x0, y0), (x1, y1) = pp[-1], pts[0]
+                    return float(x0 + (x1 - x0) * u), float(y0 + (y1 - y0) * u - math.sin(u * math.pi) * H * 0.03)
+            return float(g[-1][2][-1][0]), float(g[-1][2][-1][1])
+        return tip, a0, a1, pen_for(g[0][3])
     return None
 
 
@@ -335,7 +355,7 @@ def pen_for(mark: dict) -> str:
     col = str(mark.get("color", "red"))
     if mark.get("type", "circle") != "write":
         col = str(mark.get("color", "red"))
-    return {"ink": "pencil", "paper": "white"}.get(col, "red")
+    return {"ink": "pencil", "paper": "white", "#FFFFFF": "white", "#ffffff": "white"}.get(col, "red")
 
 
 # ---------------------------------------------------------------- rubber-stamp hand (small stamps on paper)

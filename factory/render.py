@@ -271,6 +271,8 @@ def _serialize_hands(marks: list[dict], busy_until: float = -1e9) -> float:
                     key=lambda m: float(m.get("at", 0))):
         at = float(m.get("at", 0))
         earliest = busy_until + HAND_GAP + HAND_IN
+        if m.get("chain"):  # the same hand stays in and moves on to the next mark
+            earliest = busy_until - HAND_OUT + 0.12
         if at < earliest:
             m["at"] = at = earliest
         busy_until = at + float(m.get("dur", 0.7)) + HAND_OUT

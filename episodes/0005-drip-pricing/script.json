@@ -787,12 +787,12 @@
           {
             "type": "write",
             "text": "+5 %",
-            "x": 0.5,
-            "y": 0.3,
-            "w": 0.12,
+            "x": 0.84,
+            "y": 0.89,
+            "w": 0.14,
             "h": 0.08,
             "angle": 0,
-            "color": "red",
+            "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
             "on": "five"
@@ -834,6 +834,50 @@
         "type": "image",
         "motion": "static",
         "prompt": "three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$8",
+            "x": 0.184,
+            "y": 0.544,
+            "w": 0.06,
+            "h": 0.075,
+            "angle": -6,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.35,
+            "on": "Then"
+          },
+          {
+            "type": "write",
+            "text": "$6",
+            "x": 0.3,
+            "y": 0.547,
+            "w": 0.06,
+            "h": 0.075,
+            "angle": -6,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.35,
+            "on": "fees",
+            "chain": true
+          },
+          {
+            "type": "write",
+            "text": "$4",
+            "x": 0.424,
+            "y": 0.543,
+            "w": 0.06,
+            "h": 0.075,
+            "angle": 11,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.35,
+            "on": "walk",
+            "chain": true
+          }
+        ],
         "manual": true,
         "clip": true
       }
@@ -1199,7 +1243,8 @@
         "prompt": "a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with city lights behind, playful print-ad style",
         "manual": true,
         "clip": true
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "c2",
@@ -2283,15 +2328,28 @@
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.5,
-            "y": 0.18,
-            "w": 0.3,
-            "h": 0.07,
-            "angle": 0,
+            "x": 0.398,
+            "y": 0.203,
+            "w": 0.25,
+            "h": 0.065,
+            "angle": 2,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
             "on": "all-in"
+          },
+          {
+            "type": "write",
+            "text": "OFF",
+            "x": 0.19,
+            "y": 0.522,
+            "w": 0.085,
+            "h": 0.034,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "One."
           }
         ],
         "manual": true,
@@ -2312,10 +2370,24 @@
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.5,
-            "y": 0.18,
-            "w": 0.3,
-            "h": 0.07,
+            "x": 0.398,
+            "y": 0.203,
+            "w": 0.25,
+            "h": 0.065,
+            "angle": 2,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "OFF",
+            "x": 0.19,
+            "y": 0.522,
+            "w": 0.085,
+            "h": 0.034,
             "angle": 0,
             "color": "ink",
             "font": "marker",
@@ -2326,12 +2398,12 @@
           {
             "type": "write",
             "text": "ON",
-            "x": 0.72,
-            "y": 0.5,
-            "w": 0.08,
-            "h": 0.08,
+            "x": 0.594,
+            "y": 0.487,
+            "w": 0.1,
+            "h": 0.065,
             "angle": 0,
-            "color": "red",
+            "color": "ink",
             "font": "marker",
             "dur": 0.7,
             "on": "on"
@@ -3099,12 +3171,12 @@
               {
                 "type": "write",
                 "text": "+5 %",
-                "x": 0.5,
-                "y": 0.3,
-                "w": 0.12,
+                "x": 0.84,
+                "y": 0.89,
+                "w": 0.14,
                 "h": 0.08,
                 "angle": 0,
-                "color": "red",
+                "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "five"
@@ -3124,7 +3196,51 @@
           "visual": {
             "type": "reuse",
             "beat": "a12",
-            "motion": "static"
+            "motion": "static",
+            "marks": [
+              {
+                "type": "write",
+                "text": "$8",
+                "x": 0.184,
+                "y": 0.544,
+                "w": 0.06,
+                "h": 0.075,
+                "angle": -6,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.35,
+                "on": "Then"
+              },
+              {
+                "type": "write",
+                "text": "$6",
+                "x": 0.3,
+                "y": 0.547,
+                "w": 0.06,
+                "h": 0.075,
+                "angle": -6,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.35,
+                "on": "fees",
+                "chain": true
+              },
+              {
+                "type": "write",
+                "text": "$4",
+                "x": 0.424,
+                "y": 0.543,
+                "w": 0.06,
+                "h": 0.075,
+                "angle": 11,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.35,
+                "on": "walk",
+                "chain": true
+              }
+            ],
+            "hand_marks": true
           },
           "id": "s2_5"
         },
@@ -3852,15 +3968,28 @@
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.5,
-                "y": 0.18,
-                "w": 0.3,
-                "h": 0.07,
-                "angle": 0,
+                "x": 0.398,
+                "y": 0.203,
+                "w": 0.25,
+                "h": 0.065,
+                "angle": 2,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "all-in"
+              },
+              {
+                "type": "write",
+                "text": "OFF",
+                "x": 0.19,
+                "y": 0.522,
+                "w": 0.085,
+                "h": 0.034,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "One."
               }
             ],
             "hand_marks": true
@@ -3879,10 +4008,24 @@
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.5,
-                "y": 0.18,
-                "w": 0.3,
-                "h": 0.07,
+                "x": 0.398,
+                "y": 0.203,
+                "w": 0.25,
+                "h": 0.065,
+                "angle": 2,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "OFF",
+                "x": 0.19,
+                "y": 0.522,
+                "w": 0.085,
+                "h": 0.034,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
@@ -3893,12 +4036,12 @@
               {
                 "type": "write",
                 "text": "ON",
-                "x": 0.72,
-                "y": 0.5,
-                "w": 0.08,
-                "h": 0.08,
+                "x": 0.594,
+                "y": 0.487,
+                "w": 0.1,
+                "h": 0.065,
                 "angle": 0,
-                "color": "red",
+                "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "on"
