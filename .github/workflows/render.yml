@@ -177,14 +177,14 @@ jobs:
           if [ "${{ github.event.inputs.preview }}" = "yes" ]; then
             for ep in ${{ steps.pick.outputs.list }}; do
               gh release delete "$ep-preview" -y --cleanup-tag 2>/dev/null || true
-              gh release create "$ep-preview" out/$ep/*.mp4 $(ls out/$ep/timings.json 2>/dev/null) --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease
+              gh release create "$ep-preview" out/$ep/*.mp4 $(ls out/$ep/timings.json 2>/dev/null) --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease --draft
             done
             exit 0
           fi
           for ep in ${{ steps.pick.outputs.list }}; do
             tag="$ep-r${{ github.run_number }}"
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
-            gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt"
+            gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt" --draft  # unreleased video: private until published
             url=$(gh release view "$tag" --json url -q .url)
             if [ "${{ github.event.inputs.send }}" != "no" ]; then python -m factory.notify "out/$ep" "$url"; fi
           done

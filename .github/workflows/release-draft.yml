@@ -1,0 +1,24 @@
+name: Releases to draft
+# Turns published releases whose tag matches a regex into drafts (drafts are visible only to repo collaborators).
+on:
+  workflow_dispatch:
+    inputs:
+      pattern:
+        description: "regex on the tag name, e.g. ^(0004-fake-sale|frames-0004|0005|frames-0005|probe-0005)"
+        required: true
+permissions:
+  contents: write
+jobs:
+  draft:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          PATTERN: ${{ github.event.inputs.pattern }}
+        run: |
+          gh api "repos/$GITHUB_REPOSITORY/releases?per_page=100" --paginate \
+            -q '.[] | select(.draft == false) | "\(.id) \(.tag_name)"' | while read id tag; do
+            if echo "$tag" | grep -Eq "$PATTERN"; then
+              gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$id" -F draft=true >/dev/null && echo "draft: $tag"
+            fi
+          done

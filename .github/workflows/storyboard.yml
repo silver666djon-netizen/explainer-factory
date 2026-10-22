@@ -145,7 +145,7 @@ jobs:
         run: |
           for ep in ${{ steps.pick.outputs.list }}; do
             gh release delete "frames-$ep" -y --cleanup-tag 2>/dev/null || true
-            gh release create "frames-$ep" out/frames/$ep/* out/storyboard/$ep/*.jpg --title "Storyboard $ep" \
+            gh release create "frames-$ep" --draft out/frames/$ep/* out/storyboard/$ep/*.jpg --title "Storyboard $ep" \
               --notes "Frames and depth maps for $ep. Contact sheets: sheet_*.jpg" --prerelease
           done
 

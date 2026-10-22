@@ -61,7 +61,8 @@ def main() -> int:
     if not r.ok:
         print(f"note: enabling workers.dev route returned {r.status_code}: {r.text[:200]}")
     url = f"https://{NAME}.{subdomain}.workers.dev"
-    print("worker url:", url)
+    print(f"::add-mask::{subdomain}")  # public logs: the worker address is not printed
+    print("worker url: https://***.workers.dev")
 
     r = requests.post(f"https://api.telegram.org/bot{tg_token}/setWebhook", json={
         "url": url, "secret_token": hook_secret, "allowed_updates": ["message", "callback_query"],

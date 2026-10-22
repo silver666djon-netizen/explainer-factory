@@ -48,4 +48,4 @@ jobs:
           ep="${{ github.event.inputs.episode }}"
           [ -s voiced.json ] || exit 0
           gh release delete "probe-$ep" -y --cleanup-tag 2>/dev/null || true
-          gh release create "probe-$ep" voiced.json --title "TTS probe $ep" --notes "real narration timings" --prerelease
+          gh release create "probe-$ep" voiced.json --title "TTS probe $ep" --notes "real narration timings" --prerelease --draft
