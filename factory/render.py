@@ -313,6 +313,8 @@ def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]
 
 
 def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause: float = 0.0) -> Plan:
+    from .draw import set_hand_style
+    set_hand_style(cfg)  # Ep.4 on: narrator hands without Larry's sleeve
     vcfg = cfg["video"]
     reveal_hits = []  # (beat index, word time, sfx) after inserted pauses
     voiced = list(voiced)
@@ -412,8 +414,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 capv = visual if vtype == "archive" else beat_lookup[visual["beat"]]["visual"]
                 if capv.get("caption"):
                     plan.plates.append((shot_start, shot_end, str(capv["caption"])))  # captioned archive prints: a big push would slide the caption into the subtitles
-            marks = [dict({**m, **((m.get("short") or {}) if kind == "short" else {})}, at=_timed(m, v["words"], 0.6) + lead_in)
-                     for m in (visual.get("marks") or [])]  # "short": {x, y, ...} = the mark's place in the Shorts' square window
+            marks = [{**m, **((m.get("short") or {}) if kind == "short" else {})} for m in (visual.get("marks") or [])]
+            marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in marks]  # "short": {x, y, at, ...} = Shorts placement
             for m in marks:  # a label that is replaced when another word is spoken
                 if m.get("until_on"):
                     wt = word_time(v["words"], m["until_on"])

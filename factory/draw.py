@@ -42,9 +42,25 @@ def _hand(kind: str, height: int, mirrored: bool) -> tuple[np.ndarray, tuple[int
     return np.array(img), (int(tx), int(ty))
 
 
+# Rule (Ep.4 on): no narrator hand wears Larry's yellow check sleeve. With NO_SLEEVE the sleeved hands are swapped for
+# the same hand cut at its white cuff (assets/hands/hand_<kind>_cuff.png). Set per episode: config "hands": {"sleeve": false}.
+NO_SLEEVE = False
+SLEEVED = ("ink", "colour", "marker", "ink_under", "marker_under", "stamp")
+
+
+def hand_kind(kind: str) -> str:
+    return f"{kind}_cuff" if NO_SLEEVE and kind in SLEEVED else kind
+
+
+def set_hand_style(cfg: dict) -> None:
+    global NO_SLEEVE
+    NO_SLEEVE = not bool((cfg.get("hands") or {}).get("sleeve", True))
+
+
 def paste_hand(frame: np.ndarray, kind: str, x: float, y: float, mirrored: bool, scale: float = 1.0) -> None:
     """Paste the hand so that its pencil tip sits at (x, y) on the frame (scale < 1 for small props)."""
     from .text import blend
+    kind = hand_kind(kind)
     H = min(frame.shape[0], frame.shape[1])  # Shorts: sized to the picture window, not the tall frame
     img, (tx, ty) = _hand(kind, int(H * HAND_HEIGHT * scale), mirrored)
     blend(frame, img, int(x - tx), int(y - ty), opacity=1.0)
@@ -393,7 +409,7 @@ def stamp_press(frame: np.ndarray, impression: np.ndarray, cx: float, cy: float,
     if not (w0 <= t <= w1):
         return
     height = int(max(iw, ih) * 1.12 / STAMP_RUBBER_W)
-    img, (tx, ty) = _hand("stamp", height, False)
+    img, (tx, ty) = _hand(hand_kind("stamp"), height, False)
     if t < t_press:
         lift = (1 - ease((t - w0) / STAMP_IN)) * (cy + H * 0.15)
     elif t <= t_press + STAMP_HOLD:

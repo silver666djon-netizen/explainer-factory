@@ -195,7 +195,7 @@ beat("o2", S_OPEN, "Then the fees. Eight. Six. Four.",
                                          write("+ $6 fee", on="Six.", chain=True, dur=0.45, **FEE(FEE_Y[1])),
                                          write("+ $4 fee", on="Four.", chain=True, dur=0.45, **FEE(FEE_Y[2]))]),
      # (Klot, option 2: the fee rows and PAID go on Larry's tab in one pass at b1, "Eighteen dollars of fees")
-     label="Illustration")
+     label="Illustration", hold=0.35)  # the third fee finishes before the cut
 beat("o3", S_OPEN, "Total: forty-eight.",
      reuse("o1", hand_marks=True,  # no push: the fee column stays clear of Larry's tab and of the ILLUSTRATION plate
            marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
@@ -248,13 +248,13 @@ beat("a4", S_EXP, "For a couple of years before that summer, it showed every fee
      label="Illustration")
 beat("a5", S_EXP, "Then, for twelve days in August 2015, it split its buyers in two.",
      img("a 1950s theatre lobby with a velvet rope splitting a queue of cheerful cartoon ticket buyers into two lines in front of two identical ticket windows, front view",
-         motion="static", hand_marks=True, marks=[write("A", on="split", x=0.30, y=0.20, w=0.05, h=0.08), write("B", on="two.", x=0.70, y=0.20, w=0.05, h=0.08)]),
+         motion="static", hand_marks=True, marks=[write("A", on="split", x=0.30, y=0.20, w=0.05, h=0.08), write("B", on="buyers", chain=True, x=0.70, y=0.20, w=0.05, h=0.08)]),
      label="Aug 19–31, 2015")
 beat("a6", S_EXP, "Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout.",
      reuse("a5", hand_marks=True, marks=[write("A", at=0.0, x=0.30, y=0.20, w=0.05, h=0.08), write("B", at=0.0, x=0.70, y=0.20, w=0.05, h=0.08),
-                                         write("$48", on="full", x=0.30, y=0.30, w=0.09, h=0.07), write("$30…", on="alone,", x=0.70, y=0.30, w=0.10, h=0.07)],
-           closeup=closeup("fees", [0.70, 0.40], 1.8, [write("B", at=0.0, x=0.70, y=0.20, w=0.05, h=0.08), write("$30…", at=0.0, x=0.70, y=0.30, w=0.10, h=0.07),
-                                                       write("+ fees at checkout", on="checkout.", x=0.70, y=0.40, w=0.20, h=0.05)])),
+                                         write("$48", on="full", x=0.405, y=0.265, w=0.075, h=0.065), write("$30", on="alone,", x=0.605, y=0.255, w=0.07, h=0.06)],
+           closeup=closeup("fees", [0.62, 0.36], 1.7, [write("B", at=0.0, x=0.70, y=0.20, w=0.05, h=0.08), write("$30", at=0.0, x=0.605, y=0.255, w=0.07, h=0.06),
+                                                       write("+ fees", on="waiting", x=0.605, y=0.312, w=0.08, h=0.045)])),  # in window B's glass
      label="Aug 19–31, 2015")
 beat("a7", S_EXP, "Same tickets. Same fees. The only thing that changed was the moment you saw them.", kin())
 beat("a8", S_EXP, "The ones who met the fees late spent almost twenty-one percent more.",
@@ -268,14 +268,15 @@ beat("a10", S_EXP, "And the buyers among them picked seats about five percent pr
          motion="static", hand_marks=True, marks=[write("+5 %", on="five", x=0.70, y=0.40, w=0.10, h=0.07, plate=[1.35, 1.45])]), clip=True),  # cream plate on the seats: the clip's push-in takes the floor away
      pause_at={"word": "five", "sec": 0.5, "hit": "stamp"})
 beat("a11", S_EXP, "A seat looks cheaper when its fees are still offstage, so you pick a better one.",
-     reuse("a10", push={"center": [0.50, 0.55], "zoom": 1.6}),
+     manual(img("last frame of the a10 clip", note="images/a11.png = last frame of clips/a10.mp4", motion="static",
+                push={"center": [0.50, 0.60], "zoom": 1.15})),
      label="Seat choice = at least 28 % of the revenue gap · NBER w25186")
 beat("a12", S_EXP, "Then the fees walk on.",
      manual(img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
          motion="static", hand_marks=True, clip_until=4.0,  # Grok clip: the slips walk to centre stage and stop (frozen at 4.0 s)
-         marks=[write("$8", at=4.05, dur=0.3, x=0.3732, y=0.5499, w=0.065, h=0.09, angle=5.3, color="ink"),
-                write("$6", at=4.47, dur=0.3, chain=True, x=0.4933, y=0.5499, w=0.065, h=0.09, angle=-1.8, color="ink"),
-                write("$4", at=4.89, dur=0.3, chain=True, x=0.6193, y=0.5548, w=0.065, h=0.09, angle=6.1, color="ink")]), clip=True),
+         marks=[write("$8", at=4.05, dur=0.3, x=0.3732, y=0.5499, w=0.065, h=0.09, angle=5.3, color="ink", short={"x": 0.184, "y": 0.544, "angle": -6, "w": 0.06, "h": 0.075, "at": 0.45}),
+                write("$6", at=4.47, dur=0.3, chain=True, x=0.4933, y=0.5499, w=0.065, h=0.09, angle=-1.8, color="ink", short={"x": 0.3, "y": 0.547, "angle": -6, "w": 0.06, "h": 0.075, "at": 0.87}),
+                write("$4", at=4.89, dur=0.3, chain=True, x=0.6193, y=0.5548, w=0.065, h=0.09, angle=6.1, color="ink", short={"x": 0.424, "y": 0.543, "angle": 11, "w": 0.06, "h": 0.075, "at": 1.29})]), clip=True),
      hold=3.6)  # the line, then the three prices go on the stopped slips
 beat("a13", S_EXP, "Twelve days of science. Then the science went live.", kin())
 beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the end, for everyone.",
@@ -286,7 +287,7 @@ beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the
 chapter("t2", S_TM, "Wednesday, ten a.m.", "Wednesday 10:00 AM — $16.4 billion")
 beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
      manual(img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Larry", fade_after=0.75, x=0.84, y=0.56, w=0.16, h=0.07)]), clip=True),
+         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Larry", fade_after=0.75, short={"fade_after": None}, x=0.84, y=0.56, w=0.16, h=0.07)]), clip=True),
      ledger=[tab("SERVICE FEE", "+$8.00", "Eighteen", dur=0.42), tab("FACILITY FEE", "+$6.00", "Eighteen", dur=0.42, chain=True),
              tab("PROCESSING FEE", "+$4.00", "Eighteen", dur=0.42, chain=True), tab("PAID", "$48.00", "Eighteen", dur=0.42, chain=True),
              tab("HIDDEN", "$18.00", "Eighteen", dur=0.5, chain=True, loss=True, circle=True)])  # one pass of the tab hand
@@ -345,7 +346,7 @@ beat("c4", S_HOTEL, "from nine to ninety-five dollars, per room, per day.",
 beat("c5", S_HOTEL, "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.",
      reuse("c4", hand_marks=True, marks=[write("$9 – $95 / night", at=0.0, x=0.485, y=0.274, w=0.30, h=0.058)],
            closeup=closeup("booking,", [0.50, 0.62], 1.8, [write("TAXES AND FEES", on="Taxes", x=0.42, y=0.62, w=0.26, h=0.06, color="ink"),
-                                                            circle(0.42, 0.62, 0.30, 0.10, "Fees.", target=[0.29, 0.59, 0.55, 0.65])])))
+                                                            circle(0.42, 0.62, 0.30, 0.10, "Fees.", target=[0.29, 0.59, 0.55, 0.65])])), hold=0.5)
 beat("c6", S_HOTEL, "From customers in D.C. alone, the Attorney General says, that came to millions of dollars.",
      doc("DC Attorney General · press release · July 9, 2019", "Marriott resort fees",
          "Marriott has charged resort fees to tens of thousands of District consumers over the years, totaling millions of dollars.",
@@ -358,7 +359,7 @@ beat("c8", S_HOTEL, "In 2023, Marriott agreed with Texas to show the total price
 # ------------------------------------------------------------------ Why a split price feels cheaper (insert, ~25 s)
 beat("n1", S_BRAIN, "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
      img("a cream paper price tag being cut into two pieces by a pair of red-handled scissors, plain cream background, 1950s print-ad style",
-         motion="static", hand_marks=True, marks=[write("BASE", on="base", x=0.35, y=0.70, w=0.12, h=0.06), write("+ SURCHARGE", on="surcharge.", x=0.68, y=0.70, w=0.22, h=0.06)]),
+         motion="static", hand_marks=True, marks=[write("BASE", on="split", x=0.35, y=0.70, w=0.12, h=0.06), write("+ SURCHARGE", on="base", chain=True, x=0.68, y=0.70, w=0.22, h=0.06)]),
      label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998")
 beat("n2", S_BRAIN, "The total price was the same. It was just served in pieces.",
      reuse("n1", closeup=closeup("served", [0.50, 0.50], 1.6, [write("SAME TOTAL", on="same.", x=0.50, y=0.22, w=0.24, h=0.07)])),
@@ -410,22 +411,23 @@ beat("l3", S_LAW, "In April 2026, StubHub agreed to pay ten million dollars back
      stat(10, "StubHub settlement · FTC · April 2026", prefix="$", suffix="m"),
      pause_at={"word": "ten", "sec": 0.6, "hit": "stamp"})
 beat("l3b", S_LAW, "over fees it showed too late.",
-     reuse("a5", hand_marks=True, push={"center": [0.70, 0.40], "zoom": 1.8},
-           marks=[write("B", at=0.0, x=0.70, y=0.20, w=0.05, h=0.08), write("$30…", at=0.0, x=0.70, y=0.30, w=0.10, h=0.07),
-                  write("+ fees at checkout", at=0.0, x=0.70, y=0.40, w=0.20, h=0.05)]), label="FTC · April 2026 · settlement")
+     reuse("a5", hand_marks=True, push={"center": [0.62, 0.36], "zoom": 1.7},
+           marks=[write("B", at=0.0, x=0.70, y=0.20, w=0.05, h=0.08), write("$30", at=0.0, x=0.605, y=0.255, w=0.07, h=0.06),
+                  write("+ fees", at=0.0, x=0.605, y=0.312, w=0.08, h=0.045)]), label="FTC · April 2026 · settlement")
 beat("l4", S_LAW, "America has done this before. In 1958, a law put a sticker on the window of every new car:",
      arch("car_showroom_1942.jpg", "Car showroom, Pierson Motor Company, Lititz, Pennsylvania, 1942 · Library of Congress", motion="zoom_in"),
      label="Automobile Information Disclosure Act · 1958")
 beat("l5", S_LAW, "the price, every option, the delivery charge, and the total.",
      img("the side window of a 1950s two-tone sedan in a showroom with a large blank paper sticker taped inside the glass, close view",
          motion="static", hand_marks=True,
-         marks=[write("PRICE", on="price,", x=0.50, y=0.30, w=0.16, h=0.05, color="ink"), write("OPTIONS", on="option,", x=0.50, y=0.40, w=0.18, h=0.05, color="ink"),
-                write("DELIVERY", on="delivery", x=0.50, y=0.50, w=0.18, h=0.05, color="ink"), write("TOTAL", on="total.", x=0.50, y=0.62, w=0.16, h=0.06)]),
+         marks=[write("PRICE", on="price,", x=0.50, y=0.30, w=0.16, h=0.05, color="ink"), write("OPTIONS", on="option,", chain=True, x=0.50, y=0.40, w=0.18, h=0.05, color="ink"),
+                write("DELIVERY", on="delivery", chain=True, x=0.50, y=0.50, w=0.18, h=0.05, color="ink"),
+                write("TOTAL", on="total.", chain=True, x=0.50, y=0.62, w=0.16, h=0.06)]),  # one hand writes the list
      label="15 U.S.C. 1232 · 1958")
 beat("l6", S_LAW, "Cars got the total sixty-seven years before concert tickets did.",
      reuse("l5", hand_marks=True, marks=[write("TOTAL", at=0.0, x=0.50, y=0.62, w=0.16, h=0.06),
                                          circle(0.50, 0.62, 0.22, 0.10, "total", target=[0.42, 0.59, 0.58, 0.65]),
-                                         write("67 YEARS", on="sixty-seven", x=0.80, y=0.62, w=0.16, h=0.06)]),
+                                         write("67 YEARS", on="sixty-seven", x=0.56, y=0.185, w=0.17, h=0.06)]),
      pause_at={"word": "sixty-seven", "sec": 0.4, "hit": None})
 beat("l7", S_LAW, "Border two: Britain. Since April 2025, the price must include every fee you can't avoid.",
      reuse("l1", hand_marks=True, marks=[stamp('USA · TOTAL UPFRONT · MAY 2025', 0.35, 0.445, at=0.0, angle=-8, w=0.18), stamp('UK · ALL FEES IN · APRIL 2025', 0.585, 0.58, on='include', angle=6, w=0.18)]))
@@ -457,8 +459,8 @@ beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
 chapter("t6", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
 beat("x1", S_CHECK, "Three checks before you pay. One. Look for the all-in switch.",
      manual(img("a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
-         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="all-in", **X1_TOP), write("OFF", on="One.", **X1_OFF),
-                                                  write("ON", at=4.25, dur=0.35, chain=True, **X1_ON)]), clip=True))  # Grok clip: the lever flips right ~4 s, ON goes on after the click
+         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="checks", **X1_TOP), write("OFF", on="One.", **X1_OFF),
+                                                  write("ON", at=4.25, dur=0.35, **X1_ON)]), clip=True))  # Grok clip: the lever flips right ~4 s, ON goes on after the click
 beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
      manual(img("the last frame of the x1 clip: the switch now set to the right (ON)", note="images/x2.png = last frame of clips/x1.mp4",
          motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", at=0.0, **X2_TOP), write("OFF", at=0.0, **X2_OFF), write("ON", at=0.0, **X2_ON)],
@@ -477,7 +479,8 @@ beat("z0", S_CLOSE, "Case closed. Larry paid forty-eight dollars for a thirty-do
          motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True, "x": 0.685, "y": 0.165, "w": 0.21},  # dark upper right, left of where Larry's tab grows
      hero=True)  # Larry's hand and ticket fill the frame: the tab steps aside (no hand near his hands)
 beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
-     reuse("z0", push={"center": [0.45, 0.40], "zoom": 1.6}, closeup=closeup("checkout", [0.58, 0.62], 2.0)), hero=True)
+     manual(img("last frame of the z0 clip", note="images/z0b.png = last frame of clips/z0.mp4", motion="static",
+                push={"center": [0.45, 0.40], "zoom": 1.1}, closeup=closeup("checkout", [0.76, 0.43], 1.3))), hero=True)  # on the ticket
 ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
       # four lines at the Ep.3 letter size, each written from its first spoken word (real-voice word times)
       "verdict": ["Guilty: the checkout fee", "and its cousin, the resort fee.", "Accomplice:", "the first number on the screen."],
@@ -500,7 +503,7 @@ beat("z5", S_CLOSE, "Subscribe, so the next case file finds you.", {"type": "con
 LONG = {b["id"]: b for b in B}
 
 
-def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp", "label", "ledger", "alleged"), **kw):
+def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp", "label", "ledger", "alleged", "hold"), **kw):
     src = LONG[bid]
     v = src["visual"]
     if v["type"] in ("image", "archive", "clip"):
@@ -526,7 +529,7 @@ SHORTS = [
      "beats": [L("o1"), L("o2"), L("o3"), L("m1"), L("b6"), L("o1", text="So before you pay thirty, ask what it costs.", keep=())]},
     {"id": "s2", "title": "StubHub tested hidden fees on its own buyers #shorts", "hook": "THEY TESTED IT ON YOU", "hook_on": "a5",
      "beats": [L("a5", text="StubHub showed every fee upfront. Then, for twelve days in August 2015, it split its buyers in two."),
-               L("a6"), L("a8"), L("a9"), L("a10"), L("a12"), L("a14")]},
+               L("a6"), L("a8"), L("a9"), L("a10"), L("a12", hold=0.6), L("a14")]},
     {"id": "s3", "title": "$16.4 billion in fees (alleged) #shorts", "hook": "$16.4 BILLION", "hook_on": "b5",
      "beats": [L("b1"), L("b2"), L("b3"), L("b4"), L("b5"), L("b9"), L("b6")]},
     {"id": "s4", "title": "A resort fee at a city hotel #shorts", "hook": "RESORT FEE?", "hook_on": "c1",
@@ -543,7 +546,8 @@ for sh in SHORTS:
         b["id"] = f"{sh['id']}_{k}"
 
 ep = {
-    "config": {"ledger": {"hand": "ink_cuff", "hand_scale": 0.43, "from": "right"}},  # plain cuff hand, from the right edge
+    "config": {"ledger": {"hand": "ink_cuff", "hand_scale": 0.43, "from": "right"},  # plain cuff hand, from the right edge
+               "hands": {"sleeve": False}},  # rule 21: Larry's jacket belongs only to Larry
     "slug": "0005-drip-pricing",
     "title": "The $30 Ticket That Costs $48",
     "description": "Case file #004: the fee at the end. Larry (fictional) buys a $30 concert ticket and pays $48. StubHub's own 2015 experiment, the FTC's case against Ticketmaster (alleged), Marriott's city-hotel resort fees (alleged), why a split price feels cheaper, one ticket stamped by three laws — and three checks before you pay.",

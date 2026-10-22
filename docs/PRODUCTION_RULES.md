@@ -121,3 +121,8 @@ must report zero before a final render.
     label or plate letter is code-drawn on top (marks, plates, composited props in make_edits.py) — e.g. Ep.4's laptop
     screen is generated blank and the checkout page is drawn on it; the learner car's "L" is written by our hand.
     Prompts carry no notes in brackets: production notes go in the visual's "note" field.
+21. Larry's jacket belongs only to Larry. From Ep.4 on, no narrator hand (pen, marker, stamp, ledger, end-screen click)
+    wears Larry's yellow check sleeve: every hand ends at a plain white cuff (assets/hands/hand_<kind>_cuff.png,
+    switched on per episode with config "hands": {"sleeve": false}). Larry's tab is written by the small cuff hand
+    sliding in from the right edge only as far as the card (config "ledger": {"hand": "ink_cuff", "from": "right"}).
+    Ep.3 stays as released.
