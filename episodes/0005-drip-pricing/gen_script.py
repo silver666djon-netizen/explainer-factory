@@ -454,7 +454,7 @@ beat("x5", S_CHECK, "The cheapest ticket is the one with the smallest last numbe
 # ------------------------------------------------------------------ Case closed + end screen (Ep.5 teaser: tip screens)
 beat("z0", S_CLOSE, "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.",
      manual(img(f"{LARRY} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light",
-         motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True, "x": 0.84, "y": 0.40, "w": 0.26},  # dark upper right, under the tab
+         motion="zoom_in"), clip=True), stamp={"text": "Case closed", "on": "Case", "big": True, "x": 0.685, "y": 0.165, "w": 0.21},  # dark upper right, left of where Larry's tab grows
      ledger=[tab("PAID", "$48.00 for a $30 ticket", "forty-eight", note=True)])
 beat("z0b", S_CLOSE, "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.",
      reuse("z0", push={"center": [0.45, 0.40], "zoom": 1.6}, closeup=closeup("checkout", [0.58, 0.62], 2.0)), hero=True)
