@@ -178,16 +178,16 @@ beat("o1", S_OPEN, "A concert ticket. Thirty dollars.",
      pause_at={"word": "Thirty", "sec": 0.45, "hit": "stamp"}, ledger=[tab("TICKET", "$30.00", "Thirty")], label="Illustration")
 beat("o2", S_OPEN, "Then the fees. Eight. Six. Four.",
      reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
-                                         write("+ $8 fee", on="Eight.", x=0.86, y=0.30, w=0.16, h=0.07),
-                                         write("+ $6 fee", on="Six.", x=0.86, y=0.42, w=0.16, h=0.07),
-                                         write("+ $4 fee", on="Four.", x=0.86, y=0.54, w=0.16, h=0.07)]),
+                                         write("+ $8 fee", on="Eight.", dur=0.45, x=0.86, y=0.40, w=0.16, h=0.07),
+                                         write("+ $6 fee", on="Six.", chain=True, dur=0.45, x=0.86, y=0.52, w=0.16, h=0.07),
+                                         write("+ $4 fee", on="Four.", chain=True, dur=0.45, x=0.86, y=0.64, w=0.16, h=0.07)]),
      ledger=[tab("SERVICE FEE", "+$8.00", "Eight."), tab("FACILITY FEE", "+$6.00", "Six."), tab("PROCESSING FEE", "+$4.00", "Four.")],
      label="Illustration")
 beat("o3", S_OPEN, "Total: forty-eight.",
-     reuse("o1", push={"center": [0.62, 0.46], "zoom": 1.15}, hand_marks=True,  # fee column stays clear of Larry's tab
+     reuse("o1", hand_marks=True,  # no push: the fee column stays clear of Larry's tab and of the ILLUSTRATION plate
            marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
-                  write("+ $8 fee", at=0.0, x=0.86, y=0.30, w=0.16, h=0.07), write("+ $6 fee", at=0.0, x=0.86, y=0.42, w=0.16, h=0.07),
-                  write("+ $4 fee", at=0.0, x=0.86, y=0.54, w=0.16, h=0.07), write("= $48", on="forty-eight.", x=0.86, y=0.68, w=0.16, h=0.09)]),
+                  write("+ $8 fee", at=0.0, x=0.86, y=0.40, w=0.16, h=0.07), write("+ $6 fee", at=0.0, x=0.86, y=0.52, w=0.16, h=0.07),
+                  write("+ $4 fee", at=0.0, x=0.86, y=0.64, w=0.16, h=0.07), write("= $48", on="forty-eight.", x=0.86, y=0.755, w=0.16, h=0.09)]),
      pause_at={"word": "forty-eight.", "sec": 0.45, "hit": "stamp"}, ledger=[tab("PAID", "$48.00", "forty-eight.")], label="Illustration")
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",

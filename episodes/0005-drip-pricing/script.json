@@ -114,40 +114,42 @@
             "type": "write",
             "text": "+ $8 fee",
             "x": 0.86,
-            "y": 0.3,
+            "y": 0.4,
             "w": 0.16,
             "h": 0.07,
             "angle": 0,
             "color": "red",
             "font": "marker",
-            "dur": 0.7,
+            "dur": 0.45,
             "on": "Eight."
           },
           {
             "type": "write",
             "text": "+ $6 fee",
             "x": 0.86,
-            "y": 0.42,
+            "y": 0.52,
             "w": 0.16,
             "h": 0.07,
             "angle": 0,
             "color": "red",
             "font": "marker",
-            "dur": 0.7,
-            "on": "Six."
+            "dur": 0.45,
+            "on": "Six.",
+            "chain": true
           },
           {
             "type": "write",
             "text": "+ $4 fee",
             "x": 0.86,
-            "y": 0.54,
+            "y": 0.64,
             "w": 0.16,
             "h": 0.07,
             "angle": 0,
             "color": "red",
             "font": "marker",
-            "dur": 0.7,
-            "on": "Four."
+            "dur": 0.45,
+            "on": "Four.",
+            "chain": true
           }
         ]
       },
@@ -179,13 +181,6 @@
         "beat": "o1",
         "index": 0,
         "motion": "static",
-        "push": {
-          "center": [
-            0.62,
-            0.46
-          ],
-          "zoom": 1.15
-        },
         "hand_marks": true,
         "marks": [
           {
@@ -206,7 +201,7 @@
             "type": "write",
             "text": "+ $8 fee",
             "x": 0.86,
-            "y": 0.3,
+            "y": 0.4,
             "w": 0.16,
             "h": 0.07,
             "angle": 0,
@@ -220,7 +215,7 @@
             "type": "write",
             "text": "+ $6 fee",
             "x": 0.86,
-            "y": 0.42,
+            "y": 0.52,
             "w": 0.16,
             "h": 0.07,
             "angle": 0,
@@ -234,7 +229,7 @@
             "type": "write",
             "text": "+ $4 fee",
             "x": 0.86,
-            "y": 0.54,
+            "y": 0.64,
             "w": 0.16,
             "h": 0.07,
             "angle": 0,
@@ -248,7 +243,7 @@
             "type": "write",
             "text": "= $48",
             "x": 0.86,
-            "y": 0.68,
+            "y": 0.755,
             "w": 0.16,
             "h": 0.09,
             "angle": 0,
@@ -2727,40 +2722,42 @@
                 "type": "write",
                 "text": "+ $8 fee",
                 "x": 0.86,
-                "y": 0.3,
+                "y": 0.4,
                 "w": 0.16,
                 "h": 0.07,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
-                "dur": 0.7,
+                "dur": 0.45,
                 "on": "Eight."
               },
               {
                 "type": "write",
                 "text": "+ $6 fee",
                 "x": 0.86,
-                "y": 0.42,
+                "y": 0.52,
                 "w": 0.16,
                 "h": 0.07,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
-                "dur": 0.7,
-                "on": "Six."
+                "dur": 0.45,
+                "on": "Six.",
+                "chain": true
               },
               {
                 "type": "write",
                 "text": "+ $4 fee",
                 "x": 0.86,
-                "y": 0.54,
+                "y": 0.64,
                 "w": 0.16,
                 "h": 0.07,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
-                "dur": 0.7,
-                "on": "Four."
+                "dur": 0.45,
+                "on": "Four.",
+                "chain": true
               }
             ]
           },
@@ -2791,13 +2788,6 @@
             "beat": "o1",
             "index": 0,
             "motion": "static",
-            "push": {
-              "center": [
-                0.62,
-                0.46
-              ],
-              "zoom": 1.15
-            },
             "hand_marks": true,
             "marks": [
               {
@@ -2818,7 +2808,7 @@
                 "type": "write",
                 "text": "+ $8 fee",
                 "x": 0.86,
-                "y": 0.3,
+                "y": 0.4,
                 "w": 0.16,
                 "h": 0.07,
                 "angle": 0,
@@ -2832,7 +2822,7 @@
                 "type": "write",
                 "text": "+ $6 fee",
                 "x": 0.86,
-                "y": 0.42,
+                "y": 0.52,
                 "w": 0.16,
                 "h": 0.07,
                 "angle": 0,
@@ -2846,7 +2836,7 @@
                 "type": "write",
                 "text": "+ $4 fee",
                 "x": 0.86,
-                "y": 0.54,
+                "y": 0.64,
                 "w": 0.16,
                 "h": 0.07,
                 "angle": 0,
@@ -2860,7 +2850,7 @@
                 "type": "write",
                 "text": "= $48",
                 "x": 0.86,
-                "y": 0.68,
+                "y": 0.755,
                 "w": 0.16,
                 "h": 0.09,
                 "angle": 0,
