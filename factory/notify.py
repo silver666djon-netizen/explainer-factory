@@ -119,21 +119,31 @@ def main(argv: list[str]) -> int:
         send_text(cap)
     shorts = sorted((k, f) for k, f in files.items() if k and k[0] == "s" and k[1:].isdigit())
     shorts = [(k, f) for k, f in sorted(shorts, key=lambda x: int(x[0][1:])) if f.stat().st_size < LIMIT]
-    if shorts:  # 2) the Shorts in one batch
-        media, up = [], {}
-        for n, (k, f) in enumerate(shorts[:10]):
-            item = {"type": "video", "media": f"attach://v{n}", "supports_streaming": True}
-            if n == 0:
-                item["caption"] = f"{head} · Shorts ({len(shorts)})"
-            media.append(item)
-            up[f"v{n}"] = (f"{pre}_{k}.mp4", open(f, "rb"), "video/mp4")
-        r = _api("sendMediaGroup", data={"media": json.dumps(media)}, files=up)
-        for v in up.values():
-            v[1].close()
-        if r is None or r.status_code != 200:  # fall back to one by one
-            for k, f in shorts:
-                with open(f, "rb") as fh:
-                    _api("sendVideo", data={"caption": f"{head} · {k}", "supports_streaming": "true"}, files={"video": (f"{pre}_{k}.mp4", fh)})
+    if shorts:  # 2) the Shorts in one batch (an album; split only where one request would exceed the upload limit)
+        groups, cur, size = [], [], 0
+        for k, f in shorts:
+            if cur and (len(cur) == 10 or size + f.stat().st_size > LIMIT * 0.9):
+                groups.append(cur)
+                cur, size = [], 0
+            cur.append((k, f))
+            size += f.stat().st_size
+        groups.append(cur)
+        for g_i, grp in enumerate(groups):
+            media, up = [], {}
+            for n, (k, f) in enumerate(grp):
+                item = {"type": "video", "media": f"attach://v{n}", "supports_streaming": True}
+                if n == 0 and g_i == 0:
+                    item["caption"] = f"{head} · Shorts ({len(shorts)})"
+                media.append(item)
+                up[f"v{n}"] = (f"{pre}_{k}.mp4", open(f, "rb"), "video/mp4")
+            r = _api("sendMediaGroup", data={"media": json.dumps(media)}, files=up) if len(grp) > 1 else None
+            for v in up.values():
+                v[1].close()
+            if r is None or r.status_code != 200:  # one Short, or the album failed: one by one
+                for k, f in grp:
+                    with open(f, "rb") as fh:
+                        _api("sendVideo", data={"caption": f"{head} · {k}", "supports_streaming": "true"},
+                             files={"video": (f"{pre}_{k}.mp4", fh)})
     for k in ("description", "srt"):  # 3) the texts
         if k in files:
             name = f"{pre}_description.txt" if k == "description" else f"{pre}_long.srt"
