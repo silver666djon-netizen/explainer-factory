@@ -1,0 +1,31 @@
+name: Cyrillic font pack
+# Downloads Cyrillic-capable Google Fonts (OFL) for the language versions and keeps them in the draft release "fonts-cyr".
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  fonts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download
+        run: |
+          mkdir -p fc
+          base=https://github.com/google/fonts/raw/main
+          for f in "ofl/oswald/Oswald[wght].ttf" "ofl/montserrat/Montserrat[wght].ttf" "ofl/rubik/Rubik[wght].ttf" \
+                   "ofl/russoone/RussoOne-Regular.ttf" "ofl/pangolin/Pangolin-Regular.ttf" "ofl/caveat/Caveat[wght].ttf" \
+                   "ofl/shantellsans/ShantellSans[BNCE,INFM,SPAC,wght].ttf" "ofl/neucha/Neucha-Regular.ttf" \
+                   "ofl/ptmono/PTM55FT.ttf" "ofl/courierprime/CourierPrime-Regular.ttf" "ofl/cousine/Cousine-Regular.ttf" \
+                   "ofl/kellyslab/KellySlab-Regular.ttf" "ofl/amaticsc/AmaticSC-Bold.ttf" "ofl/yanonekaffeesatz/YanoneKaffeesatz[wght].ttf"; do
+            enc=$(python3 -c "import sys,urllib.parse;print(urllib.parse.quote(sys.argv[1]))" "$f")
+            n=$(basename "$f" | tr -d '[]' | tr ',' '-')
+            curl -fsSL -o "fc/$n" "$base/$enc" && echo "ok $n" || echo "::warning::font failed: $f"
+          done
+          ls -la fc
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh delete fonts-cyr || true
+          gh release create fonts-cyr fc/* --title "Cyrillic fonts (OFL)" --notes "Google Fonts, SIL Open Font License" --draft
