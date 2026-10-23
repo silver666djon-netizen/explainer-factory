@@ -6,6 +6,9 @@ on:
       episode:
         required: true
         default: "0005-drip-pricing"
+      lang:
+        required: false
+        default: ""
 permissions:
   contents: write
 jobs:
@@ -40,12 +43,14 @@ jobs:
           key: images-none
           restore-keys: images-
       - run: python tools/tts_probe.py "episodes/${{ github.event.inputs.episode }}" 90
+        env:
+          FACTORY_LANG: ${{ github.event.inputs.lang }}
       - name: Publish real voice timings (for local plan debugging)
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          ep="${{ github.event.inputs.episode }}"
+          ep="${{ github.event.inputs.episode }}"; [ -n "${{ github.event.inputs.lang }}" ] && ep="$ep-${{ github.event.inputs.lang }}"
           [ -s voiced.json ] || exit 0
           tools/rel.sh delete "probe-$ep" || true
           gh release create "probe-$ep" voiced.json --title "TTS probe $ep" --notes "real narration timings" --prerelease --draft

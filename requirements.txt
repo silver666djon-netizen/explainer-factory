@@ -8,3 +8,5 @@ pillow>=10.0
 pyyaml>=6.0
 requests>=2.31
 transformers>=4.45
+edge-tts>=6.1
+fonttools>=4.40

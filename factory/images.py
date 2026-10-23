@@ -389,10 +389,13 @@ def _variants(prompts: dict[str, dict]) -> dict[str, int]:
 def _manual_image(episode_dir: str | None, key: str) -> Path | None:
     if not episode_dir:
         return None
-    for ext in (".png", ".jpg", ".jpeg", ".webp"):
-        cand = Path(episode_dir) / "images" / f"{key}{ext}"
-        if cand.exists():
-            return cand
+    from .i18n import lang
+    dirs = ([Path(episode_dir) / "lang" / lang() / "images"] if lang() else []) + [Path(episode_dir) / "images"]
+    for d in dirs:  # a language version's own picture (words baked in) wins
+        for ext in (".png", ".jpg", ".jpeg", ".webp"):
+            cand = d / f"{key}{ext}"
+            if cand.exists():
+                return cand
     return None
 
 

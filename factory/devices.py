@@ -20,6 +20,7 @@ from .endscreen import Writing
 from .evidence import _aged_paper, desk, evidence_tag, tape_strip
 from .shots import Shot, ease
 from .text import blend, fit_font, font
+from .i18n import ui
 
 
 def _pal(cfg):
@@ -42,8 +43,9 @@ class Ledger:
     GROW = 0.3
     HOLD = 0.9
 
-    def __init__(self, rows: list[dict], cfg: dict, size, title: str = "LARRY'S TAB", hide: list | None = None):
+    def __init__(self, rows: list[dict], cfg: dict, size, title: str | None = None, hide: list | None = None):
         self.W, self.H = W, H = size
+        title = title or ui("LARRY'S TAB")
         self.rows = sorted(rows, key=lambda r: r["at"])
         self.pal = pal = _pal(cfg)
         self.hide = sorted(hide or [])
@@ -467,7 +469,7 @@ def exhibit_frame(rgb: np.ndarray, W: int, H: int, cfg: dict, t: float, seed: in
     if tag_p is not None:  # tag_p = the press time: the EXHIBIT mark is applied by the stamp hand
         key = ("exh", tag, W, seed)
         if key not in _DESKS:
-            tg = evidence_tag(cfg, tag, int(W * 0.20), seed, word="EXHIBIT").rotate(9, resample=Image.BICUBIC, expand=True)
+            tg = evidence_tag(cfg, tag, int(W * 0.20), seed, word=ui("EXHIBIT")).rotate(9, resample=Image.BICUBIC, expand=True)
             _DESKS[key] = np.array(tg)
         ta = _DESKS[key]
         cxs, cys = x + pr.shape[1] - int(ta.shape[1] * 0.30), y + pr.shape[0] - int(ta.shape[0] * 0.45)

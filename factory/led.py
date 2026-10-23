@@ -52,10 +52,12 @@ def led_panel(text: str = "02:59:59", label: str | None = None, height: int = 22
         from .config import resolve_font
         from PIL import ImageFont
         try:
-            f = ImageFont.truetype(str(resolve_font(["assets/fonts/ArchivoBlack-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"])),
+            f = ImageFont.truetype(str(resolve_font([*__import__("factory.i18n", fromlist=["fonts"]).fonts().get("body", []), "assets/fonts/ArchivoBlack-Regular.ttf", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"])),
                                    int(H * 0.13))
         except Exception:  # noqa: BLE001
             f = ImageFont.load_default()
+        while hasattr(f, "getlength") and f.getlength(label.upper()) > W * 0.88 and getattr(f, "size", 0) > 10:
+            f = ImageFont.truetype(f.path, f.size - 1)  # a longer (translated) label shrinks to the panel
         d.text((W / 2, pad * 0.45 + H * 0.08), label.upper(), font=f, fill=(230, 222, 205, 255), anchor="mm")
     x = pad
     for ch in text:

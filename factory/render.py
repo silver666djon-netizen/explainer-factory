@@ -19,6 +19,7 @@ from .props import CaseFileShot, MazeShot, MugshotShot, NewsreelShot, RouletteSh
 from .depth import load_depth
 from .shots import ChartShot, ClipShot, DocShot, ImageShot, KineticShot, Shot, StatShot, TitleShot
 from .text import blend, fit_font, font, text_block, wrap
+from .i18n import num_words, ui
 
 MOTION_CYCLE = ["zoom_in", "pan_right", "zoom_out", "pan_left", "drift", "pan_up", "zoom_in", "pan_down"]
 
@@ -202,7 +203,7 @@ def _number_spoken_at(words, on: str | None = None) -> float | None:
         return word_time(words, on)
     for w, s0, _e in words:
         core = w.lower().strip(".,!?;:\"'()").split("-")[0]
-        if any(c.isdigit() for c in core) or core in _NUM_WORDS:
+        if any(c.isdigit() for c in core) or core in _NUM_WORDS or core in num_words():
             return s0
     return None
 
@@ -393,7 +394,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         if clip_file is not None:
             cshot = ClipShot(shot_start, span, clip_file, size, cfg, float(visual.get("clip_speed", 1.0)))
             if visual.get("newsreel"):
-                label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Archive film"
+                label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else ui("Archive film")
                 cshot = NewsreelShot(cshot, cfg, label, seed=i)
                 for at in projector_sfx_times(shot_start, span):
                     plan.timeline.add_sfx(at, "projector", seed=i)
@@ -532,7 +533,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                                      ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
                                      draw=shot_draw if k == 0 else None)
                 if visual.get("newsreel"):
-                    label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else "Reconstruction"
+                    label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else ui("Reconstruction")
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)
                 shot._archive = vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive")
                 shot._still_src = None if live is not None else str(path)  # max-still check (a live clip is not a still)
@@ -956,7 +957,7 @@ class Overlay:
             short = self.plan.kind == "short"
             fs = int(self.H * (0.04 if short else 0.064))
             fnt = font(self.head, fs)
-            label = "SUBSCRIBED" if pressed else "SUBSCRIBE"
+            label = ui("SUBSCRIBED") if pressed else ui("SUBSCRIBE")
             tw = int(fnt.getlength(label))
             bw, bh = tw + int(fs * 1.4), int(fs * 1.7)
             bell = int(bh * 1.05)
@@ -1032,7 +1033,7 @@ class Overlay:
                 key = ("alleged",)
                 if key not in self.cache:
                     fnt = font(self.head, max(14, int(self.H * 0.03)))
-                    self.cache[key] = text_block(["ALLEGED"], fnt, fill=self.pal["paper"], box_fill=self.pal["red"] + (240,), pad=int(fnt.size * 0.35))
+                    self.cache[key] = text_block([ui("ALLEGED")], fnt, fill=self.pal["paper"], box_fill=self.pal["red"] + (240,), pad=int(fnt.size * 0.35))
                 im = self.cache[key]
                 lab = next((txt for l0, l1, txt in self.plan.labels if l0 <= t < l1), None)
                 lw = 0

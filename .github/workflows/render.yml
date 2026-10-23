@@ -23,6 +23,10 @@ on:
         description: "no = publish the release but don't send to Telegram yet (send after QC with the Notify workflow)"
         required: false
         default: "yes"
+      lang:
+        description: "language version from episodes/<slug>/lang/<code>.json, e.g. ru (long video only; release <slug>-<code>-rN)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -131,6 +135,15 @@ jobs:
           pip install -q torch --index-url https://download.pytorch.org/whl/cpu
           pip install -q -r requirements.txt
 
+      - name: Cyrillic fonts (language versions)
+        if: github.event.inputs.lang != ''
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download fonts-cyr fc
+          python tools/fonts_cyr.py fc
+          ls -la assets/fonts
+
       - name: Render
         timeout-minutes: ${{ github.event.inputs.preview == 'yes' && 25 || 150 }}  # a hung preview fails fast and reports its log
         env:
@@ -144,7 +157,7 @@ jobs:
           set -o pipefail
           only="${{ github.event.inputs.only }}"
           for ep in ${{ steps.pick.outputs.list }}; do
-            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} ${{ github.event.inputs.preview == 'yes' && '--preview' || '' }} ${{ github.event.inputs.upto && format('--upto {0}', github.event.inputs.upto) || '' }} 2>&1 | tee -a build.log
+            python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} ${{ github.event.inputs.preview == 'yes' && '--preview' || '' }} ${{ github.event.inputs.upto && format('--upto {0}', github.event.inputs.upto) || '' }} ${{ github.event.inputs.lang && format('--lang {0}', github.event.inputs.lang) || '' }} 2>&1 | tee -a build.log
           done
 
       - name: Save generated images (even if the render failed)
@@ -177,13 +190,16 @@ jobs:
           run() { local o; o=$("$@" 2>&1) || { echo "::error title=Publish::$* -> $(echo "$o" | tail -5 | tr '\n' ' ')"; return 1; }; echo "$o"; }
           if [ "${{ github.event.inputs.preview }}" = "yes" ]; then
             for ep in ${{ steps.pick.outputs.list }}; do
-              tools/rel.sh delete "$ep-preview" || true
-              run gh release create "$ep-preview" out/$ep/*.mp4 $(ls out/$ep/timings.json 2>/dev/null) --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease --draft
+              pv="$ep-preview"; [ -n "${{ github.event.inputs.lang }}" ] && pv="$ep-${{ github.event.inputs.lang }}-preview"
+              tools/rel.sh delete "$pv" || true
+              run gh release create "$pv" out/$ep/*.mp4 $(ls out/$ep/timings.json 2>/dev/null) --title "Preview $ep (draft for QC)" --notes "Low-res draft" --prerelease --draft
             done
             exit 0
           fi
           for ep in ${{ steps.pick.outputs.list }}; do
             tag="$ep-r${{ github.run_number }}"
+            lang="${{ github.event.inputs.lang }}"
+            [ -n "$lang" ] && tag="$ep-$lang-r${{ github.run_number }}"
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
             run gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt" --draft  # unreleased video: private until published
             url=$(tools/rel.sh url "$tag")

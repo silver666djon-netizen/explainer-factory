@@ -24,6 +24,8 @@ def main():
     ep = load_episode(sys.argv[1])
     cfg = load_config(ep.get("config"))
     limit = int(sys.argv[2]) if len(sys.argv) > 2 else 90
+    if ep.get("_voice"):  # language version narrator
+        cfg["voice"] = {**cfg["voice"], **ep["_voice"]}
     V = make_voice(cfg, False, ep.get("voices"))
     signal.signal(signal.SIGALRM, _alarm)
     slow, voiced = [], []

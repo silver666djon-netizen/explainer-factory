@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import os
 import json
 import re
 import sys
@@ -106,6 +107,8 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
             short["beats"][0]["_hook"] = True
 
     log("Narration…")
+    if episode.get("_voice"):  # language version: its own narrator (e.g. edge-tts ru-RU-DmitryNeural)
+        cfg["voice"] = {**cfg["voice"], **episode["_voice"]}
     voice = make_voice(cfg, offline, episode.get("voices"))
     beat_lookup = {b["id"]: b for b in episode["beats"]}
     long_voiced = voice_beats(voice, episode["beats"])
@@ -168,6 +171,18 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1),
                             "music_credit": "\n".join(music_credits(episode, {cue} if cue else set()))})
 
+    if episode.get("lang"):  # language version (review copy): no thumbnail; files carry the language code
+        write_meta(out, episode, plan_long, shorts_info)
+        code = episode["lang"]
+        for name in ("long.mp4", "long.srt"):
+            if (out / name).exists():
+                (out / name).rename(out / name.replace("long.", f"long_{code}."))
+        meta_p = out / "metadata.json"
+        meta = json.loads(meta_p.read_text(encoding="utf-8"))
+        meta["lang"] = code
+        meta_p.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
+        log(f"Done in {(time.time() - started) / 60:.1f} min -> {out} (language version: {code})")
+        return out
     thumb = episode.get("thumbnail") or {}
     ep_dir = Path(episode_path) if Path(episode_path).is_dir() else Path(episode_path).parent
     custom = next((p for p in (ep_dir / "thumbnail.png", ep_dir / "thumbnail.jpg") if p.exists()), None)
@@ -248,6 +263,7 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--only", choices=["long", "shorts"])
     b.add_argument("--preview", action="store_true", help="fast half-size 15 fps draft for checking")
     b.add_argument("--upto", help="render only the beats up to and including this id (opening preview)")
+    b.add_argument("--lang", help="language version from episodes/<slug>/lang/<code>.json (long video only), e.g. ru")
     c = sub.add_parser("check", help="validate a script without rendering")
     c.add_argument("episode")
     args = ap.parse_args(argv)
@@ -260,7 +276,9 @@ def main(argv: list[str] | None = None) -> int:
                               "approx_minutes": round(words / 150, 1), "shorts": len(ep.get("shorts") or []),
                               "warnings": lint(ep)}, indent=2, ensure_ascii=False))
             return 0
-        build(args.episode, args.out, args.offline, args.only, args.preview, args.upto)
+        if getattr(args, "lang", None):
+            os.environ["FACTORY_LANG"] = args.lang
+        build(args.episode, args.out, args.offline, "long" if getattr(args, "lang", None) else args.only, args.preview, args.upto)
         return 0
     except ScriptError as exc:
         print(f"Script error:\n{exc}", file=sys.stderr)

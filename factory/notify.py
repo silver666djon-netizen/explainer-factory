@@ -74,6 +74,8 @@ def main(argv: list[str]) -> int:
         f"Длинное видео: {minutes:.1f} мин, Shorts: {len(meta['shorts'])}",
         f"Скачать всё: {release_url}",
     ]
+    if meta.get("lang"):
+        lines.insert(1, f"Языковая версия: {meta['lang'].upper()} — только для проверки, не загружать")
     thumb = out_dir / "thumbnail.jpg"
     if thumb.exists():
         with open(thumb, "rb") as fh:

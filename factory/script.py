@@ -187,6 +187,13 @@ def load_episode(path: str | Path) -> dict:
 
     if errors:
         raise ScriptError(f"{path}:\n  - " + "\n  - ".join(errors))
+    from .i18n import apply, lang
+    if lang():  # language version (FACTORY_LANG=ru): translated narration, on-screen words and anchors; long video only
+        try:
+            episode = apply(episode, path.parent, lang())
+        except ValueError as exc:
+            raise ScriptError(str(exc)) from exc
+        all_beats = list(episode["beats"])
     episode["_dir"] = str(path.parent)
     for b in all_beats:
         b["_episode_dir"] = str(path.parent)

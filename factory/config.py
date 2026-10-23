@@ -22,7 +22,11 @@ def _merge(base: dict, override: dict) -> dict:
 def load_config(episode_overrides: dict | None = None) -> dict:
     with open(ROOT / "channel" / "channel.yaml", encoding="utf-8") as fh:
         cfg = yaml.safe_load(fh)
-    return _merge(cfg, episode_overrides or {})
+    cfg = _merge(cfg, episode_overrides or {})
+    from .i18n import fonts
+    for k, cands in fonts().items():  # language version: Cyrillic-capable fonts of the same character first
+        cfg["fonts"][k] = list(cands) + list(cfg["fonts"].get(k) or [])
+    return cfg
 
 
 def resolve_font(candidates: list[str]) -> str:

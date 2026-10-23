@@ -26,6 +26,7 @@ from .config import hex_to_rgb, resolve_font
 from .draw import hand_path, paste_hand
 from .shots import Shot, _jitter, add_grain, ease
 from .text import font
+from .i18n import ui
 
 PAPER = (238, 226, 196)
 INK = (38, 32, 26)
@@ -127,6 +128,7 @@ def _sentences(body: str) -> list[str]:
 
 def evidence_tag(cfg: dict, source: str, width: int, seed: int, word: str = "EVIDENCE") -> Image.Image:
     """Red shipping-tag label: EVIDENCE + journal · year, with a grommet hole."""
+    word = ui(word)
     pal = _pal(cfg)
     h = int(width * 0.40)
     tag = Image.new("RGBA", (width, h), (0, 0, 0, 0))
@@ -211,7 +213,7 @@ class Clipping:
         sharp = Image.new("L", (pw, ph), 0)
         soft = Image.new("L", (pw, ph), 0)
         ds, dsoft = ImageDraw.Draw(sharp), ImageDraw.Draw(soft)
-        ds.text((pad, pad + top), spec.get("kicker", "STUDY SUMMARY  ·  PARAPHRASED"), font=kfnt, fill=200)
+        ds.text((pad, pad + top), spec.get("kicker", ui("STUDY SUMMARY  ·  PARAPHRASED")), font=kfnt, fill=200)
         yy = top + pad + int(kfnt.size * 2.0)
         for ln in hlines:
             ds.text((pad, yy), ln, font=hfnt, fill=255)

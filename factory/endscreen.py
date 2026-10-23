@@ -23,6 +23,7 @@ from .draw import COLOR_START, LINES_END, LineDrawing, hand_path, paste_hand, su
 from .evidence import _aged_paper, desk
 from .shots import Shot, add_grain, ease
 from .text import blend, fit_font, font
+from .i18n import ui
 
 # YouTube end-screen element zones (fractions of the frame) — kept free of anything important
 VIDEO_ZONE = (0.605, 0.205, 0.955, 0.555)   # x0, y0, x1, y1 (16:9 element on the right)
@@ -150,10 +151,10 @@ class EndScreenShot(Shot):
         lab = (int(fw0 * 0.05), tab + int(fh * 0.07), int(fw0 * 0.47), tab + int(fh * 0.30))
         d.rectangle(lab, fill=(250, 246, 236, 255), outline=pal["ink"] + (255,), width=3)
         f1 = font(typew, int(fh * 0.050))
-        d.text((lab[0] + int(fw * 0.02), lab[1] + int(fh * 0.03)), f"CASE FILE #{spec.get('number', '001')}", font=f1, fill=pal["ink"])
+        d.text((lab[0] + int(fw * 0.02), lab[1] + int(fh * 0.03)), f"{ui('CASE FILE #')}{spec.get('number', '001')}", font=f1, fill=pal["ink"])
         f2, l2 = fit_font(str(spec.get("title", "")).upper(), head, int((lab[2] - lab[0]) * 0.9), int(fh * 0.12), start=int(fh * 0.10))
         d.text((lab[0] + int(fw * 0.02), lab[1] + int(fh * 0.10)), " ".join(l2), font=f2, fill=pal["ink"])
-        d.text((int(fw0 * 0.05), tab + int(fh * 0.92)), "CONFIDENTIAL", font=font(typew, int(fh * 0.035)), fill=tuple(int(c * 0.55) for c in manila))
+        d.text((int(fw0 * 0.05), tab + int(fh * 0.92)), ui("CONFIDENTIAL"), font=font(typew, int(fh * 0.035)), fill=tuple(int(c * 0.55) for c in manila))
         self.folder = add_grain(np.array(folder), 0.0)
         self.stamp = _stamp(spec.get("stamp", "Case closed"), cfg, int(fw0 * 0.50), pal["red"], 8, seed + 3)
         self.stamp_pos = (self.fx + fw - int(fw0 * 0.28), self.fy + int(fh * 0.25))
@@ -181,7 +182,7 @@ class EndScreenShot(Shot):
         sheet = Image.fromarray(paper).convert("RGBA")
         d = ImageDraw.Draw(sheet)
         f3 = font(typew, int(sh * 0.055))
-        d.text((int(sw * 0.05), int(sh * 0.05)), f"NEXT: CASE FILE #{nx.get('number', '002')}", font=f3, fill=pal["ink"])
+        d.text((int(sw * 0.05), int(sh * 0.05)), f"{ui('NEXT: CASE FILE #')}{nx.get('number', '002')}", font=f3, fill=pal["ink"])
         d.line((int(sw * 0.05), int(sh * 0.14), int(sw * 0.95), int(sh * 0.14)), fill=pal["ink"], width=2)
         self.sheet = np.array(sheet)
         self.sheet_paper = paper
@@ -258,7 +259,7 @@ class EndScreenShot(Shot):
             mk = np.zeros((zh, zw), np.float32)
             mk[gy:gy + g.shape[0], gx:gx + g.shape[1]] = (g < 200).astype(np.float32)
             mk = cv2.dilate(mk, np.ones((5, 5), np.uint8))
-            lab = Writing(f"CASE FILE #{nx.get('number', '002')}", font(marker, int(zh * 0.10)), (60, 58, 54))
+            lab = Writing(f"{ui('CASE FILE #')}{nx.get('number', '002')}", font(marker, int(zh * 0.10)), (60, 58, 54))
             la = lab.img[..., 3:4].astype(np.float32) / 255
             ly, lx = zh - lab.h - int(zh * 0.04), int(zw * 0.04)
             reg = news[ly:ly + lab.h, lx:lx + lab.w].astype(np.float32)
@@ -312,9 +313,9 @@ class EndScreenShot(Shot):
                               max_h=int(sh * float(nx.get("tagline_h", 0.11)))) if nx.get("tagline") else None
         self.tagline_pos = (sx0 + sw // 2, sy0 + int(sh * float(nx.get("tagline_y", 0.27))))
         # ---- end-screen furniture
-        self.label = Writing("NEXT CASE  >", font(marker, int(H * 0.055)), pal["paper"])
+        self.label = Writing(ui("NEXT CASE  >"), font(marker, int(H * 0.055)), pal["paper"])
         bf = font(resolve_font(cfg["fonts"]["headline"]), int(H * 0.062))
-        self.btn = {False: self._button("SUBSCRIBE", bf, pal["red"]), True: self._button("SUBSCRIBED", bf, (90, 90, 90))}
+        self.btn = {False: self._button(ui("SUBSCRIBE"), bf, pal["red"]), True: self._button(ui("SUBSCRIBED"), bf, (90, 90, 90))}
         self.bell = self._bell(int(H * 0.075))
 
     # ------------------------------------------------------------------ pieces

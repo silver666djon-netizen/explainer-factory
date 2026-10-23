@@ -90,6 +90,52 @@ class KokoroVoice:
         return np.concatenate(chunks), timings
 
 
+class EdgeVoice:
+    """Microsoft Edge online TTS (free, no key; e.g. ru-RU-DmitryNeural) with word timings — language versions."""
+
+    def __init__(self, vcfg: dict):
+        self.voice = vcfg.get("voice", "ru-RU-DmitryNeural")
+        self.rate = vcfg.get("rate", "+0%")
+        self.pitch = vcfg.get("pitch", "+0Hz")
+
+    async def _run(self, text: str):
+        import edge_tts
+        try:
+            com = edge_tts.Communicate(text, self.voice, rate=self.rate, pitch=self.pitch, boundary="WordBoundary")
+        except TypeError:  # edge-tts < 7: word boundaries are the default
+            com = edge_tts.Communicate(text, self.voice, rate=self.rate, pitch=self.pitch)
+        audio, words = bytearray(), []
+        async for ch in com.stream():
+            if ch["type"] == "audio":
+                audio += ch["data"]
+            elif ch["type"] == "WordBoundary":
+                s0 = ch["offset"] / 1e7
+                words.append((ch["text"], s0, s0 + ch["duration"] / 1e7))
+        return bytes(audio), words
+
+    def synth(self, text: str):
+        import asyncio
+        import subprocess
+        import time
+        last = None
+        for attempt in range(4):
+            try:
+                mp3, words = asyncio.run(self._run(text))
+                if not mp3:
+                    raise RuntimeError("no audio")
+                pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", "pipe:0", "-f", "f32le", "-ac", "1", "-ar", str(SAMPLE_RATE), "pipe:1"],
+                                     input=mp3, capture_output=True, check=True).stdout
+                audio = np.frombuffer(pcm, dtype=np.float32).copy()
+                words = [w for w in words if re.search(r"\w", w[0] or "")]
+                if not words:
+                    words = _proportional_words(text, len(audio) / SAMPLE_RATE)
+                return audio, words
+            except Exception as exc:  # noqa: BLE001 - network hiccups: retry
+                last = exc
+                time.sleep(2 + 3 * attempt)
+        raise RuntimeError(f"edge-tts failed for {text[:60]!r}: {last}")
+
+
 class VoiceBank:
     """Narrator + any extra character voices ('voices' in the channel config or the episode)."""
 
@@ -106,6 +152,8 @@ class VoiceBank:
             spec = self.specs[key]
             if self.offline:
                 self.cache[key] = OfflineVoice(440.0 if key == "narrator" else 260.0)
+            elif spec.get("engine") == "edge":
+                self.cache[key] = EdgeVoice(spec)
             else:
                 self.cache[key] = KokoroVoice(spec)
         return self.cache[key]

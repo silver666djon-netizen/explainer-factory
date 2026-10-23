@@ -12,6 +12,7 @@ from PIL import Image, ImageDraw, ImageFilter
 from .config import hex_to_rgb, resolve_font
 from .shots import MARGIN, Shot, add_grain, cover, ease, mark_strokes
 from .text import blend, fit_font, font, text_block
+from .i18n import ui
 
 
 def _pal(cfg):
@@ -123,10 +124,10 @@ class CaseFileShot(Shot):
         lx, ly = (fw - lab_w) // 2, int(fh * 0.12)
         d.rectangle((lx, ly, lx + lab_w, ly + lab_h), fill=(250, 246, 236, 255), outline=pal["ink"] + (255,), width=3)
         f1 = font(typew, int(lab_h * 0.2))
-        d.text((lx + lab_w / 2, ly + lab_h * 0.28), f"CASE FILE #{spec.get('number', '001')}", font=f1, fill=pal["ink"], anchor="mm")
+        d.text((lx + lab_w / 2, ly + lab_h * 0.28), f"{ui('CASE FILE #')}{spec.get('number', '001')}", font=f1, fill=pal["ink"], anchor="mm")
         f2, l2 = fit_font(str(spec.get("title", "")).upper(), head, int(lab_w * 0.9), int(lab_h * 0.5), start=int(lab_h * 0.42))
         d.text((lx + lab_w / 2, ly + lab_h * 0.68), " ".join(l2), font=f2, fill=pal["ink"], anchor="mm")
-        d.text((int(fw * 0.08), int(fh * 0.9)), "CONFIDENTIAL", font=font(typew, int(fh * 0.03)), fill=_darker(manila, 0.55), anchor="lm")
+        d.text((int(fw * 0.08), int(fh * 0.9)), ui("CONFIDENTIAL"), font=font(typew, int(fh * 0.03)), fill=_darker(manila, 0.55), anchor="lm")
         self.cover = cover_img
         # inside page
         page = Image.new("RGBA", (fw, fh), (250, 246, 236, 255))
@@ -257,7 +258,7 @@ class CaseFileShot(Shot):
             osa = float(osa) + self.lead_in
             if not hasattr(self, "_ostamp"):
                 from .endscreen import _stamp
-                self._ostamp = _stamp(self.spec.get("open_stamp", "Open"), self.cfg, int(self.fw * 0.42), self.pal["red"], -9, 3)
+                self._ostamp = _stamp(self.spec.get("open_stamp", ui("Open")), self.cfg, int(self.fw * 0.42), self.pal["red"], -9, 3)
             lx, ly, txt = self.inside_lines[-1]
             sx = int(self.BW // 2 + lx + self.ft.getlength(txt) + self.fw * 0.26)
             sy = int(self.fy + ly + self.ft.size * 0.5)
@@ -354,17 +355,17 @@ class MugshotShot(Shot):
         plate_w, plate_h = pw, int(ph * 0.16)
         pyp = py + ph + border * 2
         d.rectangle((px, pyp, px + plate_w, pyp + plate_h), fill=pal["ink"])
-        pf, pl = fit_font(f"SUSPECT No. {spec.get('number', 1)}", head, int(plate_w * 0.9), int(plate_h * 0.8), start=int(plate_h * 0.7))
+        pf, pl = fit_font(f"{ui('SUSPECT No.')} {spec.get('number', 1)}", head, int(plate_w * 0.9), int(plate_h * 0.8), start=int(plate_h * 0.7))
         d.text((px + plate_w / 2, pyp + plate_h / 2), " ".join(pl), font=pf, fill=pal["paper"], anchor="mm")
         self.base = add_grain(np.array(wall), 0.035, seed)
         # index card (typed lines appear one by one)
         cw = int(BW * (0.78 if portrait else 0.38))
         cx = int(BW * (0.5 if portrait else 0.73)) - cw // 2
         cy = int(BH * (0.43 if portrait else 0.2))
-        rows = [(k, v) for k, v in (("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")),
-                                    ("LAST SEEN", spec.get("last_seen", ""))) if str(v).strip()]
+        rows = [(ui(k), v) for k, v in (("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")),
+                                        ("LAST SEEN", spec.get("last_seen", ""))) if str(v).strip()]
         if spec.get("notes"):
-            rows.append(("NOTES", spec["notes"]))
+            rows.append((ui("NOTES"), spec["notes"]))
         lf = font(typew, int(BH * (0.017 if portrait else 0.03)))
         vf_path = head
         self.rows = []
