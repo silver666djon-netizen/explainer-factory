@@ -26,8 +26,8 @@ UI = {
         "LARRY'S TAB": "СЧЁТ ЛАРРИ",
         "EVIDENCE": "УЛИКА",
         "EXHIBIT": "ВЕЩДОК",
-        "CASE FILE #": "ДЕЛО №",
-        "NEXT: CASE FILE #": "ДАЛЕЕ: ДЕЛО №",
+        "CASE FILE #": "ДЕЛО № ",
+        "NEXT: CASE FILE #": "ДАЛЕЕ: ДЕЛО № ",
         "CONFIDENTIAL": "СЕКРЕТНО",
         "NEXT CASE  >": "СЛЕДУЮЩЕЕ ДЕЛО  >",
         "SUBSCRIBE": "ПОДПИСАТЬСЯ",
@@ -169,9 +169,12 @@ def apply(ep: dict, ep_dir: str | Path, code: str) -> dict:
         anchors = bt.get("anchors") or {}
         for dotted, val in (bt.get("patch") or {}).items():  # retiming for the new voice, e.g. "visual.endscreen.times.v1"
             o, keys = beat, dotted.split(".")
-            for k in keys[:-1]:
-                o = o.setdefault(k, {})
-            o[keys[-1]] = val
+            for k in keys[:-1]:  # list items by index: "visual.marks.3.chain"
+                o = o[int(k)] if isinstance(o, list) else o.setdefault(k, {})
+            if isinstance(o, list):
+                o[int(keys[-1])] = val
+            else:
+                o[keys[-1]] = val
         vis = beat.get("visual") or {}
         for k in [k for k in beat if k not in ("id", "text", "say", "section", "music", "sting")]:
             if isinstance(beat[k], (dict, list)):

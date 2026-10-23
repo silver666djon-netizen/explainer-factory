@@ -162,6 +162,8 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
             write_layout(mark, W, H, red, cfg)
         at, dur = float(mark.get("at", 0.6)), float(mark.get("dur", 0.45))
         p = (t - at) / max(dur, 1e-3)
+        if dur <= 0.05 and t >= at - 1e-6:  # an "already written" mark is whole from its first frame (no 1-frame flicker)
+            p = 1.0
         if p <= 0 or (mark.get("until") is not None and t >= float(mark["until"])):
             continue
         if out is None:

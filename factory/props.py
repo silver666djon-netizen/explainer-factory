@@ -157,7 +157,11 @@ class CaseFileShot(Shot):
                 col = pal.get(w_.get("color", "ink"), pal["ink"])
                 dur = float(w_.get("dur", max(0.6, 0.075 * len(str(w_["text"])))))
                 w0 = max(float(w_.get("at", 2.5)) + lead_in, busy + 0.2 + 0.28)  # one hand at a time, line by line
-                self.writes.append((Writing(str(w_["text"]), wf, col), lx + int(ft.getlength(txt)) + gap, ly - int(fs * 0.12),
+                wx_ = lx + int(ft.getlength(txt)) + gap
+                wfo = wf
+                while wfo.size > int(fs * 0.6) and wfo.getlength(str(w_["text"])) > fw * 0.95 - wx_:
+                    wfo = font(marker, wfo.size - 2)  # a longer (translated) note shrinks to stay on the page
+                self.writes.append((Writing(str(w_["text"]), wfo, col), wx_, ly - int(fs * 0.12) + (wf.size - wfo.size) // 2,
                                     w0, dur, w_.get("color", "ink")))
                 busy = w0 + dur + 0.32
         # stamp
