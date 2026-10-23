@@ -20,9 +20,9 @@ on:
         required: false
         default: ""
       send:
-        description: "no = publish the release but don't send to Telegram yet (send after QC with the Notify workflow)"
+        description: "yes = send to Telegram right away (normally no: send only after QC, with the Notify workflow - rule 22)"
         required: false
-        default: "yes"
+        default: "no"
       lang:
         description: "language version from episodes/<slug>/lang/<code>.json, e.g. ru (long video only; release <slug>-<code>-rN)"
         required: false
@@ -201,18 +201,8 @@ jobs:
             lang="${{ github.event.inputs.lang }}"
             [ -n "$lang" ] && tag="$ep-$lang-r${{ github.run_number }}"
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
-            run gh release create "$tag" out/$ep/* --title "$title" --notes-file "out/$ep/description.txt" --draft  # unreleased video: private until published
+            python -m factory.naming rename "out/$ep" "episodes/$ep" "${{ github.run_number }}" "$lang"  # cs_ep04_r78_long.mp4 ...
+            run gh release create "$tag" out/$ep/* --title "$title" --notes-file "$(ls out/$ep/*description.txt | head -1)" --draft  # unreleased video: private until published
             url=$(tools/rel.sh url "$tag")
-            if [ "${{ github.event.inputs.send }}" != "no" ]; then python -m factory.notify "out/$ep" "$url"; fi
+            if [ "${{ github.event.inputs.send }}" = "yes" ]; then python -m factory.notify "out/$ep" "$url" --tag "$tag"; fi
           done
-
-      - name: Telegram on failure
-        if: failure()
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: |
-          run_url="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=${TELEGRAM_CHAT_ID}" \
-            --data-urlencode "text=⚠️ Explainer Factory: рендер не удался. Лог: ${run_url}" > /dev/null || true

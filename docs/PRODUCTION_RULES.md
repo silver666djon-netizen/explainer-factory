@@ -126,3 +126,13 @@ must report zero before a final render.
     switched on per episode with config "hands": {"sleeve": false}). Larry's tab is written by the small cuff hand
     sliding in from the right edge only as far as the card (config "ledger": {"hand": "ink_cuff", "from": "right"}).
     Ep.3 stays as released.
+22. Telegram order (from Ep.4 r78 on). Every send starts with a one-line header
+    "CoinSense · EP04 · r78 · FINAL CANDIDATE" — statuses PREVIEW, STILLS, FINAL CANDIDATE, APPROVED FINAL, RU REVIEW,
+    SHORTS; a superseding version says so: "… · replaces r77". File names carry episode and version:
+    cs_ep04_r78_long.mp4, cs_ep04_r78_s1.mp4 … s7, cs_ep04_r78_description.txt (language versions cs_ep03_r85_ru_…);
+    never a bare "long.mp4" (render.yml renames the release files: python -m factory.naming rename …).
+    Send only versions that passed QC and that Klot asked for — never failed or intermediate renders (render.yml sends
+    nothing by default; Telegram goes out only through the Notify workflow with tag + status [+ replaces]).
+    One message per version: the long video first (a 480p Telegram copy when the 1080p file is over the bot limit;
+    the release link carries the full file), then the Shorts in one batch, then the description.
+    After APPROVED FINAL, one last message with that header and the links.

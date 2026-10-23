@@ -62,31 +62,83 @@ def send_buttons(text: str, rows: list[list[tuple[str, str]]]) -> None:
     _api("sendMessage", data={"text": text, "reply_markup": json.dumps(kb)})
 
 
+def _tg_copy(src: Path, dst: Path, limit: int = LIMIT) -> Path:
+    """The long video as a Telegram copy under the bot limit (480p, bitrate from the duration); the release keeps 1080p."""
+    import subprocess
+    if src.stat().st_size < limit:
+        if src != dst:
+            import shutil
+            shutil.copy(src, dst)
+        return dst
+    dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)],
+                               capture_output=True, text=True).stdout.strip() or 600)
+    vbr = max(250, int((limit * 0.92 * 8 / dur) / 1000) - 96)
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(src), "-vf", "scale=-2:480", "-c:v", "libx264", "-preset", "veryfast",
+                    "-b:v", f"{vbr}k", "-maxrate", f"{int(vbr * 1.1)}k", "-bufsize", f"{vbr * 2}k", "-c:a", "aac", "-b:a", "96k",
+                    "-movflags", "+faststart", str(dst)], check=True)
+    return dst
+
+
 def main(argv: list[str]) -> int:
     if len(argv) >= 2 and argv[0] == "--failed":
         send_text(f"⚠️ Explainer Factory: рендер не удался.\nЛог: {argv[1]}")
         return 0
+    from . import naming
+
+    def opt(name, default=None):
+        return argv[argv.index(name) + 1] if name in argv else default
     out_dir, release_url = Path(argv[0]), argv[1]
-    meta = json.loads((out_dir / "metadata.json").read_text(encoding="utf-8"))
-    minutes = meta["duration_seconds"] / 60
-    lines = [
-        f"✅ Готово: {meta['title']}",
-        f"Длинное видео: {minutes:.1f} мин, Shorts: {len(meta['shorts'])}",
-        f"Скачать всё: {release_url}",
-    ]
-    if meta.get("lang"):
-        lines.insert(1, f"Языковая версия: {meta['lang'].upper()} — только для проверки, не загружать")
-    thumb = out_dir / "thumbnail.jpg"
-    if thumb.exists():
-        with open(thumb, "rb") as fh:
-            _api("sendPhoto", data={"caption": "\n".join(lines)}, files={"photo": fh})
+    tag = opt("--tag", "")
+    meta = json.loads((out_dir / "metadata.json").read_text(encoding="utf-8")) if (out_dir / "metadata.json").exists() else {}
+    slug, lang, run = naming.parse_tag(tag) if tag else (meta.get("slug", ""), meta.get("lang"), 0)
+    epno = naming.episode_number(Path("episodes") / slug)
+    status = (opt("--status") or ("RU REVIEW" if lang else "FINAL CANDIDATE")).upper()
+    head = naming.header(epno, run, status, opt("--replaces"))
+    pre = naming.prefix(epno, run, lang)
+    files = {naming.kind_of(f.name): f for f in sorted(out_dir.iterdir()) if naming.kind_of(f.name)}
+    title = meta.get("title", slug)
+    if status == "APPROVED FINAL":  # one last message: header and the links
+        names = "\n".join(f"• {f.name}" for f in sorted(out_dir.iterdir()) if f.suffix in (".mp4", ".txt", ".srt", ".jpg"))
+        send_text(f"{head}\n{title}\nРелиз: {release_url}\n{names}")
+        return 0
+    minutes = float(meta.get("duration_seconds", 0)) / 60
+    cap = f"{head}\n{title}\nДлинное видео: {minutes:.1f} мин · полное 1080p: {release_url}"
+    if lang:
+        cap += "\nТолько для проверки, не загружать."
+    tmp = out_dir / "_tg"
+    tmp.mkdir(exist_ok=True)
+    if "long" in files:  # 1) the long video first
+        tg = _tg_copy(files["long"], tmp / f"{pre}_long.mp4")
+        if files["long"].stat().st_size >= LIMIT:
+            cap += "\n(в Telegram — копия 480p)"
+        with open(tg, "rb") as fh:
+            r = _api("sendVideo", data={"caption": cap[:1000], "supports_streaming": "true"}, files={"video": (tg.name, fh)})
+        if r is None or r.status_code != 200:
+            send_text(cap)
     else:
-        send_text("\n".join(lines))
-    for short in meta["shorts"]:
-        path = out_dir / short["file"]
-        if path.exists() and path.stat().st_size < LIMIT:
-            with open(path, "rb") as fh:
-                _api("sendVideo", data={"caption": f"Shorts: {short['title']}", "supports_streaming": "true"}, files={"video": fh})
+        send_text(cap)
+    shorts = sorted((k, f) for k, f in files.items() if k and k[0] == "s" and k[1:].isdigit())
+    shorts = [(k, f) for k, f in sorted(shorts, key=lambda x: int(x[0][1:])) if f.stat().st_size < LIMIT]
+    if shorts:  # 2) the Shorts in one batch
+        media, up = [], {}
+        for n, (k, f) in enumerate(shorts[:10]):
+            item = {"type": "video", "media": f"attach://v{n}", "supports_streaming": True}
+            if n == 0:
+                item["caption"] = f"{head} · Shorts ({len(shorts)})"
+            media.append(item)
+            up[f"v{n}"] = (f"{pre}_{k}.mp4", open(f, "rb"), "video/mp4")
+        r = _api("sendMediaGroup", data={"media": json.dumps(media)}, files=up)
+        for v in up.values():
+            v[1].close()
+        if r is None or r.status_code != 200:  # fall back to one by one
+            for k, f in shorts:
+                with open(f, "rb") as fh:
+                    _api("sendVideo", data={"caption": f"{head} · {k}", "supports_streaming": "true"}, files={"video": (f"{pre}_{k}.mp4", fh)})
+    for k in ("description", "srt"):  # 3) the texts
+        if k in files:
+            name = f"{pre}_description.txt" if k == "description" else f"{pre}_long.srt"
+            with open(files[k], "rb") as fh:
+                _api("sendDocument", data={"caption": head}, files={"document": (name, fh)})
     return 0
 
 

@@ -26,18 +26,37 @@ def wrap(text: str, fnt: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
     return lines
 
 
-def fit_font(text: str, path: str, max_width: int, max_height: int, start: int, min_size: int = 18):
-    """Largest font size where the wrapped text fits the box."""
+def wrap_caption(text: str, fnt: ImageFont.FreeTypeFont, max_width: int) -> list[str]:
+    """Wrap a 'description · source · date' caption without ever splitting a name or a source: lines break only before
+    a '·' (the next line starts with it); only the first, descriptive part may wrap between words."""
+    parts = [p.strip() for p in text.split("·")]
+    lines: list[str] = []
+    wrapped = False
+    for i, part in enumerate(parts):
+        piece = part if i == 0 else f"· {part}"
+        if lines and not (i == 1 and wrapped) and fnt.getlength(f"{lines[-1]} {piece}") <= max_width:
+            lines[-1] = f"{lines[-1]} {piece}"
+        elif i == 0 and fnt.getlength(piece) > max_width:
+            lines += wrap(piece, fnt, max_width)
+            wrapped = True  # a wrapped description: the sources start on their own line
+        else:
+            lines.append(piece)
+    return lines
+
+
+def fit_font(text: str, path: str, max_width: int, max_height: int, start: int, min_size: int = 18, caption: bool = False):
+    """Largest font size where the wrapped text fits the box (caption=True: wrap only before '·', see wrap_caption)."""
     size = start
+    wrapper = wrap_caption if caption else wrap
     while size > min_size:
         fnt = font(path, size)
-        lines = wrap(text, fnt, max_width)
+        lines = wrapper(text, fnt, max_width)
         height = len(lines) * int(size * 1.12)
         if height <= max_height and all(fnt.getlength(l) <= max_width for l in lines):
             return fnt, lines
         size -= 4
     fnt = font(path, min_size)
-    return fnt, wrap(text, fnt, max_width)
+    return fnt, wrapper(text, fnt, max_width)
 
 
 def text_block(

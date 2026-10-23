@@ -698,7 +698,8 @@ class StatShot(Shot):
         label = str(spec.get("label", ""))
         self.label = None
         if label:
-            fnt, lines = fit_font(label.upper(), self.body, int(self.W * 0.8), int(self.H * 0.16), start=int(self.H * 0.06))
+            fnt, lines = fit_font(label.upper(), self.body, int(self.W * 0.8), int(self.H * 0.16), start=int(self.H * 0.06),
+                                  caption=True)  # a name or a source never splits across lines
             self.label = text_block(lines, fnt, fill=self.pal["ink"])
         self.cache: dict[str, np.ndarray] = {}
 

@@ -4,8 +4,16 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: "release tag, e.g. 0002-casino-chips-r45"
+        description: "release tag, e.g. 0005-drip-pricing-r78"
         required: true
+      status:
+        description: "PREVIEW / STILLS / FINAL CANDIDATE / APPROVED FINAL / RU REVIEW / SHORTS (empty = FINAL CANDIDATE, or RU REVIEW for a language version)"
+        required: false
+        default: ""
+      replaces:
+        description: "version this one supersedes, e.g. r77 (shown in the header)"
+        required: false
+        default: ""
 
 permissions:
   contents: write  # draft releases are visible only with write access
@@ -18,7 +26,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - run: pip install -q requests pyyaml
+      - run: pip install -q requests pyyaml && (command -v ffmpeg >/dev/null || (sudo apt-get update -q && sudo apt-get install -y -q ffmpeg))
       - name: Send
         env:
           GH_TOKEN: ${{ github.token }}
@@ -26,7 +34,7 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           mkdir -p out/rel
-          for k in 1 2 3; do tools/rel.sh download "${{ github.event.inputs.tag }}" out/rel "*.json" "*.mp4" "*.jpg" && break; echo "::warning::download retry $k"; sleep 10; done
+          for k in 1 2 3; do tools/rel.sh download "${{ github.event.inputs.tag }}" out/rel "*.json" "*.mp4" "*.jpg" "*.txt" "*.srt" && break; echo "::warning::download retry $k"; sleep 10; done
           ls -la out/rel || true
           url=$(tools/rel.sh url "${{ github.event.inputs.tag }}")
-          python -m factory.notify out/rel "$url" 2>&1 | tee notify.log || { echo "::error::$(tail -3 notify.log | tr '\n' ' ')"; exit 1; }
+          python -m factory.notify out/rel "$url" --tag "${{ github.event.inputs.tag }}" ${{ github.event.inputs.status && format('--status "{0}"', github.event.inputs.status) || '' }} ${{ github.event.inputs.replaces && format('--replaces {0}', github.event.inputs.replaces) || '' }} 2>&1 | tee notify.log || { echo "::error::$(tail -3 notify.log | tr '\n' ' ')"; exit 1; }
