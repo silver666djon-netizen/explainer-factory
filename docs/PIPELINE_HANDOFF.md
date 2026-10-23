@@ -125,6 +125,14 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
 - Strike-through must cross every line; stamps on paper are pressed by the stamp hand, never a pen hand.
 
 ## 9. Current state (2026-10-20, 22:40 MSK)
+- 2026-10-23: **Ep.3 RU review copy** sent as RU REVIEW (draft release 0004-fake-sale-ru-r80, cs_ep03_r80_ru_long.mp4,
+  10:11 vs 8:41 English; −14.0 LUFS / −2.4 dBTP; mark audit 0, handcheck 0, no still > 8 s). r79 = internal, not sent
+  (fixed after its QC: brand names in Latin as on the cards, word-for-word caption timing for language versions).
+  Cost: CI ≈ 19 min per render (render step 13 min incl. 3.3 min Edge TTS), notify 2 min, probe 4 min; 0 generations.
+  Kept as in the pictures: weekday letters on the k7 calendar illustration, archive photos/drawings.
+- Ep.3 r72: approved; next Ep.3 render = Klot's proofread fixes + stat-caption wrap fix (text.wrap_caption, done).
+- Ep.4 r78 FINAL CANDIDATE sent; known: ~4:26 "SAME TOTAL" clipped by the top edge in the n2 push-in — fix in the
+  next Ep.4 render together with Klot's frame-check list (send as "replaces r78").
 - **Episode 3 "The Fake Sale"** (`episodes/0004-fake-sale`): r60 released and sent; Short 5 audio re-limited in
   the r60 release (−14.6 LUFS, −2.8 dBTP). Klot's r60 frame check: 13/18 OK, 5 fixes for r61, all done in
   commit "Case 003 r61 ..." and checked locally:
