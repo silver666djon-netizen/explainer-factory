@@ -25,7 +25,7 @@ def chapters(episode: dict, beat_starts: dict[str, float], total: float) -> list
     for beat in episode["beats"]:
         sec = beat.get("section")
         if sec and sec != last:
-            out.append((0.0 if not out else beat_starts[beat["id"]], sec))
+            out.append((0.0 if not out else beat_starts[beat["id"]], beat.get("_section_title") or sec))
             last = sec
     # YouTube rules: starts at 0:00, at least 3 chapters, each at least 10 s long
     ends = [c[0] for c in out[1:]] + [total]

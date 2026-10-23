@@ -178,6 +178,19 @@ def caption_words(beat: dict, timings: list[tuple[str, float, float]], duration:
     spoken = [t for t in timings if re.search(r"\w", t[0] or "")]
     if spoken and not beat.get("say") and len(spoken) == len(written):
         return [(w, s, e) for w, (_t, s, e) in zip(written, spoken)]
+    if spoken and beat.get("_lang"):  # language versions: word for word, a dash has no time of its own, and a 'say'
+        wi = [i for i, w in enumerate(written) if re.search(r"\w", w)]  # spelling with the same word count still counts
+        if len(wi) == len(spoken):
+            out, k, last = [], 0, spoken[0][1]
+            for i, w in enumerate(written):
+                if k < len(wi) and wi[k] == i:
+                    _t, s, e = spoken[k]
+                    out.append((w, s, e))
+                    last, k = e, k + 1
+                else:
+                    nxt = spoken[k][1] if k < len(spoken) else last
+                    out.append((w, last, max(last, nxt)))
+            return out
     if spoken:
         start, end = spoken[0][1], spoken[-1][2]
     else:

@@ -162,6 +162,12 @@ def apply(ep: dict, ep_dir: str | Path, code: str) -> dict:
             missing.append(f"narration  {beat['id']}: {beat['text']!r}")
             continue
         beat["text"] = bt["text"]
+        beat["_lang"] = code  # captions: word-for-word timing of the new voice (tts.caption_words)
+        sec = beat.get("section")
+        if sec:  # chapter names in the description: "sections" map, else the chapter-card string
+            st = (tr.get("sections") or {}).get(sec) or strings.get(sec) or strings.get(sec.replace(": ", " — "))
+            if st:
+                beat["_section_title"] = st
         if bt.get("say"):
             beat["say"] = bt["say"]
         else:
