@@ -130,7 +130,11 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   (fixed after its QC: brand names in Latin as on the cards, word-for-word caption timing for language versions).
   Cost: CI ≈ 19 min per render (render step 13 min incl. 3.3 min Edge TTS), notify 2 min, probe 4 min; 0 generations.
   Kept as in the pictures: weekday letters on the k7 calendar illustration, archive photos/drawings.
-- Ep.3 r72: approved; next Ep.3 render = Klot's proofread fixes + stat-caption wrap fix (text.wrap_caption, done).
+- 2026-10-26: **Ep.3 FINAL = r81** (draft release 0004-fake-sale-r81), sent as APPROVED FINAL · replaces r72. Upload title:
+  The "Was" Price Is Usually a Lie. Changes vs r72 (frame diff of both videos: nothing else moved): subtitle cards
+  (rule 23), .srt with every spoken line (rule 24, 1066/1066 words), stat captions break only before "·", e6 plate
+  'FVR = "fixed volume requirement" (judgment, para 4)'. Long −14.2/−1.9, Shorts −14.2..−14.3 / −1.9..−2.7;
+  mark audit 0, handcheck 0 (long + 7 Shorts). Same timings as r72 (chapters unchanged).
 - Ep.4 r78 FINAL CANDIDATE sent; known: ~4:26 "SAME TOTAL" clipped by the top edge in the n2 push-in — fix in the
   next Ep.4 render together with Klot's frame-check list (send as "replaces r78").
 - **Episode 3 "The Fake Sale"** (`episodes/0004-fake-sale`): r60 released and sent; Short 5 audio re-limited in
