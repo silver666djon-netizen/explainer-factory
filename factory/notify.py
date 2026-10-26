@@ -97,9 +97,11 @@ def main(argv: list[str]) -> int:
     pre = naming.prefix(epno, run, lang)
     files = {naming.kind_of(f.name): f for f in sorted(out_dir.iterdir()) if naming.kind_of(f.name)}
     title = meta.get("title", slug)
-    if status == "APPROVED FINAL":  # one last message: header and the links
+    if status == "APPROVED FINAL":  # one last message: header, upload title, the 1080p link; then .srt + description
         names = "\n".join(f"• {f.name}" for f in sorted(out_dir.iterdir()) if f.suffix in (".mp4", ".txt", ".srt", ".jpg"))
-        send_text(f"{head}\n{title}\nРелиз: {release_url}\n{names}")
+        long_name = files["long"].name if "long" in files else f"{pre}_long.mp4"
+        send_text(f"{head}\nНазвание для загрузки: {title}\n1080p ({long_name}): {release_url}\nФайлы релиза:\n{names}")
+        _send_texts(files, pre, head)
         return 0
     minutes = float(meta.get("duration_seconds", 0)) / 60
     cap = f"{head}\n{title}\nДлинное видео: {minutes:.1f} мин · полное 1080p: {release_url}"
@@ -144,12 +146,16 @@ def main(argv: list[str]) -> int:
                     with open(f, "rb") as fh:
                         _api("sendVideo", data={"caption": f"{head} · {k}", "supports_streaming": "true"},
                              files={"video": (f"{pre}_{k}.mp4", fh)})
-    for k in ("description", "srt"):  # 3) the texts
+    _send_texts(files, pre, head)  # 3) the texts
+    return 0
+
+
+def _send_texts(files: dict, pre: str, head: str) -> None:
+    for k in ("srt", "description"):
         if k in files:
             name = f"{pre}_description.txt" if k == "description" else f"{pre}_long.srt"
             with open(files[k], "rb") as fh:
                 _api("sendDocument", data={"caption": head}, files={"document": (name, fh)})
-    return 0
 
 
 if __name__ == "__main__":
