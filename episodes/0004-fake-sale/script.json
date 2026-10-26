@@ -1,6 +1,42 @@
 {
   "slug": "0004-fake-sale",
-  "title": "The Sale That Never Was",
+  "title": "The \"Was\" Price Is Usually a Lie",
+  "config": {
+    "captions": {
+      "keep": [
+        "was price",
+        "J.C. Penney",
+        "High Court",
+        "Fair and Square",
+        "Black Friday",
+        "Consumer Reports",
+        "Los Angeles",
+        "compare at",
+        "hair dryer",
+        "stand mixer",
+        "social security number",
+        "countdown clock",
+        "countdown timers",
+        "model number",
+        "price history",
+        "regular price",
+        "sale price",
+        "full price",
+        "apple store",
+        "stopped lying",
+        "other times",
+        "summed it up",
+        "tore it all up",
+        "real overpay",
+        "consumer advocate",
+        "a rigged wheel",
+        "last digits",
+        "seven discounted mattresses",
+        "reasonably substantial time",
+        "twenty Kohl's items"
+      ]
+    }
+  },
   "description": "Was £49.99, now £18.99 — except it never cost £49.99. Case file #003 follows Larry (fictional) through Black Friday week: the store that stopped lying and lost $985 million, the mixer that was always on sale, the mattress-maker taken to court over its 'was' prices and countdown clocks — and three checks that catch a fake sale.",
   "tags": [
     "fake sales",
@@ -2174,7 +2210,8 @@
           "seed": 71,
           "kicker": "HIGH COURT  ·  QUOTED",
           "lead": 1.2,
-          "post": "e5"
+          "post": "e5",
+          "footnote": "FVR = \"fixed volume requirement\" (judgment, para 4)"
         }
       },
       "stamp": {
@@ -4201,7 +4238,8 @@
               "mark": "underline",
               "seed": 71,
               "kicker": "HIGH COURT  ·  QUOTED",
-              "lead": 1.2
+              "lead": 1.2,
+              "footnote": "FVR = \"fixed volume requirement\" (judgment, para 4)"
             }
           },
           "stamp": {

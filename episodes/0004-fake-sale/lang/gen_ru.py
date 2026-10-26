@@ -242,6 +242,7 @@ S = {
     "RARE": "РЕДКОСТЬ", "0.02 % AT FULL PRICE": "0.02 % ПО ПОЛНОЙ ЦЕНЕ", "2 ON SALE": "2 СО СКИДКОЙ", "1 FULL PRICE": "1 ПО ПОЛНОЙ",
     "CMA v Emma · [2026] EWHC 1995 (Ch) · 30 July 2026": "CMA v Emma · [2026] EWHC 1995 (Ch) · 30 июля 2026",
     "No fixed ratio": "Без жёсткой пропорции",
+    'FVR = "fixed volume requirement" (judgment, para 4)': "FVR — «фиксированное требование к объёму» (решение, п. 4)",
     "\"I do not consider that I should make an enforcement order that imposes a 1:2 FVR.\"":
         "«Я не считаю, что должен выносить предписание, вводящее пропорцию 1:2».",
     "I do not consider that I should make an enforcement order that imposes a 1:2 FVR":

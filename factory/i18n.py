@@ -72,7 +72,7 @@ ANCHOR_KEYS = ("on", "word", "label_on", "sting_on", "click_on", "open_stamp_on"
                "push_on", "hook_on")
 ANCHOR_LISTS = ("type_on",)
 TEXT_KEYS = {"text", "label", "caption", "title", "headline", "body", "highlight", "kicker", "source", "name", "alias",
-             "tag", "stamp", "tagline", "newsreel", "prefix", "suffix", "quote", "open_stamp", "amount"}
+             "tag", "stamp", "tagline", "newsreel", "prefix", "suffix", "quote", "open_stamp", "amount", "footnote"}
 LIST_KEYS = {"inside", "verdict", "labels", "fees", "value_labels", "lines"}
 SKIP_KEYS = {"prompt", "note", "credit", "file", "pre", "post", "font", "color", "role", "align", "look", "motion", "mode",
              "type", "kind", "unit", "mark", "bg", "beat", "say", "id", "section", "music", "sting", "hit", "sfx", "image"}

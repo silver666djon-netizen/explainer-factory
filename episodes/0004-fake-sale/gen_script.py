@@ -386,7 +386,8 @@ beat("e5", S_CLOCK, "The watchdog wanted a simple rule: for every two sold on sa
 beat("e6", S_CLOCK, "In July 2026, the High Court found Emma had broken the law in places, but refused the ratio.",
      doc("CMA v Emma · [2026] EWHC 1995 (Ch) · 30 July 2026", "No fixed ratio",
          "\"I do not consider that I should make an enforcement order that imposes a 1:2 FVR.\"",
-         "I do not consider that I should make an enforcement order that imposes a 1:2 FVR", on="refused", kicker="HIGH COURT  ·  QUOTED", seed=71, lead=1.2, post="e5"),
+         "I do not consider that I should make an enforcement order that imposes a 1:2 FVR", on="refused", kicker="HIGH COURT  ·  QUOTED", seed=71, lead=1.2, post="e5",
+         footnote='FVR = "fixed volume requirement" (judgment, para 4)'),
      stamp={"text": "1:2 refused", "on": "ratio."})
 beat("e7", S_CLOCK, "A fixed rule, the judge said, risked drawing the line in the wrong place.",
      reuse("e5", hand_marks=True, marks=[write("1 : 2", at=0.0, x=0.14, y=0.20, w=0.12, h=0.08),
@@ -540,7 +541,15 @@ for sh in SHORTS:
 
 ep = {
     "slug": "0004-fake-sale",
-    "title": "The Sale That Never Was",
+    "title": "The \"Was\" Price Is Usually a Lie",
+    # subtitle cards (rule 23): names, numbers and fixed phrases are kept together automatically; this episode's own phrases
+    "config": {"captions": {"keep": ["was price", "J.C. Penney", "High Court", "Fair and Square", "Black Friday",
+                                     "Consumer Reports", "Los Angeles", "compare at", "hair dryer", "stand mixer",
+                                     "social security number", "countdown clock", "countdown timers", "model number",
+                                     "price history", "regular price", "sale price", "full price", "apple store",
+                                     "stopped lying", "other times", "summed it up", "tore it all up", "real overpay",
+                                     "consumer advocate", "a rigged wheel", "last digits", "seven discounted mattresses",
+                                     "reasonably substantial time", "twenty Kohl's items"]}},
     "description": "Was £49.99, now £18.99 — except it never cost £49.99. Case file #003 follows Larry (fictional) through Black Friday week: the store that stopped lying and lost $985 million, the mixer that was always on sale, the mattress-maker taken to court over its 'was' prices and countdown clocks — and three checks that catch a fake sale.",
     "tags": ["fake sales", "reference pricing", "was price", "black friday deals", "anchoring", "jcpenney", "consumer rights",
              "psychology of money", "behavioral economics"],

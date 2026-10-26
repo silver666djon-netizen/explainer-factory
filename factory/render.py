@@ -81,6 +81,7 @@ class Plan:
     total: float
     shots: list[Shot] = field(default_factory=list)
     captions: list[Caption] = field(default_factory=list)
+    srt_only: list[Caption] = field(default_factory=list)  # spoken lines not burned in (chapter cards, kinetic text)
     cards: list[Card] = field(default_factory=list)
     bubbles: list[Bubble] = field(default_factory=list)
     counters: list[Counter] = field(default_factory=list)
@@ -99,28 +100,17 @@ class Plan:
     hand_windows: list = field(default_factory=list)  # (start, end) a drawing hand is on screen (one at a time)  # times a drawing hand acts on a picture (counts as a picture change)
 
 
-def group_captions(words, offset: float, max_chars: int, max_words: int, speaker: str = "narrator") -> list[Caption]:
+def group_captions(words, offset: float, max_chars: int, max_words: int, speaker: str = "narrator",
+                   keep: list[str] = ()) -> list[Caption]:
+    """Subtitle cards of one beat (rule 23, factory.captions): names, numbers and fixed phrases never split,
+    at least two words per card except a one-word sentence."""
+    from .captions import chunk
+    ws = [(w.strip(), s, e) for w, s, e in words if w.strip()]
     out: list[Caption] = []
-    cur: list[tuple[str, float, float]] = []
-
-    def flush():
-        if cur:
-            out.append(Caption(offset + cur[0][1], offset + cur[-1][2], [w for w, _, _ in cur],
-                               [(offset + s, offset + e) for _, s, e in cur], speaker))
-
-    for w, s, e in words:
-        w = w.strip()
-        if not w:
-            continue
-        chars = sum(len(x) + 1 for x, _, _ in cur) + len(w)
-        if cur and (len(cur) >= max_words or chars > max_chars):
-            flush()
-            cur = []
-        cur.append((w, s, e))
-        if re.search(r"[.!?;:…]$", w):
-            flush()
-            cur = []
-    flush()
+    for idx in chunk([w for w, _, _ in ws], max_words, max_chars, keep):
+        cur = [ws[k] for k in idx]
+        out.append(Caption(offset + cur[0][1], offset + cur[-1][2], [w for w, _, _ in cur],
+                           [(offset + s, offset + e) for _, s, e in cur], speaker))
     for a, b in zip(out, out[1:]):  # stay until the next chunk (no flicker)
         if b.start - a.end < 0.6:
             a.end = b.start
@@ -775,12 +765,15 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     plan.timeline.add_sfx(start + s0 - 0.02, "hit", seed=i)
                     break
 
-        if vtype not in ("title", "kinetic"):  # those already show the words
-            caps_b = group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator"))
+        caps_b = group_captions(v["words"], start, max_chars, max_words, v.get("speaker", "narrator"),
+                                (cfg.get("captions") or {}).get("keep") or [])
+        if vtype not in ("title", "kinetic"):  # those already show the words: burned-in captions hidden there
             if beat.get("caption_x") is not None and kind != "short":
                 for c in caps_b:
                     c.cx = float(beat["caption_x"])
             plan.captions.extend(caps_b)
+        else:  # ... but the .srt carries every spoken line
+            plan.srt_only.extend(caps_b)
         if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
         if beat.get("label"):

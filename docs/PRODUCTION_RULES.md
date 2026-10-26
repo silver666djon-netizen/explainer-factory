@@ -136,3 +136,14 @@ must report zero before a final render.
     One message per version: the long video first (a 480p Telegram copy when the 1080p file is over the bot limit;
     the release link carries the full file), then the Shorts in one batch, then the description.
     After APPROVED FINAL, one last message with that header and the links.
+23. Subtitle cards (burned-in karaoke and .srt, long video and Shorts; factory/captions.py). Never split a name, a
+    number or a fixed phrase across cards: "J.C. Penney", "High Court", "Fair and Square", "Black Friday",
+    "four eighty-nine ninety-nine", "nine hundred and eighty-five million dollars", "two fifty-nine fifty-nine",
+    "zero point zero two percent", "four weeks". Number words + their unit, capitalised names, month + year,
+    hyphenated adjective + noun, phrasal verbs ("wrote down") and an article with its word stay together
+    automatically; an episode adds its own phrases in config "captions": {"keep": [...]}. At least two words per card
+    — no lone "at." or "Name:" — except a one-word sentence that is a deliberate beat ("Twice.", "One."). A card ends at
+    a sentence end; inside a sentence the split is balanced, prefers commas/colons/dashes and never ends on "the",
+    "of", "can" or a subject pronoun. A long name or number may take a second line rather than split.
+24. The uploaded .srt carries EVERY spoken line, including narration over chapter cards (t1–t5 "Monday, nine a.m.")
+    and kinetic text (k14, e9). The burned-in subtitles may stay hidden there; the .srt may not.

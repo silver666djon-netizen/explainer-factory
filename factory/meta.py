@@ -124,5 +124,6 @@ def write_meta(out_dir: Path, episode: dict, plan_long, shorts_info: list[dict])
     }
     (out_dir / "metadata.json").write_text(json.dumps(meta, indent=2, ensure_ascii=False), encoding="utf-8")
     (out_dir / "description.txt").write_text(meta["description"], encoding="utf-8")
-    (out_dir / "long.srt").write_text(srt(plan_long.captions), encoding="utf-8")
+    (out_dir / "long.srt").write_text(srt(sorted(plan_long.captions + list(getattr(plan_long, "srt_only", [])),
+                                                 key=lambda c: c.start)), encoding="utf-8")
     return meta

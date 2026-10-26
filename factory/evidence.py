@@ -207,7 +207,25 @@ class Clipping:
                 words = [(wd, wx, wy + (g if wy >= hy[0] else 0) + (g if wy > hy[-1] else 0), si, inh)
                          for wd, wx, wy, si, inh in words]
                 y += 2 * g
-        ph = y + lh + pad
+        foot = str(spec.get("footnote") or "").strip()  # small printed plate under the quote (e.g. an abbreviation)
+        if foot:
+            fsz = int(bfnt.size * 0.82)
+            ffnt = _font(cfg, "typewriter", "serif", fsz)
+            while fsz > bfnt.size * 0.6 and ffnt.getlength(foot) + 1.4 * fsz > pw - 2 * pad:  # fits the clipping
+                fsz -= 1
+                ffnt = _font(cfg, "typewriter", "serif", fsz)
+            fpx, fpy = int(ffnt.size * 0.7), int(ffnt.size * 0.45)
+            flines = _wrap(foot, ffnt, pw - 2 * pad - 2 * fpx)  # still too long (portrait): two lines
+            if len(flines) > 1 and " (" in foot:  # break before a bracket: 'FVR = "…"' / '(judgment, para 4)'
+                a_, b_ = foot.split(" (", 1)
+                if max(ffnt.getlength(a_), ffnt.getlength("(" + b_)) <= pw - 2 * pad - 2 * fpx:
+                    flines = [a_, "(" + b_]
+            fw_ = min(int(max(ffnt.getlength(x) for x in flines)) + 2 * fpx, pw - 2 * pad)
+            fh_ = int(ffnt.size * 1.25) * len(flines) + 2 * fpy
+            fy_ = y + lh + int(lh * 0.30)
+            ph = fy_ + fh_ + pad
+        else:
+            ph = y + lh + pad
         self.w, self.h = pw, ph
         paper = _aged_paper(pw, ph, seed)
         sharp = Image.new("L", (pw, ph), 0)
@@ -231,6 +249,13 @@ class Clipping:
         drop = cv2.GaussianBlur(rnd.random(ink.shape).astype(np.float32), (0, 0), 0.8)
         ink *= np.clip((drop - 0.30) * 6, 0.55, 1.0)
         out = paper.astype(np.float32) * (1 - ink[..., None]) + np.array(INK, np.float32) * ink[..., None]
+        if foot:
+            pim = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8))
+            pd = ImageDraw.Draw(pim)
+            pd.rectangle((pad, fy_, pad + fw_, fy_ + fh_), fill=(247, 241, 226), outline=INK, width=max(2, pw // 500))
+            for k, ln in enumerate(flines):
+                pd.text((pad + fpx, fy_ + fpy + k * int(ffnt.size * 1.25)), ln, font=ffnt, fill=INK)
+            out = np.array(pim).astype(np.float32)
         alpha = _torn_alpha(pw, ph, seed, rough=pad * 0.42)
         self.rgba = np.dstack([np.clip(out, 0, 255).astype(np.uint8), alpha])
         # highlight spans per line: (x0, x1, y_top, y_bottom) in clipping px
