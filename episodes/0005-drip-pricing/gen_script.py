@@ -215,7 +215,8 @@ beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
          motion="static",
          hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.262, y=0.15, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6),
-                                 write("REAL", on="fees", x=0.262, y=0.222, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6)])),  # dark cabinets above the kettle: white pen
+                                 write("REAL", on="fees", x=0.262, y=0.222, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6)],
+         clip_until=3.0), clip=True),  # Grok clip (Klot): only 0-3 s, the push-in later takes the ticket out of frame; dark cabinets: white pen
      caption_x=0.64)  # the ticket sits low-left: this beat's subtitles move right, clear of it
 
 # ------------------------------------------------------------------ the case + suspect no. 1
@@ -332,7 +333,9 @@ beat("b9b", S_TM, "Until a court decides, every word of it is an allegation.",
 chapter("t3", S_HOTEL, "Thursday, eleven-forty p.m.", "Thursday 11:40 PM — The resort fee")
 beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
      manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
-         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="Downtown.", x=0.874, y=0.45, w=0.145, h=0.085, color="#FFFFFF")])))
+         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="concert.", x=0.874, y=0.45, w=0.145, h=0.085, color="#FFFFFF")]), clip=True))
+# c1 Grok clip (Klot): by ~3 s the push-in swaps the dark right wall for the window, so DOWNTOWN is written by 2.5 s (on
+# "concert."); the clip plays to its end (he glances at the beach poster)
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
      {"type": "mugshot", "prompt": "an old hotel room key on a smooth oval brass key fob with a polished, completely plain surface, hanging from a small nail on a plain light grey wall, nothing else in the picture, studio lighting",
       "suspect": {"number": 2, "name": "The resort fee", "alias": "Amenity fee · Destination fee", "tag": "SUSPECT", "stamp_pos": [0.70, 0.12],

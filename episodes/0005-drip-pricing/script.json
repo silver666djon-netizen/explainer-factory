@@ -339,7 +339,9 @@
             "hand_scale": 0.6
           }
         ],
-        "manual": true
+        "clip_until": 3.0,
+        "manual": true,
+        "clip": true
       },
       "caption_x": 0.64
     },
@@ -1292,10 +1294,11 @@
             "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
-            "on": "Downtown."
+            "on": "concert."
           }
         ],
-        "manual": true
+        "manual": true,
+        "clip": true
       }
     },
     {
@@ -3629,7 +3632,7 @@
                 "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "Downtown."
+                "on": "concert."
               }
             ],
             "hand_marks": true
