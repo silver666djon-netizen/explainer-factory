@@ -521,6 +521,20 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     from .shots import ClipImageShot
                     shot = ClipImageShot(shot_start + k * seg, seg, pil(path), "static", size, cfg, marks=shot_marks,
                                          seed=i * 7 + k, clip=live, until=visual.get("clip_until"), fit=fit)
+                    if visual.get("clip_hold"):  # the clip's first frame for the whole shot (the action comes later)
+                        shot.sync = (1e9, 0.0, 0.0, 1.0)
+                    cs = visual.get("clip_sync")  # {"from": word, "to": word}: the clip's movement runs from one word to
+                    if cs:  # the other (sped up if it is longer: the click lands on "to"); before it, the first frame holds
+                        from .shots import clip_event
+                        c0 = float(cs["start"]) if cs.get("start") is not None else clip_event(str(live), "start")
+                        c1 = float(cs["end"]) if cs.get("end") is not None else clip_event(str(live), "end")
+                        wt = word_time(v["words"], cs["to"])
+                        if wt is not None:
+                            t1 = wt + lead_in + float(cs.get("to_delay", 0.1))
+                            wf = word_time(v["words"], cs["from"]) if cs.get("from") else None
+                            t0 = (wf + lead_in) if wf is not None else t1 - (c1 - c0)
+                            sp = max(1.0, (c1 - c0) / max(0.15, t1 - t0))
+                            shot.sync = (t1 - (c1 - c0) / sp, c0, c1, sp)
                 else:
                     shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                      marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
@@ -533,6 +547,12 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 shot._still_src = None if live is not None else str(path)  # max-still check (a live clip is not a still)
                 if visual.get("cam_dy") and k == 0:
                     shot.cam_dy = float(visual["cam_dy"])
+                if visual.get("cam_rate") is not None and k == 0:  # slow even push; "cam_continue": on from the last shot
+                    z0 = 1.0
+                    prev = plan.shots[-1] if plan.shots else None
+                    if visual.get("cam_continue") and getattr(prev, "zoom_lin", None):
+                        z0 = prev.zoom_lin[0] + prev.zoom_lin[1] * prev.duration
+                    shot.zoom_lin = (z0, float(visual["cam_rate"]))
                 plan.shots.append(shot)
             if visual.get("newsreel"):
                 plan.ledger_hide.append((shot_start, shot_end))

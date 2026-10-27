@@ -409,9 +409,10 @@ def clip_cover(sh, limit=0.03):
         until = float(m["until"]) if m.get("until") is not None else sh.duration
         t, cov = at, []
         while t < min(sh.duration, until):
-            fi = min(int(t * fps), nmax)
+            fi = min(int(sh.clip_time(t) * fps), nmax)
             k = int(np.argmin(np.abs(idx - fi)))
-            frozen = sh.until is not None and t * fps >= float(sh.until) * fps  # a frozen clip has no motion
+            tc_ = sh.clip_time(t)
+            frozen = (sh.until is not None and tc_ >= float(sh.until)) or (sh.sync is not None and t < sh.sync[0])  # held
             mv = masks[0][k][Y0:Y1 + 1, X0:X1 + 1] * (0 if frozen else 1)
             pr = masks[1][k][Y0:Y1 + 1, X0:X1 + 1] if masks[1] is not None else None
             cov.append((float(mv.mean()) if mv.size else 0.0, float(pr.mean()) if pr is not None and pr.size else 0.0, t, fi / fps))

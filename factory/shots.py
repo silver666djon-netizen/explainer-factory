@@ -544,6 +544,9 @@ class ImageShot(Shot):
         self.bg = None
 
     def _camera(self, p: float):
+        zl = getattr(self, "zoom_lin", None)
+        if zl:  # a slow, even push that can run on across two shots of one held picture: (z at start, z per second)
+            return zl[0] + zl[1] * p * self.duration, 0.0, 0.0
         e = ease(p)
         zmax = self.zmax
         m = self.motion
@@ -1108,6 +1111,44 @@ class ClipShot(Shot):
 _TRACK_CACHE: dict = {}
 
 
+_EVENT_CACHE: dict = {}
+
+
+def clip_event(clip: str, which: str = "end") -> float:
+    """Clip seconds where its main movement starts or ends ("end" = the click of a switch, a stop): frame-to-frame
+    change on a small grey copy, smoothed; the movement is where it exceeds 20 % of its peak."""
+    key = (clip, which)
+    if key in _EVENT_CACHE:
+        return _EVENT_CACHE[key]
+    cap = cv2.VideoCapture(clip)
+    fps = cap.get(cv2.CAP_PROP_FPS) or 24.0
+    prev, e = None, []
+    while True:
+        ok, fr = cap.read()
+        if not ok:
+            break
+        g = cv2.GaussianBlur(cv2.cvtColor(cv2.resize(fr, (320, int(320 * fr.shape[0] / fr.shape[1]))), cv2.COLOR_BGR2GRAY), (0, 0), 1.5)
+        e.append(0.0 if prev is None else float(np.abs(g.astype(np.float32) - prev).mean()))
+        prev = g.astype(np.float32)
+    cap.release()
+    if not e:
+        return 0.0
+    s = np.convolve(np.array(e), np.ones(5) / 5, mode="same")
+    pk = int(np.argmax(s))
+    on = s > 0.2 * s[pk]
+    if which == "start":
+        i = pk
+        while i > 0 and on[i - 1]:
+            i -= 1
+    else:
+        i = pk
+        while i < len(s) - 1 and on[i + 1]:
+            i += 1
+    t = i / fps
+    _EVENT_CACHE[key] = t
+    return t
+
+
 def clip_tracks(clip: str, still_base: np.ndarray, BW: int, BH: int, focus) -> list:
     """Per clip frame: 2x3 similarity mapping still-picture px (the covered still) -> clip-frame px (same cover).
     ORB features on the static background, RANSAC (moving subjects are outliers), then a 7-frame moving average."""
@@ -1166,6 +1207,7 @@ class ClipImageShot(ImageShot):
         super().__init__(start, duration, image, motion, size, cfg, marks=marks, photo=False, seed=seed, fit=fit)
         self.clip = str(clip)
         self.until = until  # clip seconds: the picture freezes on this frame (e.g. walking slips stop before we write)
+        self.sync = None  # (t0, c0, c1, speed): first frame until shot t0, then clip c0..c1 at `speed`, then normal speed
         self._cap = None
         self._idx = -1
         self._last = None
@@ -1182,8 +1224,17 @@ class ClipImageShot(ImageShot):
         if self._A is None:
             self._A = clip_tracks(self.clip, self.base, self.BW, self.BH, self.focus)
 
+    def clip_time(self, t: float) -> float:
+        if self.sync is None:
+            return t
+        t0, c0, c1, sp = self.sync
+        if t < t0:
+            return 0.0  # the clip's first frame, held
+        t1 = t0 + (c1 - c0) / sp
+        return c0 + (t - t0) * sp if t < t1 else c1 + (t - t1)
+
     def _clip_frame(self, t: float):
-        i = int(t * self._fps)
+        i = int(self.clip_time(t) * self._fps)
         if self.until is not None:
             i = min(i, int(float(self.until) * self._fps))
         if self._n:

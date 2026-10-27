@@ -169,21 +169,19 @@ S_OPEN, S_EXP, S_TM, S_HOTEL, S_BRAIN, S_DEF, S_LAW, S_CHECK, S_CLOSE = (
     "Why a split price feels cheaper", "In defence of the accused", "Friday 9:00 AM: One fee, three laws",
     "Saturday 10:00 AM: Three checks", "Case closed")
 LARRY = "{larry}"
-# x1 toggle panel (Klot's still + Grok clip). Rule 25: no mark on a surface a moving part covers while the mark is on screen.
-# The lever rests over the cream panel above the LEFT plate until clip 2.3 s, sweeps the top plate's lower half 2.25-3.33 s
-# and the panel above the RIGHT plate 3.5-3.9 s (measured: clip frames vs their median = the panel without the lever).
-# So: ALL-IN PRICES stays on the top plate, OFF / ON go on the cream panel above each side plate, centred over it; all three
-# Anton at one size (fs = ALL-IN PRICES's letter size) and one angle (the panel's perspective between the plates, 1.5 deg),
-# written one at a time by one hand after the lever has left each spot: OFF, ALL-IN PRICES, ON.
-LBL = dict(angle=1.5, color="ink", font="headline", fs=0.0923)
-X1_TOP = dict(x=0.398, y=0.205, w=0.30, h=0.125, **LBL)  # top plate .245-.552 x .13-.275
-X1_OFF = dict(x=0.177, y=0.356, w=0.09, h=0.11, **LBL)  # cream band .277-.436 above the left plate (.113-.240)
-X1_ON = dict(x=0.595, y=0.350, w=0.07, h=0.11, **LBL)  # cream band above the right plate (.515-.675)
-# x2 = the clip's last frame (images/x2.png): same ink, mapped through the clip's own push (scale 1.015 about .454, .489)
-def _x2(d, c=(0.454, 0.489), k=1.015):
-    return dict(d, x=round(c[0] + k * (d["x"] - c[0]), 4), y=round(c[1] + k * (d["y"] - c[1]), 4), fs=round(d["fs"] * k, 4))
-X2_TOP, X2_OFF, X2_ON = _x2(X1_TOP), _x2(X1_OFF), _x2(X1_ON)
-X_FIT = [0.05, 0.77]  # Shorts: the whole panel width stays in the window (pull back, blurred background)
+# x1/x2 switch (Klot, 2026-10-27): a NEW still (only the top plate, empty cream panel left and right of the lever) and a
+# new Grok clip are coming. The clip's first frame (lever on OFF) holds through x1 and x2 with one slow even push; the
+# flip plays from "Turn" and the click lands on "on" (clip_sync: the clip's movement is found in the clip itself and
+# sped up to fit). ALL-IN PRICES on the top plate; OFF / ON hand-written (marker) on the cream panel left and right of
+# the lever's travel, one size, clear of the lever in every frame (rule 25, mark audit check 6).
+# >>> PLACEHOLDERS until the new files arrive: positions below are for the OLD still/clip and get re-measured from the
+#     new ones (tools/qc/clip_zones.py prints the lever's travel, the click time and the free cream on each side).
+X1_TOP = dict(x=0.398, y=0.205, w=0.30, h=0.125, angle=1.5, color="ink", font="headline", fs=0.0923)  # on the top plate
+HW = dict(angle=1.5, color="ink", font="marker", fs=0.075)  # OFF / ON: hand-written, one size
+X1_OFF = dict(x=0.12, y=0.36, w=0.08, h=0.10, **HW)  # PLACEHOLDER: cream left of the lever's travel
+X1_ON = dict(x=0.645, y=0.36, w=0.08, h=0.10, **HW)  # PLACEHOLDER: cream right of the lever's travel
+X_FIT = [0.05, 0.77]  # Shorts: the whole panel width stays in the window (pull back, blurred background) - re-measure
+X_PUSH = 0.006  # zoom per second: ~1.00 -> 1.09 over x1 + x2, one continuous push across the cut
 TICKET_PRICE_BOX = dict(x=0.2965, y=0.660, w=0.20, h=0.10)  # centred in the price box (.177-.416 x .599-.716), ~60 % of its height
 # the fee column on the clear paper right of the ticket (border at .70): left-aligned from .745, even 11 % line pitch
 FEE = lambda y, **kw: dict(x=0.85, y=y, w=0.21, h=0.075, align="left", **kw)
@@ -465,19 +463,15 @@ beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
 # ------------------------------------------------------------------ Saturday 10:00 AM — Three checks
 chapter("t6", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
 beat("x1", S_CHECK, "Three checks before you pay. One. Look for the all-in switch.",
-     manual(img("a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
-         motion="static", hand_marks=True, short_fit=X_FIT,
-         marks=[write("OFF", on="One.", delay=0.25, **X1_OFF),  # the lever has left the spot (clip 2.3 s)
-                write("ALL-IN PRICES", on="all-in", delay=0.25, chain=True, **X1_TOP),  # the lever has passed the top plate (3.4 s)
-                write("ON", on="switch.", dur=0.35, chain=True, **X1_ON)]), clip=True),  # after the click (3.9 s)
-     hold=0.5)
+     manual(img("a big chrome 1950s toggle switch on a cream enamel panel, only one blank plate above it, switched to the left, studio lighting, plain background",
+         motion="static", hand_marks=True, short_fit=X_FIT, clip_hold=True, cam_rate=X_PUSH,  # first frame: lever on OFF
+         marks=[write("OFF", on="One.", **X1_OFF),
+                write("ALL-IN PRICES", on="all-in", **X1_TOP)]), clip=True))
 beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
-     manual(img("the last frame of the x1 clip: the switch now set to the right (ON)", note="images/x2.png = last frame of clips/x1.mp4",
-         motion="static", hand_marks=True, short_fit=X_FIT,
-         marks=[write("ALL-IN PRICES", at=0.0, **X2_TOP), write("OFF", at=0.0, **X2_OFF), write("ON", at=0.0, **X2_ON)],
-         # push-in on the switch that keeps all three labels in frame (they stay written during the push)
-         closeup=closeup("before", [0.40, 0.40], 1.6, [write("ALL-IN PRICES", at=0.0, **X2_TOP), write("OFF", at=0.0, **X2_OFF),
-                                                       write("ON", at=0.0, **X2_ON)]))))
+     reuse("x1", clip=True, hand_marks=True, short_fit=X_FIT, cam_rate=X_PUSH, cam_continue=True,
+           clip_sync={"from": "Turn", "to": "on"},  # the flip runs on "Turn it on", the click lands on "on"
+           marks=[write("ALL-IN PRICES", at=0.0, **X1_TOP), write("OFF", at=0.0, **X1_OFF),
+                  write("ON", on="included.", **X1_ON)]))  # ON goes on before the lever moves there
 beat("x3", S_CHECK, "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
      reuse("m1b", hand_marks=True, marks=[write("LAST SCREEN", on="last", x=0.17, y=0.30, w=0.22, h=0.06)],
            closeup=closeup("real", [0.50, 0.40], 1.6, [write("$48", on="price", x=0.535, y=0.40, w=0.09, h=0.04)])))
@@ -524,6 +518,9 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
         for k in ("marks", "hand_marks", "closeup", "push", "stamps"):
             if v.get(k) is not None:
                 vis[k] = copy.deepcopy(v[k])
+        for k in ("clip_hold", "clip_sync", "cam_rate", "cam_continue"):  # held clip frame, synced flip, even push
+            if v.get(k) is not None:
+                vis[k] = copy.deepcopy(v[k])
         if v.get("short_fit"):  # the whole subject stays in the Short's window for the whole beat: no push-in
             vis["short_fit"] = list(v["short_fit"])
             vis.pop("closeup", None)
@@ -542,10 +539,6 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
     return b
 
 
-# s7: the switch stays whole in the Short (no push-in), so the 8.6-s line gets a hand action instead: ON circled on "on"
-S7_X2 = L("x2")
-S7_X2["visual"]["marks"].append(circle(X2_ON["x"], X2_ON["y"] - 0.002, 0.10, 0.13, "on", target=[0.568, 0.305, 0.626, 0.39]))
-
 SHORTS = [
     {"id": "s1", "title": "The $30 ticket that costs $48 #shorts", "hook": "$30 → $48", "hook_on": "o3",
      "beats": [L("o1"), L("o2"), L("o3"), L("m1"), L("b6"), L("o1", text="So before you pay thirty, ask what it costs.", keep=())]},
@@ -561,7 +554,7 @@ SHORTS = [
     {"id": "s6", "title": "The £3 fee that cost £4.2 million #shorts", "hook": "£3 → £4,200,000", "hook_on": "l8",
      "beats": [L("l8"), L("l9"), L("l4"), L("l5"), L("l6")]},
     {"id": "s7", "title": "3 checks before you pay #shorts", "hook": "3 CHECKS", "hook_on": "x1",
-     "beats": [L("x1"), S7_X2, L("x3"), L("x4"), L("x5")]},
+     "beats": [L("x1"), L("x2"), L("x3"), L("x4"), L("x5")]},
 ]
 for sh in SHORTS:
     for k, b in enumerate(sh["beats"]):

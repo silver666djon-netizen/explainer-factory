@@ -2415,27 +2415,28 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
+        "prompt": "a big chrome 1950s toggle switch on a cream enamel panel, only one blank plate above it, switched to the left, studio lighting, plain background",
         "hand_marks": true,
         "short_fit": [
           0.05,
           0.77
         ],
+        "clip_hold": true,
+        "cam_rate": 0.006,
         "marks": [
           {
             "type": "write",
             "text": "OFF",
-            "x": 0.177,
-            "y": 0.356,
-            "w": 0.09,
-            "h": 0.11,
+            "x": 0.12,
+            "y": 0.36,
+            "w": 0.08,
+            "h": 0.1,
             "angle": 1.5,
             "color": "ink",
-            "font": "headline",
+            "font": "marker",
             "dur": 0.7,
             "on": "One.",
-            "delay": 0.25,
-            "fs": 0.0923
+            "fs": 0.075
           },
           {
             "type": "write",
@@ -2449,51 +2450,40 @@
             "font": "headline",
             "dur": 0.7,
             "on": "all-in",
-            "delay": 0.25,
-            "chain": true,
-            "fs": 0.0923
-          },
-          {
-            "type": "write",
-            "text": "ON",
-            "x": 0.595,
-            "y": 0.35,
-            "w": 0.07,
-            "h": 0.11,
-            "angle": 1.5,
-            "color": "ink",
-            "font": "headline",
-            "dur": 0.35,
-            "on": "switch.",
-            "chain": true,
             "fs": 0.0923
           }
         ],
         "manual": true,
         "clip": true
-      },
-      "hold": 0.5
+      }
     },
     {
       "id": "x2",
       "section": "Saturday 10:00 AM: Three checks",
       "text": "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
       "visual": {
-        "type": "image",
+        "type": "reuse",
+        "beat": "x1",
+        "index": 0,
         "motion": "static",
-        "prompt": "the last frame of the x1 clip: the switch now set to the right (ON)",
-        "note": "images/x2.png = last frame of clips/x1.mp4",
+        "clip": true,
         "hand_marks": true,
         "short_fit": [
           0.05,
           0.77
         ],
+        "cam_rate": 0.006,
+        "cam_continue": true,
+        "clip_sync": {
+          "from": "Turn",
+          "to": "on"
+        },
         "marks": [
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.3972,
-            "y": 0.2007,
+            "x": 0.398,
+            "y": 0.205,
             "w": 0.3,
             "h": 0.125,
             "angle": 1.5,
@@ -2501,97 +2491,39 @@
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.0937,
+            "fs": 0.0923,
             "hand": false
           },
           {
             "type": "write",
             "text": "OFF",
-            "x": 0.1728,
-            "y": 0.354,
-            "w": 0.09,
-            "h": 0.11,
+            "x": 0.12,
+            "y": 0.36,
+            "w": 0.08,
+            "h": 0.1,
             "angle": 1.5,
             "color": "ink",
-            "font": "headline",
+            "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.0937,
+            "fs": 0.075,
             "hand": false
           },
           {
             "type": "write",
             "text": "ON",
-            "x": 0.5971,
-            "y": 0.3479,
-            "w": 0.07,
-            "h": 0.11,
+            "x": 0.645,
+            "y": 0.36,
+            "w": 0.08,
+            "h": 0.1,
             "angle": 1.5,
             "color": "ink",
-            "font": "headline",
-            "dur": 0.01,
-            "at": 0.0,
-            "fs": 0.0937,
-            "hand": false
+            "font": "marker",
+            "dur": 0.7,
+            "on": "included.",
+            "fs": 0.075
           }
-        ],
-        "closeup": {
-          "on": "before",
-          "center": [
-            0.4,
-            0.4
-          ],
-          "zoom": 1.6,
-          "marks": [
-            {
-              "type": "write",
-              "text": "ALL-IN PRICES",
-              "x": 0.3972,
-              "y": 0.2007,
-              "w": 0.3,
-              "h": 0.125,
-              "angle": 1.5,
-              "color": "ink",
-              "font": "headline",
-              "dur": 0.01,
-              "at": 0.0,
-              "fs": 0.0937,
-              "hand": false
-            },
-            {
-              "type": "write",
-              "text": "OFF",
-              "x": 0.1728,
-              "y": 0.354,
-              "w": 0.09,
-              "h": 0.11,
-              "angle": 1.5,
-              "color": "ink",
-              "font": "headline",
-              "dur": 0.01,
-              "at": 0.0,
-              "fs": 0.0937,
-              "hand": false
-            },
-            {
-              "type": "write",
-              "text": "ON",
-              "x": 0.5971,
-              "y": 0.3479,
-              "w": 0.07,
-              "h": 0.11,
-              "angle": 1.5,
-              "color": "ink",
-              "font": "headline",
-              "dur": 0.01,
-              "at": 0.0,
-              "fs": 0.0937,
-              "hand": false
-            }
-          ],
-          "motion": "zoom_in"
-        },
-        "manual": true
+        ]
       }
     },
     {
@@ -4226,17 +4158,16 @@
               {
                 "type": "write",
                 "text": "OFF",
-                "x": 0.177,
-                "y": 0.356,
-                "w": 0.09,
-                "h": 0.11,
+                "x": 0.12,
+                "y": 0.36,
+                "w": 0.08,
+                "h": 0.1,
                 "angle": 1.5,
                 "color": "ink",
-                "font": "headline",
+                "font": "marker",
                 "dur": 0.7,
                 "on": "One.",
-                "delay": 0.25,
-                "fs": 0.0923
+                "fs": 0.075
               },
               {
                 "type": "write",
@@ -4250,48 +4181,45 @@
                 "font": "headline",
                 "dur": 0.7,
                 "on": "all-in",
-                "delay": 0.25,
-                "chain": true,
-                "fs": 0.0923
-              },
-              {
-                "type": "write",
-                "text": "ON",
-                "x": 0.595,
-                "y": 0.35,
-                "w": 0.07,
-                "h": 0.11,
-                "angle": 1.5,
-                "color": "ink",
-                "font": "headline",
-                "dur": 0.35,
-                "on": "switch.",
-                "chain": true,
                 "fs": 0.0923
               }
             ],
             "hand_marks": true,
+            "clip_hold": true,
+            "cam_rate": 0.006,
             "short_fit": [
               0.05,
               0.77
             ],
             "clip": true
           },
-          "hold": 0.5,
           "id": "s7_0"
         },
         {
           "text": "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
           "visual": {
             "type": "reuse",
-            "beat": "x2",
+            "beat": "x1",
+            "index": 0,
             "motion": "static",
+            "clip": true,
+            "hand_marks": true,
+            "short_fit": [
+              0.05,
+              0.77
+            ],
+            "cam_rate": 0.006,
+            "cam_continue": true,
+            "clip_sync": {
+              "from": "Turn",
+              "to": "on"
+            },
             "marks": [
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.3972,
-                "y": 0.2007,
+                "x": 0.398,
+                "y": 0.205,
                 "w": 0.3,
                 "h": 0.125,
                 "angle": 1.5,
@@ -4299,58 +4227,38 @@
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.0937,
+                "fs": 0.0923,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "OFF",
-                "x": 0.1728,
-                "y": 0.354,
-                "w": 0.09,
-                "h": 0.11,
+                "x": 0.12,
+                "y": 0.36,
+                "w": 0.08,
+                "h": 0.1,
                 "angle": 1.5,
                 "color": "ink",
-                "font": "headline",
+                "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.0937,
+                "fs": 0.075,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "ON",
-                "x": 0.5971,
-                "y": 0.3479,
-                "w": 0.07,
-                "h": 0.11,
+                "x": 0.645,
+                "y": 0.36,
+                "w": 0.08,
+                "h": 0.1,
                 "angle": 1.5,
                 "color": "ink",
-                "font": "headline",
-                "dur": 0.01,
-                "at": 0.0,
-                "fs": 0.0937,
-                "hand": false
-              },
-              {
-                "type": "circle",
-                "x": 0.5971,
-                "y": 0.3459,
-                "w": 0.1,
-                "h": 0.13,
-                "on": "on",
-                "target": [
-                  0.568,
-                  0.305,
-                  0.626,
-                  0.39
-                ]
+                "font": "marker",
+                "dur": 0.7,
+                "on": "included.",
+                "fs": 0.075
               }
-            ],
-            "hand_marks": true,
-            "short_fit": [
-              0.05,
-              0.77
             ]
           },
           "id": "s7_1"

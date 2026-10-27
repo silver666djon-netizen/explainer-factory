@@ -135,6 +135,12 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   (rule 23), .srt with every spoken line (rule 24, 1066/1066 words), stat captions break only before "·", e6 plate
   'FVR = "fixed volume requirement" (judgment, para 4)'. Long −14.2/−1.9, Shorts −14.2..−14.3 / −1.9..−2.7;
   mark audit 0, handcheck 0 (long + 7 Shorts). Same timings as r72 (chapters unchanged).
+- 2026-10-28 Ep.4 switch scene again NOT approved: x1/x2 rebuilt as ONE held clip frame (lever on OFF) with an even
+  push across both beats (clip_hold, cam_rate, cam_continue) and the flip synced to the words (clip_sync from "Turn"
+  to "on": the clip's movement is found in the clip (shots.clip_event) and sped up so the click lands on "on").
+  Waiting for Klot's NEW x1 still (only the top plate) + Grok clip: then re-measure X1_TOP / X1_OFF / X1_ON / X_FIT
+  with tools/qc/clip_zones.py (positions in gen_script are placeholders for the old picture; the audit flags them).
+  r78 long re-sent alone (notify only=long, direct 1080p link; release assets renamed cs_ep04_r78_*).
 - 2026-10-27 Ep.4 switch scene (x1/x2/s7) reworked for Klot, NOT rendered yet (goes into the next Ep.4 render with his
   r78 frame-check list): OFF/ON on the cream panel above each side plate, ALL-IN PRICES on the top plate, one size (fs)
   and angle (1.5), written OFF -> ALL-IN PRICES -> ON after the lever leaves each spot; x2 push-in re-aimed (.40,.40) with
