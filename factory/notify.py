@@ -104,7 +104,13 @@ def main(argv: list[str]) -> int:
         _send_texts(files, pre, head)
         return 0
     minutes = float(meta.get("duration_seconds", 0)) / 60
-    cap = f"{head}\n{title}\nДлинное видео: {minutes:.1f} мин · полное 1080p: {release_url}"
+    link = opt("--link") or ""
+    if link and "long" in files:  # the direct 1080p download (a draft release: opens while logged in to GitHub)
+        mb = files["long"].stat().st_size / 1e6
+        cap = (f"{head}\n{title}\nДлинное видео: {minutes:.1f} мин\n1080p, {files['long'].name} ({mb:.0f} МБ), прямая ссылка:\n{link}"
+               f"\n(черновой релиз: открывается, когда вы вошли в GitHub)")
+    else:
+        cap = f"{head}\n{title}\nДлинное видео: {minutes:.1f} мин · полное 1080p: {release_url}"
     if lang:
         cap += "\nТолько для проверки, не загружать."
     tmp = out_dir / "_tg"
@@ -119,6 +125,8 @@ def main(argv: list[str]) -> int:
             send_text(cap)
     else:
         send_text(cap)
+    if opt("--only") == "long":  # the long video as its own message, nothing else
+        return 0
     shorts = sorted((k, f) for k, f in files.items() if k and k[0] == "s" and k[1:].isdigit())
     shorts = [(k, f) for k, f in sorted(shorts, key=lambda x: int(x[0][1:])) if f.stat().st_size < LIMIT]
     if shorts:  # 2) the Shorts in one batch (an album; split only where one request would exceed the upload limit)

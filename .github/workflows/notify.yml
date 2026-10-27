@@ -14,6 +14,10 @@ on:
         description: "version this one supersedes, e.g. r77 (shown in the header)"
         required: false
         default: ""
+      only:
+        description: "long = just the long video (own message, 480p copy + the direct 1080p link); empty = everything"
+        required: false
+        default: ""
 
 permissions:
   contents: write  # draft releases are visible only with write access
@@ -39,8 +43,14 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
+          TAG="${{ github.event.inputs.tag }}"
+          # rule 22 names on the release itself (older releases still carry long.mp4 ...): the direct links show them
+          tools/rel.sh assets "$TAG" | cut -f2 | python -m factory.naming plan "$TAG" | while IFS=$'\t' read -r old new; do
+            tools/rel.sh rename "$TAG" "$old" "$new" && echo "renamed $old -> $new"; done
           mkdir -p out/rel
-          for k in 1 2 3; do tools/rel.sh download "${{ github.event.inputs.tag }}" out/rel "*.json" "*.mp4" "*.jpg" "*.txt" "*.srt" && break; echo "::warning::download retry $k"; sleep 10; done
+          if [ "${{ github.event.inputs.only }}" = "long" ]; then globs=("*.json" "*_long.mp4"); else globs=("*.json" "*.mp4" "*.jpg" "*.txt" "*.srt"); fi
+          for k in 1 2 3; do tools/rel.sh download "$TAG" out/rel "${globs[@]}" && break; echo "::warning::download retry $k"; sleep 10; done
           ls -la out/rel || true
-          url=$(tools/rel.sh url "${{ github.event.inputs.tag }}")
-          python -m factory.notify out/rel "$url" --tag "${{ github.event.inputs.tag }}" ${{ github.event.inputs.status && format('--status "{0}"', github.event.inputs.status) || '' }} ${{ github.event.inputs.replaces && format('--replaces {0}', github.event.inputs.replaces) || '' }} 2>&1 | tee notify.log || { echo "::error::$(tail -3 notify.log | tr '\n' ' ')"; exit 1; }
+          url=$(tools/rel.sh url "$TAG")
+          link=$(tools/rel.sh assets "$TAG" | awk -F'\t' '$2 ~ /_long\.mp4$/ {print $3}' | head -1)
+          python -m factory.notify out/rel "$url" --tag "$TAG" --link "$link" ${{ github.event.inputs.only && format('--only {0}', github.event.inputs.only) || '' }} ${{ github.event.inputs.status && format('--status "{0}"', github.event.inputs.status) || '' }} ${{ github.event.inputs.replaces && format('--replaces {0}', github.event.inputs.replaces) || '' }} 2>&1 | tee notify.log || { echo "::error::$(tail -3 notify.log | tr '\n' ' ')"; exit 1; }

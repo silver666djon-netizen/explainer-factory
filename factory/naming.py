@@ -66,16 +66,24 @@ def kind_of(name: str) -> str | None:
     return None
 
 
+def new_name(name: str, pre: str) -> str | None:
+    """Rule 22 file name for any old or new release file name (None: not a deliverable)."""
+    k = kind_of(name)
+    if k is None:
+        return None
+    ext = {"srt": ".srt", "description": ".txt", "thumbnail": Path(name).suffix}.get(k, ".mp4")
+    return f"{pre}_long{ext}" if k == "srt" else f"{pre}_{k}{ext}"
+
+
 def rename(out_dir: str | Path, ep_dir: str | Path, run: int, lang: str | None = None) -> list[str]:
     out_dir = Path(out_dir)
     pre = prefix(episode_number(ep_dir), run, lang)
     done = []
     for f in sorted(out_dir.iterdir()):
-        k = kind_of(f.name)
-        if k is None:
+        new = new_name(f.name, pre)
+        if new is None:
             continue
-        ext = {"srt": ".srt", "description": ".txt", "thumbnail": f.suffix}.get(k, ".mp4")
-        new = out_dir / (f"{pre}_long{ext}" if k == "srt" else f"{pre}_{k}{ext}")
+        new = out_dir / new
         if new != f:
             f.rename(new)
             done.append(f"{f.name} -> {new.name}")
@@ -83,6 +91,14 @@ def rename(out_dir: str | Path, ep_dir: str | Path, run: int, lang: str | None =
 
 
 if __name__ == "__main__":
+    if len(sys.argv) >= 3 and sys.argv[1] == "plan":  # stdin: release asset names -> "old<TAB>new" for the ones to rename
+        slug, lang_, run_ = parse_tag(sys.argv[2])
+        pre_ = prefix(episode_number(Path("episodes") / slug), run_, lang_)
+        for line in sys.stdin:
+            old = line.strip()
+            nn = new_name(old, pre_) if old else None
+            if nn and nn != old:
+                print(f"{old}\t{nn}")
     if len(sys.argv) >= 5 and sys.argv[1] == "rename":
         for line in rename(sys.argv[2], sys.argv[3], int(sys.argv[4]), sys.argv[5] if len(sys.argv) > 5 and sys.argv[5] else None):
             print(line)
