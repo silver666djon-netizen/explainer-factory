@@ -237,6 +237,8 @@ def _remap_mark(m: dict, box) -> dict:
         m["w"] = float(m["w"]) / sx
     if "h" in m:
         m["h"] = float(m["h"]) / sy
+    if m.get("fs"):
+        m["fs"] = float(m["fs"]) / sy
     if m.get("target"):
         tx0, ty0, tx1, ty1 = m["target"]
         m["target"] = [(tx0 - bx0) / sx, (ty0 - by0) / sy, (tx1 - bx0) / sx, (ty1 - by0) / sy]
@@ -377,7 +379,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         clip_file = None
         if vtype == "continue":
             pass
-        elif vtype == "image" and visual.get("clip"):
+        elif visual.get("clip") and (vtype == "image" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "image")):
             pass  # a hand-made live clip under our overlays: built below as a ClipImageShot (the still is the fallback)
         elif vtype == "clip" or visual.get("clip") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("_clip")):
             clip_file = _clip_path(beat, visual, beat_lookup)
@@ -512,16 +514,18 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         plan.hand_cuts.append(shot_start + k * seg + m["at"])
                         plan.hand_windows.append((shot_start + k * seg + m["at"] - HAND_IN,
                                                   shot_start + k * seg + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
-                live = _clip_path(beat, visual, beat_lookup) if (vtype == "image" and visual.get("clip") and k == 0) else None
+                # a reuse plays the source's clip too when it asks for it ("clip": true, e.g. a Short of a live beat)
+                live = _clip_path(beat, visual, beat_lookup) if (vtype in ("image", "reuse") and visual.get("clip") and k == 0) else None
+                fit = visual.get("short_fit") if kind == "short" else None  # Shorts: this width of the picture stays in view
                 if live is not None:  # Grok/hand-made clip plays under the same marks, hand and plates as the still
                     from .shots import ClipImageShot
                     shot = ClipImageShot(shot_start + k * seg, seg, pil(path), "static", size, cfg, marks=shot_marks,
-                                         seed=i * 7 + k, clip=live, until=visual.get("clip_until"))
+                                         seed=i * 7 + k, clip=live, until=visual.get("clip_until"), fit=fit)
                 else:
                     shot = ImageShot(shot_start + k * seg, seg, pil(path), motion, size, cfg,
                                      marks=shot_marks, photo=is_archive_photo(path), seed=i * 7 + k,
                                      ad=visual.get("ad") if k == 0 else None, depth=depth_of(path),
-                                     draw=shot_draw if k == 0 else None)
+                                     draw=shot_draw if k == 0 else None, fit=fit)
                 if visual.get("newsreel"):
                     label = visual.get("newsreel") if isinstance(visual.get("newsreel"), str) else ui("Reconstruction")
                     shot = NewsreelShot(shot, cfg, label, seed=i * 7 + k)

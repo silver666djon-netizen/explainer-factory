@@ -36,7 +36,7 @@ new session needs. Do not ask Klot to re-explain the project; continue from "Cur
 - `episodes/<slug>/gen_script.py` → writes `script.json` (always edit gen_script.py, then run it).
   Helpers there: `write()`, `circle()`, `cross()`, `strike()`, `plate()`, `closeup()`, `doc()`, `L()` (Shorts).
 - `channel/channel.yaml` (style, audio targets: `target_lufs -14.0` (final level, gain calibrated after the limiter), `true_peak_max -1.0`).
-- `docs/PRODUCTION_RULES.md` — rules 1–24 (handwriting, stamps, ledger safe zone, max 8 s still, audio gate, Telegram order, subtitle cards,
+- `docs/PRODUCTION_RULES.md` — rules 1–25 (handwriting, stamps, ledger safe zone, max 8 s still, audio gate, Telegram order, subtitle cards,
   marks never written outside the frame or under a subtitle). Add every new rule there.
 - QC tools: `tools/qc/mark_audit.py`, `tools/qc/handcheck.py`, `tools/qc/audio_gate.py`,
   `tools/qc/qc_sheets.py`; release download helper `tools/release_dl.sh`.
@@ -135,6 +135,11 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   (rule 23), .srt with every spoken line (rule 24, 1066/1066 words), stat captions break only before "·", e6 plate
   'FVR = "fixed volume requirement" (judgment, para 4)'. Long −14.2/−1.9, Shorts −14.2..−14.3 / −1.9..−2.7;
   mark audit 0, handcheck 0 (long + 7 Shorts). Same timings as r72 (chapters unchanged).
+- 2026-10-27 Ep.4 switch scene (x1/x2/s7) reworked for Klot, NOT rendered yet (goes into the next Ep.4 render with his
+  r78 frame-check list): OFF/ON on the cream panel above each side plate, ALL-IN PRICES on the top plate, one size (fs)
+  and angle (1.5), written OFF -> ALL-IN PRICES -> ON after the lever leaves each spot; x2 push-in re-aimed (.40,.40) with
+  the labels kept; s7 plays the clip, whole panel fitted (short_fit), ON circled on "on" (8-s rule). Rule 25 + audit
+  check 6 (clip moving parts). handcheck: a live clip's ink (drawn twice for the matte) is counted once.
 - Ep.4 r78 FINAL CANDIDATE sent; known: ~4:26 "SAME TOTAL" clipped by the top edge in the n2 push-in — fix in the
   next Ep.4 render together with Klot's frame-check list (send as "replaces r78").
 - **Episode 3 "The Fake Sale"** (`episodes/0004-fake-sale`): r60 released and sent; Short 5 audio re-limited in

@@ -169,14 +169,21 @@ S_OPEN, S_EXP, S_TM, S_HOTEL, S_BRAIN, S_DEF, S_LAW, S_CHECK, S_CLOSE = (
     "Why a split price feels cheaper", "In defence of the accused", "Friday 9:00 AM: One fee, three laws",
     "Saturday 10:00 AM: Three checks", "Case closed")
 LARRY = "{larry}"
-# x1 toggle panel (Klot's still): top plate, the uncovered lower-right strip of the left plate (lever over it), right plate
-X1_TOP = dict(x=0.397, y=0.205, w=0.285, h=0.125, angle=2, color="ink", font="headline")  # plate .245-.551 x .128-.281: caps ~60 % of it
-X1_OFF = dict(x=0.1785, y=0.489, w=0.08, h=0.095, angle=1, color="ink", font="headline")  # between the plate's two screws
-X1_ON = dict(x=0.6353, y=0.4846, w=0.058, h=0.11, angle=1, color="ink", font="headline")  # uncovered part of the right plate once the lever lies on it
-# x2 = the clip's last frame (images/x2.png): same ink, mapped through the clip's own push (scale 1.015)
-X2_TOP = dict(x=0.396, y=0.2007, w=0.289, h=0.127, angle=2, color="ink", font="headline")
-X2_OFF = dict(x=0.1744, y=0.489, w=0.081, h=0.096, angle=1, color="ink", font="headline")
-X2_ON = dict(x=0.638, y=0.4845, w=0.059, h=0.112, angle=1, color="ink", font="headline")
+# x1 toggle panel (Klot's still + Grok clip). Rule 25: no mark on a surface a moving part covers while the mark is on screen.
+# The lever rests over the cream panel above the LEFT plate until clip 2.3 s, sweeps the top plate's lower half 2.25-3.33 s
+# and the panel above the RIGHT plate 3.5-3.9 s (measured: clip frames vs their median = the panel without the lever).
+# So: ALL-IN PRICES stays on the top plate, OFF / ON go on the cream panel above each side plate, centred over it; all three
+# Anton at one size (fs = ALL-IN PRICES's letter size) and one angle (the panel's perspective between the plates, 1.5 deg),
+# written one at a time by one hand after the lever has left each spot: OFF, ALL-IN PRICES, ON.
+LBL = dict(angle=1.5, color="ink", font="headline", fs=0.0923)
+X1_TOP = dict(x=0.398, y=0.205, w=0.30, h=0.125, **LBL)  # top plate .245-.552 x .13-.275
+X1_OFF = dict(x=0.177, y=0.356, w=0.09, h=0.11, **LBL)  # cream band .277-.436 above the left plate (.113-.240)
+X1_ON = dict(x=0.595, y=0.350, w=0.07, h=0.11, **LBL)  # cream band above the right plate (.515-.675)
+# x2 = the clip's last frame (images/x2.png): same ink, mapped through the clip's own push (scale 1.015 about .454, .489)
+def _x2(d, c=(0.454, 0.489), k=1.015):
+    return dict(d, x=round(c[0] + k * (d["x"] - c[0]), 4), y=round(c[1] + k * (d["y"] - c[1]), 4), fs=round(d["fs"] * k, 4))
+X2_TOP, X2_OFF, X2_ON = _x2(X1_TOP), _x2(X1_OFF), _x2(X1_ON)
+X_FIT = [0.05, 0.77]  # Shorts: the whole panel width stays in the window (pull back, blurred background)
 TICKET_PRICE_BOX = dict(x=0.2965, y=0.660, w=0.20, h=0.10)  # centred in the price box (.177-.416 x .599-.716), ~60 % of its height
 # the fee column on the clear paper right of the ticket (border at .70): left-aligned from .745, even 11 % line pitch
 FEE = lambda y, **kw: dict(x=0.85, y=y, w=0.21, h=0.075, align="left", **kw)
@@ -274,9 +281,9 @@ beat("a11", S_EXP, "A seat looks cheaper when its fees are still offstage, so yo
 beat("a12", S_EXP, "Then the fees walk on.",
      manual(img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
          motion="static", hand_marks=True, clip_until=4.0,  # Grok clip: the slips walk to centre stage and stop (frozen at 4.0 s)
-         marks=[write("$8", at=4.05, dur=0.3, x=0.3732, y=0.5499, w=0.065, h=0.09, angle=5.3, color="ink", short={"x": 0.184, "y": 0.544, "angle": -6, "w": 0.06, "h": 0.075, "at": 0.45}),
-                write("$6", at=4.47, dur=0.3, chain=True, x=0.4933, y=0.5499, w=0.065, h=0.09, angle=-1.8, color="ink", short={"x": 0.3, "y": 0.547, "angle": -6, "w": 0.06, "h": 0.075, "at": 0.87}),
-                write("$4", at=4.89, dur=0.3, chain=True, x=0.6193, y=0.5548, w=0.065, h=0.09, angle=6.1, color="ink", short={"x": 0.424, "y": 0.543, "angle": 11, "w": 0.06, "h": 0.075, "at": 1.29})]), clip=True),
+         marks=[write("$8", at=4.05, on_object=True, dur=0.3, x=0.3732, y=0.5499, w=0.065, h=0.09, angle=5.3, color="ink", short={"x": 0.184, "y": 0.544, "angle": -6, "w": 0.06, "h": 0.075, "at": 0.45}),
+                write("$6", at=4.47, on_object=True, dur=0.3, chain=True, x=0.4933, y=0.5499, w=0.065, h=0.09, angle=-1.8, color="ink", short={"x": 0.3, "y": 0.547, "angle": -6, "w": 0.06, "h": 0.075, "at": 0.87}),
+                write("$4", at=4.89, on_object=True, dur=0.3, chain=True, x=0.6193, y=0.5548, w=0.065, h=0.09, angle=6.1, color="ink", short={"x": 0.424, "y": 0.543, "angle": 11, "w": 0.06, "h": 0.075, "at": 1.29})]), clip=True),
      hold=3.6)  # the line, then the three prices go on the stopped slips
 beat("a13", S_EXP, "Twelve days of science. Then the science went live.", kin())
 beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the end, for everyone.",
@@ -459,12 +466,18 @@ beat("l14", S_LAW, "One ticket. Three stamps. One message: show the total.",
 chapter("t6", S_CHECK, "Saturday, ten a.m.", "Saturday 10:00 AM — Three checks")
 beat("x1", S_CHECK, "Three checks before you pay. One. Look for the all-in switch.",
      manual(img("a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
-         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", on="checks", **X1_TOP), write("OFF", on="One.", **X1_OFF),
-                                                  write("ON", at=4.25, dur=0.35, **X1_ON)]), clip=True))  # Grok clip: the lever flips right ~4 s, ON goes on after the click
+         motion="static", hand_marks=True, short_fit=X_FIT,
+         marks=[write("OFF", on="One.", delay=0.25, **X1_OFF),  # the lever has left the spot (clip 2.3 s)
+                write("ALL-IN PRICES", on="all-in", delay=0.25, chain=True, **X1_TOP),  # the lever has passed the top plate (3.4 s)
+                write("ON", on="switch.", dur=0.35, chain=True, **X1_ON)]), clip=True),  # after the click (3.9 s)
+     hold=0.5)
 beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
      manual(img("the last frame of the x1 clip: the switch now set to the right (ON)", note="images/x2.png = last frame of clips/x1.mp4",
-         motion="static", hand_marks=True, marks=[write("ALL-IN PRICES", at=0.0, **X2_TOP), write("OFF", at=0.0, **X2_OFF), write("ON", at=0.0, **X2_ON)],
-         closeup=closeup("before", [0.50, 0.50], 1.6))))
+         motion="static", hand_marks=True, short_fit=X_FIT,
+         marks=[write("ALL-IN PRICES", at=0.0, **X2_TOP), write("OFF", at=0.0, **X2_OFF), write("ON", at=0.0, **X2_ON)],
+         # push-in on the switch that keeps all three labels in frame (they stay written during the push)
+         closeup=closeup("before", [0.40, 0.40], 1.6, [write("ALL-IN PRICES", at=0.0, **X2_TOP), write("OFF", at=0.0, **X2_OFF),
+                                                       write("ON", at=0.0, **X2_ON)]))))
 beat("x3", S_CHECK, "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
      reuse("m1b", hand_marks=True, marks=[write("LAST SCREEN", on="last", x=0.17, y=0.30, w=0.22, h=0.06)],
            closeup=closeup("real", [0.50, 0.40], 1.6, [write("$48", on="price", x=0.535, y=0.40, w=0.09, h=0.04)])))
@@ -511,6 +524,11 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
         for k in ("marks", "hand_marks", "closeup", "push", "stamps"):
             if v.get(k) is not None:
                 vis[k] = copy.deepcopy(v[k])
+        if v.get("short_fit"):  # the whole subject stays in the Short's window for the whole beat: no push-in
+            vis["short_fit"] = list(v["short_fit"])
+            vis.pop("closeup", None)
+            if v.get("clip"):
+                vis["clip"] = True  # the Short plays the same live clip
     else:
         vis = copy.deepcopy(v)
         if v["type"] == "mugshot":
@@ -523,6 +541,10 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
     b.update(kw)
     return b
 
+
+# s7: the switch stays whole in the Short (no push-in), so the 8.6-s line gets a hand action instead: ON circled on "on"
+S7_X2 = L("x2")
+S7_X2["visual"]["marks"].append(circle(X2_ON["x"], X2_ON["y"] - 0.002, 0.10, 0.13, "on", target=[0.568, 0.305, 0.626, 0.39]))
 
 SHORTS = [
     {"id": "s1", "title": "The $30 ticket that costs $48 #shorts", "hook": "$30 → $48", "hook_on": "o3",
@@ -539,7 +561,7 @@ SHORTS = [
     {"id": "s6", "title": "The £3 fee that cost £4.2 million #shorts", "hook": "£3 → £4,200,000", "hook_on": "l8",
      "beats": [L("l8"), L("l9"), L("l4"), L("l5"), L("l6")]},
     {"id": "s7", "title": "3 checks before you pay #shorts", "hook": "3 CHECKS", "hook_on": "x1",
-     "beats": [L("x1"), L("x2"), L("x3"), L("x4"), L("x5")]},
+     "beats": [L("x1"), S7_X2, L("x3"), L("x4"), L("x5")]},
 ]
 for sh in SHORTS:
     for k, b in enumerate(sh["beats"]):

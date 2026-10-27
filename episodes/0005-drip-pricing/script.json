@@ -875,6 +875,7 @@
             "font": "marker",
             "dur": 0.3,
             "at": 4.05,
+            "on_object": true,
             "short": {
               "x": 0.184,
               "y": 0.544,
@@ -896,6 +897,7 @@
             "font": "marker",
             "dur": 0.3,
             "at": 4.47,
+            "on_object": true,
             "chain": true,
             "short": {
               "x": 0.3,
@@ -918,6 +920,7 @@
             "font": "marker",
             "dur": 0.3,
             "at": 4.89,
+            "on_object": true,
             "chain": true,
             "short": {
               "x": 0.424,
@@ -2414,50 +2417,62 @@
         "motion": "static",
         "prompt": "a big chrome 1950s toggle switch on a cream enamel panel, switched to the left, studio lighting, plain background",
         "hand_marks": true,
+        "short_fit": [
+          0.05,
+          0.77
+        ],
         "marks": [
           {
             "type": "write",
-            "text": "ALL-IN PRICES",
-            "x": 0.397,
-            "y": 0.205,
-            "w": 0.285,
-            "h": 0.125,
-            "angle": 2,
+            "text": "OFF",
+            "x": 0.177,
+            "y": 0.356,
+            "w": 0.09,
+            "h": 0.11,
+            "angle": 1.5,
             "color": "ink",
             "font": "headline",
             "dur": 0.7,
-            "on": "checks"
+            "on": "One.",
+            "delay": 0.25,
+            "fs": 0.0923
           },
           {
             "type": "write",
-            "text": "OFF",
-            "x": 0.1785,
-            "y": 0.489,
-            "w": 0.08,
-            "h": 0.095,
-            "angle": 1,
+            "text": "ALL-IN PRICES",
+            "x": 0.398,
+            "y": 0.205,
+            "w": 0.3,
+            "h": 0.125,
+            "angle": 1.5,
             "color": "ink",
             "font": "headline",
             "dur": 0.7,
-            "on": "One."
+            "on": "all-in",
+            "delay": 0.25,
+            "chain": true,
+            "fs": 0.0923
           },
           {
             "type": "write",
             "text": "ON",
-            "x": 0.6353,
-            "y": 0.4846,
-            "w": 0.058,
+            "x": 0.595,
+            "y": 0.35,
+            "w": 0.07,
             "h": 0.11,
-            "angle": 1,
+            "angle": 1.5,
             "color": "ink",
             "font": "headline",
             "dur": 0.35,
-            "at": 4.25
+            "on": "switch.",
+            "chain": true,
+            "fs": 0.0923
           }
         ],
         "manual": true,
         "clip": true
-      }
+      },
+      "hold": 0.5
     },
     {
       "id": "x2",
@@ -2469,58 +2484,111 @@
         "prompt": "the last frame of the x1 clip: the switch now set to the right (ON)",
         "note": "images/x2.png = last frame of clips/x1.mp4",
         "hand_marks": true,
+        "short_fit": [
+          0.05,
+          0.77
+        ],
         "marks": [
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.396,
+            "x": 0.3972,
             "y": 0.2007,
-            "w": 0.289,
-            "h": 0.127,
-            "angle": 2,
+            "w": 0.3,
+            "h": 0.125,
+            "angle": 1.5,
             "color": "ink",
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.0937,
             "hand": false
           },
           {
             "type": "write",
             "text": "OFF",
-            "x": 0.1744,
-            "y": 0.489,
-            "w": 0.081,
-            "h": 0.096,
-            "angle": 1,
+            "x": 0.1728,
+            "y": 0.354,
+            "w": 0.09,
+            "h": 0.11,
+            "angle": 1.5,
             "color": "ink",
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.0937,
             "hand": false
           },
           {
             "type": "write",
             "text": "ON",
-            "x": 0.638,
-            "y": 0.4845,
-            "w": 0.059,
-            "h": 0.112,
-            "angle": 1,
+            "x": 0.5971,
+            "y": 0.3479,
+            "w": 0.07,
+            "h": 0.11,
+            "angle": 1.5,
             "color": "ink",
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.0937,
             "hand": false
           }
         ],
         "closeup": {
           "on": "before",
           "center": [
-            0.5,
-            0.5
+            0.4,
+            0.4
           ],
           "zoom": 1.6,
-          "marks": [],
+          "marks": [
+            {
+              "type": "write",
+              "text": "ALL-IN PRICES",
+              "x": 0.3972,
+              "y": 0.2007,
+              "w": 0.3,
+              "h": 0.125,
+              "angle": 1.5,
+              "color": "ink",
+              "font": "headline",
+              "dur": 0.01,
+              "at": 0.0,
+              "fs": 0.0937,
+              "hand": false
+            },
+            {
+              "type": "write",
+              "text": "OFF",
+              "x": 0.1728,
+              "y": 0.354,
+              "w": 0.09,
+              "h": 0.11,
+              "angle": 1.5,
+              "color": "ink",
+              "font": "headline",
+              "dur": 0.01,
+              "at": 0.0,
+              "fs": 0.0937,
+              "hand": false
+            },
+            {
+              "type": "write",
+              "text": "ON",
+              "x": 0.5971,
+              "y": 0.3479,
+              "w": 0.07,
+              "h": 0.11,
+              "angle": 1.5,
+              "color": "ink",
+              "font": "headline",
+              "dur": 0.01,
+              "at": 0.0,
+              "fs": 0.0937,
+              "hand": false
+            }
+          ],
           "motion": "zoom_in"
         },
         "manual": true
@@ -3334,6 +3402,7 @@
                 "font": "marker",
                 "dur": 0.3,
                 "at": 4.05,
+                "on_object": true,
                 "short": {
                   "x": 0.184,
                   "y": 0.544,
@@ -3355,6 +3424,7 @@
                 "font": "marker",
                 "dur": 0.3,
                 "at": 4.47,
+                "on_object": true,
                 "chain": true,
                 "short": {
                   "x": 0.3,
@@ -3377,6 +3447,7 @@
                 "font": "marker",
                 "dur": 0.3,
                 "at": 4.89,
+                "on_object": true,
                 "chain": true,
                 "short": {
                   "x": 0.424,
@@ -4154,46 +4225,59 @@
             "marks": [
               {
                 "type": "write",
-                "text": "ALL-IN PRICES",
-                "x": 0.397,
-                "y": 0.205,
-                "w": 0.285,
-                "h": 0.125,
-                "angle": 2,
+                "text": "OFF",
+                "x": 0.177,
+                "y": 0.356,
+                "w": 0.09,
+                "h": 0.11,
+                "angle": 1.5,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.7,
-                "on": "checks"
+                "on": "One.",
+                "delay": 0.25,
+                "fs": 0.0923
               },
               {
                 "type": "write",
-                "text": "OFF",
-                "x": 0.1785,
-                "y": 0.489,
-                "w": 0.08,
-                "h": 0.095,
-                "angle": 1,
+                "text": "ALL-IN PRICES",
+                "x": 0.398,
+                "y": 0.205,
+                "w": 0.3,
+                "h": 0.125,
+                "angle": 1.5,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.7,
-                "on": "One."
+                "on": "all-in",
+                "delay": 0.25,
+                "chain": true,
+                "fs": 0.0923
               },
               {
                 "type": "write",
                 "text": "ON",
-                "x": 0.6353,
-                "y": 0.4846,
-                "w": 0.058,
+                "x": 0.595,
+                "y": 0.35,
+                "w": 0.07,
                 "h": 0.11,
-                "angle": 1,
+                "angle": 1.5,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.35,
-                "at": 4.25
+                "on": "switch.",
+                "chain": true,
+                "fs": 0.0923
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "short_fit": [
+              0.05,
+              0.77
+            ],
+            "clip": true
           },
+          "hold": 0.5,
           "id": "s7_0"
         },
         {
@@ -4206,57 +4290,68 @@
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.396,
+                "x": 0.3972,
                 "y": 0.2007,
-                "w": 0.289,
-                "h": 0.127,
-                "angle": 2,
+                "w": 0.3,
+                "h": 0.125,
+                "angle": 1.5,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.0937,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "OFF",
-                "x": 0.1744,
-                "y": 0.489,
-                "w": 0.081,
-                "h": 0.096,
-                "angle": 1,
+                "x": 0.1728,
+                "y": 0.354,
+                "w": 0.09,
+                "h": 0.11,
+                "angle": 1.5,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.0937,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "ON",
-                "x": 0.638,
-                "y": 0.4845,
-                "w": 0.059,
-                "h": 0.112,
-                "angle": 1,
+                "x": 0.5971,
+                "y": 0.3479,
+                "w": 0.07,
+                "h": 0.11,
+                "angle": 1.5,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.0937,
                 "hand": false
+              },
+              {
+                "type": "circle",
+                "x": 0.5971,
+                "y": 0.3459,
+                "w": 0.1,
+                "h": 0.13,
+                "on": "on",
+                "target": [
+                  0.568,
+                  0.305,
+                  0.626,
+                  0.39
+                ]
               }
             ],
             "hand_marks": true,
-            "closeup": {
-              "on": "before",
-              "center": [
-                0.5,
-                0.5
-              ],
-              "zoom": 1.6,
-              "marks": [],
-              "motion": "zoom_in"
-            }
+            "short_fit": [
+              0.05,
+              0.77
+            ]
           },
           "id": "s7_1"
         },

@@ -256,6 +256,14 @@ def main(argv):
                         problems.append((name, beat_at(tabs), tabs, f"{typ} '{m.get('text', '')}' runs under a subtitle"))
                         break
                     tt += 0.25
+        # 6. rule 25: no mark on a surface a moving part of a live clip covers while the mark is on screen
+        for sh in plan.shots:
+            if type(sh).__name__ != "ClipImageShot" or not getattr(sh, "marks", None):
+                continue
+            if sh.base is None:
+                sh._prepare()
+            for bid_t, msg in clip_cover(sh):
+                problems.append((name, beat_at(sh.start + bid_t), sh.start + bid_t, msg))
         # 3. ledger safe zone
         led = plan.ledger
         if led is None:
@@ -298,6 +306,127 @@ def main(argv):
     print(f"mark audit: {len(out)} exception(s)")
     print("\n".join(out))
     return 1 if out else 0
+
+
+_MOTION_CACHE = {}
+
+
+def _clip_motion(sh, scale=0.33):
+    """Moving parts of a live clip, in the STILL's coordinates (the shot's base px x scale): every clip frame is
+    carried back onto the still with the clip's own track, the per-pixel median over time is the scene without its
+    moving parts (lever, slips, hands), and a frame's moving parts are where it differs from that median."""
+    import cv2
+    from PIL import Image
+    from factory.shots import cover
+    key = (sh.clip, sh.BW, sh.BH, tuple(sh.focus), sh.until)
+    if key in _MOTION_CACHE:
+        return _MOTION_CACHE[key]
+    A = sh._A or []
+    w, h = int(sh.BW * scale), int(sh.BH * scale)
+    S, Si = np.diag([scale, scale, 1.0]), np.diag([1 / scale, 1 / scale, 1.0])
+    cap = cv2.VideoCapture(sh.clip)
+    fps = cap.get(cv2.CAP_PROP_FPS) or 24.0
+    last = int(float(sh.until) * fps) if sh.until is not None else None
+    frames, idx = [], []
+    i = 0
+    while True:
+        ok, fr = cap.read()
+        if not ok or (last is not None and i > last):
+            break
+        if i % 2 == 0:
+            rgb = np.asarray(cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)), sh.BW, sh.BH, *sh.focus))
+            Ai = np.vstack([A[min(i, len(A) - 1)], [0, 0, 1]]) if A else np.eye(3)
+            M = (S @ np.linalg.inv(Ai) @ Si)[:2]  # clip-frame px (scaled) -> still px (scaled)
+            small = cv2.resize(rgb, (w, h), interpolation=cv2.INTER_AREA)
+            frames.append(cv2.warpAffine(small, M.astype(np.float32), (w, h), borderMode=cv2.BORDER_REPLICATE))
+            idx.append(i)
+        i += 1
+    cap.release()
+    st = np.stack(frames).astype(np.int16)
+    hp = lambda im: (im.astype(np.float32) - cv2.GaussianBlur(im.astype(np.float32), (0, 0), 4.0)).max(axis=2)
+    hps = [hp(a) for a in st]
+
+    def obj(a, ha, b, hb):  # an object: new colour AND new edges (a light change has no edges, grain is tiny)
+        d = cv2.GaussianBlur(np.abs(a - b).max(axis=2).astype(np.float32), (0, 0), 1.5)
+        e = cv2.GaussianBlur(np.abs(ha - hb), (0, 0), 2.0)
+        m = cv2.morphologyEx(((d > 35) & (e > 10)).astype(np.uint8), cv2.MORPH_OPEN, np.ones((3, 3), np.uint8))
+        return cv2.dilate(m, np.ones((5, 5), np.uint8))
+    # (a) what moves now: each frame against the one 4 frames (~0.17 s) earlier
+    #     ... where the picture also really travels (optical flow after the camera track: a parallax drift or a
+    #     sweeping light stays under ~2.5 px per 0.17 s at this scale, a lever or walking slips do not)
+    grays = [cv2.cvtColor(a.astype(np.uint8), cv2.COLOR_RGB2GRAY) for a in st]
+    moving = []
+    for k in range(len(st)):
+        j = max(0, k - 2)
+        m_ = obj(st[k], hps[k], st[j], hps[j])
+        if m_.any():
+            fl = cv2.calcOpticalFlowFarneback(grays[j], grays[k], None, 0.5, 3, 21, 3, 5, 1.1, 0)
+            fl = fl - cv2.GaussianBlur(fl, (0, 0), 30)  # against its surroundings: parallax and a lagging track are smooth
+            m_ = m_ & cv2.dilate((np.hypot(fl[..., 0], fl[..., 1]) > 2.5).astype(np.uint8), np.ones((7, 7), np.uint8))
+        moving.append(m_)
+    # (b) what rests where it does not belong: each frame against the clip's median (the scene without its moving
+    #     parts) - only for a steady camera (a push-in with parallax never matches its own median)
+    sc = [float(np.sqrt(abs(np.linalg.det(np.asarray(a_)[:, :2])))) for a_ in A] or [1.0]
+    tx = [float(np.asarray(a_)[0, 2]) / sh.BW for a_ in A] or [0.0]
+    steady = (max(sc) - min(sc)) < 0.02 and (max(tx) - min(tx)) < 0.01
+    present = None
+    if steady:
+        bg = np.median(st, axis=0)
+        hbg = hp(bg)
+        present = [obj(a, ha, bg, hbg) for a, ha in zip(st, hps)]
+    masks = (moving, present)
+    out = (np.array(idx), masks, fps, scale)
+    _MOTION_CACHE[key] = out
+    return out
+
+
+def clip_cover(sh, limit=0.03):
+    """[(shot time, message)] for every mark whose ink a moving part of the clip covers while the mark is visible."""
+    from factory.shots import write_layout
+    idx, masks, fps, scale = _clip_motion(sh)
+    nmax = int(idx.max()) if len(idx) else 0
+    out = []
+    for m in sh.marks:
+        typ = m.get("type")
+        if typ not in ("write", "circle", "cross", "underline", "stamp") or not str(m.get("text", "x")).strip():
+            continue
+        if m.get("plate") or m.get("bg"):  # ink on our own cream plate: the plate covers whatever moves beneath it
+            continue
+        cx, cy = float(m.get("x", 0.5)) * sh.BW, float(m.get("y", 0.5)) * sh.BH
+        if typ == "write":
+            lay = write_layout(m, sh.BW, sh.BH, sh.red, sh.cfg)
+            al = lay["img"][..., 3]
+            ys, xs = np.nonzero(al > 40)
+            if not len(xs):
+                continue
+            x0, x1 = cx - lay["bw"] / 2 + xs.min(), cx - lay["bw"] / 2 + xs.max()
+            y0, y1 = cy - lay["bh"] / 2 + ys.min(), cy - lay["bh"] / 2 + ys.max()
+        else:
+            hw, hh = float(m.get("w", 0.2)) * sh.BW / 2, float(m.get("h", 0.1)) * sh.BH / 2
+            x0, x1, y0, y1 = cx - hw, cx + hw, cy - hh, cy + hh
+        X0, X1, Y0, Y1 = (int(max(0, v * scale)) for v in (x0, x1, y0, y1))
+        at = max(0.0, float(m.get("at", 0.6)))
+        until = float(m["until"]) if m.get("until") is not None else sh.duration
+        t, cov = at, []
+        while t < min(sh.duration, until):
+            fi = min(int(t * fps), nmax)
+            k = int(np.argmin(np.abs(idx - fi)))
+            frozen = sh.until is not None and t * fps >= float(sh.until) * fps  # a frozen clip has no motion
+            mv = masks[0][k][Y0:Y1 + 1, X0:X1 + 1] * (0 if frozen else 1)
+            pr = masks[1][k][Y0:Y1 + 1, X0:X1 + 1] if masks[1] is not None else None
+            cov.append((float(mv.mean()) if mv.size else 0.0, float(pr.mean()) if pr is not None and pr.size else 0.0, t, fi / fps))
+            t += 1 / 12
+        if not cov:
+            continue
+        hi = max(cov)
+        lo = min(cov, key=lambda c: c[1])
+        if hi[0] > limit:  # something moves across the ink while it is on screen
+            out.append((hi[2], f"{typ} '{m.get('text', '')}' sits on a surface a moving part of the clip crosses "
+                               f"({hi[0]:.0%} of its ink box at clip {hi[3]:.2f} s) - rule 25"))
+        elif lo[1] > limit and not m.get("on_object"):
+            out.append((lo[2], f"{typ} '{m.get('text', '')}' overlaps a moving object of the clip at rest "
+                               f"({lo[1]:.0%} of its ink box) - rule 25 (mark it on_object if it is written on that object)"))
+    return out
 
 
 def _press_times(sh):

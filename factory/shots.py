@@ -263,10 +263,15 @@ def write_layout(mark: dict, W: int, H: int, red, cfg: dict) -> dict:
     bw, bh = max(8, int(float(mark.get("w", 0.2)) * W)), max(8, int(float(mark.get("h", 0.08)) * H))
     fkey = mark.get("font", "marker")
     path = resolve_font(cfg["fonts"].get(fkey) or cfg["fonts"]["marker"])
-    size = int(bh * 0.92)
     txt = str(mark["text"])
-    while size > 8 and font(path, size).getlength(txt) > bw * 0.94:
-        size -= 1
+    if mark.get("fs"):  # a fixed letter size (fraction of the picture height): labels in different boxes match
+        size = max(8, int(float(mark["fs"]) * H))
+        bw = max(bw, int(font(path, size).getlength(txt) / 0.94) + 2)
+        bh = max(bh, int(size * 1.15))
+    else:
+        size = int(bh * 0.92)
+        while size > 8 and font(path, size).getlength(txt) > bw * 0.94:
+            size -= 1
     fnt = font(path, size)
     pil = Image.new("RGBA", (bw, bh), (0, 0, 0, 0))
     d = ImageDraw.Draw(pil)
@@ -373,7 +378,7 @@ def _pixel_grid(W: int, H: int):
 class ImageShot(Shot):
     def __init__(self, start, duration, image: Image.Image, motion: str, size, cfg: dict,
                  marks: list[dict] | None = None, photo: bool = False, seed: int = 0, ad: dict | None = None,
-                 depth: np.ndarray | None = None, draw: dict | None = None):
+                 depth: np.ndarray | None = None, draw: dict | None = None, fit: list | None = None):
         super().__init__(start, duration)
         self.draw = dict(draw) if draw else None  # {"at": s, "dur": s} hand draws the picture on screen
         self.W, self.H = size
@@ -381,11 +386,20 @@ class ImageShot(Shot):
         # (most of the scene stays readable) over a blurred, darkened copy of itself.
         self.full = None
         self.zmax = MARGIN
+        fit_x = None
         if self.H > self.W:
             self.full = (self.W, self.H)
             self.y0 = int(self.H * SHORT_VIEW_TOP)
             self.H = self.W
             self.zmax = 1.12
+            if fit:  # "short_fit": [x0, x1] of the picture always in view; the window gets wider than tall
+                sw0, sh0 = image.size
+                c = min(1.0, (float(fit[1]) - float(fit[0])) * 1.10)  # + the static camera's 8 % push
+                hwin = int(round(self.W * sh0 / (c * sw0)))
+                if hwin < self.W:
+                    self.y0 += (self.W - hwin) // 2  # same centre as the square window
+                    self.H = hwin
+                fit_x = (float(fit[0]) + float(fit[1])) / 2
         self.BW, self.BH = int(self.W * MARGIN), int(self.H * MARGIN)
         self.motion = motion
         # marks and bubbles are given in fractions of the ORIGINAL picture; the shot may show a crop of it
@@ -395,7 +409,10 @@ class ImageShot(Shot):
         focus_x = float(np.mean([float(m.get("x", 0.5)) for m in marks])) if marks else 0.5
         self.focus = (focus_x, 0.5)
         self._geo = cover_geometry(sw, sh, self.BW, self.BH, *self.focus)
-        if marks:  # a window that cuts a mark: centre it on the marks' bounding box instead
+        if fit_x is not None:  # the fitted window is centred on the fitted part, marks are inside it
+            self.focus = (fit_x, 0.5)
+            self._geo = cover_geometry(sw, sh, self.BW, self.BH, *self.focus)
+        elif marks:  # a window that cuts a mark: centre it on the marks' bounding box instead
             lo = min(float(m.get("x", 0.5)) - float(m.get("w", 0.0)) / 2 for m in marks)
             hi = max(float(m.get("x", 0.5)) + float(m.get("w", 0.0)) / 2 for m in marks)
             nw0, _nh0, left0, _t0 = self._geo
@@ -420,6 +437,8 @@ class ImageShot(Shot):
                 m["w"] = float(m["w"]) * nw / self.BW
             if "h" in m:
                 m["h"] = float(m["h"]) * nh / self.BH
+            if m.get("fs"):
+                m["fs"] = float(m["fs"]) * nh / self.BH
             if m.get("target"):
                 tx0, ty0, tx1, ty1 = m["target"]
                 m["target"] = [(tx0 * nw - left) / self.BW, (ty0 * nh - top) / self.BH, (tx1 * nw - left) / self.BW, (ty1 * nh - top) / self.BH]
@@ -1143,8 +1162,8 @@ class ClipImageShot(ImageShot):
     drawn in the still's coordinates and carried with the picture, and the pen hand follows it. Holds the last frame
     if the beat is longer than the clip."""
 
-    def __init__(self, start, duration, image, motion, size, cfg, marks=None, seed=0, clip=None, until=None):
-        super().__init__(start, duration, image, motion, size, cfg, marks=marks, photo=False, seed=seed)
+    def __init__(self, start, duration, image, motion, size, cfg, marks=None, seed=0, clip=None, until=None, fit=None):
+        super().__init__(start, duration, image, motion, size, cfg, marks=marks, photo=False, seed=seed, fit=fit)
         self.clip = str(clip)
         self.until = until  # clip seconds: the picture freezes on this frame (e.g. walking slips stop before we write)
         self._cap = None

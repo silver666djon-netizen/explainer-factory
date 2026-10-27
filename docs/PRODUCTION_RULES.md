@@ -147,3 +147,11 @@ must report zero before a final render.
     "of", "can" or a subject pronoun. A long name or number may take a second line rather than split.
 24. The uploaded .srt carries EVERY spoken line, including narration over chapter cards (t1–t5 "Monday, nine a.m.")
     and kinetic text (k14, e9). The burned-in subtitles may stay hidden there; the .srt may not.
+25. Never place a mark on a surface a moving object covers while the mark is on screen (a lever, walking slips, a hand):
+    put it where nothing in the clip moves over it, or write it only after the object has left that spot. A mark
+    written ON a moving object after it has stopped (prices on the a12 slips) is marked "on_object". Mark audit check 6
+    tests every mark of a live clip against the clip's moving parts over the mark's whole time on screen — frame-to-frame
+    motion (optical flow after the clip's own camera track) and objects at rest (each frame against the clip's median,
+    i.e. the scene without its moving parts) — not only the first frame. Ink on our own cream plate is exempt.
+    Shorts: a scene whose labels are wider than the square window uses "short_fit": [x0, x1] (that width always in view,
+    window pulled back, blurred background), and a reused live beat plays its clip in the Short too ("clip": true).

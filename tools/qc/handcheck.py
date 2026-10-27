@@ -63,7 +63,9 @@ def counting_hand(kind, *a, **k):
 D._hand = counting_hand
 orig_dw = SH._draw_write
 def dw(out, mark, p, W, H, red, cfg):
-    if 0 < p < 1 and not mark.get('bg') and not (mark.get('font') == 'typewriter' and not mark.get('hand')):
+    if 0 < p < 1 and not mark.get('bg') and not (mark.get('font') == 'typewriter' and not mark.get('hand')) \
+            and id(mark) not in state.setdefault('pids', set()):  # a live clip draws its ink twice (matte): count a mark once
+        state['pids'].add(id(mark))
         state['partial'] += 1
         if not mark.get('hand'):
             state['nohand'] = state.get('nohand', 0) + 1
@@ -86,7 +88,7 @@ for name, plan in plans:
     issues = collections.OrderedDict()
     t = 0.0
     while t < plan.total and '--no-frames' not in sys.argv:
-        state.update(hands=0, partial=0, nohand=0, kinds=[])
+        state.update(hands=0, partial=0, nohand=0, kinds=[], pids=set())
         si = max(i for i, s in enumerate(plan.shots) if s.start <= t)
         sh = plan.shots[si]
         fr = np.ascontiguousarray(sh.frame(t - sh.start)).copy()
