@@ -2418,8 +2418,8 @@
         "prompt": "a big chrome 1950s toggle switch on a cream enamel panel, only one blank plate above it, switched to the left, studio lighting, plain background",
         "hand_marks": true,
         "short_fit": [
-          0.05,
-          0.77
+          0.04,
+          0.96
         ],
         "clip_hold": true,
         "cam_rate": 0.006,
@@ -2427,30 +2427,30 @@
           {
             "type": "write",
             "text": "OFF",
-            "x": 0.12,
-            "y": 0.36,
-            "w": 0.08,
-            "h": 0.1,
-            "angle": 1.5,
+            "x": 0.17,
+            "y": 0.46,
+            "w": 0.09,
+            "h": 0.08,
+            "angle": 1.0,
             "color": "ink",
-            "font": "marker",
+            "font": "headline",
             "dur": 0.7,
             "on": "One.",
-            "fs": 0.075
+            "fs": 0.058
           },
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.398,
-            "y": 0.205,
-            "w": 0.3,
-            "h": 0.125,
-            "angle": 1.5,
+            "x": 0.49,
+            "y": 0.19,
+            "w": 0.26,
+            "h": 0.06,
+            "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.7,
             "on": "all-in",
-            "fs": 0.0923
+            "fs": 0.058
           }
         ],
         "manual": true,
@@ -2469,59 +2469,62 @@
         "clip": true,
         "hand_marks": true,
         "short_fit": [
-          0.05,
-          0.77
+          0.04,
+          0.96
         ],
         "cam_rate": 0.006,
         "cam_continue": true,
         "clip_sync": {
           "from": "Turn",
-          "to": "on"
+          "to": "on",
+          "to_delay": 0.22,
+          "start": 3.3,
+          "end": 4.0
         },
         "marks": [
           {
             "type": "write",
             "text": "ALL-IN PRICES",
-            "x": 0.398,
-            "y": 0.205,
-            "w": 0.3,
-            "h": 0.125,
-            "angle": 1.5,
+            "x": 0.49,
+            "y": 0.19,
+            "w": 0.26,
+            "h": 0.06,
+            "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.0923,
+            "fs": 0.058,
             "hand": false
           },
           {
             "type": "write",
             "text": "OFF",
-            "x": 0.12,
-            "y": 0.36,
-            "w": 0.08,
-            "h": 0.1,
-            "angle": 1.5,
+            "x": 0.17,
+            "y": 0.46,
+            "w": 0.09,
+            "h": 0.08,
+            "angle": 1.0,
             "color": "ink",
-            "font": "marker",
+            "font": "headline",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.075,
+            "fs": 0.058,
             "hand": false
           },
           {
             "type": "write",
             "text": "ON",
-            "x": 0.645,
-            "y": 0.36,
-            "w": 0.08,
-            "h": 0.1,
-            "angle": 1.5,
+            "x": 0.76,
+            "y": 0.46,
+            "w": 0.09,
+            "h": 0.08,
+            "angle": 1.0,
             "color": "ink",
-            "font": "marker",
+            "font": "headline",
             "dur": 0.7,
             "on": "included.",
-            "fs": 0.075
+            "fs": 0.058
           }
         ]
       }
@@ -4158,38 +4161,38 @@
               {
                 "type": "write",
                 "text": "OFF",
-                "x": 0.12,
-                "y": 0.36,
-                "w": 0.08,
-                "h": 0.1,
-                "angle": 1.5,
+                "x": 0.17,
+                "y": 0.46,
+                "w": 0.09,
+                "h": 0.08,
+                "angle": 1.0,
                 "color": "ink",
-                "font": "marker",
+                "font": "headline",
                 "dur": 0.7,
                 "on": "One.",
-                "fs": 0.075
+                "fs": 0.058
               },
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.398,
-                "y": 0.205,
-                "w": 0.3,
-                "h": 0.125,
-                "angle": 1.5,
+                "x": 0.49,
+                "y": 0.19,
+                "w": 0.26,
+                "h": 0.06,
+                "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.7,
                 "on": "all-in",
-                "fs": 0.0923
+                "fs": 0.058
               }
             ],
             "hand_marks": true,
             "clip_hold": true,
             "cam_rate": 0.006,
             "short_fit": [
-              0.05,
-              0.77
+              0.04,
+              0.96
             ],
             "clip": true
           },
@@ -4205,59 +4208,62 @@
             "clip": true,
             "hand_marks": true,
             "short_fit": [
-              0.05,
-              0.77
+              0.04,
+              0.96
             ],
             "cam_rate": 0.006,
             "cam_continue": true,
             "clip_sync": {
               "from": "Turn",
-              "to": "on"
+              "to": "on",
+              "to_delay": 0.22,
+              "start": 3.3,
+              "end": 4.0
             },
             "marks": [
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
-                "x": 0.398,
-                "y": 0.205,
-                "w": 0.3,
-                "h": 0.125,
-                "angle": 1.5,
+                "x": 0.49,
+                "y": 0.19,
+                "w": 0.26,
+                "h": 0.06,
+                "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.0923,
+                "fs": 0.058,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "OFF",
-                "x": 0.12,
-                "y": 0.36,
-                "w": 0.08,
-                "h": 0.1,
-                "angle": 1.5,
+                "x": 0.17,
+                "y": 0.46,
+                "w": 0.09,
+                "h": 0.08,
+                "angle": 1.0,
                 "color": "ink",
-                "font": "marker",
+                "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.075,
+                "fs": 0.058,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "ON",
-                "x": 0.645,
-                "y": 0.36,
-                "w": 0.08,
-                "h": 0.1,
-                "angle": 1.5,
+                "x": 0.76,
+                "y": 0.46,
+                "w": 0.09,
+                "h": 0.08,
+                "angle": 1.0,
                 "color": "ink",
-                "font": "marker",
+                "font": "headline",
                 "dur": 0.7,
                 "on": "included.",
-                "fs": 0.075
+                "fs": 0.058
               }
             ]
           },

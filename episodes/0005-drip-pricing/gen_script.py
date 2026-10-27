@@ -174,13 +174,15 @@ LARRY = "{larry}"
 # flip plays from "Turn" and the click lands on "on" (clip_sync: the clip's movement is found in the clip itself and
 # sped up to fit). ALL-IN PRICES on the top plate; OFF / ON hand-written (marker) on the cream panel left and right of
 # the lever's travel, one size, clear of the lever in every frame (rule 25, mark audit check 6).
-# >>> PLACEHOLDERS until the new files arrive: positions below are for the OLD still/clip and get re-measured from the
-#     new ones (tools/qc/clip_zones.py prints the lever's travel, the click time and the free cream on each side).
-X1_TOP = dict(x=0.398, y=0.205, w=0.30, h=0.125, angle=1.5, color="ink", font="headline", fs=0.0923)  # on the top plate
-HW = dict(angle=1.5, color="ink", font="marker", fs=0.075)  # OFF / ON: hand-written, one size
-X1_OFF = dict(x=0.12, y=0.36, w=0.08, h=0.10, **HW)  # PLACEHOLDER: cream left of the lever's travel
-X1_ON = dict(x=0.645, y=0.36, w=0.08, h=0.10, **HW)  # PLACEHOLDER: cream right of the lever's travel
-X_FIT = [0.05, 0.77]  # Shorts: the whole panel width stays in the window (pull back, blurred background) - re-measure
+# Klot's new still + Grok clip (2026-10-28, camera locked): lever on OFF until 3.3 s, flip 3.3-4.0 s, ON after.
+# Measured on the clip: top plate x .33-.65, y .155-.27; at the top of the flip (3.5-3.7 s) the knob reaches y .245
+# over x .40-.48, so ALL-IN PRICES sits in the upper band of the plate (letters .17-.22). Pivot x .465, y .47; the lever's
+# travel spans x .26-.64. OFF / ON mirrored about the pivot on the empty cream at mid-height.
+LBL = dict(angle=1.0, color="ink", font="headline", fs=0.058)  # one plate lettering, size and angle for all three
+X1_TOP = dict(x=0.49, y=0.19, w=0.26, h=0.06, **LBL)
+X1_OFF = dict(x=0.17, y=0.46, w=0.09, h=0.08, **LBL)
+X1_ON = dict(x=0.76, y=0.46, w=0.09, h=0.08, **LBL)
+X_FIT = [0.04, 0.96]  # Shorts: the whole panel width stays in the window (pull back, blurred background)
 X_PUSH = 0.006  # zoom per second: ~1.00 -> 1.09 over x1 + x2, one continuous push across the cut
 TICKET_PRICE_BOX = dict(x=0.2965, y=0.660, w=0.20, h=0.10)  # centred in the price box (.177-.416 x .599-.716), ~60 % of its height
 # the fee column on the clear paper right of the ticket (border at .70): left-aligned from .745, even 11 % line pitch
@@ -469,7 +471,7 @@ beat("x1", S_CHECK, "Three checks before you pay. One. Look for the all-in switc
                 write("ALL-IN PRICES", on="all-in", **X1_TOP)]), clip=True))
 beat("x2", S_CHECK, "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.",
      reuse("x1", clip=True, hand_marks=True, short_fit=X_FIT, cam_rate=X_PUSH, cam_continue=True,
-           clip_sync={"from": "Turn", "to": "on"},  # the flip runs on "Turn it on", the click lands on "on"
+           clip_sync={"from": "Turn", "to": "on", "to_delay": 0.22, "start": 3.3, "end": 4.0},  # flip on "Turn it on", click on "on" (1.25x)
            marks=[write("ALL-IN PRICES", at=0.0, **X1_TOP), write("OFF", at=0.0, **X1_OFF),
                   write("ON", on="included.", **X1_ON)]))  # ON goes on before the lever moves there
 beat("x3", S_CHECK, "Two. Go to the last screen before you decide. The real price lives one click before Pay.",
