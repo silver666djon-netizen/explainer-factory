@@ -123,6 +123,15 @@ def mark_strokes(mark: dict, W: int, H: int, seed: int) -> list[np.ndarray]:
         ang = math.radians(-float(mark.get("angle", 0)))
         ys = y + (xs - x) * math.tan(ang) + np.sin(np.linspace(0, 18, n)) * h * 0.18
         return [np.stack([xs, ys], 1)]
+    if kind == "dash":  # a dashed cut line from (x, y - h/2) to (x + slant, y + h/2), drawn dash by dash
+        n_d = max(3, int(h / (min(W, H) * 0.045)))
+        sl = float(mark.get("slant", 0.0)) * W
+        out = []
+        for k in range(n_d):
+            a, b = k / n_d, (k + 0.6) / n_d
+            ts = np.linspace(a, b, 8)
+            out.append(np.stack([x + sl * (ts - 0.5) + _jitter(8, amp * 0.3, seed + k), y - h / 2 + h * ts], 1))
+        return out
     if kind == "cross":
         a = np.stack([np.linspace(x - w / 2, x + w / 2, 30), np.linspace(y - h / 2, y + h / 2, 30) + _jitter(30, amp, seed)], 1)
         b = np.stack([np.linspace(x + w / 2, x - w / 2, 30), np.linspace(y - h / 2, y + h / 2, 30) + _jitter(30, amp, seed + 1)], 1)
@@ -637,12 +646,42 @@ class ImageShot(Shot):
                 sx, sy = self._screen(float(m.get("x", 0.5)) * self.BW, float(m.get("y", 0.5)) * self.BH, t)
                 stamp_press(out, ghost, sx, sy, t, at)
 
+    def split_dx(self, t: float) -> float:
+        """Picture split (visual "split"): how far (base px) the right piece has slid at shot time t."""
+        sp = getattr(self, "split", None)
+        if not sp:
+            return 0.0
+        q = (t - float(sp["t0"])) / max(1e-3, float(sp.get("dur", 0.7)))
+        q = min(1.0, max(0.0, q))
+        return (1 - (1 - q) ** 3) * float(sp["dx"]) * self._geo[0]  # ease-out: quick start, soft settle
+
+    def _split_src(self, src: np.ndarray, t: float) -> np.ndarray:
+        d = int(round(self.split_dx(t)))
+        if d <= 0:
+            return src
+        nw, nh, left, top = self._geo
+        xc = int(round(float(self.split["x"]) * nw - left))
+        xc = min(max(xc, 0), self.BW - 1)
+        out = src.copy()
+        if xc + d < self.BW:
+            out[:, xc + d:] = src[:, xc:self.BW - d]
+        fill = self.base[:, self.BW - min(d, self.BW - xc):]  # the plain backdrop at the right edge
+        out[:, xc:xc + fill.shape[1]] = fill
+        return out
+
     def _view(self, t: float) -> np.ndarray:
         p, s, M = self._matrix(t)
         src = self.base
         if self.draw:
             at, dur = float(self.draw.get("at", 0.0)), float(self.draw.get("dur", 3.4))
             src = self._ld.state((t - at) / dur)
+        if getattr(self, "split", None):
+            src = self._split_src(src, t)
+            dxf = self.split_dx(t) / self.BW
+            for m in self.marks:  # marks written on the moving piece ride with it
+                if m.get("follow"):
+                    m.setdefault("_fx0", float(m["x"]))
+                    m["x"] = m["_fx0"] + dxf
         src = draw_marks(src, self.marks, t, self.red, self.cfg) if self.marks else src
         if self.depth is None:
             return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)

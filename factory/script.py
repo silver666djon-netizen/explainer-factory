@@ -8,7 +8,7 @@ from pathlib import Path
 MOTIONS = {"zoom_in", "zoom_out", "pan_left", "pan_right", "pan_up", "pan_down", "drift", "static"}
 VISUAL_TYPES = {"image", "chart", "title", "reuse", "stat", "photo", "doc", "kinetic", "mugshot", "roulette", "maze", "casefile", "slot", "clip", "archive", "houseedge", "endscreen", "continue", "split", "receipts", "baskets", "battery"}
 IMAGE_BEARING = {"image", "photo", "mugshot", "clip", "archive"}
-MARK_TYPES = {"circle", "underline", "arrow", "cross", "check", "write", "led", "dot", "stamp"}
+MARK_TYPES = {"circle", "underline", "arrow", "cross", "check", "write", "led", "dot", "stamp", "dash"}
 STYLES = {"ad", "comic"}
 CHART_KINDS = {"bar", "line"}
 SFX = {"whoosh", "pop", "tick", "thud", "hit", "riser", "ding", "cash", "scratch", "scribble", "shutter", "type", "whirr", "projector", "none", "stamp", "paper", "chips", "printer", "servo", "tap", "cart", "marker", "pencil"}

@@ -215,11 +215,12 @@ def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
         cut = lo + int(np.argmin(e)) * (hop // 2) + hop // 2
     else:
         cut = max(0, int((wt - 0.03) * sr))
-    fade = min(int(0.008 * sr), cut, len(src) - cut)
+    fo, fi = min(int(0.025 * sr), cut), min(int(0.006 * sr), len(src) - cut)  # soft stop, crisp onset of the number
     a, b = src[:cut].copy(), src[cut:].copy()
-    if fade > 0:
-        a[-fade:] *= np.linspace(1.0, 0.0, fade, dtype=a.dtype)
-        b[:fade] *= np.linspace(0.0, 1.0, fade, dtype=b.dtype)
+    if fo > 0:
+        a[-fo:] *= np.linspace(1.0, 0.0, fo, dtype=a.dtype) ** 2
+    if fi > 0:
+        b[:fi] *= np.linspace(0.0, 1.0, fi, dtype=b.dtype)
     audio = np.concatenate([a, np.zeros(int(sec * sr), dtype=src.dtype), b])
     tc = cut / sr
     words = [(w, s0 + (sec if s0 >= tc - 0.02 else 0.0), e0 + (sec if s0 >= tc - 0.02 else 0.0)) for w, s0, e0 in v["words"]]
@@ -480,6 +481,12 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                                      seed=i * 7 + k, depth=depth_of(path) if (k == 0 and not cr) else None)
                     shot._archive = False
                     shot._still_src = str(path) + tag
+                    if k == 0 and not cu and visual.get("cam_rate") is not None:  # "push" + an even push that runs on
+                        z0_ = 1.0
+                        prev = plan.shots[-1] if plan.shots else None
+                        if visual.get("cam_continue") and getattr(prev, "zoom_lin", None):
+                            z0_ = prev.zoom_lin[0] + prev.zoom_lin[1] * prev.duration
+                        shot.zoom_lin = (z0_, float(visual["cam_rate"]))
                     plan.shots.append(shot)
                 marks = []
                 pieces = 0
@@ -487,6 +494,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 _hand_prep(marks, bool(visual.get("hand_marks")))
                 _serialize_hands(marks)
                 pieces = len(keys)  # marks / bubbles / hand drawing need a steady picture: no extra cuts
+            elif visual.get("one_shot") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("one_shot")):
+                pieces = len(keys)  # one continuous shot (an archive shown once, not re-cut into "new" appearances)
             else:
                 pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))
                 while pieces > len(keys) and span / pieces < min_shot:
@@ -567,6 +576,13 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 shot._still_src = None if live is not None else str(path)  # max-still check (a live clip is not a still)
                 if visual.get("cam_dy") and k == 0:
                     shot.cam_dy = float(visual["cam_dy"])
+                if visual.get("split") and k == 0 and live is None:  # the picture is cut along x and the right piece slides
+                    sp_ = dict(visual["split"])
+                    if sp_.get("done"):
+                        sp_["t0"] = -100.0
+                    else:
+                        sp_["t0"] = _timed(sp_, v["words"], 1.0) + lead_in
+                    shot.split = sp_
                 if visual.get("cam_rate") is not None and k == 0:  # slow even push; "cam_continue": on from the last shot
                     z0 = 1.0
                     prev = plan.shots[-1] if plan.shots else None
@@ -729,6 +745,11 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 plan.timeline.add_sfx(start + s0, "hit", seed=i)
         elif vtype == "stat":
             land = _number_spoken_at(v["words"], visual["stat"].get("on"))
+            pa_ = beat.get("pause_at")
+            if land is not None and pa_:  # a reveal pause right before the number: the count lands as the silence
+                pw = word_time(v["words"], pa_["word"])  # starts, so the value is on screen before it is said
+                if pw is not None and abs(pw - land) < 0.05:
+                    land -= float(pa_.get("sec", 1.2))
             land = None if land is None else lead_in + land - 0.08
             st = StatShot(shot_start, span, visual["stat"], cfg, size, land_at=land)
             plan.shots.append(st)
@@ -873,7 +894,32 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         plan.ledger = Ledger(ledger_rows, cfg, size, hide=plan.ledger_hide)
         for at, k_ in plan.ledger.sfx():
             plan.timeline.add_sfx(at, k_, seed=int(at * 10))
+    for sh in plan.shots:  # rule 26: no frame is ever fully static - cards get the same slow even push as the stills
+        if type(sh).__name__ in CARD_PUSH:
+            _card_push(sh, CARD_PUSH[type(sh).__name__])
     return plan
+
+
+CARD_PUSH = {"StatShot": 0.045, "ChartShot": 0.04, "KineticShot": 0.045, "EvidenceShot": 0.03, "EndScreenShot": 0.012}
+
+
+def _card_push(sh, amount: float) -> None:
+    """A slow, even push (1.0 -> 1 + amount over the shot) on a card's finished frame; overlays stay put."""
+    if getattr(sh, "_card_push", None) is not None:
+        return
+    orig = sh.frame
+    rate = amount / max(4.0, sh.duration)  # long cards push the same speed as a 4 s one, never faster
+
+    def frame(t, _o=orig, _sh=sh):
+        img = _o(t)
+        z = 1.0 + rate * min(max(t, 0.0), _sh.duration)
+        if z <= 1.0005:
+            return img
+        h, w = img.shape[:2]
+        M = np.float32([[z, 0, (1 - z) * w / 2], [0, z, (1 - z) * h / 2]])
+        return cv2.warpAffine(img, M, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
+    sh.frame = frame
+    sh._card_push = amount
 
 
 class Overlay:

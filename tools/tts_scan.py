@@ -65,9 +65,13 @@ def main():
         for b in sh["beats"]:
             lines.append((sh["id"], b))
     from faster_whisper import WhisperModel
-    asr = WhisperModel("small.en", device="cpu", compute_type="int8")
+    import os
+    asr = WhisperModel(os.environ.get("SCAN_MODEL", "small.en"), device="cpu", compute_type="int8")
+    only = set(filter(None, os.environ.get("SCAN_ONLY", "").split(",")))
     report = []
     for where, b in lines:
+        if only and b["id"] not in only:
+            continue
         text = spoken_text(b)
         key = (text, json.dumps(b.get("pause_at"), sort_keys=True))
         if key in seen:

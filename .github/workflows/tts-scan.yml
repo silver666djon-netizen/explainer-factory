@@ -7,6 +7,12 @@ on:
       episode:
         required: true
         default: "0005-drip-pricing"
+      model:
+        required: false
+        default: "small.en"
+      only:
+        required: false
+        default: ""
 permissions:
   contents: write
 jobs:
@@ -29,6 +35,9 @@ jobs:
           pip install -q -r requirements.txt faster-whisper
       - run: python tools/tts_scan.py "episodes/${{ github.event.inputs.episode }}" scan_out
         timeout-minutes: 90
+        env:
+          SCAN_MODEL: ${{ github.event.inputs.model }}
+          SCAN_ONLY: ${{ github.event.inputs.only }}
       - name: Publish
         if: always()
         env:
