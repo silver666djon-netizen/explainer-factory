@@ -210,8 +210,9 @@ def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
     # a cut inside a phoneme is heard as a clipped word or a double onset), with short fades on both sides
     hop = int(0.01 * sr)
     lo, hi = max(0, int((wt - 0.16) * sr)), min(len(src) - hop, int((wt + 0.01) * sr))
-    if hi > lo + hop:
-        e = [float(np.mean(src[k:k + hop] ** 2)) for k in range(lo, hi, hop // 2)]
+    if hi > lo + hop:  # quietest point; hiss (s, f, th) counts extra, so a cut never lands inside a fricative onset
+        hp = np.diff(src[lo:hi + hop], prepend=src[lo])
+        e = [float(np.mean(src[k:k + hop] ** 2)) + 4.0 * float(np.mean(hp[k - lo:k - lo + hop] ** 2)) for k in range(lo, hi, hop // 2)]
         cut = lo + int(np.argmin(e)) * (hop // 2) + hop // 2
     else:
         cut = max(0, int((wt - 0.03) * sr))
@@ -494,7 +495,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 _hand_prep(marks, bool(visual.get("hand_marks")))
                 _serialize_hands(marks)
                 pieces = len(keys)  # marks / bubbles / hand drawing need a steady picture: no extra cuts
-            elif visual.get("one_shot") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("one_shot")):
+            elif visual.get("one_shot") or visual.get("clip") or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("one_shot")):
                 pieces = len(keys)  # one continuous shot (an archive shown once, not re-cut into "new" appearances)
             else:
                 pieces = max(len(keys), int(np.ceil(span / beat_max_shot)))

@@ -440,7 +440,8 @@
           ],
           "motion": "zoom_in"
         }
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "t1",
@@ -584,7 +585,8 @@
           "motion": "zoom_in"
         }
       },
-      "label": "Illustration"
+      "label": "Illustration",
+      "ledger_hide": true
     },
     {
       "id": "a5",
@@ -604,7 +606,7 @@
             "w": 0.05,
             "h": 0.08,
             "angle": 0,
-            "color": "red",
+            "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
             "on": "split"
@@ -617,7 +619,7 @@
             "w": 0.05,
             "h": 0.08,
             "angle": 0,
-            "color": "red",
+            "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
             "on": "buyers",
@@ -625,7 +627,8 @@
           }
         ]
       },
-      "label": "Aug 19–31, 2015"
+      "label": "Aug 19–31, 2015",
+      "ledger_hide": true
     },
     {
       "id": "a6",
@@ -646,7 +649,7 @@
             "w": 0.05,
             "h": 0.08,
             "angle": 0,
-            "color": "red",
+            "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -660,7 +663,7 @@
             "w": 0.05,
             "h": 0.08,
             "angle": 0,
-            "color": "red",
+            "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -670,27 +673,35 @@
             "type": "write",
             "text": "$48",
             "x": 0.405,
-            "y": 0.265,
-            "w": 0.075,
-            "h": 0.065,
+            "y": 0.3,
+            "w": 0.07,
+            "h": 0.058,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "full"
+            "on": "full",
+            "plate": [
+              1.25,
+              1.3
+            ]
           },
           {
             "type": "write",
             "text": "$30",
             "x": 0.605,
-            "y": 0.255,
-            "w": 0.07,
-            "h": 0.06,
+            "y": 0.292,
+            "w": 0.066,
+            "h": 0.054,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "alone,"
+            "on": "alone,",
+            "plate": [
+              1.25,
+              1.3
+            ]
           }
         ],
         "closeup": {
@@ -709,7 +720,7 @@
               "w": 0.05,
               "h": 0.08,
               "angle": 0,
-              "color": "red",
+              "color": "#FFFFFF",
               "font": "marker",
               "dur": 0.01,
               "at": 0.0,
@@ -719,45 +730,172 @@
               "type": "write",
               "text": "$30",
               "x": 0.605,
-              "y": 0.255,
-              "w": 0.07,
-              "h": 0.06,
+              "y": 0.292,
+              "w": 0.066,
+              "h": 0.054,
               "angle": 0,
               "color": "red",
               "font": "marker",
               "dur": 0.01,
               "at": 0.0,
+              "plate": [
+                1.25,
+                1.3
+              ],
               "hand": false
             },
             {
               "type": "write",
               "text": "+ fees",
               "x": 0.605,
-              "y": 0.312,
-              "w": 0.08,
-              "h": 0.045,
+              "y": 0.345,
+              "w": 0.076,
+              "h": 0.042,
               "angle": 0,
               "color": "red",
               "font": "marker",
               "dur": 0.7,
-              "on": "waiting"
+              "on": "waiting",
+              "plate": [
+                1.2,
+                1.3
+              ]
             }
           ],
           "motion": "zoom_in"
         }
       },
-      "label": "Aug 19–31, 2015"
+      "label": "Aug 19–31, 2015",
+      "ledger_hide": true
     },
     {
       "id": "a7",
       "section": "Tuesday 8:12 PM: The experiment",
       "text": "Same tickets. Same fees. The only thing that changed was the moment you saw them.",
       "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "paper"
-        }
-      }
+        "type": "reuse",
+        "beat": "a5",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "cam_rate": 0.008,
+        "marks": [
+          {
+            "type": "write",
+            "text": "A",
+            "x": 0.3,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "B",
+            "x": 0.7,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$48",
+            "x": 0.405,
+            "y": 0.3,
+            "w": 0.07,
+            "h": 0.058,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "plate": [
+              1.25,
+              1.3
+            ],
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.605,
+            "y": 0.292,
+            "w": 0.066,
+            "h": 0.054,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "plate": [
+              1.25,
+              1.3
+            ],
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ fees",
+            "x": 0.605,
+            "y": 0.345,
+            "w": 0.076,
+            "h": 0.042,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "plate": [
+              1.2,
+              1.3
+            ],
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "SAME FEES.",
+            "x": 0.412,
+            "y": 0.168,
+            "w": 0.135,
+            "h": 0.052,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "fees.",
+            "align": "left",
+            "fs": 0.04
+          },
+          {
+            "type": "write",
+            "text": "NEW MOMENT.",
+            "x": 0.577,
+            "y": 0.168,
+            "w": 0.172,
+            "h": 0.052,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "moment",
+            "align": "left",
+            "fs": 0.04
+          }
+        ]
+      },
+      "label": "Aug 19–31, 2015",
+      "ledger_hide": true
     },
     {
       "id": "a8",
@@ -864,6 +1002,7 @@
         "prompt": "three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
         "hand_marks": true,
         "clip_until": 4.0,
+        "short_still": true,
         "marks": [
           {
             "type": "write",
@@ -1070,16 +1209,69 @@
       }
     },
     {
+      "id": "b3a",
+      "section": "Wednesday 10:00 AM: $16.4 billion",
+      "text": "Is that unusual?",
+      "visual": {
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "push": {
+          "center": [
+            0.56,
+            0.5
+          ],
+          "zoom": 1.15
+        },
+        "cam_rate": 0.012,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.2965,
+            "y": 0.66,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "= 37.5 % FEES",
+            "x": 0.85,
+            "y": 0.48,
+            "w": 0.21,
+            "h": 0.075,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "align": "left",
+            "hand": false
+          }
+        ]
+      },
+      "label": "Illustration"
+    },
+    {
       "id": "b3",
       "section": "Wednesday 10:00 AM: $16.4 billion",
-      "text": "Is that unusual? In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
+      "text": "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
       "visual": {
         "type": "archive",
         "file": "ftc_statue_1943.jpg",
         "look": "print",
         "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
         "motion": "zoom_in",
-        "caption": "Statue in front of the Federal Trade Commission building, Washington, D.C., 1943 · Library of Congress"
+        "caption": "Statue in front of the Federal Trade Commission building, Washington, D.C., 1943 · Library of Congress",
+        "one_shot": true
       },
       "label": "FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending",
       "alleged": true
@@ -1253,10 +1445,20 @@
       "section": "Wednesday 10:00 AM: $16.4 billion",
       "text": "Until a court decides, every word of it is an allegation.",
       "visual": {
-        "type": "reuse",
-        "beat": "b3",
-        "index": 0,
-        "motion": "zoom_out"
+        "type": "doc",
+        "doc": {
+          "source": "FTC complaint · C.D. Cal. · Sept 2025 · ¶36",
+          "headline": "Ticketmaster fees",
+          "body": "The average percentage of fees charged on tickets ranges from 24% to 44% of the total price.",
+          "highlight": "24% to 44% of the total price",
+          "on": "Until",
+          "mark": "underline",
+          "seed": 72,
+          "kicker": "COMPLAINT  ·  ALLEGED  ·  QUOTED",
+          "lead": 0.0,
+          "push_on": "Until",
+          "push_ease": 1.2
+        }
       },
       "label": "FTC v. Live Nation/Ticketmaster · case pending",
       "alleged": true
@@ -1332,6 +1534,15 @@
         "type": "image",
         "motion": "static",
         "prompt": "a small inflatable paddling pool standing on the carpet of a plain 1950s city hotel room, a radiator and a window with city lights behind, playful print-ad style",
+        "cam_rate": 0.01,
+        "clip_until": 4.6,
+        "clip_sync": {
+          "from": "Known",
+          "to": "swim",
+          "to_delay": 0.0,
+          "start": 0.0,
+          "end": 4.6
+        },
         "manual": true,
         "clip": true
       },
@@ -1378,23 +1589,50 @@
         "motion": "static",
         "prompt": "a 1950s hotel bill on a desk: a cream sheet with a plain green header band, plain ruled lines and empty columns, a fountain pen beside it, plain cream background",
         "hand_marks": true,
+        "push": {
+          "center": [
+            0.47,
+            0.42
+          ],
+          "zoom": 1.55
+        },
+        "cam_rate": 0.008,
         "marks": [
           {
             "type": "write",
-            "text": "$9 – $95 / night",
-            "x": 0.485,
-            "y": 0.274,
-            "w": 0.3,
-            "h": 0.058,
+            "text": "RESORT FEE",
+            "x": 0.437,
+            "y": 0.449,
+            "w": 0.11,
+            "h": 0.04,
             "angle": 0,
             "color": "red",
             "font": "marker",
-            "dur": 0.7,
-            "on": "nine"
+            "dur": 0.5,
+            "at": 0.05,
+            "fs": 0.034,
+            "align": "left"
+          },
+          {
+            "type": "write",
+            "text": "$9–$95",
+            "x": 0.54,
+            "y": 0.449,
+            "w": 0.07,
+            "h": 0.04,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.45,
+            "on": "ninety-five",
+            "chain": true,
+            "fs": 0.034,
+            "align": "left"
           }
         ]
       },
-      "alleged": true
+      "alleged": true,
+      "ledger_hide": true
     },
     {
       "id": "c5",
@@ -1406,62 +1644,85 @@
         "index": 0,
         "motion": "static",
         "hand_marks": true,
+        "push": {
+          "center": [
+            0.47,
+            0.42
+          ],
+          "zoom": 1.55
+        },
+        "cam_rate": 0.008,
+        "cam_continue": true,
         "marks": [
           {
             "type": "write",
-            "text": "$9 – $95 / night",
-            "x": 0.485,
-            "y": 0.274,
-            "w": 0.3,
-            "h": 0.058,
+            "text": "RESORT FEE",
+            "x": 0.437,
+            "y": 0.449,
+            "w": 0.11,
+            "h": 0.04,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.034,
+            "align": "left",
             "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$9–$95",
+            "x": 0.54,
+            "y": 0.449,
+            "w": 0.07,
+            "h": 0.04,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.034,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "TAXES AND FEES",
+            "x": 0.432,
+            "y": 0.368,
+            "w": 0.175,
+            "h": 0.046,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.6,
+            "on": "official:",
+            "delay": 0.25,
+            "fs": 0.04,
+            "align": "left"
+          },
+          {
+            "type": "circle",
+            "x": 0.432,
+            "y": 0.368,
+            "w": 0.205,
+            "h": 0.085,
+            "target": [
+              0.34,
+              0.34,
+              0.522,
+              0.396
+            ],
+            "on": "Fees.",
+            "dur": 0.45,
+            "hand": true,
+            "chain": true
           }
-        ],
-        "closeup": {
-          "on": "booking,",
-          "center": [
-            0.5,
-            0.62
-          ],
-          "zoom": 1.8,
-          "marks": [
-            {
-              "type": "write",
-              "text": "TAXES AND FEES",
-              "x": 0.42,
-              "y": 0.62,
-              "w": 0.26,
-              "h": 0.06,
-              "angle": 0,
-              "color": "ink",
-              "font": "marker",
-              "dur": 0.7,
-              "on": "Taxes"
-            },
-            {
-              "type": "circle",
-              "x": 0.42,
-              "y": 0.62,
-              "w": 0.3,
-              "h": 0.1,
-              "on": "Fees.",
-              "target": [
-                0.29,
-                0.59,
-                0.55,
-                0.65
-              ]
-            }
-          ],
-          "motion": "zoom_in"
-        }
+        ]
       },
-      "hold": 0.5
+      "hold": 0.5,
+      "ledger_hide": true
     },
     {
       "id": "c6",
@@ -1487,11 +1748,103 @@
       "section": "Thursday 11:40 PM: The resort fee",
       "text": "Resort fees aren't taxes. They just like to sit next to them.",
       "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "paper"
-        }
-      }
+        "type": "reuse",
+        "beat": "c4",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "push": {
+          "center": [
+            0.47,
+            0.42
+          ],
+          "zoom": 1.55
+        },
+        "cam_rate": 0.008,
+        "marks": [
+          {
+            "type": "write",
+            "text": "RESORT FEE",
+            "x": 0.437,
+            "y": 0.449,
+            "w": 0.11,
+            "h": 0.04,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.034,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$9–$95",
+            "x": 0.54,
+            "y": 0.449,
+            "w": 0.07,
+            "h": 0.04,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.034,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "TAXES AND FEES",
+            "x": 0.432,
+            "y": 0.368,
+            "w": 0.175,
+            "h": 0.046,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.04,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "circle",
+            "x": 0.432,
+            "y": 0.368,
+            "w": 0.205,
+            "h": 0.085,
+            "target": [
+              0.34,
+              0.34,
+              0.522,
+              0.396
+            ],
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "NOT A TAX",
+            "x": 0.437,
+            "y": 0.494,
+            "w": 0.11,
+            "h": 0.04,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.55,
+            "on": "aren't",
+            "fs": 0.034,
+            "align": "left"
+          }
+        ]
+      },
+      "alleged": true,
+      "ledger_hide": true
     },
     {
       "id": "c8",
@@ -1514,55 +1867,85 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "a cream paper price tag being cut into two pieces by a pair of red-handled scissors, plain cream background, 1950s print-ad style",
+        "prompt": "the code-drawn $30 concert ticket, blank stub",
+        "note": "code-drawn: images/n1.png (gen_script make_ticket)",
         "hand_marks": true,
-        "clip": true,
         "short_fit": [
           0.04,
-          0.96
+          0.82
         ],
         "cam_rate": 0.006,
-        "clip_sync": {
-          "from": "split",
-          "start": 0.3,
-          "end": 1.3
+        "split": {
+          "x": 0.5327,
+          "dx": 0.08,
+          "on": "surcharge.",
+          "delay": 0.35,
+          "dur": 0.75
         },
         "marks": [
           {
             "type": "write",
             "text": "$30",
-            "x": 0.16,
-            "y": 0.645,
-            "w": 0.075,
-            "h": 0.075,
-            "angle": 23,
+            "x": 0.2965,
+            "y": 0.66,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
             "color": "ink",
             "font": "marker",
-            "dur": 0.7,
-            "on": "base"
+            "dur": 0.5,
+            "on": "split"
           },
           {
             "type": "write",
-            "text": "+ $18 FEES",
-            "x": 0.41,
-            "y": 0.59,
-            "w": 0.16,
-            "h": 0.062,
-            "angle": 15,
+            "text": "+ $18",
+            "x": 0.616,
+            "y": 0.452,
+            "w": 0.12,
+            "h": 0.085,
+            "angle": 0,
             "color": "ink",
             "font": "marker",
-            "dur": 0.7,
-            "on": "surcharge.",
-            "on_object": true
+            "dur": 0.45,
+            "on": "prices",
+            "chain": true,
+            "follow": true
+          },
+          {
+            "type": "write",
+            "text": "FEES",
+            "x": 0.616,
+            "y": 0.572,
+            "w": 0.11,
+            "h": 0.08,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.4,
+            "on": "prices",
+            "delay": 0.5,
+            "chain": true,
+            "follow": true
+          },
+          {
+            "type": "dash",
+            "x": 0.5246999999999999,
+            "y": 0.508,
+            "w": 0.01,
+            "h": 0.48,
+            "on": "base",
+            "chain": true,
+            "dur": 0.5,
+            "hand": true
           }
         ]
       },
       "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
       "sfx_at": [
         {
-          "on": "split",
-          "delay": 0.12,
-          "kind": "snip"
+          "on": "surcharge.",
+          "delay": 0.35,
+          "kind": "paper"
         }
       ]
     },
@@ -1575,24 +1958,27 @@
         "beat": "n1",
         "index": 0,
         "motion": "static",
-        "clip": true,
-        "clip_at": 1.95,
         "hand_marks": true,
         "short_fit": [
           0.04,
-          0.96
+          0.82
         ],
         "cam_rate": 0.006,
         "cam_continue": true,
+        "split": {
+          "x": 0.5327,
+          "dx": 0.08,
+          "done": true
+        },
         "marks": [
           {
             "type": "write",
             "text": "$30",
-            "x": 0.16,
-            "y": 0.645,
-            "w": 0.075,
-            "h": 0.075,
-            "angle": 23,
+            "x": 0.2965,
+            "y": 0.66,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
             "color": "ink",
             "font": "marker",
             "dur": 0.01,
@@ -1601,25 +1987,50 @@
           },
           {
             "type": "write",
-            "text": "+ $18 FEES",
-            "x": 0.41,
-            "y": 0.59,
-            "w": 0.16,
-            "h": 0.062,
-            "angle": 15,
+            "text": "+ $18",
+            "x": 0.616,
+            "y": 0.452,
+            "w": 0.12,
+            "h": 0.085,
+            "angle": 0,
             "color": "ink",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "on_object": true,
+            "follow": true,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "FEES",
+            "x": 0.616,
+            "y": 0.572,
+            "w": 0.11,
+            "h": 0.08,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "follow": true,
+            "hand": false
+          },
+          {
+            "type": "dash",
+            "x": 0.5246999999999999,
+            "y": 0.508,
+            "w": 0.01,
+            "h": 0.48,
+            "at": 0.0,
+            "dur": 0.01,
             "hand": false
           },
           {
             "type": "write",
             "text": "SAME TOTAL",
-            "x": 0.27,
-            "y": 0.205,
-            "w": 0.25,
+            "x": 0.573,
+            "y": 0.16,
+            "w": 0.26,
             "h": 0.075,
             "angle": 0,
             "color": "red",
@@ -1636,11 +2047,157 @@
       "section": "Why a split price feels cheaper",
       "text": "People remembered paying less in total. And they bought more.",
       "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "paper"
-        }
-      }
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "cam_rate": 0.008,
+        "short_fit": [
+          0.04,
+          0.96
+        ],
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.2965,
+            "y": 0.66,
+            "w": 0.2,
+            "h": 0.1,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $8 fee",
+            "x": 0.85,
+            "y": 0.37,
+            "w": 0.21,
+            "h": 0.075,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $6 fee",
+            "x": 0.85,
+            "y": 0.48,
+            "w": 0.21,
+            "h": 0.075,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $4 fee",
+            "x": 0.85,
+            "y": 0.59,
+            "w": 0.21,
+            "h": 0.075,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "underline",
+            "x": 0.82,
+            "y": 0.637,
+            "w": 0.15,
+            "h": 0.01,
+            "color": "ink",
+            "target": [
+              0.746,
+              0.555,
+              0.9,
+              0.625
+            ],
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "= $48",
+            "x": 0.85,
+            "y": 0.71,
+            "w": 0.21,
+            "h": 0.075,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "circle",
+            "x": 0.832,
+            "y": 0.712,
+            "w": 0.19,
+            "h": 0.11,
+            "target": [
+              0.76,
+              0.676,
+              0.905,
+              0.748
+            ],
+            "at": 0.0,
+            "dur": 0.01,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "REMEMBERED: LESS",
+            "x": 0.38,
+            "y": 0.105,
+            "w": 0.4,
+            "h": 0.068,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.75,
+            "on": "remembered",
+            "align": "left",
+            "fs": 0.064
+          },
+          {
+            "type": "write",
+            "text": "BOUGHT: MORE",
+            "x": 0.38,
+            "y": 0.19,
+            "w": 0.4,
+            "h": 0.068,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.6,
+            "on": "bought",
+            "align": "left",
+            "fs": 0.064
+          }
+        ]
+      },
+      "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998"
     },
     {
       "id": "n4",
@@ -1655,11 +2212,11 @@
           {
             "type": "write",
             "text": "$30",
-            "x": 0.5,
-            "y": 0.4,
+            "x": 0.442,
+            "y": 0.412,
             "w": 0.12,
             "h": 0.09,
-            "angle": 0,
+            "angle": -12,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
@@ -1668,37 +2225,41 @@
           {
             "type": "write",
             "text": "+ fees",
-            "x": 0.5,
-            "y": 0.478,
-            "w": 0.1,
-            "h": 0.045,
-            "angle": 0,
+            "x": 0.432,
+            "y": 0.503,
+            "w": 0.11,
+            "h": 0.052,
+            "angle": -12,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
             "on": "small"
           }
         ]
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "sub",
       "section": "Why a split price feels cheaper",
       "text": "If you like catching prices in the act, subscribe. The Inspector has more files.",
       "visual": {
-        "type": "reuse",
-        "beat": "o4",
-        "index": 0,
-        "motion": "zoom_in"
+        "type": "image",
+        "motion": "static",
+        "prompt": "code-drawn case-file stack",
+        "note": "code-drawn: images/sub.png (gen_script make_folders)",
+        "cam_rate": 0.008,
+        "one_shot": true
       },
       "cta": {
         "on": "subscribe.",
         "click_on": "Inspector",
         "pos": [
-          0.64,
-          0.62
+          0.6,
+          0.44
         ]
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "t4",
@@ -1718,10 +2279,47 @@
       "text": "One: StubHub says it tried honesty.",
       "visual": {
         "type": "reuse",
-        "beat": "a2",
+        "beat": "a5",
         "index": 0,
-        "motion": "zoom_out"
-      }
+        "motion": "static",
+        "hand_marks": true,
+        "cam_rate": 0.01,
+        "marks": [
+          {
+            "type": "write",
+            "text": "A",
+            "x": 0.3,
+            "y": 0.2,
+            "w": 0.05,
+            "h": 0.08,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "$48",
+            "x": 0.405,
+            "y": 0.3,
+            "w": 0.07,
+            "h": 0.058,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "plate": [
+              1.25,
+              1.3
+            ],
+            "hand": false
+          }
+        ]
+      },
+      "ledger_hide": true
     },
     {
       "id": "d2",
@@ -1785,10 +2383,44 @@
       "section": "In defence of the accused",
       "text": "In plain English, hidden fees didn't just win buyers from rivals. They made people spend more.",
       "visual": {
-        "type": "kinetic",
-        "kinetic": {
-          "bg": "paper"
-        }
+        "type": "reuse",
+        "beat": "l1",
+        "index": 0,
+        "motion": "static",
+        "hand_marks": true,
+        "cam_rate": 0.006,
+        "marks": [
+          {
+            "type": "write",
+            "text": "NOT JUST STOLEN BUYERS",
+            "x": 0.5,
+            "y": 0.7,
+            "w": 0.46,
+            "h": 0.052,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.8,
+            "on": "win",
+            "fs": 0.046,
+            "align": "left"
+          },
+          {
+            "type": "write",
+            "text": "PEOPLE SPENT MORE",
+            "x": 0.5,
+            "y": 0.752,
+            "w": 0.46,
+            "h": 0.052,
+            "angle": 0,
+            "color": "#FFFFFF",
+            "font": "marker",
+            "dur": 0.65,
+            "on": "They",
+            "fs": 0.046,
+            "align": "left"
+          }
+        ]
       }
     },
     {
@@ -1849,28 +2481,34 @@
         "type": "image",
         "motion": "static",
         "prompt": "a 1950s customs desk seen from above with a wooden rubber-stamp rack and an ink pad near the top edge, a wide stretch of empty plain wood in the middle, warm light",
-        "note": "after the storyboard: the code-drawn $30 ticket is composited in the middle (images/l1.png)",
-        "closeup": {
+        "note": "images/l1.png: the code-drawn $30 ticket on the desk; clips/l1.mp4: the hand flips it (make_l1_flip.py)",
+        "cam_rate": 0.006,
+        "clip_sync": {
+          "from": "borders.",
+          "from_delay": -0.55,
+          "start": 0.0,
+          "end": 1.4
+        },
+        "manual": true,
+        "clip": true
+      },
+      "sfx_at": [
+        {
           "on": "borders.",
-          "center": [
-            0.5,
-            0.5
-          ],
-          "zoom": 1.4,
-          "marks": [],
-          "motion": "zoom_out"
+          "delay": -0.2,
+          "kind": "paper"
         }
-      }
+      ]
     },
     {
       "id": "l2",
       "section": "Friday 9:00 AM: One fee, three laws",
       "text": "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront.",
       "visual": {
-        "type": "reuse",
-        "beat": "l1",
-        "index": 0,
+        "type": "image",
         "motion": "static",
+        "prompt": "the back of the code-drawn ticket on the customs desk",
+        "note": "code-drawn: images/l2.png (make_l1_flip.py)",
         "hand_marks": true,
         "closeup": {
           "on": "short",
@@ -1878,14 +2516,14 @@
             0.47,
             0.43
           ],
-          "zoom": 1.45,
+          "zoom": 1.35,
           "marks": [
             {
               "type": "stamp",
               "text": "USA · TOTAL UPFRONT · MAY 2025",
-              "x": 0.35,
-              "y": 0.445,
-              "w": 0.18,
+              "x": 0.468,
+              "y": 0.392,
+              "w": 0.15,
               "angle": -8,
               "dur": 0.45,
               "on": "total",
@@ -1946,7 +2584,7 @@
             "w": 0.05,
             "h": 0.08,
             "angle": 0,
-            "color": "red",
+            "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -1956,33 +2594,42 @@
             "type": "write",
             "text": "$30",
             "x": 0.605,
-            "y": 0.255,
-            "w": 0.07,
-            "h": 0.06,
+            "y": 0.292,
+            "w": 0.066,
+            "h": 0.054,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "plate": [
+              1.25,
+              1.3
+            ],
             "hand": false
           },
           {
             "type": "write",
             "text": "+ fees",
             "x": 0.605,
-            "y": 0.312,
-            "w": 0.08,
-            "h": 0.045,
+            "y": 0.345,
+            "w": 0.076,
+            "h": 0.042,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "plate": [
+              1.2,
+              1.3
+            ],
             "hand": false
           }
         ]
       },
-      "label": "FTC · April 2026 · settlement"
+      "label": "FTC · April 2026 · settlement",
+      "ledger_hide": true
     },
     {
       "id": "l4",
@@ -2011,61 +2658,70 @@
           {
             "type": "write",
             "text": "PRICE",
-            "x": 0.5,
-            "y": 0.3,
-            "w": 0.16,
-            "h": 0.05,
-            "angle": 0,
+            "x": 0.5707500000000001,
+            "y": 0.375,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
-            "on": "price,"
+            "on": "price,",
+            "fs": 0.05,
+            "align": "left"
           },
           {
             "type": "write",
             "text": "OPTIONS",
-            "x": 0.5,
-            "y": 0.4,
-            "w": 0.18,
-            "h": 0.05,
-            "angle": 0,
+            "x": 0.56835,
+            "y": 0.455,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
             "on": "option,",
-            "chain": true
+            "chain": true,
+            "fs": 0.05,
+            "align": "left"
           },
           {
             "type": "write",
             "text": "DELIVERY",
-            "x": 0.5,
-            "y": 0.5,
-            "w": 0.18,
-            "h": 0.05,
-            "angle": 0,
+            "x": 0.56595,
+            "y": 0.535,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
             "color": "ink",
             "font": "marker",
             "dur": 0.7,
             "on": "delivery",
-            "chain": true
+            "chain": true,
+            "fs": 0.05,
+            "align": "left"
           },
           {
             "type": "write",
             "text": "TOTAL",
-            "x": 0.5,
-            "y": 0.62,
-            "w": 0.16,
-            "h": 0.06,
-            "angle": 0,
-            "color": "red",
+            "x": 0.56355,
+            "y": 0.615,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
+            "color": "ink",
             "font": "marker",
             "dur": 0.7,
             "on": "total.",
-            "chain": true
+            "chain": true,
+            "fs": 0.05,
+            "align": "left"
           }
         ]
       },
-      "label": "15 U.S.C. 1232 · 1958"
+      "label": "15 U.S.C. 1232 · 1958",
+      "ledger_hide": true
     },
     {
       "id": "l6",
@@ -2080,40 +2736,90 @@
         "marks": [
           {
             "type": "write",
-            "text": "TOTAL",
-            "x": 0.5,
-            "y": 0.62,
-            "w": 0.16,
-            "h": 0.06,
-            "angle": 0,
-            "color": "red",
+            "text": "PRICE",
+            "x": 0.5707500000000001,
+            "y": 0.375,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
+            "color": "ink",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.05,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "OPTIONS",
+            "x": 0.56835,
+            "y": 0.455,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.05,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "DELIVERY",
+            "x": 0.56595,
+            "y": 0.535,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.05,
+            "align": "left",
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "TOTAL",
+            "x": 0.56355,
+            "y": 0.615,
+            "w": 0.26,
+            "h": 0.056,
+            "angle": -2.0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.05,
+            "align": "left",
             "hand": false
           },
           {
             "type": "circle",
-            "x": 0.5,
-            "y": 0.62,
-            "w": 0.22,
-            "h": 0.1,
+            "x": 0.481,
+            "y": 0.615,
+            "w": 0.14,
+            "h": 0.088,
             "on": "total",
             "target": [
-              0.42,
+              0.44,
               0.59,
-              0.58,
-              0.65
+              0.522,
+              0.64
             ]
           },
           {
             "type": "write",
             "text": "67 YEARS",
-            "x": 0.56,
-            "y": 0.185,
-            "w": 0.17,
-            "h": 0.06,
-            "angle": 0,
+            "x": 0.565,
+            "y": 0.105,
+            "w": 0.18,
+            "h": 0.055,
+            "angle": -0.6,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
@@ -2125,7 +2831,8 @@
         "word": "sixty-seven",
         "sec": 0.4,
         "hit": null
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "l7",
@@ -2133,17 +2840,18 @@
       "text": "Border two: Britain. Since April 2025, the price must include every fee you can't avoid.",
       "visual": {
         "type": "reuse",
-        "beat": "l1",
+        "beat": "l2",
         "index": 0,
         "motion": "static",
         "hand_marks": true,
+        "cam_rate": 0.006,
         "marks": [
           {
             "type": "stamp",
             "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.35,
-            "y": 0.445,
-            "w": 0.18,
+            "x": 0.468,
+            "y": 0.392,
+            "w": 0.15,
             "angle": -8,
             "dur": 0.45,
             "at": 0.0,
@@ -2152,10 +2860,10 @@
           {
             "type": "stamp",
             "text": "UK · ALL FEES IN · APRIL 2025",
-            "x": 0.585,
-            "y": 0.58,
-            "w": 0.18,
-            "angle": 6,
+            "x": 0.607,
+            "y": 0.478,
+            "w": 0.15,
+            "angle": 4,
             "dur": 0.45,
             "on": "include",
             "hand": true
@@ -2184,7 +2892,11 @@
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "three-pound"
+            "on": "three-pound",
+            "plate": [
+              1.25,
+              1.3
+            ]
           }
         ]
       },
@@ -2252,10 +2964,10 @@
           {
             "type": "stamp",
             "text": "UK · FINED · JUNE 2026",
-            "x": 0.503,
-            "y": 0.668,
+            "x": 0.85,
+            "y": 0.52,
             "w": 0.2,
-            "angle": -12,
+            "angle": -7,
             "dur": 0.45,
             "on": "fined",
             "hand": true
@@ -2294,6 +3006,10 @@
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "plate": [
+              1.25,
+              1.3
+            ],
             "hand": false
           },
           {
@@ -2319,17 +3035,18 @@
       "text": "Border three: the European Union. The total price, taxes included, before you pay.",
       "visual": {
         "type": "reuse",
-        "beat": "l1",
+        "beat": "l2",
         "index": 0,
         "motion": "static",
         "hand_marks": true,
+        "cam_rate": 0.006,
         "marks": [
           {
             "type": "stamp",
             "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.35,
-            "y": 0.445,
-            "w": 0.18,
+            "x": 0.468,
+            "y": 0.392,
+            "w": 0.15,
             "angle": -8,
             "dur": 0.45,
             "at": 0.0,
@@ -2338,10 +3055,10 @@
           {
             "type": "stamp",
             "text": "UK · ALL FEES IN · APRIL 2025",
-            "x": 0.585,
-            "y": 0.58,
-            "w": 0.18,
-            "angle": 6,
+            "x": 0.607,
+            "y": 0.478,
+            "w": 0.15,
+            "angle": 4,
             "dur": 0.45,
             "at": 0.0,
             "hand": false
@@ -2349,10 +3066,10 @@
           {
             "type": "stamp",
             "text": "EU · TOTAL BEFORE YOU PAY",
-            "x": 0.655,
-            "y": 0.44,
-            "w": 0.16,
-            "angle": -4,
+            "x": 0.478,
+            "y": 0.568,
+            "w": 0.14,
+            "angle": -2,
             "dur": 0.45,
             "on": "total",
             "hand": true
@@ -2398,7 +3115,8 @@
             "on": "not"
           }
         ]
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "l14",
@@ -2406,16 +3124,16 @@
       "text": "One ticket. Three stamps. One message: show the total.",
       "visual": {
         "type": "reuse",
-        "beat": "l1",
+        "beat": "l2",
         "index": 0,
         "motion": "zoom_out",
         "marks": [
           {
             "type": "stamp",
             "text": "USA · TOTAL UPFRONT · MAY 2025",
-            "x": 0.35,
-            "y": 0.445,
-            "w": 0.18,
+            "x": 0.468,
+            "y": 0.392,
+            "w": 0.15,
             "angle": -8,
             "dur": 0.45,
             "at": 0.0,
@@ -2424,10 +3142,10 @@
           {
             "type": "stamp",
             "text": "UK · ALL FEES IN · APRIL 2025",
-            "x": 0.585,
-            "y": 0.58,
-            "w": 0.18,
-            "angle": 6,
+            "x": 0.607,
+            "y": 0.478,
+            "w": 0.15,
+            "angle": 4,
             "dur": 0.45,
             "at": 0.0,
             "hand": false
@@ -2435,10 +3153,10 @@
           {
             "type": "stamp",
             "text": "EU · TOTAL BEFORE YOU PAY",
-            "x": 0.655,
-            "y": 0.44,
-            "w": 0.16,
-            "angle": -4,
+            "x": 0.478,
+            "y": 0.568,
+            "w": 0.14,
+            "angle": -2,
             "dur": 0.45,
             "at": 0.0,
             "hand": false
@@ -2486,7 +3204,10 @@
             "font": "headline",
             "dur": 0.7,
             "on": "One.",
-            "fs": 0.058
+            "fs": 0.058,
+            "short": {
+              "fs": 0.11
+            }
           },
           {
             "type": "write",
@@ -2500,12 +3221,16 @@
             "font": "headline",
             "dur": 0.7,
             "on": "all-in",
-            "fs": 0.058
+            "fs": 0.058,
+            "short": {
+              "fs": 0.07
+            }
           }
         ],
         "manual": true,
         "clip": true
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "x2",
@@ -2545,6 +3270,9 @@
             "dur": 0.01,
             "at": 0.0,
             "fs": 0.058,
+            "short": {
+              "fs": 0.07
+            },
             "hand": false
           },
           {
@@ -2560,6 +3288,9 @@
             "dur": 0.01,
             "at": 0.0,
             "fs": 0.058,
+            "short": {
+              "fs": 0.11
+            },
             "hand": false
           },
           {
@@ -2574,10 +3305,14 @@
             "font": "headline",
             "dur": 0.7,
             "on": "included.",
-            "fs": 0.058
+            "fs": 0.058,
+            "short": {
+              "fs": 0.11
+            }
           }
         ]
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "x3",
@@ -2628,7 +3363,8 @@
           ],
           "motion": "zoom_in"
         }
-      }
+      },
+      "ledger_hide": true
     },
     {
       "id": "x4",
@@ -2663,7 +3399,8 @@
         "kinetic": {
           "bg": "paper"
         }
-      }
+      },
+      "hold": 1.0
     },
     {
       "id": "z0",
@@ -2671,8 +3408,25 @@
       "text": "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.",
       "visual": {
         "type": "image",
-        "motion": "zoom_in",
+        "motion": "static",
         "prompt": "{larry} happy in the crowd at a 1950s concert hall, stage lights in the distance, holding his paper ticket stub, warm light",
+        "cam_rate": 0.008,
+        "clip_until": 1.9,
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "stamp",
+            "text": "PAID $48",
+            "x": 0.578,
+            "y": 0.386,
+            "w": 0.068,
+            "angle": 19,
+            "dur": 0.45,
+            "on_object": true,
+            "on": "paid",
+            "hand": true
+          }
+        ],
         "manual": true,
         "clip": true
       },
@@ -2680,9 +3434,9 @@
         "text": "Case closed",
         "on": "Case",
         "big": true,
-        "x": 0.685,
-        "y": 0.165,
-        "w": 0.21
+        "x": 0.735,
+        "y": 0.15,
+        "w": 0.4
       },
       "hero": true
     },
@@ -2693,8 +3447,8 @@
       "visual": {
         "type": "image",
         "motion": "static",
-        "prompt": "last frame of the z0 clip",
-        "note": "images/z0b.png = last frame of clips/z0.mp4",
+        "prompt": "the z0 clip at 1.9 s",
+        "note": "images/z0b.png = clips/z0.mp4 at 1.9 s (make_l1_flip.py), where z0 holds",
         "push": {
           "center": [
             0.45,
@@ -2702,14 +3456,40 @@
           ],
           "zoom": 1.1
         },
+        "hand_marks": true,
+        "marks": [
+          {
+            "type": "stamp",
+            "text": "PAID $48",
+            "x": 0.598,
+            "y": 0.381,
+            "w": 0.075,
+            "angle": 19,
+            "dur": 0.45,
+            "at": 0.0,
+            "hand": false
+          }
+        ],
         "closeup": {
           "on": "checkout",
           "center": [
-            0.76,
-            0.43
+            0.61,
+            0.4
           ],
           "zoom": 1.3,
-          "marks": [],
+          "marks": [
+            {
+              "type": "stamp",
+              "text": "PAID $48",
+              "x": 0.598,
+              "y": 0.381,
+              "w": 0.075,
+              "angle": 19,
+              "dur": 0.45,
+              "at": 0.0,
+              "hand": false
+            }
+          ],
           "motion": "zoom_in"
         },
         "manual": true
@@ -3154,7 +3934,7 @@
                 "w": 0.05,
                 "h": 0.08,
                 "angle": 0,
-                "color": "red",
+                "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "split"
@@ -3167,7 +3947,7 @@
                 "w": 0.05,
                 "h": 0.08,
                 "angle": 0,
-                "color": "red",
+                "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "buyers",
@@ -3195,7 +3975,7 @@
                 "w": 0.05,
                 "h": 0.08,
                 "angle": 0,
-                "color": "red",
+                "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
@@ -3209,7 +3989,7 @@
                 "w": 0.05,
                 "h": 0.08,
                 "angle": 0,
-                "color": "red",
+                "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
@@ -3219,27 +3999,35 @@
                 "type": "write",
                 "text": "$48",
                 "x": 0.405,
-                "y": 0.265,
-                "w": 0.075,
-                "h": 0.065,
+                "y": 0.3,
+                "w": 0.07,
+                "h": 0.058,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "full"
+                "on": "full",
+                "plate": [
+                  1.25,
+                  1.3
+                ]
               },
               {
                 "type": "write",
                 "text": "$30",
                 "x": 0.605,
-                "y": 0.255,
-                "w": 0.07,
-                "h": 0.06,
+                "y": 0.292,
+                "w": 0.066,
+                "h": 0.054,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "alone,"
+                "on": "alone,",
+                "plate": [
+                  1.25,
+                  1.3
+                ]
               }
             ],
             "closeup": {
@@ -3258,7 +4046,7 @@
                   "w": 0.05,
                   "h": 0.08,
                   "angle": 0,
-                  "color": "red",
+                  "color": "#FFFFFF",
                   "font": "marker",
                   "dur": 0.01,
                   "at": 0.0,
@@ -3268,34 +4056,43 @@
                   "type": "write",
                   "text": "$30",
                   "x": 0.605,
-                  "y": 0.255,
-                  "w": 0.07,
-                  "h": 0.06,
+                  "y": 0.292,
+                  "w": 0.066,
+                  "h": 0.054,
                   "angle": 0,
                   "color": "red",
                   "font": "marker",
                   "dur": 0.01,
                   "at": 0.0,
+                  "plate": [
+                    1.25,
+                    1.3
+                  ],
                   "hand": false
                 },
                 {
                   "type": "write",
                   "text": "+ fees",
                   "x": 0.605,
-                  "y": 0.312,
-                  "w": 0.08,
-                  "h": 0.045,
+                  "y": 0.345,
+                  "w": 0.076,
+                  "h": 0.042,
                   "angle": 0,
                   "color": "red",
                   "font": "marker",
                   "dur": 0.7,
-                  "on": "waiting"
+                  "on": "waiting",
+                  "plate": [
+                    1.2,
+                    1.3
+                  ]
                 }
               ],
               "motion": "zoom_in"
             }
           },
           "label": "Aug 19–31, 2015",
+          "ledger_hide": true,
           "id": "s2_1"
         },
         {
@@ -3359,7 +4156,8 @@
                 ]
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "clip": true
           },
           "pause_at": {
             "word": "five",
@@ -3444,7 +4242,8 @@
                 }
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "clip_until": 4.0
           },
           "hold": 0.6,
           "id": "s2_5"
@@ -3496,7 +4295,8 @@
                 }
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "clip": true
           },
           "ledger": [
             {
@@ -3557,15 +4357,67 @@
           "id": "s3_1"
         },
         {
-          "text": "Is that unusual? In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
+          "text": "Is that unusual?",
+          "visual": {
+            "type": "reuse",
+            "beat": "o1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "push": {
+              "center": [
+                0.56,
+                0.5
+              ],
+              "zoom": 1.15
+            },
+            "cam_rate": 0.012,
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.2965,
+                "y": 0.66,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "= 37.5 % FEES",
+                "x": 0.85,
+                "y": 0.48,
+                "w": 0.21,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "align": "left",
+                "hand": false
+              }
+            ]
+          },
+          "label": "Illustration",
+          "id": "s3_2"
+        },
+        {
+          "text": "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
           "visual": {
             "type": "reuse",
             "beat": "b3",
-            "motion": "zoom_in"
+            "motion": "zoom_in",
+            "one_shot": true
           },
           "label": "FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending",
           "alleged": true,
-          "id": "s3_2"
+          "id": "s3_3"
         },
         {
           "text": "They allege the fees run from twenty-four to forty-four percent of the total price.",
@@ -3588,7 +4440,7 @@
             "sec": 0.4,
             "hit": null
           },
-          "id": "s3_3"
+          "id": "s3_4"
         },
         {
           "text": "And that fans paid over sixteen point four billion dollars in mandatory fees.",
@@ -3607,7 +4459,7 @@
             "sec": 0.6,
             "hit": "stamp"
           },
-          "id": "s3_4"
+          "id": "s3_5"
         },
         {
           "text": "In September 2026, a judge refused to throw the case out. It goes on.",
@@ -3626,7 +4478,7 @@
             }
           },
           "alleged": true,
-          "id": "s3_5"
+          "id": "s3_6"
         },
         {
           "text": "Larry's thirty-seven and a half percent sits right inside that range.",
@@ -3651,7 +4503,7 @@
               "note": "FTC complaint ¶36 (alleged) · Larry: illustration"
             }
           },
-          "id": "s3_6"
+          "id": "s3_7"
         }
       ]
     },
@@ -3682,7 +4534,8 @@
                 "on": "concert."
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "clip": true
           },
           "id": "s4_0"
         },
@@ -3714,8 +4567,19 @@
           "visual": {
             "type": "reuse",
             "beat": "m2b",
-            "motion": "static"
+            "motion": "static",
+            "clip_sync": {
+              "from": "Known",
+              "to": "swim",
+              "to_delay": 0.0,
+              "start": 0.0,
+              "end": 4.6
+            },
+            "clip_until": 4.6,
+            "cam_rate": 0.01,
+            "clip": true
           },
+          "ledger_hide": true,
           "id": "s4_2"
         },
         {
@@ -3754,21 +4618,48 @@
             "marks": [
               {
                 "type": "write",
-                "text": "$9 – $95 / night",
-                "x": 0.485,
-                "y": 0.274,
-                "w": 0.3,
-                "h": 0.058,
+                "text": "RESORT FEE",
+                "x": 0.437,
+                "y": 0.449,
+                "w": 0.11,
+                "h": 0.04,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
-                "dur": 0.7,
-                "on": "nine"
+                "dur": 0.5,
+                "at": 0.05,
+                "fs": 0.034,
+                "align": "left"
+              },
+              {
+                "type": "write",
+                "text": "$9–$95",
+                "x": 0.54,
+                "y": 0.449,
+                "w": 0.07,
+                "h": 0.04,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.45,
+                "on": "ninety-five",
+                "chain": true,
+                "fs": 0.034,
+                "align": "left"
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "push": {
+              "center": [
+                0.47,
+                0.42
+              ],
+              "zoom": 1.55
+            },
+            "cam_rate": 0.008
           },
           "alleged": true,
+          "ledger_hide": true,
           "id": "s4_5"
         },
         {
@@ -3779,72 +4670,187 @@
             "index": 0,
             "motion": "static",
             "hand_marks": true,
+            "push": {
+              "center": [
+                0.47,
+                0.42
+              ],
+              "zoom": 1.55
+            },
+            "cam_rate": 0.008,
+            "cam_continue": true,
             "marks": [
               {
                 "type": "write",
-                "text": "$9 – $95 / night",
-                "x": 0.485,
-                "y": 0.274,
-                "w": 0.3,
-                "h": 0.058,
+                "text": "RESORT FEE",
+                "x": 0.437,
+                "y": 0.449,
+                "w": 0.11,
+                "h": 0.04,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.034,
+                "align": "left",
                 "hand": false
+              },
+              {
+                "type": "write",
+                "text": "$9–$95",
+                "x": 0.54,
+                "y": 0.449,
+                "w": 0.07,
+                "h": 0.04,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.034,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "TAXES AND FEES",
+                "x": 0.432,
+                "y": 0.368,
+                "w": 0.175,
+                "h": 0.046,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.6,
+                "on": "official:",
+                "delay": 0.25,
+                "fs": 0.04,
+                "align": "left"
+              },
+              {
+                "type": "circle",
+                "x": 0.432,
+                "y": 0.368,
+                "w": 0.205,
+                "h": 0.085,
+                "target": [
+                  0.34,
+                  0.34,
+                  0.522,
+                  0.396
+                ],
+                "on": "Fees.",
+                "dur": 0.45,
+                "hand": true,
+                "chain": true
               }
-            ],
-            "closeup": {
-              "on": "booking,",
-              "center": [
-                0.5,
-                0.62
-              ],
-              "zoom": 1.8,
-              "marks": [
-                {
-                  "type": "write",
-                  "text": "TAXES AND FEES",
-                  "x": 0.42,
-                  "y": 0.62,
-                  "w": 0.26,
-                  "h": 0.06,
-                  "angle": 0,
-                  "color": "ink",
-                  "font": "marker",
-                  "dur": 0.7,
-                  "on": "Taxes"
-                },
-                {
-                  "type": "circle",
-                  "x": 0.42,
-                  "y": 0.62,
-                  "w": 0.3,
-                  "h": 0.1,
-                  "on": "Fees.",
-                  "target": [
-                    0.29,
-                    0.59,
-                    0.55,
-                    0.65
-                  ]
-                }
-              ],
-              "motion": "zoom_in"
-            }
+            ]
           },
           "hold": 0.5,
+          "ledger_hide": true,
           "id": "s4_6"
         },
         {
           "text": "Resort fees aren't taxes. They just like to sit next to them.",
           "visual": {
-            "type": "kinetic",
-            "kinetic": {
-              "bg": "paper"
-            }
+            "type": "reuse",
+            "beat": "c4",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "push": {
+              "center": [
+                0.47,
+                0.42
+              ],
+              "zoom": 1.55
+            },
+            "cam_rate": 0.008,
+            "marks": [
+              {
+                "type": "write",
+                "text": "RESORT FEE",
+                "x": 0.437,
+                "y": 0.449,
+                "w": 0.11,
+                "h": 0.04,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.034,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "$9–$95",
+                "x": 0.54,
+                "y": 0.449,
+                "w": 0.07,
+                "h": 0.04,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.034,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "TAXES AND FEES",
+                "x": 0.432,
+                "y": 0.368,
+                "w": 0.175,
+                "h": 0.046,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.04,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "circle",
+                "x": 0.432,
+                "y": 0.368,
+                "w": 0.205,
+                "h": 0.085,
+                "target": [
+                  0.34,
+                  0.34,
+                  0.522,
+                  0.396
+                ],
+                "at": 0.0,
+                "dur": 0.01,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "NOT A TAX",
+                "x": 0.437,
+                "y": 0.494,
+                "w": 0.11,
+                "h": 0.04,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.55,
+                "on": "aren't",
+                "fs": 0.034,
+                "align": "left"
+              }
+            ]
           },
+          "alleged": true,
+          "ledger_hide": true,
           "id": "s4_7"
         }
       ]
@@ -3890,49 +4896,78 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.16,
-                "y": 0.645,
-                "w": 0.075,
-                "h": 0.075,
-                "angle": 23,
+                "x": 0.2965,
+                "y": 0.66,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.7,
-                "on": "base"
+                "dur": 0.5,
+                "on": "split"
               },
               {
                 "type": "write",
-                "text": "+ $18 FEES",
-                "x": 0.41,
-                "y": 0.59,
-                "w": 0.16,
-                "h": 0.062,
-                "angle": 15,
+                "text": "+ $18",
+                "x": 0.616,
+                "y": 0.452,
+                "w": 0.12,
+                "h": 0.085,
+                "angle": 0,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.7,
-                "on": "surcharge.",
-                "on_object": true
+                "dur": 0.45,
+                "on": "prices",
+                "chain": true,
+                "follow": true
+              },
+              {
+                "type": "write",
+                "text": "FEES",
+                "x": 0.616,
+                "y": 0.572,
+                "w": 0.11,
+                "h": 0.08,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.4,
+                "on": "prices",
+                "delay": 0.5,
+                "chain": true,
+                "follow": true
+              },
+              {
+                "type": "dash",
+                "x": 0.5246999999999999,
+                "y": 0.508,
+                "w": 0.01,
+                "h": 0.48,
+                "on": "base",
+                "chain": true,
+                "dur": 0.5,
+                "hand": true
               }
             ],
             "hand_marks": true,
-            "clip_sync": {
-              "from": "split",
-              "start": 0.3,
-              "end": 1.3
-            },
             "cam_rate": 0.006,
+            "split": {
+              "x": 0.5327,
+              "dx": 0.08,
+              "on": "surcharge.",
+              "delay": 0.35,
+              "dur": 0.75
+            },
             "short_fit": [
               0.04,
-              0.96
-            ],
-            "clip": true
+              0.82
+            ]
           },
           "sfx_at": [
             {
-              "on": "split",
-              "delay": 0.12,
-              "kind": "snip"
+              "on": "surcharge.",
+              "delay": 0.35,
+              "kind": "paper"
             }
           ],
           "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
@@ -3945,24 +4980,27 @@
             "beat": "n1",
             "index": 0,
             "motion": "static",
-            "clip": true,
-            "clip_at": 1.95,
             "hand_marks": true,
             "short_fit": [
               0.04,
-              0.96
+              0.82
             ],
             "cam_rate": 0.006,
             "cam_continue": true,
+            "split": {
+              "x": 0.5327,
+              "dx": 0.08,
+              "done": true
+            },
             "marks": [
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.16,
-                "y": 0.645,
-                "w": 0.075,
-                "h": 0.075,
-                "angle": 23,
+                "x": 0.2965,
+                "y": 0.66,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.01,
@@ -3971,25 +5009,50 @@
               },
               {
                 "type": "write",
-                "text": "+ $18 FEES",
-                "x": 0.41,
-                "y": 0.59,
-                "w": 0.16,
-                "h": 0.062,
-                "angle": 15,
+                "text": "+ $18",
+                "x": 0.616,
+                "y": 0.452,
+                "w": 0.12,
+                "h": 0.085,
+                "angle": 0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "on_object": true,
+                "follow": true,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "FEES",
+                "x": 0.616,
+                "y": 0.572,
+                "w": 0.11,
+                "h": 0.08,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "follow": true,
+                "hand": false
+              },
+              {
+                "type": "dash",
+                "x": 0.5246999999999999,
+                "y": 0.508,
+                "w": 0.01,
+                "h": 0.48,
+                "at": 0.0,
+                "dur": 0.01,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "SAME TOTAL",
-                "x": 0.27,
-                "y": 0.205,
-                "w": 0.25,
+                "x": 0.573,
+                "y": 0.16,
+                "w": 0.26,
                 "h": 0.075,
                 "angle": 0,
                 "color": "red",
@@ -4005,11 +5068,157 @@
         {
           "text": "People remembered paying less in total. And they bought more.",
           "visual": {
-            "type": "kinetic",
-            "kinetic": {
-              "bg": "paper"
-            }
+            "type": "reuse",
+            "beat": "o1",
+            "index": 0,
+            "motion": "static",
+            "hand_marks": true,
+            "cam_rate": 0.008,
+            "short_fit": [
+              0.04,
+              0.96
+            ],
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.2965,
+                "y": 0.66,
+                "w": 0.2,
+                "h": 0.1,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $8 fee",
+                "x": 0.85,
+                "y": 0.37,
+                "w": 0.21,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $6 fee",
+                "x": 0.85,
+                "y": 0.48,
+                "w": 0.21,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $4 fee",
+                "x": 0.85,
+                "y": 0.59,
+                "w": 0.21,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "underline",
+                "x": 0.82,
+                "y": 0.637,
+                "w": 0.15,
+                "h": 0.01,
+                "color": "ink",
+                "target": [
+                  0.746,
+                  0.555,
+                  0.9,
+                  0.625
+                ],
+                "at": 0.0,
+                "dur": 0.01,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "= $48",
+                "x": 0.85,
+                "y": 0.71,
+                "w": 0.21,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "circle",
+                "x": 0.832,
+                "y": 0.712,
+                "w": 0.19,
+                "h": 0.11,
+                "target": [
+                  0.76,
+                  0.676,
+                  0.905,
+                  0.748
+                ],
+                "at": 0.0,
+                "dur": 0.01,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "REMEMBERED: LESS",
+                "x": 0.38,
+                "y": 0.105,
+                "w": 0.4,
+                "h": 0.068,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.75,
+                "on": "remembered",
+                "align": "left",
+                "fs": 0.064
+              },
+              {
+                "type": "write",
+                "text": "BOUGHT: MORE",
+                "x": 0.38,
+                "y": 0.19,
+                "w": 0.4,
+                "h": 0.068,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.6,
+                "on": "bought",
+                "align": "left",
+                "fs": 0.064
+              }
+            ]
           },
+          "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
           "id": "s5_3"
         },
         {
@@ -4022,11 +5231,11 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.5,
-                "y": 0.4,
+                "x": 0.442,
+                "y": 0.412,
                 "w": 0.12,
                 "h": 0.09,
-                "angle": 0,
+                "angle": -12,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
@@ -4035,11 +5244,11 @@
               {
                 "type": "write",
                 "text": "+ fees",
-                "x": 0.5,
-                "y": 0.478,
-                "w": 0.1,
-                "h": 0.045,
-                "angle": 0,
+                "x": 0.432,
+                "y": 0.503,
+                "w": 0.11,
+                "h": 0.052,
+                "angle": -12,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
@@ -4048,6 +5257,7 @@
             ],
             "hand_marks": true
           },
+          "ledger_hide": true,
           "id": "s5_4"
         }
       ]
@@ -4076,7 +5286,11 @@
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "three-pound"
+                "on": "three-pound",
+                "plate": [
+                  1.25,
+                  1.3
+                ]
               }
             ],
             "hand_marks": true
@@ -4123,62 +5337,71 @@
               {
                 "type": "write",
                 "text": "PRICE",
-                "x": 0.5,
-                "y": 0.3,
-                "w": 0.16,
-                "h": 0.05,
-                "angle": 0,
+                "x": 0.5707500000000001,
+                "y": 0.375,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "price,"
+                "on": "price,",
+                "fs": 0.05,
+                "align": "left"
               },
               {
                 "type": "write",
                 "text": "OPTIONS",
-                "x": 0.5,
-                "y": 0.4,
-                "w": 0.18,
-                "h": 0.05,
-                "angle": 0,
+                "x": 0.56835,
+                "y": 0.455,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "option,",
-                "chain": true
+                "chain": true,
+                "fs": 0.05,
+                "align": "left"
               },
               {
                 "type": "write",
                 "text": "DELIVERY",
-                "x": 0.5,
-                "y": 0.5,
-                "w": 0.18,
-                "h": 0.05,
-                "angle": 0,
+                "x": 0.56595,
+                "y": 0.535,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "delivery",
-                "chain": true
+                "chain": true,
+                "fs": 0.05,
+                "align": "left"
               },
               {
                 "type": "write",
                 "text": "TOTAL",
-                "x": 0.5,
-                "y": 0.62,
-                "w": 0.16,
-                "h": 0.06,
-                "angle": 0,
-                "color": "red",
+                "x": 0.56355,
+                "y": 0.615,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
+                "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "total.",
-                "chain": true
+                "chain": true,
+                "fs": 0.05,
+                "align": "left"
               }
             ],
             "hand_marks": true
           },
           "label": "15 U.S.C. 1232 · 1958",
+          "ledger_hide": true,
           "id": "s6_3"
         },
         {
@@ -4192,40 +5415,90 @@
             "marks": [
               {
                 "type": "write",
-                "text": "TOTAL",
-                "x": 0.5,
-                "y": 0.62,
-                "w": 0.16,
-                "h": 0.06,
-                "angle": 0,
-                "color": "red",
+                "text": "PRICE",
+                "x": 0.5707500000000001,
+                "y": 0.375,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
+                "color": "ink",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.05,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "OPTIONS",
+                "x": 0.56835,
+                "y": 0.455,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.05,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "DELIVERY",
+                "x": 0.56595,
+                "y": 0.535,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.05,
+                "align": "left",
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "TOTAL",
+                "x": 0.56355,
+                "y": 0.615,
+                "w": 0.26,
+                "h": 0.056,
+                "angle": -2.0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.05,
+                "align": "left",
                 "hand": false
               },
               {
                 "type": "circle",
-                "x": 0.5,
-                "y": 0.62,
-                "w": 0.22,
-                "h": 0.1,
+                "x": 0.481,
+                "y": 0.615,
+                "w": 0.14,
+                "h": 0.088,
                 "on": "total",
                 "target": [
-                  0.42,
+                  0.44,
                   0.59,
-                  0.58,
-                  0.65
+                  0.522,
+                  0.64
                 ]
               },
               {
                 "type": "write",
                 "text": "67 YEARS",
-                "x": 0.56,
-                "y": 0.185,
-                "w": 0.17,
-                "h": 0.06,
-                "angle": 0,
+                "x": 0.565,
+                "y": 0.105,
+                "w": 0.18,
+                "h": 0.055,
+                "angle": -0.6,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
@@ -4238,6 +5511,7 @@
             "sec": 0.4,
             "hit": null
           },
+          "ledger_hide": true,
           "id": "s6_4"
         }
       ]
@@ -4267,7 +5541,10 @@
                 "font": "headline",
                 "dur": 0.7,
                 "on": "One.",
-                "fs": 0.058
+                "fs": 0.058,
+                "short": {
+                  "fs": 0.11
+                }
               },
               {
                 "type": "write",
@@ -4281,18 +5558,22 @@
                 "font": "headline",
                 "dur": 0.7,
                 "on": "all-in",
-                "fs": 0.058
+                "fs": 0.058,
+                "short": {
+                  "fs": 0.07
+                }
               }
             ],
             "hand_marks": true,
             "clip_hold": true,
             "cam_rate": 0.006,
+            "clip": true,
             "short_fit": [
               0.04,
               0.96
-            ],
-            "clip": true
+            ]
           },
+          "ledger_hide": true,
           "id": "s7_0"
         },
         {
@@ -4331,6 +5612,9 @@
                 "dur": 0.01,
                 "at": 0.0,
                 "fs": 0.058,
+                "short": {
+                  "fs": 0.07
+                },
                 "hand": false
               },
               {
@@ -4346,6 +5630,9 @@
                 "dur": 0.01,
                 "at": 0.0,
                 "fs": 0.058,
+                "short": {
+                  "fs": 0.11
+                },
                 "hand": false
               },
               {
@@ -4360,10 +5647,14 @@
                 "font": "headline",
                 "dur": 0.7,
                 "on": "included.",
-                "fs": 0.058
+                "fs": 0.058,
+                "short": {
+                  "fs": 0.11
+                }
               }
             ]
           },
+          "ledger_hide": true,
           "id": "s7_1"
         },
         {
@@ -4414,6 +5705,7 @@
               "motion": "zoom_in"
             }
           },
+          "ledger_hide": true,
           "id": "s7_2"
         },
         {
@@ -4447,6 +5739,7 @@
               "bg": "paper"
             }
           },
+          "hold": 1.0,
           "id": "s7_4"
         }
       ]
