@@ -560,7 +560,7 @@ beat("l6", S_LAW, "Cars got the total sixty-seven years before concert tickets d
                                          write("TOTAL", at=0.0, **STK(3)),
                                          circle(0.481, STK_Y[3], 0.140, 0.088, "total", target=[0.440, 0.590, 0.522, 0.640]),
                                          write("67 YEARS", on="sixty-seven", x=0.565, y=0.105, w=0.18, h=0.055, angle=-0.6)]),
-     pause_at={"word": "sixty-seven", "sec": 0.4, "hit": None}, ledger_hide=True)
+     ledger_hide=True)  # (no reveal pause: the cut before "sixty-seven" left a fragment - TTS scan, Klot r78 G4)
 beat("l7", S_LAW, "Border two: Britain. Since April 2025, the price must include every fee you can't avoid.",
      reuse("l2", hand_marks=True, cam_rate=0.006, marks=[ST(STAMP_USA, at=0.0), ST(STAMP_UK, on='include')]))
 L8_FEE = dict(x=0.36, y=0.085, w=0.15, h=0.07, plate=[1.25, 1.30])

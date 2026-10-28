@@ -2855,11 +2855,6 @@
           }
         ]
       },
-      "pause_at": {
-        "word": "sixty-seven",
-        "sec": 0.4,
-        "hit": null
-      },
       "ledger_hide": true
     },
     {
@@ -5561,11 +5556,6 @@
                 "on": "sixty-seven"
               }
             ]
-          },
-          "pause_at": {
-            "word": "sixty-seven",
-            "sec": 0.4,
-            "hit": null
           },
           "ledger_hide": true,
           "id": "s6_4"
