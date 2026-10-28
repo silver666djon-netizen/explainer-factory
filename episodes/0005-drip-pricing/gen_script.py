@@ -414,7 +414,7 @@ beat("c3", S_HOTEL, "The lawsuit says at least one hundred and eighty-nine Marri
 # writes RESORT FEE ... $9-$95 as the shot starts; then TAXES AND FEES as a level heading in the header row, then the ring.
 # Measured on images/c4.png: header row y .315-.415 (description box x .33-.517), first line y .425-.47 (description
 # x .376-.581, amount x .581-.654). Red on the cream paper only (G2).
-BILL_PUSH = {"center": [0.47, 0.42], "zoom": 1.55}
+BILL_PUSH = {"center": [0.47, 0.40], "zoom": 1.75}
 BILL_FEE = dict(x=0.437, y=0.449, w=0.110, h=0.040, fs=0.034, align="left")   # both inside the description column,
 BILL_AMT = dict(x=0.540, y=0.449, w=0.070, h=0.040, fs=0.034, align="left")   # clear of the amount column's rule
 BILL_HEAD = dict(x=0.432, y=0.368, w=0.175, h=0.046, fs=0.040, color="ink", align="left")

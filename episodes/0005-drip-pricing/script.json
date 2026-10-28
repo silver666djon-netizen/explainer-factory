@@ -1616,9 +1616,9 @@
         "push": {
           "center": [
             0.47,
-            0.42
+            0.4
           ],
-          "zoom": 1.55
+          "zoom": 1.75
         },
         "cam_rate": 0.008,
         "marks": [
@@ -1671,9 +1671,9 @@
         "push": {
           "center": [
             0.47,
-            0.42
+            0.4
           ],
-          "zoom": 1.55
+          "zoom": 1.75
         },
         "cam_rate": 0.008,
         "cam_continue": true,
@@ -1780,9 +1780,9 @@
         "push": {
           "center": [
             0.47,
-            0.42
+            0.4
           ],
-          "zoom": 1.55
+          "zoom": 1.75
         },
         "cam_rate": 0.008,
         "marks": [
@@ -4699,9 +4699,9 @@
             "push": {
               "center": [
                 0.47,
-                0.42
+                0.4
               ],
-              "zoom": 1.55
+              "zoom": 1.75
             },
             "cam_rate": 0.008
           },
@@ -4720,9 +4720,9 @@
             "push": {
               "center": [
                 0.47,
-                0.42
+                0.4
               ],
-              "zoom": 1.55
+              "zoom": 1.75
             },
             "cam_rate": 0.008,
             "cam_continue": true,
@@ -4809,9 +4809,9 @@
             "push": {
               "center": [
                 0.47,
-                0.42
+                0.4
               ],
-              "zoom": 1.55
+              "zoom": 1.75
             },
             "cam_rate": 0.008,
             "marks": [

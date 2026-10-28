@@ -840,7 +840,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.captions.extend(caps_b)
         else:  # ... but the .srt carries every spoken line
             plan.srt_only.extend(caps_b)
-        if vtype in ("title", "kinetic", "stat", "chart", "casefile", "mugshot", "roulette", "maze"):
+        if vtype in ("title", "kinetic", "stat", "chart", "doc", "casefile", "mugshot", "roulette", "maze"):
             plan.ledger_hide.append((shot_start, shot_end))  # full-frame graphics: Larry's tab steps aside
         if beat.get("label"):
             l0 = shot_start
@@ -901,7 +901,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
     return plan
 
 
-CARD_PUSH = {"StatShot": 0.045, "ChartShot": 0.04, "KineticShot": 0.045, "EvidenceShot": 0.03, "EndScreenShot": 0.012}
+CARD_PUSH = {"StatShot": 0.045, "ChartShot": 0.04, "KineticShot": 0.045, "EvidenceShot": 0.05, "EndScreenShot": 0.012}
+CARD_ANCHOR = {"EndScreenShot": (0.5, 0.0)}  # the end screen grows from its top edge: the next-case card is never cropped
 
 
 def _card_push(sh, amount: float) -> None:
@@ -909,7 +910,10 @@ def _card_push(sh, amount: float) -> None:
     if getattr(sh, "_card_push", None) is not None:
         return
     orig = sh.frame
-    rate = amount / max(4.0, sh.duration)  # long cards push the same speed as a 4 s one, never faster
+    ax, ay = CARD_ANCHOR.get(type(sh).__name__, (0.5, 0.5))
+    rate = amount / max(4.0, sh.duration)
+    if amount >= 0.03:
+        rate = max(0.005, rate)  # long cards: never slower than 0.5 % a second (G1)
 
     def frame(t, _o=orig, _sh=sh):
         img = _o(t)
@@ -917,7 +921,7 @@ def _card_push(sh, amount: float) -> None:
         if z <= 1.0005:
             return img
         h, w = img.shape[:2]
-        M = np.float32([[z, 0, (1 - z) * w / 2], [0, z, (1 - z) * h / 2]])
+        M = np.float32([[z, 0, (1 - z) * w * ax], [0, z, (1 - z) * h * ay]])
         return cv2.warpAffine(img, M, (w, h), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
     sh.frame = frame
     sh._card_push = amount
