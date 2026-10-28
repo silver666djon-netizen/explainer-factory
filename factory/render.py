@@ -205,9 +205,24 @@ def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
     if wt is None or sec <= 0:
         return v, None
     sr = v["sr"]
-    cut = max(0, int((wt - 0.03) * sr))
-    audio = np.concatenate([v["audio"][:cut], np.zeros(int(sec * sr), dtype=v["audio"].dtype), v["audio"][cut:]])
-    words = [(w, s0 + (sec if s0 >= wt - 0.03 else 0.0), e0 + (sec if s0 >= wt - 0.03 else 0.0)) for w, s0, e0 in v["words"]]
+    src = v["audio"]
+    # cut in the quietest 10 ms between the previous word and this one (a word timestamp can be a few frames off:
+    # a cut inside a phoneme is heard as a clipped word or a double onset), with short fades on both sides
+    hop = int(0.01 * sr)
+    lo, hi = max(0, int((wt - 0.16) * sr)), min(len(src) - hop, int((wt + 0.01) * sr))
+    if hi > lo + hop:
+        e = [float(np.mean(src[k:k + hop] ** 2)) for k in range(lo, hi, hop // 2)]
+        cut = lo + int(np.argmin(e)) * (hop // 2) + hop // 2
+    else:
+        cut = max(0, int((wt - 0.03) * sr))
+    fade = min(int(0.008 * sr), cut, len(src) - cut)
+    a, b = src[:cut].copy(), src[cut:].copy()
+    if fade > 0:
+        a[-fade:] *= np.linspace(1.0, 0.0, fade, dtype=a.dtype)
+        b[:fade] *= np.linspace(0.0, 1.0, fade, dtype=b.dtype)
+    audio = np.concatenate([a, np.zeros(int(sec * sr), dtype=src.dtype), b])
+    tc = cut / sr
+    words = [(w, s0 + (sec if s0 >= tc - 0.02 else 0.0), e0 + (sec if s0 >= tc - 0.02 else 0.0)) for w, s0, e0 in v["words"]]
     return {**v, "audio": audio, "words": words, "duration": v["duration"] + sec}, wt + sec
 
 

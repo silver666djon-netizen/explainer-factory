@@ -1,0 +1,41 @@
+name: TTS scan
+# Stutter / judder scan of the narration (tools/tts_scan.py): synth every line like the build, transcribe it back,
+# check every join. Report + wavs -> draft release scan-<episode>.
+on:
+  workflow_dispatch:
+    inputs:
+      episode:
+        required: true
+        default: "0005-drip-pricing"
+permissions:
+  contents: write
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-whisper-v1
+      - run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt faster-whisper
+      - run: python tools/tts_scan.py "episodes/${{ github.event.inputs.episode }}" scan_out
+        timeout-minutes: 90
+      - name: Publish
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep="${{ github.event.inputs.episode }}"
+          [ -s scan_out/scan.md ] || exit 0
+          (cd scan_out && zip -qr wav.zip wav)
+          tools/rel.sh delete "scan-$ep" || true
+          gh release create "scan-$ep" scan_out/scan.md scan_out/scan.json scan_out/wav.zip --title "TTS scan $ep" --notes "stutter scan" --prerelease --draft
