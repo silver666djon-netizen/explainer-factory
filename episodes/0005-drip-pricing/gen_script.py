@@ -221,11 +221,12 @@ X_FIT = [0.04, 0.96]  # Shorts: the whole panel width stays in the window (pull 
 X_PUSH = 0.006  # zoom per second: ~1.00 -> 1.09 over x1 + x2, one continuous push across the cut
 TICKET_PRICE_BOX = dict(x=0.2965, y=0.660, w=0.20, h=0.10)  # centred in the price box (.177-.416 x .599-.716), ~60 % of its height
 # the fee column on the clear paper right of the ticket (border at .70): left-aligned from .745, even 11 % line pitch
-FEE = lambda y, **kw: dict(x=0.85, y=y, w=0.21, h=0.075, align="left", **kw)
+# (Klot r78 G3: centred on the empty paper between the ticket's edge .70 and the frame margin, inside the push)
+FEE = lambda y, **kw: dict(x=0.835, y=y, w=0.19, h=0.068, fs=0.062, align="left", **kw)
 FEE_Y = (0.37, 0.48, 0.59)
-SUM_RULE = dict(type="underline", x=0.82, y=0.637, w=0.15, h=0.01, color="ink", target=[0.746, 0.555, 0.90, 0.625])
-SUM = dict(x=0.85, y=0.71, w=0.21, h=0.075, align="left")
-SUM_RING = dict(type="circle", x=0.832, y=0.712, w=0.19, h=0.11, target=[0.76, 0.676, 0.905, 0.748])
+SUM_RULE = dict(type="underline", x=0.818, y=0.637, w=0.15, h=0.01, color="ink", target=[0.743, 0.555, 0.893, 0.625])
+SUM = dict(x=0.835, y=0.71, w=0.19, h=0.068, fs=0.062, align="left")
+SUM_RING = dict(type="circle", x=0.815, y=0.712, w=0.18, h=0.105, target=[0.748, 0.676, 0.888, 0.748])
 
 # a5 queue (Klot r78 G2): A / B sit on the green arch -> white paint-pen; the prices sit in the window glass and the
 # arch frame -> red marker on a cream plate. ARCH_PEN: one letter size for the line on the arch (a7).
@@ -356,7 +357,7 @@ beat("b2", S_TM, "That's thirty-seven and a half percent of what he paid.",
      pause_at={"word": "thirty-seven", "sec": 0.6, "hit": "stamp"})
 beat("b3a", S_TM, "Is that unusual?",  # Klot r78 item 7: the statue appears once; this line is on Larry's ticket + the 37.5 % note
      reuse("o1", hand_marks=True, push={"center": [0.56, 0.50], "zoom": 1.15}, cam_rate=0.012,
-           marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("= 37.5 % FEES", at=0.0, **FEE(0.48))]),
+           marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("= 37.5 %", at=0.0, **FEE(0.44)), write("IN FEES", at=0.0, **FEE(0.55))]),
      label="Illustration")
 beat("b3", S_TM, "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
      arch("ftc_statue_1943.jpg", "Statue in front of the Federal Trade Commission building, Washington, D.C., 1943 · Library of Congress", motion="zoom_in",
@@ -628,7 +629,7 @@ ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
       "next": {"number": "005", "title": "Tip screens", "tagline": "18 % · 22 % · 25 % · No tip?", "image_file": "next_tablet.png",
                "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.880, "h": 0.085}],
                "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True,
-               "subject_scale": 1.5, "subject_top": 0.28, "label_gap": 0.03, "tagline_y": 0.19, "tagline_h": 0.09},  # tablet 1.5x for phones, Pew plate under it
+               "subject_scale": 1.5, "subject_top": 0.285, "label_gap": 0.03, "tagline_y": 0.214, "tagline_h": 0.075},  # tablet 1.5x for phones, Pew plate under it
       # timed on the real voice (CI timings 2026-10-21): verdict lines written as spoken, swap after "screen.",
       # sketch with "Next case", "No tip" on "tip", Pew plate after "coffee", click on "Subscribe"
       "times": {"v1": 1.4, "v2": 5.36, "vdur": 2.2, "swap": 8.4, "draw": 8.9, "ddur": 3.0, "writes": 11.9, "tagline": 12.5,

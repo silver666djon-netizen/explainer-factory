@@ -155,3 +155,21 @@ must report zero before a final render.
     i.e. the scene without its moving parts) — not only the first frame. Ink on our own cream plate is exempt.
     Shorts: a scene whose labels are wider than the square window uses "short_fit": [x0, x1] (that width always in view,
     window pulled back, blurred background), and a reused live beat plays its clip in the Short too ("clip": true).
+26. No frame is ever fully static (Klot r78 G1). Every still runs a slow, continuous camera move for its whole time on
+    screen (static = 1.02 -> 1.08 push; "cam_rate" + "cam_continue" = one even push across beats on the same picture,
+    no zoom jump at the cut). Cards get the same: stat, chart, kinetic, evidence and the end screen run a slow push
+    (render.CARD_PUSH). A live clip held on a frame ("clip_until", "clip_at") keeps "cam_rate". A clip beat is one shot
+    (never cut back to its still mid-line); an archive shown once is "one_shot" (one continuous move, not re-cut).
+27. Ink colour by background (G2): red marker only on light paper or cream. On green, dark or busy art: the white
+    paint-pen (color "#FFFFFF") or our cream plate ("plate": [sx, sy]) under the red. Checked per mark.
+28. Marks sit level on the surface they are written on (G3): measure the card, tag, sticker or form line on the still,
+    give the mark that angle, keep it inside the surface's margins and centred on its empty area; a list is left-aligned
+    on one margin ("align": "left", one "fs" for all lines); labels written in a column are centred on the clear paper
+    between the subject and the frame margin, inside the push.
+29. Reveal pauses never cut a word (G4): "pause_at" cuts in the quietest 10 ms before the word (hiss of s / f / th
+    counts as sound), soft 25 ms fade-out, 6 ms fade-in. tools/tts_scan.py (tts-scan.yml) synthesises every line like
+    the build, transcribes it back (faster-whisper) and checks every join; run it on any new narration.
+30. A count-up lands on its value before the number is said (G5): with a reveal pause before the number, it lands as
+    the silence starts; otherwise at the number's first syllable.
+31. Larry's tab never covers the subject (G6): a beat whose subject reaches into the tab's corner (top-right 18 % x
+    22 %) gets "ledger_hide" (the tab steps aside); Shorts inherit it.
