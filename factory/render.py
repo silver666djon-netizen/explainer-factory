@@ -523,12 +523,17 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                                          seed=i * 7 + k, clip=live, until=visual.get("clip_until"), fit=fit)
                     if visual.get("clip_hold"):  # the clip's first frame for the whole shot (the action comes later)
                         shot.sync = (1e9, 0.0, 0.0, 1.0)
+                    if visual.get("clip_at") is not None:  # one frame of the clip for the whole shot (e.g. its end state)
+                        shot.sync = (0.0, float(visual["clip_at"]), float(visual["clip_at"]), 0.0)
                     cs = visual.get("clip_sync")  # {"from": word, "to": word}: the clip's movement runs from one word to
                     if cs:  # the other (sped up if it is longer: the click lands on "to"); before it, the first frame holds
                         from .shots import clip_event
                         c0 = float(cs["start"]) if cs.get("start") is not None else clip_event(str(live), "start")
                         c1 = float(cs["end"]) if cs.get("end") is not None else clip_event(str(live), "end")
-                        wt = word_time(v["words"], cs["to"])
+                        wt = word_time(v["words"], cs["to"]) if cs.get("to") else None
+                        wf0 = word_time(v["words"], cs["from"]) if (cs.get("from") and not cs.get("to")) else None
+                        if wf0 is not None:  # only "from": the movement starts on that word, at its own speed
+                            shot.sync = (wf0 + lead_in + float(cs.get("from_delay", 0.0)), c0, c1, 1.0)
                         if wt is not None:
                             t1 = wt + lead_in + float(cs.get("to_delay", 0.1))
                             wf = word_time(v["words"], cs["from"]) if cs.get("from") else None

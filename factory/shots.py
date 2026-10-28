@@ -1228,6 +1228,8 @@ class ClipImageShot(ImageShot):
         if self.sync is None:
             return t
         t0, c0, c1, sp = self.sync
+        if sp == 0:
+            return c0  # frozen on one frame
         if t < t0:
             return 0.0  # the clip's first frame, held
         t1 = t0 + (c1 - c0) / sp

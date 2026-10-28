@@ -214,8 +214,8 @@ beat("o3", S_OPEN, "Total: forty-eight.",
 beat("o4", S_OPEN, "Larry is made up. The fees are not.",
      manual(img(f"{LARRY} sitting at a kitchen table at night, lit by the glow of a cream retro laptop, a paper concert ticket propped against a coffee cup, plain cream background",
          motion="static",
-         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.262, y=0.15, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6),
-                                 write("REAL", on="fees", x=0.262, y=0.222, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6)],
+         hand_marks=True, marks=[write("FICTIONAL", on="made", x=0.655, y=0.275, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6),
+                                 write("REAL", on="fees", x=0.655, y=0.335, w=0.118, h=0.047, color="#FFFFFF", align="left", hand_scale=0.6, dur=0.45)],
          clip_until=3.0), clip=True),  # Grok clip (Klot): only 0-3 s, the push-in later takes the ticket out of frame; dark cabinets: white pen
      caption_x=0.64)  # the ticket sits low-left: this beat's subtitles move right, clear of it
 
@@ -333,7 +333,7 @@ beat("b9b", S_TM, "Until a court decides, every word of it is an allegation.",
 chapter("t3", S_HOTEL, "Thursday, eleven-forty p.m.", "Thursday 11:40 PM — The resort fee")
 beat("c1", S_HOTEL, "Larry needs a hotel for the concert. Downtown. Nowhere near a beach.",
      manual(img(f"{LARRY} standing with a small suitcase in a plain downtown hotel lobby at night, a framed poster of a sunny beach on the wall behind him, plain cream background",
-         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="concert.", x=0.874, y=0.45, w=0.145, h=0.085, color="#FFFFFF")]), clip=True))
+         motion="static", hand_marks=True, marks=[write("DOWNTOWN", on="concert.", x=0.660, y=0.575, w=0.150, h=0.085, color="#FFFFFF")]), clip=True))
 # c1 Grok clip (Klot): by ~3 s the push-in swaps the dark right wall for the window, so DOWNTOWN is written by 2.5 s (on
 # "concert."); the clip plays to its end (he glances at the beach poster)
 beat("m2", S_HOTEL, "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.",
@@ -367,12 +367,22 @@ beat("c8", S_HOTEL, "In 2023, Marriott agreed with Texas to show the total price
      label="Texas Attorney General · May 2023")
 
 # ------------------------------------------------------------------ Why a split price feels cheaper (insert, ~25 s)
+# n1 is animated in code from its still (make_n1_anim.py -> clips/n1.mp4): the blade snips on "split", then the
+# right piece slides ~8 % right and 2 deg down and settles; the hand writes the two prices on the pieces.
+N1_L = dict(x=0.160, y=0.645, w=0.075, h=0.075, angle=23, color="ink")                    # $30 on the left piece
+N1_R = dict(x=0.410, y=0.590, w=0.160, h=0.062, angle=15, color="ink", on_object=True)  # + $18 FEES on the moved piece
+N_PUSH = 0.006  # one slow continuous push across n1 and n2
 beat("n1", S_BRAIN, "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
      img("a cream paper price tag being cut into two pieces by a pair of red-handled scissors, plain cream background, 1950s print-ad style",
-         motion="static", hand_marks=True, marks=[write("BASE", on="split", x=0.35, y=0.70, w=0.12, h=0.06), write("+ SURCHARGE", on="base", chain=True, x=0.68, y=0.70, w=0.22, h=0.06)]),
-     label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998")
+         motion="static", hand_marks=True, clip=True, short_fit=X_FIT, cam_rate=N_PUSH,
+         clip_sync={"from": "split", "start": 0.30, "end": 1.30},  # snip 0.30-0.55, slide 0.62-1.30 (clip time)
+         marks=[write("$30", on="base", **N1_L), write("+ $18 FEES", on="surcharge.", **N1_R)]),
+     label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
+     sfx_at=[{"on": "split", "delay": 0.12, "kind": "snip"}])
 beat("n2", S_BRAIN, "The total price was the same. It was just served in pieces.",
-     reuse("n1", closeup=closeup("served", [0.50, 0.50], 1.6, [write("SAME TOTAL", on="same.", x=0.50, y=0.22, w=0.24, h=0.07)])),
+     reuse("n1", clip=True, clip_at=1.95, hand_marks=True, short_fit=X_FIT, cam_rate=N_PUSH, cam_continue=True,
+           marks=[write("$30", at=0.0, **N1_L), write("+ $18 FEES", at=0.0, **N1_R),
+                  write("SAME TOTAL", on="same.", x=0.270, y=0.205, w=0.250, h=0.075)]),
      label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998")
 beat("n3", S_BRAIN, "People remembered paying less in total. And they bought more.", kin())
 beat("n4", S_BRAIN, "Your brain files the first number. Everything after it is small print.",
@@ -523,7 +533,7 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
         for k in ("marks", "hand_marks", "closeup", "push", "stamps"):
             if v.get(k) is not None:
                 vis[k] = copy.deepcopy(v[k])
-        for k in ("clip_hold", "clip_sync", "cam_rate", "cam_continue"):  # held clip frame, synced flip, even push
+        for k in ("clip_hold", "clip_sync", "clip_at", "cam_rate", "cam_continue"):  # held clip frame, synced flip, even push
             if v.get(k) is not None:
                 vis[k] = copy.deepcopy(v[k])
         if v.get("short_fit"):  # the whole subject stays in the Short's window for the whole beat: no push-in

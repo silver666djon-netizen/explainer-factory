@@ -47,6 +47,18 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         t = np.arange(n) / SR
         freq = np.linspace(900, 250, n)
         return (np.sin(2 * np.pi * np.cumsum(freq) / SR) * np.exp(-t * 35) * 0.9).astype(np.float32)
+    if kind == "snip":  # scissors: metallic shear as the blades close, a small click at the end
+        n = int(0.22 * SR)
+        t = np.arange(n) / SR
+        noise = rnd.standard_normal(n).astype(np.float32)
+        sos = butter(2, [3500, 9000], btype="band", fs=SR, output="sos")
+        shear = sosfilt(sos, noise) * np.clip(t / 0.09, 0, 1) * np.exp(-np.clip(t - 0.09, 0, None) * 60)
+        click = np.zeros(n, np.float32)
+        k0 = int(0.1 * SR)
+        tc = t[: n - k0]
+        click[k0:] = np.sin(2 * np.pi * 3100 * tc) * np.exp(-tc * 160)
+        out = shear / (np.abs(shear).max() + 1e-9) * 0.45 + click * 0.8
+        return out.astype(np.float32)
     if kind == "tick":
         n = int(0.035 * SR)
         t = np.arange(n) / SR
@@ -386,7 +398,7 @@ class Timeline:
     def add_voice(self, at: float, audio24k: np.ndarray, src_sr: int) -> None:
         self._add(self.voice, at, to_sr(audio24k, src_sr) * db(self.cfg.get("narration_db", 0)))
 
-    HIT_KINDS = ("stamp", "kachunk", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter")
+    HIT_KINDS = ("stamp", "kachunk", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter", "snip")
 
     def add_sfx(self, at: float, kind: str, seed: int = 0) -> None:
         if not kind or kind == "none":

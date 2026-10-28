@@ -311,8 +311,8 @@
           {
             "type": "write",
             "text": "FICTIONAL",
-            "x": 0.262,
-            "y": 0.15,
+            "x": 0.655,
+            "y": 0.275,
             "w": 0.118,
             "h": 0.047,
             "angle": 0,
@@ -326,14 +326,14 @@
           {
             "type": "write",
             "text": "REAL",
-            "x": 0.262,
-            "y": 0.222,
+            "x": 0.655,
+            "y": 0.335,
             "w": 0.118,
             "h": 0.047,
             "angle": 0,
             "color": "#FFFFFF",
             "font": "marker",
-            "dur": 0.7,
+            "dur": 0.45,
             "on": "fees",
             "align": "left",
             "hand_scale": 0.6
@@ -1286,9 +1286,9 @@
           {
             "type": "write",
             "text": "DOWNTOWN",
-            "x": 0.874,
-            "y": 0.45,
-            "w": 0.145,
+            "x": 0.66,
+            "y": 0.575,
+            "w": 0.15,
             "h": 0.085,
             "angle": 0,
             "color": "#FFFFFF",
@@ -1516,37 +1516,55 @@
         "motion": "static",
         "prompt": "a cream paper price tag being cut into two pieces by a pair of red-handled scissors, plain cream background, 1950s print-ad style",
         "hand_marks": true,
+        "clip": true,
+        "short_fit": [
+          0.04,
+          0.96
+        ],
+        "cam_rate": 0.006,
+        "clip_sync": {
+          "from": "split",
+          "start": 0.3,
+          "end": 1.3
+        },
         "marks": [
           {
             "type": "write",
-            "text": "BASE",
-            "x": 0.35,
-            "y": 0.7,
-            "w": 0.12,
-            "h": 0.06,
-            "angle": 0,
-            "color": "red",
+            "text": "$30",
+            "x": 0.16,
+            "y": 0.645,
+            "w": 0.075,
+            "h": 0.075,
+            "angle": 23,
+            "color": "ink",
             "font": "marker",
             "dur": 0.7,
-            "on": "split"
+            "on": "base"
           },
           {
             "type": "write",
-            "text": "+ SURCHARGE",
-            "x": 0.68,
-            "y": 0.7,
-            "w": 0.22,
-            "h": 0.06,
-            "angle": 0,
-            "color": "red",
+            "text": "+ $18 FEES",
+            "x": 0.41,
+            "y": 0.59,
+            "w": 0.16,
+            "h": 0.062,
+            "angle": 15,
+            "color": "ink",
             "font": "marker",
             "dur": 0.7,
-            "on": "base",
-            "chain": true
+            "on": "surcharge.",
+            "on_object": true
           }
         ]
       },
-      "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998"
+      "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
+      "sfx_at": [
+        {
+          "on": "split",
+          "delay": 0.12,
+          "kind": "snip"
+        }
+      ]
     },
     {
       "id": "n2",
@@ -1557,30 +1575,59 @@
         "beat": "n1",
         "index": 0,
         "motion": "static",
-        "closeup": {
-          "on": "served",
-          "center": [
-            0.5,
-            0.5
-          ],
-          "zoom": 1.6,
-          "marks": [
-            {
-              "type": "write",
-              "text": "SAME TOTAL",
-              "x": 0.5,
-              "y": 0.22,
-              "w": 0.24,
-              "h": 0.07,
-              "angle": 0,
-              "color": "red",
-              "font": "marker",
-              "dur": 0.7,
-              "on": "same."
-            }
-          ],
-          "motion": "zoom_in"
-        }
+        "clip": true,
+        "clip_at": 1.95,
+        "hand_marks": true,
+        "short_fit": [
+          0.04,
+          0.96
+        ],
+        "cam_rate": 0.006,
+        "cam_continue": true,
+        "marks": [
+          {
+            "type": "write",
+            "text": "$30",
+            "x": 0.16,
+            "y": 0.645,
+            "w": 0.075,
+            "h": 0.075,
+            "angle": 23,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "+ $18 FEES",
+            "x": 0.41,
+            "y": 0.59,
+            "w": 0.16,
+            "h": 0.062,
+            "angle": 15,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "on_object": true,
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "SAME TOTAL",
+            "x": 0.27,
+            "y": 0.205,
+            "w": 0.25,
+            "h": 0.075,
+            "angle": 0,
+            "color": "red",
+            "font": "marker",
+            "dur": 0.7,
+            "on": "same."
+          }
+        ]
       },
       "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998"
     },
@@ -3624,9 +3671,9 @@
               {
                 "type": "write",
                 "text": "DOWNTOWN",
-                "x": 0.874,
-                "y": 0.45,
-                "w": 0.145,
+                "x": 0.66,
+                "y": 0.575,
+                "w": 0.15,
                 "h": 0.085,
                 "angle": 0,
                 "color": "#FFFFFF",
@@ -3842,34 +3889,52 @@
             "marks": [
               {
                 "type": "write",
-                "text": "BASE",
-                "x": 0.35,
-                "y": 0.7,
-                "w": 0.12,
-                "h": 0.06,
-                "angle": 0,
-                "color": "red",
+                "text": "$30",
+                "x": 0.16,
+                "y": 0.645,
+                "w": 0.075,
+                "h": 0.075,
+                "angle": 23,
+                "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "split"
+                "on": "base"
               },
               {
                 "type": "write",
-                "text": "+ SURCHARGE",
-                "x": 0.68,
-                "y": 0.7,
-                "w": 0.22,
-                "h": 0.06,
-                "angle": 0,
-                "color": "red",
+                "text": "+ $18 FEES",
+                "x": 0.41,
+                "y": 0.59,
+                "w": 0.16,
+                "h": 0.062,
+                "angle": 15,
+                "color": "ink",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "base",
-                "chain": true
+                "on": "surcharge.",
+                "on_object": true
               }
             ],
-            "hand_marks": true
+            "hand_marks": true,
+            "clip_sync": {
+              "from": "split",
+              "start": 0.3,
+              "end": 1.3
+            },
+            "cam_rate": 0.006,
+            "short_fit": [
+              0.04,
+              0.96
+            ],
+            "clip": true
           },
+          "sfx_at": [
+            {
+              "on": "split",
+              "delay": 0.12,
+              "kind": "snip"
+            }
+          ],
           "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
           "id": "s5_1"
         },
@@ -3880,30 +3945,59 @@
             "beat": "n1",
             "index": 0,
             "motion": "static",
-            "closeup": {
-              "on": "served",
-              "center": [
-                0.5,
-                0.5
-              ],
-              "zoom": 1.6,
-              "marks": [
-                {
-                  "type": "write",
-                  "text": "SAME TOTAL",
-                  "x": 0.5,
-                  "y": 0.22,
-                  "w": 0.24,
-                  "h": 0.07,
-                  "angle": 0,
-                  "color": "red",
-                  "font": "marker",
-                  "dur": 0.7,
-                  "on": "same."
-                }
-              ],
-              "motion": "zoom_in"
-            }
+            "clip": true,
+            "clip_at": 1.95,
+            "hand_marks": true,
+            "short_fit": [
+              0.04,
+              0.96
+            ],
+            "cam_rate": 0.006,
+            "cam_continue": true,
+            "marks": [
+              {
+                "type": "write",
+                "text": "$30",
+                "x": 0.16,
+                "y": 0.645,
+                "w": 0.075,
+                "h": 0.075,
+                "angle": 23,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "+ $18 FEES",
+                "x": 0.41,
+                "y": 0.59,
+                "w": 0.16,
+                "h": 0.062,
+                "angle": 15,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "on_object": true,
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "SAME TOTAL",
+                "x": 0.27,
+                "y": 0.205,
+                "w": 0.25,
+                "h": 0.075,
+                "angle": 0,
+                "color": "red",
+                "font": "marker",
+                "dur": 0.7,
+                "on": "same."
+              }
+            ]
           },
           "label": "Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
           "id": "s5_2"
