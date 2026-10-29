@@ -636,7 +636,7 @@ beat("d3", S_DEF, "Two: its own economists saw it differently. Their finding on 
          push_on="market-expanding,"),
      label="NBER w25186")
 D4_ROWS = ((0.6362, 0.3853), (0.6338, 0.4459), (0.6315, 0.5064), (0.6291, 0.5669))  # stub centre line, ticket y 320/385/450/515 px
-D4_STUB = lambda k: dict(x=D4_ROWS[k][0], y=D4_ROWS[k][1], w=0.135, h=0.050, fs=0.038, angle=-4.0,
+D4_STUB = lambda k: dict(x=D4_ROWS[k][0], y=D4_ROWS[k][1], w=0.130, h=0.046, fs=0.031, angle=-4.0,
                          obj=[0.556, 0.300, 0.715, 0.640, -4.0])
 beat("d4", S_DEF, "In plain English, hidden fees didn't just win buyers from rivals. They made people spend more.",  # (was a card)
      reuse("l1", hand_marks=True, cam_rate=0.006,
