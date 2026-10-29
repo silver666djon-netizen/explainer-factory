@@ -222,8 +222,9 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
   vertical-native layouts in Shorts: visual "short_image" (e.g. the portrait ticket images/o1v.png, stub under a
   horizontal perforation), mark "short" overrides, "short_split" ("axis": "y"), "short_subject_x"; wide props move their
   marks in (switch OFF/ON) instead of shrinking the band. Check: shorts_picture_size.
-- **R39 Count-ups <= 0.5 s; the subline appears with the final number** (StatShot: nothing before the count starts,
-  so no in-between value is readable). Check: count_up.
+- **R39 Count-ups <= 0.5 s, landing on the spoken number** (StatShot: only the number waits for the count). Amended r87:
+  the subline is on the card from its first frame - no frame of a card ever shows only its background. Checks: count_up,
+  card_not_empty.
 - **R40 Every automatic check must FAIL on its planted-bug test frame before a release can pass** (qc.selftest: one
   planted bug per check - plate off the edge, a mark out of the window, shaking mark, mark off its object, mirrored hand
   over its ink, 30 % picture band, 50 s Short, 1.4 s count-up, scratch without ink, edit point inside a word, kinetic

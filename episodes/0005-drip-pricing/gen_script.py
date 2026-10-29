@@ -126,6 +126,24 @@ def make_tablet(path):
 
 make_ticket(HERE / "images" / "o1.png")
 make_ticket_v(HERE / "images" / "o1v.png")
+# r87 item 3: the n1-n3 framing pulled back (~10 %): the same ticket, smaller on the same cream, with room above it
+# for SAME TOTAL / REMEMBERED / BOUGHT; the Shorts' portrait ticket gets the same room (o1vn)
+NK_L, NA_L = 0.90, (0.5, 0.5)
+NK_S, NA_S = 0.92, (0.5, 0.802)
+
+
+def pulled_back(src, dst, k, anchor):
+    from PIL import Image
+    im = Image.open(src).convert("RGB")
+    W, H = im.size
+    out = Image.new("RGB", (W, H), im.getpixel((4, 4)))
+    sm = im.resize((int(round(W * k)), int(round(H * k))), Image.LANCZOS)
+    out.paste(sm, (int(round(anchor[0] * W * (1 - k))), int(round(anchor[1] * H * (1 - k)))))
+    out.save(dst)
+
+
+pulled_back(HERE / "images" / "o1.png", HERE / "images" / "o1w.png", NK_L, NA_L)
+pulled_back(HERE / "images" / "o1v.png", HERE / "images" / "o1vn.png", NK_S, NA_S)
 make_folders(HERE / "images" / "sub.png")
 make_tablet(HERE / "next_tablet.png")
 
@@ -508,6 +526,44 @@ beat("c8", S_HOTEL, "In 2023, Marriott agreed with Texas to show the total price
 # recap); on "split prices" "+ $18 / FEES" go on the stub; on "base" the hand draws a dashed cut line just left of the
 # perforation; on "surcharge." the ticket is cut along it (clean straight cut, dark outline on both edges, the dashes
 # gone) and the stub slides 8 % right. n3: the halves slide back together and the cut stays as a seam. One slow push.
+def _nt(m, k, an):
+    """A mark / split dict re-placed on the pulled-back picture (x, y about the anchor; sizes scaled)."""
+    m = dict(m)
+    ax, ay = an
+    X = lambda v: ax + (float(v) - ax) * k
+    Y = lambda v: ay + (float(v) - ay) * k
+    for kx in ("x",):
+        if kx in m and m.get("axis") != "y":
+            m[kx] = X(m[kx])
+    if "y" in m and "axis" not in m and "dx" not in m:
+        m["y"] = Y(m["y"])
+    for kz in ("w", "h", "fs", "edge_w", "dx"):
+        if m.get(kz) is not None:
+            m[kz] = float(m[kz]) * k
+    if "dx" in m:  # a split: the cut position and the span across it
+        if m.get("axis") == "y":
+            m["x"], m["y0"], m["y1"] = Y(m["x"]), X(m["y0"]), X(m["y1"])
+        else:
+            m["y0"], m["y1"] = Y(m["y0"]), Y(m["y1"])
+    if m.get("target"):
+        t = m["target"]
+        m["target"] = [X(t[0]), Y(t[1]), X(t[2]), Y(t[3])]
+    if m.get("obj"):
+        o = m["obj"]
+        m["obj"] = [X(o[0]), Y(o[1]), X(o[2]), Y(o[3])] + list(o[4:])
+    if m.get("printed"):
+        m["printed"] = [[X(b[0]), Y(b[1]), X(b[2]), Y(b[3])] for b in m["printed"]]
+    return m
+
+
+def NT(m):  # the long video on o1w, the Shorts on o1vn
+    out = _nt({k: v for k, v in m.items() if k != "short"}, NK_L, NA_L)
+    if m.get("short") is not None:
+        sh = m["short"]
+        out["short"] = _nt(sh, NK_S, NA_S) if any(k in sh for k in ("x", "y")) else sh
+    return out
+
+
 N_CUT = (TK["sx"] - 15) / 1376  # .507: the holes stay whole on the stub
 N_SPLIT = {"x": N_CUT, "dx": 0.08, "y0": TK["y0"] / 768 + 0.004, "y1": TK["y1"] / 768 - 0.004, "edge_w": 10 / 768}
 N_SHORT = lambda y, w: dict(x=0.5, y=y, w=w, h=0.08, fs=0.070, obj=STUB_OBJ_V, printed=ON_STUB_V["printed"])
@@ -515,33 +571,41 @@ N_FEE1 = dict(x=STUB_X, y=0.450, w=0.140, h=0.085, fs=0.075, color="ink", follow
 N_FEE2 = dict(x=STUB_X, y=0.565, w=0.120, h=0.080, fs=0.075, color="ink", follow=True, **ON_STUB, short=N_SHORT(0.780, 0.20))
 N_DASH = dict(type="dash", x=N_CUT, y=(TK["y0"] + TK["y1"]) / 2 / 768, w=0.01, h=(TK["y1"] - TK["y0"] - 30) / 768, until_split=True,
               short=dict(x=0.5, y=_V(TV["sy"] - 15), w=_V(TV["x1"] - TV["x0"] - 30), h=0.01, horizontal=True))
-N_SAME = dict(x=0.548, y=0.150, w=0.230, h=0.075, fs=0.058, short=dict(x=0.5, y=0.085, w=0.34, h=0.05, fs=0.045))
+# r87 item 3: SAME TOTAL, REMEMBERED: LESS, BOUGHT: MORE - one centred column above the ticket (pulled-back picture),
+# all three the same size, >= 4 % from the top edge; in the Shorts 1.5x bigger (placed in the final, o1w / o1vn, coords)
+N_COL = lambda y, w, ys, ws: dict(x=0.455, y=y, w=w, h=0.060, fs=0.058, hand_scale=0.7,
+                                  short=dict(x=0.5, y=ys, w=ws, h=0.068, fs=0.0675, align="center"))
+N_SAME = N_COL(0.072, 0.24, 0.076, 0.48)
 N_SPLIT_V = {"axis": "y", "x": _V(TV["sy"] - 15), "dx": 0.055, "y0": _V(TV["x0"]) + 0.004, "y1": _V(TV["x1"]) - 0.004,
              "edge_w": 10 / 1080}
 N_FIT = [0.04, 0.86]  # Shorts: the whole ticket and the slid stub stay in the window
+# n1-n3: the pulled-back pictures, the slow push anchored at the top edge (the column above the ticket never crops)
+NVIS = dict(alt_image="o1w", short_image="o1vn", short_subject_x=[0.22, 0.78], cam_dy=-1.0)
 N_PUSH = 0.006
 beat("n1", S_BRAIN, "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
-     reuse("o1", hand_marks=True, short_fit=N_FIT, cam_rate=N_PUSH, subject_x=TICKET_SUBJ, **TSHORT,
-           split=dict(N_SPLIT, on="surcharge.", delay=0.35, dur=0.75), short_split=dict(N_SPLIT_V, on="surcharge.", delay=0.35, dur=0.75),
-           marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"),
-                  write("+ $18", on="split", dur=0.45, **N_FEE1), write("FEES", on="prices", chain=True, dur=0.4, **N_FEE2),
-                  dict(N_DASH, on="base", chain=True, dur=0.5, hand=True)]),
+     reuse("o1", hand_marks=True, short_fit=N_FIT, cam_rate=N_PUSH, subject_x=TICKET_SUBJ, **NVIS,
+           split=NT(dict(N_SPLIT, on="surcharge.", delay=0.35, dur=0.75)),
+           short_split=_nt(dict(N_SPLIT_V, on="surcharge.", delay=0.35, dur=0.75), NK_S, NA_S),
+           marks=[NT(write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink")),
+                  NT(write("+ $18", on="split", dur=0.45, **N_FEE1)), NT(write("FEES", on="prices", chain=True, dur=0.4, **N_FEE2)),
+                  NT(dict(N_DASH, on="base", chain=True, dur=0.5, hand=True))]),
      label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998",
      sfx_at=[{"on": "surcharge.", "delay": 0.35, "kind": "paper"}])
 beat("n2", S_BRAIN, "The total price was the same. It was just served in pieces.",
-     reuse("o1", hand_marks=True, short_fit=N_FIT, cam_rate=N_PUSH, cam_continue=True, subject_x=TICKET_SUBJ, **TSHORT,
-           split=dict(N_SPLIT, done=True), short_split=dict(N_SPLIT_V, done=True),
-           marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+ $18", at=0.0, **N_FEE1), write("FEES", at=0.0, **N_FEE2),
-                  write("SAME TOTAL", on="same.", **N_SAME)]),
+     reuse("o1", hand_marks=True, short_fit=N_FIT, cam_rate=N_PUSH, cam_continue=True, subject_x=TICKET_SUBJ, **NVIS,
+           split=NT(dict(N_SPLIT, done=True)), short_split=_nt(dict(N_SPLIT_V, done=True), NK_S, NA_S),
+           marks=[NT(write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink")), NT(write("+ $18", at=0.0, **N_FEE1)),
+                  NT(write("FEES", at=0.0, **N_FEE2)), write("SAME TOTAL", on="same.", **N_SAME)]),
      label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998")
 # n3: the halves slide back together (seam), the finding goes on the clear cream above the ticket's left part
-N3_A = dict(x=0.235, y=0.100, w=0.29, h=0.060, align="left", fs=0.050, short=dict(x=0.5, y=0.140, w=0.42, h=0.05, fs=0.045, align="center"))
-N3_B = dict(x=0.235, y=0.170, w=0.29, h=0.060, align="left", fs=0.050, short=dict(x=0.5, y=0.195, w=0.34, h=0.05, fs=0.045, align="center"))
+N3_A = N_COL(0.142, 0.32, 0.152, 0.62)
+N3_B = N_COL(0.212, 0.26, 0.228, 0.50)
 beat("n3", S_BRAIN, "People remembered paying less in total. And they bought more.",
-     reuse("o1", hand_marks=True, short_fit=N_FIT, cam_rate=N_PUSH, cam_continue=True, subject_x=TICKET_SUBJ, **TSHORT,
-           split=dict(N_SPLIT, done=True, back_on="People", back_dur=0.6), short_split=dict(N_SPLIT_V, done=True, back_on="People", back_dur=0.6),
-           marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+ $18", at=0.0, **N_FEE1), write("FEES", at=0.0, **N_FEE2),
-                  write("SAME TOTAL", at=0.0, **N_SAME),
+     reuse("o1", hand_marks=True, short_fit=N_FIT, cam_rate=N_PUSH, cam_continue=True, subject_x=TICKET_SUBJ, **NVIS,
+           split=NT(dict(N_SPLIT, done=True, back_on="People", back_dur=0.6)),
+           short_split=_nt(dict(N_SPLIT_V, done=True, back_on="People", back_dur=0.6), NK_S, NA_S),
+           marks=[NT(write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink")), NT(write("+ $18", at=0.0, **N_FEE1)),
+                  NT(write("FEES", at=0.0, **N_FEE2)), write("SAME TOTAL", at=0.0, **N_SAME),
                   write("REMEMBERED: LESS", on="remembered", dur=0.75, **N3_A), write("BOUGHT: MORE", on="bought", dur=0.6, **N3_B)]),
      label="Morwitz, Greenleaf & Johnson · J. Marketing Research · 1998")
 beat("n4", S_BRAIN, "Your brain files the first number. Everything after it is small print.",
@@ -571,10 +635,15 @@ beat("d3", S_DEF, "Two: its own economists saw it differently. Their finding on 
          "market-expanding, rather than pure business-stealing", on="market-expanding,", kicker="WORKING PAPER  ·  QUOTED", seed=76, lead=0.6,
          push_on="market-expanding,"),
      label="NBER w25186")
+D4_ROWS = ((0.6362, 0.3853), (0.6338, 0.4459), (0.6315, 0.5064), (0.6291, 0.5669))  # stub centre line, ticket y 320/385/450/515 px
+D4_STUB = lambda k: dict(x=D4_ROWS[k][0], y=D4_ROWS[k][1], w=0.135, h=0.050, fs=0.038, angle=-4.0,
+                         obj=[0.556, 0.300, 0.715, 0.640, -4.0])
 beat("d4", S_DEF, "In plain English, hidden fees didn't just win buyers from rivals. They made people spend more.",  # (was a card)
      reuse("l1", hand_marks=True, cam_rate=0.006,
-           marks=[write("NOT JUST STOLEN SALES", on="win", dur=0.8, x=0.50, y=0.700, w=0.46, h=0.052, fs=0.046, **WOOD_PEN),
-                  write("PEOPLE SPENT MORE", on="They", dur=0.65, x=0.50, y=0.752, w=0.46, h=0.052, fs=0.046, **WOOD_PEN)]))
+           # r87 item 2: red pen, on the ticket's empty stub under "No. 004" (the ticket lies on the desk turned 4 deg
+           # clockwise: l1 = make_edits.py), four short lines inside the stub with the usual margin
+           marks=[write("NOT JUST", on="win", dur=0.4, **D4_STUB(0)), write("STOLEN SALES", on="win", chain=True, dur=0.55, **D4_STUB(1)),
+                  write("PEOPLE", on="They", dur=0.35, **D4_STUB(2)), write("SPENT MORE", on="They", chain=True, dur=0.5, **D4_STUB(3))]))
 beat("d5", S_DEF, "Three: fees pay for real things. Card payments, staff, the venue.",
      arch("concert_audience_chicago_1941.jpg", "Audience at a concert given by Marian Anderson, Chicago, Illinois, 1941 · Library of Congress",
           motion="zoom_in", crop=[0.055, 0.012, 0.945, 0.988]))  # r86 item 8: a venue, not a grocery checkout (negative edges cropped)
@@ -745,6 +814,11 @@ def L(bid, text=None, keep=("punch", "pause_at", "sfx_at", "sfx", "say", "stamp"
     return b
 
 
+S5_OPEN = L("o1", text="Thirty dollars. Then the fees.", keep=())  # s5 opens on the same pulled-back ticket as n1-n3 (R36)
+S5_OPEN["visual"]["short_image"] = "o1vn"
+S5_OPEN["visual"]["marks"] = [NT(m) for m in S5_OPEN["visual"]["marks"]]
+S5_OPEN["visual"]["cam_dy"] = -1.0
+
 SHORTS = [
     {"id": "s1", "title": "The $30 ticket that costs $48 #shorts", "hook": "$30 → $48", "hook_on": "o3",
      "beats": [L("o1"), L("o2"), L("o3"), L("m1"), L("b6"), L("o1", text="So before you pay thirty, ask what it costs.", keep=())]},
@@ -762,7 +836,7 @@ SHORTS = [
     {"id": "s4", "title": "A resort fee at a city hotel #shorts", "hook": "RESORT FEE?", "hook_on": "c1",
      "beats": [L("c1"), L("m2"), L("c2"), L("c3"), L("c4"), L("c5"), L("c7")]},  # r86 item 4: <= 45 s (no "Known associates")
     {"id": "s5", "title": "Why a split price feels cheaper #shorts", "hook": "YOUR BRAIN FILES THE FIRST NUMBER", "hook_on": "n4",
-     "beats": [L("o1", text="Thirty dollars. Then the fees.", keep=()), L("n1"), L("n2"), L("n3"), L("n4")]},
+     "beats": [S5_OPEN, L("n1"), L("n2"), L("n3"), L("n4")]},
     {"id": "s6", "title": "The £3 fee that cost £4.2 million #shorts", "hook": "£3 → £4,200,000", "hook_on": "l8",
      "beats": [L("l8"), L("l9"), L("l4"), L("l5"), L("l6")]},
     {"id": "s7", "title": "3 checks before you pay #shorts", "hook": "3 CHECKS", "hook_on": "x1",

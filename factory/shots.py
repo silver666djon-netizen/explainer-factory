@@ -844,8 +844,8 @@ class StatShot(Shot):
         self.W, self.H = size
         self.spec = spec
         # rule: the count-up lands on the spoken value no later than the first syllable of that number
-        # R39 (Klot r86): the count-up lasts <= 0.5 s and ends on the landing time; before it the number is not shown
-        # (no in-between value long enough to read), the label appears with the final number
+        # R39 (Klot r86/r87): the count-up lasts <= 0.5 s and ends on the landing time; before it only the number waits
+        # (no in-between value long enough to read) - the subline is there from the first frame
         self.ramp = max(0.6, min(1.4, duration * 0.45)) if land_at is None else max(0.25, land_at)  # landing time
         self.count = min(0.5, self.ramp)
         self.t0 = self.ramp - self.count
@@ -860,6 +860,20 @@ class StatShot(Shot):
                                   caption=True)  # a name or a source never splits across lines
             self.label = text_block(lines, fnt, fill=self.pal["ink"])
         self.cache: dict[str, np.ndarray] = {}
+        if self.label is None:  # nothing else on the card: the number is there from the first frame
+            self.t0 = 0.0
+        # r87 item 1: the layout is set by the final number, so the subline sits still from the first frame
+        self._num_h = self._num_img(self._num(float(spec["value"]))).shape[0]
+
+    def _num_img(self, txt: str) -> np.ndarray:
+        if txt not in self.cache:
+            fnt = font(self.head, int(self.H * (0.26 if self.W > self.H else 0.14)))
+            self.cache[txt] = text_block([txt], fnt, fill=self.pal["red"], stroke=max(4, self.H // 160), stroke_fill=self.pal["ink"])
+        return self.cache[txt]
+
+    def has_text(self, t: float) -> bool:
+        """QC card_not_empty: the card shows its subline or its number at shot time t."""
+        return self.label is not None or t >= self.t0
 
     def _num(self, v: float) -> str:
         dec = int(self.spec.get("decimals", 0))
@@ -868,20 +882,14 @@ class StatShot(Shot):
 
     def frame(self, t: float) -> np.ndarray:
         out = self.bg.copy()
+        y_num = int(self.H * 0.42) - self._num_h // 2
+        if self.label is not None:  # r87 item 1: the subline is on the card from its first frame; only the number waits
+            blend(out, self.label, (self.W - self.label.shape[1]) // 2, y_num + self._num_h + int(self.H * 0.02))
         if t < self.t0:
             return out
         p = ease((t - self.t0) / max(1e-3, self.count))
-        txt = self._num(float(self.spec["value"]) * p)
-        if txt not in self.cache:
-            fnt = font(self.head, int(self.H * (0.26 if self.W > self.H else 0.14)))
-            self.cache[txt] = text_block([txt], fnt, fill=self.pal["red"], stroke=max(4, self.H // 160), stroke_fill=self.pal["ink"])
-        num = self.cache[txt]
-        y_num = int(self.H * 0.42) - num.shape[0] // 2
-        blend(out, num, (self.W - num.shape[1]) // 2, y_num)
-        if self.label is not None:
-            if t >= self.ramp:  # R39: the subline appears with the final number
-                blend(out, self.label, (self.W - self.label.shape[1]) // 2, y_num + num.shape[0] + int(self.H * 0.02),
-                      opacity=ease((t - self.ramp) / 0.15))
+        num = self._num_img(self._num(float(self.spec["value"]) * p))
+        blend(out, num, (self.W - num.shape[1]) // 2, int(self.H * 0.42) - num.shape[0] // 2)
         return out
 
 

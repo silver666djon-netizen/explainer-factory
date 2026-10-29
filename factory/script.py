@@ -205,6 +205,10 @@ def image_prompts(episode: dict) -> dict[str, dict]:
     out: dict[str, dict] = {}
     for beat in episode["beats"]:
         visual = beat["visual"]
+        for k_ in ("short_image", "alt_image"):  # code-drawn variants of a prop (images/<key>.png): R38 vertical-native
+            if visual.get(k_):  # version for the Shorts, or another framing of the same picture ("alt_image", e.g. o1w)
+                out.setdefault(str(visual[k_]), {"prompt": f"code-drawn variant ({k_}) of {beat['id']}", "style": "ad",
+                                                 "episode_dir": episode.get("_dir"), "refs": [], "manual": True})
         refs = _refs_for(episode, visual)
         if visual["type"] == "mugshot":
             out[beat["id"]] = {"prompt": visual["prompt"], "style": visual.get("style", "ad"),
@@ -215,9 +219,6 @@ def image_prompts(episode: dict) -> dict[str, dict]:
                 out[beat["id"]] = {"prompt": visual["fallback_prompt"], "style": visual.get("style", "ad"),
                                    "episode_dir": episode.get("_dir"), "refs": refs}
             continue
-        if visual.get("short_image"):  # R38: the Shorts' vertical-native version of a code-drawn prop (images/<key>.png)
-            out.setdefault(str(visual["short_image"]), {"prompt": f"code-drawn vertical version of {beat['id']}", "style": "ad",
-                                                         "episode_dir": episode.get("_dir"), "refs": [], "manual": True})
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):
             out[beat["id"] if n == 0 else f"{beat['id']}.{n}"] = {"prompt": prompt, "style": visual.get("style", "ad"),

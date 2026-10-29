@@ -399,6 +399,26 @@ def count_up(plan) -> list[str]:
     return fails
 
 
+def card_not_empty(plan, fps: float = 12.0) -> list[str]:
+    """r87: no frame of a card shows only its background - a stat card has its subline (or its number) from the first
+    frame (pixels checked against the bare background), a kinetic card has its first words up."""
+    from .shots import KineticShot, StatShot
+    fails = []
+    for sh in plan.shots:
+        if isinstance(sh, StatShot):
+            n = max(2, int(sh.duration * fps))
+            for k in [0] + list(range(1, n)):
+                t = min(sh.duration - 1e-3, k / fps)
+                f = sh.frame(t)
+                if int((np.abs(f.astype(np.int16) - sh.bg.astype(np.int16)).max(2) > 60).sum()) < 400:
+                    fails.append(f"{_tc(sh.start + t)} stat card shows only its background")
+                    break
+        elif isinstance(sh, KineticShot):
+            if not sh.word_boxes(0.0):
+                fails.append(f"{_tc(sh.start)} kinetic card opens empty")
+    return fails
+
+
 def sfx_sync(plan, lead: float = 0.05, tail: float = 0.08) -> list[str]:
     fails = []
     ink = sorted(plan.ink)
@@ -446,7 +466,7 @@ def text_stability(plan, fps: float = 24.0) -> list[str]:
 
 
 CHECKS = ("plate_fit", "crop_fit", "jitter_check", "mark_in_frame", "mark_on_object", "hand_over_ink", "shorts_picture_size",
-          "shorts_length", "count_up", "sfx_sync", "voice_cut_check", "text_stability")
+          "shorts_length", "count_up", "card_not_empty", "sfx_sync", "voice_cut_check", "text_stability")
 
 
 def run_all(plan, cfg, beats, skip=()) -> dict:
@@ -599,6 +619,16 @@ def selftest(plans: dict, cfg: dict, beats: dict) -> list[dict]:
         finally:
             st.count = c0
     run("count_up", "a 1.4 s count-up", t_count)
+
+    def t_empty():
+        st = next((s for s in long_.shots if isinstance(s, StatShot)), None)
+        lab, t0 = st.label, st.t0
+        st.label, st.t0 = None, min(1.0, st.duration / 2)
+        try:
+            return card_not_empty(NS(shots=[st]))
+        finally:
+            st.label, st.t0 = lab, t0
+    run("card_not_empty", "a stat card with no subline, its number waiting 1 s", t_empty)
     run("sfx_sync", "a 0.5 s scratch with no ink being laid",
         lambda: sfx_sync(NS(ink=[], timeline=NS(log=[(1.0, 1.5, "scribble:0.500")]))))
 

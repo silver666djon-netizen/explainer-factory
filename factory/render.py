@@ -511,6 +511,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             keys = _image_keys(visual, beat_lookup)
             if kind == "short" and visual.get("short_image"):  # R38: a vertical-native version of a code-drawn prop
                 keys = [str(visual["short_image"])]
+            elif kind != "short" and visual.get("alt_image"):  # another framing of a code-drawn prop (e.g. pulled back)
+                keys = [str(visual["alt_image"])]
             if vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive"):
                 visual["motion"] = "static"
                 capv = visual if vtype == "archive" else beat_lookup[visual["beat"]]["visual"]
