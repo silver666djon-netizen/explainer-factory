@@ -1,0 +1,25 @@
+| check | result |
+|---|---|
+| mark_audit | PASS |
+| handcheck_long | PASS |
+| handcheck_shorts | PASS |
+| release_checks | PASS |
+| ci_checks | PASS |
+| max_still | PASS |
+| static_cs_ep04_r87_long | PASS |
+| decode_cs_ep04_r87_long | PASS |
+| static_cs_ep04_r87_s1 | PASS |
+| decode_cs_ep04_r87_s1 | PASS |
+| static_cs_ep04_r87_s2 | PASS |
+| decode_cs_ep04_r87_s2 | PASS |
+| static_cs_ep04_r87_s3 | PASS |
+| decode_cs_ep04_r87_s3 | PASS |
+| static_cs_ep04_r87_s4 | PASS |
+| decode_cs_ep04_r87_s4 | PASS |
+| static_cs_ep04_r87_s5 | PASS |
+| decode_cs_ep04_r87_s5 | PASS |
+| static_cs_ep04_r87_s6 | PASS |
+| decode_cs_ep04_r87_s6 | PASS |
+| static_cs_ep04_r87_s7 | PASS |
+| decode_cs_ep04_r87_s7 | PASS |
+| audio_gate | PASS |

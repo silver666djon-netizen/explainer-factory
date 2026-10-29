@@ -1,0 +1,744 @@
+{
+ "long": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.2 line start: -180 / -166 dBFS",
+    "0:03.4 line end: -175 / -180 dBFS",
+    "0:03.6 line start: -180 / -167 dBFS",
+    "0:06.9 line end: -176 / -180 dBFS",
+    "0:07.4 line start: -180 / -162 dBFS",
+    "0:09.5 line end: -173 / -180 dBFS",
+    "0:09.7 line start: -180 / -166 dBFS",
+    "0:13.0 line end: -176 / -178 dBFS",
+    "0:13.2 line start: -180 / -166 dBFS",
+    "0:16.7 line end: -177 / -180 dBFS",
+    "0:16.9 line start: -180 / -172 dBFS",
+    "0:25.1 line end: -179 / -180 dBFS",
+    "0:25.3 line start: -180 / -170 dBFS",
+    "0:32.7 line end: -179 / -180 dBFS",
+    "0:33.9 line start: -180 / -163 dBFS",
+    "0:36.6 line end: -172 / -180 dBFS",
+    "0:36.7 line start: -180 / -165 dBFS",
+    "0:39.9 line end: -177 / -180 dBFS",
+    "0:40.1 line start: -180 / -165 dBFS",
+    "0:44.7 line end: -178 / -180 dBFS",
+    "0:44.9 line start: -180 / -166 dBFS",
+    "0:48.9 line end: -178 / -180 dBFS",
+    "0:49.1 line start: -180 / -168 dBFS",
+    "0:54.0 line end: -178 / -180 dBFS",
+    "0:54.2 line start: -180 / -169 dBFS",
+    "1:02.4 line end: -179 / -180 dBFS",
+    "1:02.6 line start: -180 / -168 dBFS",
+    "1:08.3 line end: -179 / -180 dBFS",
+    "1:08.5 line start: -180 / -169 dBFS",
+    "1:16.0 line end: -179 / -180 dBFS",
+    "1:16.2 line start: -180 / -169 dBFS",
+    "1:22.5 line end: -179 / -180 dBFS",
+    "1:22.7 line start: -180 / -166 dBFS",
+    "1:28.0 line end: -178 / -180 dBFS",
+    "1:28.2 line start: -180 / -167 dBFS",
+    "1:33.1 line end: -178 / -180 dBFS",
+    "1:33.2 line start: -180 / -166 dBFS",
+    "1:38.2 line end: -177 / -180 dBFS",
+    "1:38.4 line start: -180 / -167 dBFS",
+    "1:43.8 line end: -178 / -180 dBFS",
+    "1:44.0 line start: -180 / -164 dBFS",
+    "1:46.4 line end: -174 / -180 dBFS",
+    "1:50.2 line start: -180 / -166 dBFS",
+    "1:54.3 line end: -178 / -180 dBFS",
+    "1:54.5 line start: -180 / -168 dBFS",
+    "2:00.2 line end: -178 / -180 dBFS",
+    "2:01.3 line start: -180 / -165 dBFS",
+    "2:03.8 line end: -170 / -180 dBFS",
+    "2:04.0 line start: -180 / -168 dBFS",
+    "2:09.9 line end: -179 / -180 dBFS",
+    "2:10.1 line start: -180 / -166 dBFS",
+    "2:14.4 line end: -177 / -180 dBFS",
+    "2:14.6 line start: -180 / -167 dBFS",
+    "2:17.0 line end: -175 / -180 dBFS",
+    "2:17.2 line start: -180 / -172 dBFS",
+    "2:26.0 line end: -179 / -180 dBFS",
+    "2:26.1 line start: -180 / -168 dBFS",
+    "2:32.6 line end: -179 / -180 dBFS",
+    "2:32.8 line start: -180 / -169 dBFS",
+    "2:39.2 line end: -179 / -180 dBFS",
+    "2:39.4 line start: -180 / -169 dBFS",
+    "2:44.8 line end: -179 / -180 dBFS",
+    "2:45.0 line start: -180 / -167 dBFS",
+    "2:51.4 line end: -179 / -180 dBFS",
+    "2:51.6 line start: -180 / -165 dBFS",
+    "2:55.2 line end: -176 / -180 dBFS",
+    "2:55.4 line start: -180 / -168 dBFS",
+    "3:02.0 line end: -179 / -180 dBFS",
+    "3:02.2 line start: -180 / -166 dBFS",
+    "3:06.8 line end: -178 / -180 dBFS",
+    "3:08.0 line start: -180 / -166 dBFS",
+    "3:11.0 line end: -173 / -180 dBFS",
+    "3:11.2 line start: -180 / -169 dBFS",
+    "3:16.7 line end: -178 / -180 dBFS",
+    "3:16.9 line start: -180 / -171 dBFS",
+    "3:24.2 line end: -179 / -180 dBFS",
+    "3:24.3 line start: -180 / -166 dBFS",
+    "3:28.3 line end: -177 / -180 dBFS",
+    "3:28.5 line start: -180 / -170 dBFS",
+    "3:34.5 line end: -178 / -180 dBFS",
+    "3:34.7 line start: -180 / -167 dBFS",
+    "3:41.3 line end: -179 / -180 dBFS",
+    "3:41.4 line start: -180 / -167 dBFS",
+    "3:45.6 line end: -177 / -180 dBFS",
+    "3:45.7 line start: -180 / -169 dBFS",
+    "3:52.2 line end: -179 / -180 dBFS",
+    "3:52.9 line start: -180 / -170 dBFS",
+    "3:59.9 line end: -179 / -180 dBFS",
+    "4:00.1 line start: -180 / -166 dBFS",
+    "4:04.8 line end: -178 / -180 dBFS",
+    "4:05.0 line start: -180 / -170 dBFS",
+    "4:11.8 line end: -179 / -180 dBFS",
+    "4:12.0 line start: -180 / -168 dBFS",
+    "4:19.8 line end: -179 / -180 dBFS",
+    "4:20.0 line start: -180 / -165 dBFS",
+    "4:24.9 line end: -179 / -180 dBFS",
+    "4:25.0 line start: -180 / -167 dBFS",
+    "4:29.5 line end: -177 / -180 dBFS",
+    "4:29.6 line start: -180 / -167 dBFS",
+    "4:35.0 line end: -179 / -180 dBFS",
+    "4:35.2 line start: -180 / -169 dBFS",
+    "4:41.2 line end: -179 / -180 dBFS",
+    "4:42.4 line start: -180 / -166 dBFS",
+    "4:45.1 line end: -175 / -180 dBFS",
+    "4:45.3 line start: -180 / -167 dBFS",
+    "4:48.8 line end: -176 / -180 dBFS",
+    "4:49.0 line start: -180 / -169 dBFS",
+    "4:56.6 line end: -179 / -180 dBFS",
+    "4:56.8 line start: -180 / -165 dBFS",
+    "5:00.3 line end: -175 / -180 dBFS",
+    "5:00.5 line start: -180 / -173 dBFS",
+    "5:10.5 line end: -179 / -180 dBFS",
+    "5:10.7 line start: -180 / -169 dBFS",
+    "5:17.7 line end: -179 / -180 dBFS",
+    "5:17.9 line start: -180 / -168 dBFS",
+    "5:23.2 line end: -178 / -180 dBFS",
+    "5:23.4 line start: -180 / -168 dBFS",
+    "5:29.5 line end: -179 / -180 dBFS",
+    "5:29.7 line start: -180 / -165 dBFS",
+    "5:32.9 line end: -176 / -180 dBFS",
+    "5:34.1 line start: -180 / -164 dBFS",
+    "5:36.6 line end: -173 / -180 dBFS",
+    "5:36.7 line start: -180 / -166 dBFS",
+    "5:41.4 line end: -178 / -180 dBFS",
+    "5:41.6 line start: -180 / -173 dBFS",
+    "5:53.0 line end: -180 / -180 dBFS",
+    "5:53.2 line start: -180 / -169 dBFS",
+    "5:59.7 line end: -178 / -180 dBFS",
+    "5:59.9 line start: -180 / -163 dBFS",
+    "6:02.6 line end: -174 / -180 dBFS",
+    "6:02.8 line start: -180 / -170 dBFS",
+    "6:10.6 line end: -179 / -180 dBFS",
+    "6:10.8 line start: -180 / -167 dBFS",
+    "6:15.4 line end: -178 / -180 dBFS",
+    "6:15.6 line start: -180 / -166 dBFS",
+    "6:20.7 line end: -179 / -180 dBFS",
+    "6:20.9 line start: -180 / -169 dBFS",
+    "6:28.6 line end: -179 / -180 dBFS",
+    "6:28.8 line start: -180 / -170 dBFS",
+    "6:35.7 line end: -179 / -180 dBFS",
+    "6:35.9 line start: -180 / -167 dBFS",
+    "6:39.9 line end: -176 / -180 dBFS",
+    "6:40.1 line start: -180 / -168 dBFS",
+    "6:45.0 line end: -179 / -180 dBFS",
+    "6:45.2 line start: -180 / -168 dBFS",
+    "6:49.1 line end: -176 / -180 dBFS",
+    "6:49.3 line start: -180 / -166 dBFS",
+    "6:52.7 line end: -177 / -180 dBFS",
+    "6:52.9 line start: -180 / -169 dBFS",
+    "6:59.6 line end: -179 / -180 dBFS",
+    "6:59.8 line start: -180 / -168 dBFS",
+    "7:05.7 line end: -178 / -180 dBFS",
+    "7:05.9 line start: -180 / -167 dBFS",
+    "7:10.6 line end: -177 / -180 dBFS",
+    "7:11.8 line start: -180 / -162 dBFS",
+    "7:14.2 line end: -170 / -180 dBFS",
+    "7:14.4 line start: -180 / -167 dBFS",
+    "7:19.4 line end: -178 / -180 dBFS",
+    "7:19.6 line start: -180 / -169 dBFS",
+    "7:28.0 line end: -179 / -180 dBFS",
+    "7:28.2 line start: -180 / -168 dBFS",
+    "7:34.8 line end: -179 / -180 dBFS",
+    "7:35.0 line start: -180 / -173 dBFS",
+    "7:43.8 line end: -179 / -180 dBFS",
+    "7:44.0 line start: -180 / -165 dBFS",
+    "7:48.5 line end: -178 / -180 dBFS",
+    "7:49.7 line start: -180 / -165 dBFS",
+    "7:54.9 line end: -179 / -180 dBFS",
+    "7:55.1 line start: -180 / -171 dBFS",
+    "8:03.7 line end: -179 / -180 dBFS",
+    "8:03.9 line start: -180 / -170 dBFS",
+    "8:12.2 line end: -179 / -180 dBFS",
+    "8:12.4 line start: -180 / -167 dBFS",
+    "8:18.5 line end: -179 / -180 dBFS",
+    "8:18.7 line start: -180 / -165 dBFS",
+    "8:22.3 line end: -176 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s1": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -165 dBFS",
+    "0:03.2 line end: -175 / -180 dBFS",
+    "0:03.4 line start: -180 / -168 dBFS",
+    "0:06.7 line end: -177 / -178 dBFS",
+    "0:07.2 line start: -180 / -162 dBFS",
+    "0:09.3 line end: -174 / -180 dBFS",
+    "0:09.5 line start: -180 / -171 dBFS",
+    "0:17.6 line end: -179 / -180 dBFS",
+    "0:17.8 line start: -180 / -169 dBFS",
+    "0:23.2 line end: -179 / -180 dBFS",
+    "0:23.4 line start: -180 / -164 dBFS",
+    "0:27.1 line end: -176 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s2": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -171 dBFS",
+    "0:08.5 line end: -179 / -180 dBFS",
+    "0:08.7 line start: -180 / -168 dBFS",
+    "0:16.2 line end: -179 / -180 dBFS",
+    "0:16.4 line start: -180 / -166 dBFS",
+    "0:21.7 line end: -179 / -180 dBFS",
+    "0:21.9 line start: -180 / -167 dBFS",
+    "0:26.8 line end: -178 / -180 dBFS",
+    "0:26.9 line start: -180 / -167 dBFS",
+    "0:31.9 line end: -177 / -180 dBFS",
+    "0:32.1 line start: -180 / -165 dBFS",
+    "0:34.5 line end: -174 / -180 dBFS",
+    "0:35.3 line start: -180 / -168 dBFS",
+    "0:41.0 line end: -178 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s3": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -168 dBFS",
+    "0:05.9 line end: -179 / -180 dBFS",
+    "0:06.1 line start: -180 / -166 dBFS",
+    "0:10.5 line end: -177 / -180 dBFS",
+    "0:10.7 line start: -180 / -171 dBFS",
+    "0:19.0 line end: -179 / -180 dBFS",
+    "0:19.1 line start: -180 / -168 dBFS",
+    "0:25.6 line end: -179 / -180 dBFS",
+    "0:25.8 line start: -180 / -168 dBFS",
+    "0:31.3 line end: -178 / -180 dBFS",
+    "0:31.5 line start: -180 / -169 dBFS",
+    "0:38.1 line end: -179 / -180 dBFS",
+    "0:38.3 line start: -180 / -169 dBFS",
+    "0:43.7 line end: -179 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s4": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -169 dBFS",
+    "0:05.5 line end: -178 / -180 dBFS",
+    "0:05.7 line start: -180 / -171 dBFS",
+    "0:13.0 line end: -179 / -180 dBFS",
+    "0:13.2 line start: -180 / -170 dBFS",
+    "0:19.2 line end: -179 / -180 dBFS",
+    "0:19.4 line start: -180 / -167 dBFS",
+    "0:25.9 line end: -179 / -180 dBFS",
+    "0:26.1 line start: -180 / -167 dBFS",
+    "0:30.2 line end: -177 / -180 dBFS",
+    "0:30.4 line start: -180 / -169 dBFS",
+    "0:36.9 line end: -179 / -180 dBFS",
+    "0:37.6 line start: -180 / -166 dBFS",
+    "0:42.3 line end: -177 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s5": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -165 dBFS",
+    "0:03.0 line end: -176 / -177 dBFS",
+    "0:03.2 line start: -180 / -168 dBFS",
+    "0:11.0 line end: -179 / -180 dBFS",
+    "0:11.1 line start: -180 / -165 dBFS",
+    "0:16.0 line end: -179 / -180 dBFS",
+    "0:16.2 line start: -180 / -167 dBFS",
+    "0:20.6 line end: -177 / -180 dBFS",
+    "0:20.8 line start: -180 / -167 dBFS",
+    "0:26.1 line end: -179 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s6": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -170 dBFS",
+    "0:07.0 line end: -179 / -180 dBFS",
+    "0:07.2 line start: -180 / -168 dBFS",
+    "0:11.2 line end: -176 / -180 dBFS",
+    "0:11.4 line start: -180 / -170 dBFS",
+    "0:19.2 line end: -179 / -180 dBFS",
+    "0:19.4 line start: -180 / -167 dBFS",
+    "0:24.0 line end: -178 / -180 dBFS",
+    "0:24.2 line start: -180 / -166 dBFS",
+    "0:29.3 line end: -179 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "s7": {
+  "plate_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "crop_fit": {
+   "fails": [],
+   "notes": []
+  },
+  "jitter_check": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_in_frame": {
+   "fails": [],
+   "notes": []
+  },
+  "mark_on_object": {
+   "fails": [],
+   "notes": []
+  },
+  "hand_over_ink": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_picture_size": {
+   "fails": [],
+   "notes": []
+  },
+  "shorts_length": {
+   "fails": [],
+   "notes": []
+  },
+  "count_up": {
+   "fails": [],
+   "notes": []
+  },
+  "sfx_sync": {
+   "fails": [],
+   "notes": []
+  },
+  "voice_cut_check": {
+   "fails": [],
+   "notes": [
+    "0:00.1 line start: -180 / -166 dBFS",
+    "0:05.0 line end: -178 / -180 dBFS",
+    "0:05.2 line start: -180 / -170 dBFS",
+    "0:13.7 line end: -179 / -180 dBFS",
+    "0:13.8 line start: -180 / -169 dBFS",
+    "0:20.5 line end: -179 / -180 dBFS",
+    "0:20.7 line start: -180 / -173 dBFS",
+    "0:29.4 line end: -179 / -180 dBFS",
+    "0:29.6 line start: -180 / -165 dBFS",
+    "0:34.2 line end: -178 / -180 dBFS"
+   ]
+  },
+  "text_stability": {
+   "fails": [],
+   "notes": []
+  }
+ },
+ "_selftest": [
+  {
+   "check": "plate_fit",
+   "planted": "source plate wider than the frame (runs off both edges)",
+   "result": "FAIL",
+   "detail": "0:01.0 label box (8, 1008, 1863, 1036) closer than 24 px to the frame edge"
+  },
+  {
+   "check": "crop_fit",
+   "planted": "Short: a mark moved out of the beat's window",
+   "result": "FAIL",
+   "detail": "s1_0: mark '$30' leaves the window at 1.7s"
+  },
+  {
+   "check": "jitter_check",
+   "planted": "a mark shaking +-1.5 px frame to frame",
+   "result": "FAIL",
+   "detail": "0:00.0 mark '$30' shakes (62 reversals in x)"
+  },
+  {
+   "check": "mark_in_frame",
+   "planted": "a picture mark pushed off the right edge",
+   "result": "FAIL",
+   "detail": "0:02.6 mark '$30' is cropped by the frame edge"
+  },
+  {
+   "check": "mark_on_object",
+   "planted": "a stub mark moved off the ticket",
+   "result": "FAIL",
+   "detail": "'+ $8 FEE' is not inside its object with a 6 % margin"
+  },
+  {
+   "check": "hand_over_ink",
+   "planted": "the left (mirrored) hand of r86 over the letters it wrote",
+   "result": "FAIL",
+   "detail": "0:01.9 hand covers 94% of the ink of '$30'"
+  },
+  {
+   "check": "shorts_picture_size",
+   "planted": "Short picture band at 30 % of the frame height",
+   "result": "FAIL",
+   "detail": "0:00.0 picture band 576 px < 960 px"
+  },
+  {
+   "check": "shorts_length",
+   "planted": "a 50 s Short",
+   "result": "FAIL",
+   "detail": "Short is 50.0 s > 45 s"
+  },
+  {
+   "check": "count_up",
+   "planted": "a 1.4 s count-up",
+   "result": "FAIL",
+   "detail": "1:22.7 count-up 1.40 s > 0.5 s"
+  },
+  {
+   "check": "sfx_sync",
+   "planted": "a 0.5 s scratch with no ink being laid",
+   "result": "FAIL",
+   "detail": "0:01.0 scribble sound 0.50s with no ink being laid"
+  },
+  {
+   "check": "voice_cut_check",
+   "planted": "an edit point in the middle of a word",
+   "result": "FAIL",
+   "detail": "0:01.0 planted cut inside a word: -13 / -13 dBFS (>= -45)"
+  },
+  {
+   "check": "text_stability",
+   "planted": "kinetic words re-centring halfway through the card",
+   "result": "FAIL",
+   "detail": "1:50.2 a kinetic word moved"
+  }
+ ]
+}
