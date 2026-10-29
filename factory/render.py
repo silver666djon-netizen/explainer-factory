@@ -1251,6 +1251,8 @@ class Overlay:
         k = self.W / 1080.0  # sizes are set for a 1080-wide Short
         mw = min(int(self.W * 0.88), self.W - int(80 * k))
         c0, c1 = int(round(36 * k)), int(round(30 * k))  # cap height: 36 px, shrunk to 30 px min, then two lines
+        if any(c.start <= t < c.end for c in self.plan.cards):
+            c0 = c1  # under a top card the band is short: plates at the 30 px minimum
         for p0, p1, txt in self.plan.plates:
             if p0 <= t < p1:
                 rows.append(("plate", [self._fit_plate(txt, self.body, self.pal["ink"], (250, 246, 236, 255), mw, c0, c1,
@@ -1428,27 +1430,32 @@ class Overlay:
                 blend(frame, img, x, y, opacity=op)
         cards = self.plan.cards
         fit_card = lambda im: im
+        cy = self.card_y
         if short:  # R27: the top card (hook / price card) shrinks so the band plates still fit above the picture
             rows_, _al = self._short_rows(t)
+            if rows_:  # band plates under the card: the card moves up to the 24 px margin
+                cy = int(24 * self.W / 1080)
+            room = self._window_top(t) - cy - int(10 * self.W / 1080)  # the card stays above the picture
             if rows_:
-                room = self._window_top(t) - self.card_y - int(18 * self.W / 1080) - self._rows_h(rows_)
-                def fit_card(im, room=room):
-                    if im.shape[0] > room > 0:
-                        f = max(0.35, room / im.shape[0])
-                        im = cv2.resize(im, (max(1, int(im.shape[1] * f)), max(1, int(im.shape[0] * f))), interpolation=cv2.INTER_AREA)
-                    return im
+                room -= int(8 * self.W / 1080) + self._rows_h(rows_)
+
+            def fit_card(im, room=room):
+                if im.shape[0] > room > 0:
+                    f = max(0.35, room / im.shape[0])
+                    im = cv2.resize(im, (max(1, int(im.shape[1] * f)), max(1, int(im.shape[0] * f))), interpolation=cv2.INTER_AREA)
+                return im
         if card_i < len(cards) and cards[card_i].start <= t < cards[card_i].end:
             card = cards[card_i]
             if card.hook:  # Shorts opener: full card from frame 0 in the title band above the picture window
                 img = fit_card(self.card_img(card))
-                blend(frame, img, (self.W - img.shape[1]) // 2, self.card_y, opacity=min(1.0, (card.end - t) / 0.15))
-                self._rec("hook", (self.W - img.shape[1]) // 2, self.card_y, img)
+                blend(frame, img, (self.W - img.shape[1]) // 2, cy, opacity=min(1.0, (card.end - t) / 0.15))
+                self._rec("hook", (self.W - img.shape[1]) // 2, cy, img)
             else:
                 img, op = self._pop(fit_card(self.card_img(card)), t - card.start)
                 op *= min(1.0, (card.end - t) / 0.15)
                 x = int(self.W * 0.04) if card.corner else (self.W - img.shape[1]) // 2
-                blend(frame, img, x, self.card_y, opacity=op)
-                self._rec("card", x, self.card_y, img)
+                blend(frame, img, x, cy, opacity=op)
+                self._rec("card", x, cy, img)
         if short:
             hb = max([b[4] for b in self.boxes if b[0] in ("hook", "card")] or [0]) or None
             self._short_plates(frame, t, hb)

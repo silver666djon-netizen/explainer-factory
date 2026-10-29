@@ -2,7 +2,7 @@
 Exit 1 when any check fails. The CI build runs the same checks on the real plans (with the real narration) and
 publishes qc_checks.md / qc_checks.json next to the videos.
 OPENROUTER_API_KEY=audit-offline python3 tools/qc/release_checks.py episodes/<slug> <timings.json> [--out report.md]
-  [--skip voice_cut_check,...]"""
+  [--skip voice_cut_check,...] [--full]"""
 from __future__ import annotations
 
 import json
@@ -26,6 +26,13 @@ def main() -> int:
     from factory import qc
     from factory.config import load_config
     from factory.script import load_episode
+    if "--full" in a:  # full output size (1920x1080 / 1080x1920), as the CI build checks it
+        import factory.render as R
+        _bp = R.build_plan
+
+        def big(beats, vb, images, cfg_, size, kind, lookup, *r):
+            return _bp(beats, vb, images, cfg_, (1920, 1080) if kind == "long" else (1080, 1920), kind, lookup, *r)
+        MA.build_plan = big
     ep = load_episode(ep_dir)
     cfg = load_config(ep.get("config"))
     for sh in ep.get("shorts") or []:

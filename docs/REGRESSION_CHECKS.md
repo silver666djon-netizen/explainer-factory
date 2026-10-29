@@ -75,6 +75,9 @@ check (release_checks.py / CI qc_checks.md) · **STILL** = build max-still warni
 | Ep.4 r85 QC | Shorts: DOWNTOWN carried out of the square window at the end of c1 | RC:mark_in_frame |
 | Ep.4 r85 QC | Shorts: archive caption / source plate drawn over Larry's tab; hook card touching the tab | RC:plate_fit (tab box) |
 | Ep.4 r85 QC | Shorts: band plates running into the picture window (3-line plates) | RC:plate_fit (band) |
+| Ep.4 r85 QC | Shorts: hook card reaching down over the picture window | RC:plate_fit (band, hook/card) |
+| Ep.4 r85 QC | Shorts: pen hand entering across Larry's face (b1 note) | EYE (mark "hand_side") |
+| Ep.4 r85 QC | QC false FAILs: checks read the shot state the render left (clip track on its last frame, split-moved marks) | qc._set_clip / qc._mx (checks reset it) |
 | Ep.4 r85 QC | ALL-IN PRICES ink drawn over the lever as it flips past the plate | MA-6 (unless "behind_moving") |
 
 Add a line here for every new bug, in the round it is found, with the check that now catches it (write the check if

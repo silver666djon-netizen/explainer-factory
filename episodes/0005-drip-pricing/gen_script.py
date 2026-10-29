@@ -361,7 +361,7 @@ beat("a14", S_EXP, "On September the first, the whole site switched. Fees at the
 chapter("t2", S_TM, "Wednesday, ten a.m.", "Wednesday 10:00 AM — $16.4 billion")
 beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.",
      manual(img(f"{LARRY} at a breakfast table frowning at a long paper receipt that unrolls across the table, coffee cup, plain cream background",
-         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Larry", x=0.625, y=0.15, w=0.15, h=0.065, angle=0, fade_after=1.3,
+         motion="static", hand_marks=True, marks=[write("$18 FEES", on="Larry", x=0.625, y=0.15, w=0.15, h=0.065, angle=0, fade_after=1.3, hand_side="right",
                                                   plate=[1.30, 1.75], note=True, note_pre=True)]), clip=True),  # r84 item 12: on a pinned note
      ledger=[tab("SERVICE FEE", "+$8.00", "Eighteen", dur=0.42), tab("FACILITY FEE", "+$6.00", "Eighteen", dur=0.42, chain=True),
              tab("PROCESSING FEE", "+$4.00", "Eighteen", dur=0.42, chain=True), tab("PAID", "$48.00", "Eighteen", dur=0.42, chain=True),

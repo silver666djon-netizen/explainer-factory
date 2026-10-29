@@ -656,6 +656,10 @@ class ImageShot(Shot):
                 if isinstance(kind, tuple):
                     kind, hs = kind
                 mirrored = ftip(t0)[0] < self.BW * 0.4
+                side = next((m.get("hand_side") for m in self.marks if m.get("hand_side") and
+                             float(m.get("at", 0)) - 0.6 <= t <= float(m.get("at", 0)) + float(m.get("dur", 0.45)) + 0.6), None)
+                if side:  # "hand_side": the pen hand comes from that side (e.g. never across a face)
+                    mirrored = side == "left"
                 pos = hand_path(lambda tt: self._screen(*ftip(tt), tt), t0, t1, t, FW, FH, mirrored)
                 if pos:
                     paste_hand(out, kind, pos[0], pos[1], mirrored, scale=hs)

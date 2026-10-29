@@ -60,7 +60,7 @@ def plate_fit(plan, cfg, step: float = 0.5, margin: int = 24) -> list[str]:
         if plan.kind == "short":  # R27: band plates stay in the band above the picture
             wt = ov._window_top(t)
             for b in boxes:
-                if b[0] in ("plate", "label", "alleged") and b[4] > wt + 2:
+                if b[0] in ("plate", "label", "alleged", "hook", "card") and b[4] > wt + 2:
                     key = ("band", b[0], b[1], b[2])
                     if key not in seen:
                         seen.add(key)
@@ -75,6 +75,33 @@ def plate_fit(plan, cfg, step: float = 0.5, margin: int = 24) -> list[str]:
                             fails.append(f"{_tc(t)} {b[0]} overlaps the caption")
         t += step
     return fails
+
+
+def _set_clip(sh, t: float) -> None:
+    """A live clip shot: put its camera track on the frame shown at shot time t (the render leaves it on its last frame)."""
+    from .shots import ClipImageShot
+    if isinstance(sh, ClipImageShot):
+        if sh.base is None:
+            sh._prepare()
+        A = sh._A or []
+        if A:
+            i = int(sh.clip_time(t) * sh._fps)
+            if sh.until is not None:
+                i = min(i, int(float(sh.until) * sh._fps))
+            sh._cur = A[min(max(i, 0), len(A) - 1)]
+
+
+def _on_screen(m: dict, dur: float) -> tuple[float, float]:
+    """(from, to) shot seconds a mark is on screen: written / pressed .. until / faded out / shot end."""
+    a0 = max(0.0, float(m.get("at", 0.0)))
+    a1 = float(m["until"]) if m.get("until") is not None else dur
+    if m.get("fade_after") is not None:
+        a1 = min(a1, a0 + float(m.get("dur", 0.0)) + float(m["fade_after"]) + 0.3)
+    return a0, min(a1, dur)
+
+
+def _mx(m: dict) -> float:
+    return float(m.get("_fx0", m["x"]))  # a "follow" mark's own place (the render moves it with the split)
 
 
 def _tc(t: float) -> str:
@@ -103,8 +130,11 @@ def crop_fit(plan, beats: list[dict]) -> list[str]:
             for m in sh.marks:
                 if m.get("type") not in ("write", "stamp", "circle"):
                     continue
-                at = max(0.0, float(m.get("at", 0.0)))
-                for tt in np.linspace(at, sh.duration - 1e-3, 4):
+                if m.get("follow"):
+                    continue  # rides the split stub (checked by mark_on_object on the stub)
+                a0, a1 = _on_screen(m, sh.duration)
+                for tt in np.linspace(a0, max(a0, a1 - 1e-3), 4):
+                    _set_clip(sh, tt)
                     x0 = (float(m["x"]) - float(m.get("w", 0.1)) / 2) * sh.BW
                     x1 = (float(m["x"]) + float(m.get("w", 0.1)) / 2) * sh.BW
                     y_ = float(m["y"]) * sh.BH
@@ -209,15 +239,15 @@ def mark_on_object(plan) -> list[str]:
             ob = m.get("obj")
             if not ob or m.get("type") not in ("write", "stamp"):
                 continue
-            key = (m.get("text"), round(float(m["x"]), 3), round(float(m["y"]), 3))
+            key = (m.get("text"), round(_mx(m), 3), round(float(m["y"]), 3))
             if key in seen:
                 continue
             seen.add(key)
             BW, BH = sh.BW, sh.BH
             a = math.radians(float(m.get("angle", 0)))
-            cx, cy = float(m["x"]) * BW, float(m["y"]) * BH
+            cx, cy = _mx(m) * BW, float(m["y"]) * BH
             if m["type"] == "write":
-                lay = write_layout(m, BW, BH, (210, 69, 47), sh.cfg)
+                lay = write_layout(dict(m, x=_mx(m)), BW, BH, (210, 69, 47), sh.cfg)
                 hw = (lay["x1"] - lay["x0"]) / 2
                 hh = lay["bh"] * 0.42
                 off = (lay["x0"] + lay["x1"]) / 2 - lay["bw"] / 2
