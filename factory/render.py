@@ -673,6 +673,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 c1 = min(shot_end, c0 + cap)
                 if shot_end - c1 < 1.0 and shot_end - c0 <= cap + 0.7:
                     c1 = shot_end
+                if not (doc.get("post") or doc.get("pre")):
+                    c1 = shot_end  # no picture after the card: the card stays (moving) to the cut, never a frozen frame
             def _still(key_beat, a, b, motion):
                 if b - a < 0.05 or not key_beat:
                     return
