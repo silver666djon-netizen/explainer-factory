@@ -71,7 +71,7 @@ NUM_WORDS = {
 ANCHOR_KEYS = ("on", "word", "label_on", "sting_on", "click_on", "open_stamp_on", "until_on", "circle_on", "stamp_on",
                "push_on", "hook_on")
 ANCHOR_LISTS = ("type_on",)
-TEXT_KEYS = {"text", "label", "caption", "title", "headline", "body", "highlight", "kicker", "source", "name", "alias",
+TEXT_KEYS = {"text", "label", "caption", "caption_short", "label_short", "title", "headline", "body", "highlight", "kicker", "source", "name", "alias",
              "tag", "stamp", "tagline", "newsreel", "prefix", "suffix", "quote", "open_stamp", "amount", "footnote"}
 LIST_KEYS = {"inside", "verdict", "labels", "fees", "value_labels", "lines"}
 SKIP_KEYS = {"prompt", "note", "credit", "file", "pre", "post", "font", "color", "role", "align", "look", "motion", "mode",

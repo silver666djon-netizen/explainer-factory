@@ -173,6 +173,13 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
         p = (t - at) / max(dur, 1e-3)
         if dur <= 0.05 and t >= at - 1e-6:  # an "already written" mark is whole from its first frame (no 1-frame flicker)
             p = 1.0
+        if p <= 0 and mark.get("type") == "write" and mark.get("note_pre") and mark.get("plate") and \
+                not (mark.get("until") is not None and t >= float(mark["until"])):
+            if out is None:
+                out = base.copy()
+            write_layout(mark, W, H, red, cfg)
+            _draw_write(out, mark, 0.0, W, H, red, cfg, plate_only=True)  # the pinned note is there before the pen
+            continue
         if p <= 0 or (mark.get("until") is not None and t >= float(mark["until"])):
             continue
         if out is None:
@@ -319,7 +326,7 @@ def write_path(mark: dict, lay: dict, W: int, H: int, n: int = 60) -> np.ndarray
     return np.stack([cx + u * math.cos(a) + v * math.sin(a), cy - u * math.sin(a) + v * math.cos(a)], 1)
 
 
-def _draw_write(out: np.ndarray, mark: dict, p: float, W: int, H: int, red, cfg: dict) -> None:
+def _draw_write(out: np.ndarray, mark: dict, p: float, W: int, H: int, red, cfg: dict, plate_only: bool = False) -> None:
     """Handwritten (or printed) text in a box of the picture. The text is revealed by a mask that follows the
     pen tip exactly: nothing to the right of the tip exists yet.
     mark: text, x, y, w, h (box centre/size, picture fractions), angle (deg), color ('red'|'ink'|'paper'|hex),
@@ -333,14 +340,28 @@ def _draw_write(out: np.ndarray, mark: dict, p: float, W: int, H: int, red, cfg:
         key = (pw, ph)
         if mark.get("_plate_key") != key:
             pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
-            pl = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
-            ImageDraw.Draw(pl).rounded_rectangle((0, 0, pw - 1, ph - 1), radius=max(4, ph // 6), fill=tuple(pal["paper"]) + (255,))
+            note = bool(mark.get("note"))  # a small paper note pinned to the wall: edge, shadow and a red pin
+            m_ = max(6, ph // 8) if note else 0
+            pl = Image.new("RGBA", (pw + 2 * m_, ph + 2 * m_), (0, 0, 0, 0))
+            dd = ImageDraw.Draw(pl)
+            if note:
+                sh_ = Image.new("RGBA", pl.size, (0, 0, 0, 0))
+                ImageDraw.Draw(sh_).rectangle((m_ + 5, m_ + 7, m_ + pw + 3, m_ + ph + 5), fill=(0, 0, 0, 70))
+                pl.alpha_composite(sh_.filter(ImageFilter.GaussianBlur(4)))
+                dd.rectangle((m_, m_, m_ + pw - 1, m_ + ph - 1), fill=(253, 250, 240, 255), outline=(170, 160, 140, 255), width=2)
+                r = max(5, ph // 9)
+                cxp = m_ + pw // 2
+                dd.ellipse((cxp - r, m_ + r // 2, cxp + r, m_ + r // 2 + 2 * r), fill=tuple(pal["red"]) + (255,), outline=(90, 30, 20, 255), width=2)
+            else:
+                dd.rounded_rectangle((0, 0, pw - 1, ph - 1), radius=max(4, ph // 6), fill=tuple(pal["paper"]) + (255,))
             mark["_plate_img"] = np.array(pl.rotate(float(mark.get("angle", 0)), resample=Image.BICUBIC, expand=True))
             mark["_plate_key"] = key
-        q = min(1.0, p / 0.06)
+        q = 1.0 if mark.get("note_pre") else min(1.0, p / 0.06)
         pim = mark["_plate_img"]
         cx, cy = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
         blend(out, pim, int(cx - pim.shape[1] / 2 - (1 - ease(q)) * pw * 0.12), int(cy - pim.shape[0] / 2), opacity=q)
+    if plate_only:
+        return
     sub = img.copy()
     if not mark.get("bg"):
         if p < 1 and mark.get("font") == "typewriter" and not mark.get("hand"):
@@ -451,6 +472,12 @@ class ImageShot(Shot):
             if m.get("target"):
                 tx0, ty0, tx1, ty1 = m["target"]
                 m["target"] = [(tx0 * nw - left) / self.BW, (ty0 * nh - top) / self.BH, (tx1 * nw - left) / self.BW, (ty1 * nh - top) / self.BH]
+            for k in ("obj", "printed"):  # QC mark_on_object boxes travel with the mark
+                if m.get(k):
+                    bs = [m[k]] if k == "obj" else m[k]
+                    bs = [[(b[0] * nw - left) / self.BW, (b[1] * nh - top) / self.BH, (b[2] * nw - left) / self.BW,
+                           (b[3] * nh - top) / self.BH] + list(b[4:]) for b in bs]
+                    m[k] = bs[0] if k == "obj" else bs
         self.marks = marks
         self.red = tuple(int(c) for c in hex_to_rgb(cfg["style"]["palette"]["red"]))
         self.cfg = cfg
@@ -653,20 +680,37 @@ class ImageShot(Shot):
             return 0.0
         q = (t - float(sp["t0"])) / max(1e-3, float(sp.get("dur", 0.7)))
         q = min(1.0, max(0.0, q))
-        return (1 - (1 - q) ** 3) * float(sp["dx"]) * self._geo[0]  # ease-out: quick start, soft settle
+        f = 1 - (1 - q) ** 3  # ease-out: quick start, soft settle
+        if sp.get("t_back") is not None and t > float(sp["t_back"]):  # the halves slide back together
+            qb = min(1.0, (t - float(sp["t_back"])) / max(1e-3, float(sp.get("back_dur", 0.6))))
+            f *= 1 - qb * qb * (3 - 2 * qb)
+        return f * float(sp["dx"]) * self._geo[0]
 
     def _split_src(self, src: np.ndarray, t: float) -> np.ndarray:
         d = int(round(self.split_dx(t)))
-        if d <= 0:
-            return src
         nw, nh, left, top = self._geo
         xc = int(round(float(self.split["x"]) * nw - left))
         xc = min(max(xc, 0), self.BW - 1)
+        if d <= 0:
+            if self.split.get("t_back") is not None and t >= float(self.split["t_back"]) and self.split.get("y0") is not None:
+                out = src.copy()  # back together: the cut stays visible as a seam
+                y0, y1 = int(float(self.split["y0"]) * nh - top), int(float(self.split["y1"]) * nh - top)
+                th = max(2, int(float(self.split.get("edge_w", 0.0075)) * nh * 0.6))
+                cv2.rectangle(out, (xc - th // 2, y0), (xc + th // 2, y1), tuple(int(c) for c in self.split.get("edge_rgb", (30, 27, 24))), -1)
+                return out
+            return src
         out = src.copy()
         if xc + d < self.BW:
             out[:, xc + d:] = src[:, xc:self.BW - d]
         fill = self.base[:, self.BW - min(d, self.BW - xc):]  # the plain backdrop at the right edge
         out[:, xc:xc + fill.shape[1]] = fill
+        if self.split.get("y0") is not None:  # a clean straight cut: both cut edges get the ticket's dark outline
+            y0 = int(float(self.split["y0"]) * nh - top)
+            y1 = int(float(self.split["y1"]) * nh - top)
+            th = max(3, int(float(self.split.get("edge_w", 0.0075)) * nh))
+            col = tuple(int(c) for c in self.split.get("edge_rgb", (30, 27, 24)))
+            cv2.rectangle(out, (xc - th, y0), (xc - 1, y1), col, -1)
+            cv2.rectangle(out, (xc + d, y0), (xc + d + th - 1, y1), col, -1)
         return out
 
     def _view(self, t: float) -> np.ndarray:
@@ -811,16 +855,17 @@ class ChartShot(Shot):
     def _fmt(self, v: float) -> str:
         unit = self.spec.get("unit", "")
         dec = self.spec.get("decimals")
-        if dec is None:
-            dec = 0 if float(v).is_integer() else 2
-        txt = f"{v:,.{int(dec)}f}"
+        if dec is None:  # as few decimals as the value has: 37.5 % (never 37.50 %)
+            txt = f"{v:,.2f}".rstrip("0").rstrip(".") if not float(v).is_integer() else f"{v:,.0f}"
+        else:
+            txt = f"{v:,.{int(dec)}f}"
         return f"{unit}{txt}" if unit in ("$", "€", "£") else f"{txt}{unit}"
 
     def reveal_times(self) -> list[float]:
         n = len(self.spec["values"])
         g = self.grow_time
         if self.spec["kind"] == "bar":
-            return [i * g / (n * 1.6) + g / 1.6 for i in range(n)]
+            return [g]  # all bars land together
         return [g * i / max(1, n - 1) for i in range(n)]
 
     def frame(self, t: float) -> np.ndarray:
@@ -839,7 +884,7 @@ class ChartShot(Shot):
             slot = (x1 - x0) / n
             bw = slot * 0.62
             for i, (lab, v) in enumerate(zip(labels, values)):
-                p = ease((t - i * g / (n * 1.6)) / (g / 1.6))
+                p = ease(t / g)  # rule 35: every bar grows from zero to its height, all together, never shrinking
                 bx = x0 + slot * i + (slot - bw) / 2
                 top = y1 - (y1 - y0) * (v / vmax) * p
                 color = self.pal["red"] if (highlight is not None and i == highlight) else self.pal["green"]
@@ -1044,20 +1089,21 @@ class KineticShot(Shot):
             self.items[k_] = (img0, x0_, y0_, 0.0)
 
     def frame(self, t: float) -> np.ndarray:
-        out = self.bg.copy()
+        # rule 31: the whole text is laid out first and every word appears in its final place (a quick fade, no
+        # scale pop); rule 26: only the paper behind it moves (a slow push), so nothing already written ever moves
+        z = 1.0 + 0.045 * min(1.0, max(0.0, t) / max(4.0, self.duration))
+        M = np.float32([[z, 0, (1 - z) * self.W / 2], [0, z, (1 - z) * self.H / 2]])
+        out = cv2.warpAffine(self.bg, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
         for img, x, y, appear in self.items:
             age = t - appear
             if age < 0:
                 continue
-            p = min(1.0, age / 0.12)
-            scale = 1.35 - 0.35 * ease(p)
-            im = img
-            if abs(scale - 1) > 1e-3:
-                h, w = img.shape[:2]
-                im = cv2.resize(img, (max(1, int(w * scale)), max(1, int(h * scale))))
-            dx, dy = (im.shape[1] - img.shape[1]) // 2, (im.shape[0] - img.shape[0]) // 2
-            blend(out, im, x - dx, y - dy, opacity=min(1.0, p * 2))
+            blend(out, img, x, y, opacity=min(1.0, age / 0.10))
         return out
+
+    def word_boxes(self, t: float) -> list[tuple[int, int, int, int]]:
+        """Boxes of the words on screen at t (QC text_stability)."""
+        return [(x, y, x + img.shape[1], y + img.shape[0]) for img, x, y, appear in self.items if t >= appear]
 
 
 # ---------------------------------------------------------------- fake 1950s ad gag
@@ -1213,6 +1259,33 @@ def _smooth_tracks(arr: np.ndarray) -> np.ndarray:
     return res
 
 
+_MED_CACHE: dict = {}
+
+
+def clip_median(clip: str, A: list, BW: int, BH: int, focus) -> np.ndarray:
+    """The clip's scene without its moving parts, in still-picture px: every 2nd frame carried back onto the still with
+    the inverse of its track, per-pixel median."""
+    key = (clip, BW, BH, tuple(focus))
+    if key in _MED_CACHE:
+        return _MED_CACHE[key]
+    cap = cv2.VideoCapture(clip)
+    st, i = [], 0
+    while True:
+        ok, fr = cap.read()
+        if not ok:
+            break
+        if i % 2 == 0 and i < len(A):  # half size: the median is a mask source, not a picture
+            rgb = cover(Image.fromarray(cv2.cvtColor(fr, cv2.COLOR_BGR2RGB)), BW, BH, *focus)
+            w_ = cv2.warpAffine(rgb, cv2.invertAffineTransform(np.float32(A[i])), (BW, BH), flags=cv2.INTER_LINEAR,
+                                borderMode=cv2.BORDER_REPLICATE)
+            st.append(cv2.resize(w_, (BW // 2, BH // 2), interpolation=cv2.INTER_AREA))
+        i += 1
+    cap.release()
+    med = cv2.resize(np.median(np.stack(st), axis=0).astype(np.uint8), (BW, BH), interpolation=cv2.INTER_LINEAR)
+    _MED_CACHE[key] = med
+    return med
+
+
 def clip_tracks(clip: str, still_base: np.ndarray, BW: int, BH: int, focus) -> list:
     """Per clip frame: 2x3 similarity mapping still-picture px (the covered still) -> clip-frame px (same cover).
     ORB features on the static background, RANSAC (moving subjects are outliers), then a 7-frame moving average."""
@@ -1287,6 +1360,9 @@ class ClipImageShot(ImageShot):
         self._grain = float(self.cfg["style"].get("grain", 0))
         if self._A is None:
             self._A = clip_tracks(self.clip, self.base, self.BW, self.BH, self.focus)
+        self._bg_med = None
+        if any(m.get("behind_moving") for m in self.marks) and self._A:
+            self._bg_med = clip_median(self.clip, self._A, self.BW, self.BH, self.focus)
 
     def clip_time(self, t: float) -> float:
         if self.sync is None:
@@ -1344,6 +1420,16 @@ class ClipImageShot(ImageShot):
                 A = self._cur
                 bw = cv2.warpAffine(b, A, (self.BW, self.BH), flags=cv2.INTER_LINEAR)
                 aw = cv2.warpAffine(a, A, (self.BW, self.BH), flags=cv2.INTER_LINEAR)[..., None]
+                if getattr(self, "_bg_med", None) is not None:  # "behind_moving": a part of the clip that moves
+                    # (the lever) passes IN FRONT of the ink - the ink is hidden where the frame differs from the
+                    # scene without its moving parts
+                    bgc = cv2.warpAffine(self._bg_med, A, (self.BW, self.BH), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REPLICATE)
+                    mov = (np.abs(src.astype(np.int16) - bgc.astype(np.int16)).max(2) > 34).astype(np.uint8)
+                    mov = cv2.morphologyEx(mov, cv2.MORPH_OPEN, np.ones((5, 5), np.uint8))
+                    mov = cv2.GaussianBlur(cv2.dilate(mov, np.ones((7, 7), np.uint8)).astype(np.float32), (0, 0), 2.0)
+                    keep = (1.0 - np.clip(mov, 0, 1))[..., None]
+                    aw = aw * keep
+                    bw = (bw.astype(np.float32) * keep).astype(np.float32)
                 src = (src.astype(np.float32) * (1 - aw) + bw.astype(np.float32)).clip(0, 255).astype(np.uint8)
         return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
 

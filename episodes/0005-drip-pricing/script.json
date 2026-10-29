@@ -69,8 +69,8 @@
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -79,6 +79,10 @@
             "dur": 0.7,
             "on": "Thirty"
           }
+        ],
+        "subject_x": [
+          0.06,
+          0.76
         ]
       },
       "pause_at": {
@@ -109,8 +113,8 @@
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -122,25 +126,40 @@
           },
           {
             "type": "write",
-            "text": "+ $8 fee",
-            "x": 0.835,
-            "y": 0.37,
-            "w": 0.19,
+            "text": "+ $8 FEE",
+            "x": 0.6278779069767442,
+            "y": 0.405,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.45,
             "on": "Eight.",
-            "fs": 0.062,
-            "align": "left"
+            "fs": 0.052,
+            "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           },
           {
             "type": "write",
-            "text": "+ $6 fee",
-            "x": 0.835,
+            "text": "+ $6 FEE",
+            "x": 0.6278779069767442,
             "y": 0.48,
-            "w": 0.19,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
@@ -148,15 +167,30 @@
             "dur": 0.45,
             "on": "Six.",
             "chain": true,
-            "fs": 0.062,
-            "align": "left"
+            "fs": 0.052,
+            "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           },
           {
             "type": "write",
-            "text": "+ $4 fee",
-            "x": 0.835,
-            "y": 0.59,
-            "w": 0.19,
+            "text": "+ $4 FEE",
+            "x": 0.6278779069767442,
+            "y": 0.555,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
@@ -164,9 +198,28 @@
             "dur": 0.45,
             "on": "Four.",
             "chain": true,
-            "fs": 0.062,
-            "align": "left"
+            "fs": 0.052,
+            "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           }
+        ],
+        "subject_x": [
+          0.06,
+          0.76
         ]
       },
       "label": "Illustration",
@@ -186,8 +239,8 @@
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -199,64 +252,109 @@
           },
           {
             "type": "write",
-            "text": "+ $8 fee",
-            "x": 0.835,
-            "y": 0.37,
-            "w": 0.19,
+            "text": "+ $8 FEE",
+            "x": 0.6278779069767442,
+            "y": 0.405,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.062,
+            "fs": 0.052,
             "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "write",
-            "text": "+ $6 fee",
-            "x": 0.835,
+            "text": "+ $6 FEE",
+            "x": 0.6278779069767442,
             "y": 0.48,
-            "w": 0.19,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.062,
+            "fs": 0.052,
             "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "write",
-            "text": "+ $4 fee",
-            "x": 0.835,
-            "y": 0.59,
-            "w": 0.19,
+            "text": "+ $4 FEE",
+            "x": 0.6278779069767442,
+            "y": 0.555,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.062,
+            "fs": 0.052,
             "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "underline",
-            "x": 0.818,
-            "y": 0.637,
-            "w": 0.15,
+            "x": 0.6380813953488372,
+            "y": 0.6,
+            "w": 0.17,
             "h": 0.01,
             "color": "ink",
             "target": [
-              0.743,
-              0.555,
-              0.893,
-              0.625
+              0.5480813953488373,
+              0.53,
+              0.7280813953488372,
+              0.59
             ],
             "on": "Total:",
             "dur": 0.3,
@@ -265,9 +363,9 @@
           {
             "type": "write",
             "text": "= $48",
-            "x": 0.835,
-            "y": 0.71,
-            "w": 0.19,
+            "x": 0.6278779069767442,
+            "y": 0.655,
+            "w": 0.17,
             "h": 0.068,
             "angle": 0,
             "color": "red",
@@ -275,20 +373,35 @@
             "dur": 0.5,
             "on": "forty-eight.",
             "chain": true,
-            "fs": 0.062,
-            "align": "left"
+            "fs": 0.052,
+            "align": "left",
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           },
           {
             "type": "circle",
-            "x": 0.815,
-            "y": 0.712,
-            "w": 0.18,
-            "h": 0.105,
+            "x": 0.5948779069767443,
+            "y": 0.656,
+            "w": 0.125,
+            "h": 0.09,
             "target": [
-              0.748,
-              0.676,
-              0.888,
-              0.748
+              0.5448779069767442,
+              0.625,
+              0.6428779069767442,
+              0.69
             ],
             "on": "forty-eight.",
             "delay": 0.6,
@@ -296,6 +409,10 @@
             "chain": true,
             "hand": true
           }
+        ],
+        "subject_x": [
+          0.06,
+          0.76
         ]
       },
       "pause_at": {
@@ -364,6 +481,13 @@
           "title": "The fee at the end",
           "typed": false,
           "open_stamp_on": "end.",
+          "clip_image": "o1",
+          "clip_box": [
+            0.055,
+            0.215,
+            0.765,
+            0.8
+          ],
           "inside": [
             "SUBJECT: Larry (fictional)",
             "EXHIBIT: one $30 ticket",
@@ -387,9 +511,11 @@
           "alias": "Service · Processing · Convenience",
           "tag": "SUSPECT",
           "stamp_pos": [
-            0.7,
-            0.12
+            0.5,
+            0.5
           ],
+          "stamp_angle": -10,
+          "stamp_w": 0.7,
           "type_on": [
             "Name:",
             "Aliases:"
@@ -610,10 +736,10 @@
             "text": "A",
             "x": 0.3,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.7,
             "on": "split"
@@ -623,10 +749,10 @@
             "text": "B",
             "x": 0.7,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.7,
             "on": "buyers",
@@ -653,10 +779,10 @@
             "text": "A",
             "x": 0.3,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -667,10 +793,10 @@
             "text": "B",
             "x": 0.7,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -724,10 +850,10 @@
               "text": "B",
               "x": 0.7,
               "y": 0.2,
-              "w": 0.05,
-              "h": 0.08,
+              "w": 0.056,
+              "h": 0.09,
               "angle": 0,
-              "color": "#FFFFFF",
+              "color": "accent",
               "font": "marker",
               "dur": 0.01,
               "at": 0.0,
@@ -792,10 +918,10 @@
             "text": "A",
             "x": 0.3,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -806,10 +932,10 @@
             "text": "B",
             "x": 0.7,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -1106,11 +1232,14 @@
         "look": "print",
         "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
         "motion": "zoom_in",
-        "caption": "Crowd waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress"
+        "caption": "Crowd waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress",
+        "caption_short": "Radio City Music Hall ticket line, New York, 1942 · Library of Congress"
       },
       "stamp": {
         "text": "Sept 1, 2015",
-        "on": "first,"
+        "on": "first,",
+        "x": 0.5,
+        "y": 0.37
       },
       "label": "NBER w25186"
     },
@@ -1139,19 +1268,22 @@
           {
             "type": "write",
             "text": "$18 FEES",
-            "x": 0.84,
-            "y": 0.56,
-            "w": 0.16,
-            "h": 0.07,
+            "x": 0.625,
+            "y": 0.15,
+            "w": 0.15,
+            "h": 0.065,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
             "on": "Larry",
-            "fade_after": 0.75,
-            "short": {
-              "fade_after": null
-            }
+            "fade_after": 1.3,
+            "plate": [
+              1.3,
+              1.75
+            ],
+            "note": true,
+            "note_pre": true
           }
         ],
         "manual": true,
@@ -1204,11 +1336,12 @@
         "type": "stat",
         "stat": {
           "value": 37.5,
-          "label": "of Larry's total was fees · Illustration",
+          "label": "of Larry's total was fees",
           "decimals": 1,
           "suffix": "%"
         }
       },
+      "label": "Illustration",
       "pause_at": {
         "word": "thirty-seven",
         "sec": 0.6,
@@ -1225,20 +1358,17 @@
         "index": 0,
         "motion": "static",
         "hand_marks": true,
-        "push": {
-          "center": [
-            0.56,
-            0.5
-          ],
-          "zoom": 1.15
-        },
-        "cam_rate": 0.012,
+        "cam_rate": 0.008,
+        "subject_x": [
+          0.06,
+          0.76
+        ],
         "marks": [
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -1250,34 +1380,62 @@
           },
           {
             "type": "write",
-            "text": "= 37.5 %",
-            "x": 0.835,
-            "y": 0.44,
-            "w": 0.19,
-            "h": 0.068,
+            "text": "= $18",
+            "x": 0.6380813953488372,
+            "y": 0.43,
+            "w": 0.17,
+            "h": 0.075,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.062,
-            "align": "left",
+            "fs": 0.06,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "write",
             "text": "IN FEES",
-            "x": 0.835,
-            "y": 0.55,
-            "w": 0.19,
-            "h": 0.068,
+            "x": 0.6380813953488372,
+            "y": 0.525,
+            "w": 0.17,
+            "h": 0.075,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.062,
-            "align": "left",
+            "fs": 0.06,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           }
         ]
@@ -1295,10 +1453,12 @@
         "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
         "motion": "zoom_in",
         "caption": "Statue in front of the Federal Trade Commission building, Washington, D.C., 1943 · Library of Congress",
+        "caption_short": "FTC statue, D.C., 1943 · Library of Congress",
         "one_shot": true
       },
       "label": "FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending",
-      "alleged": true
+      "alleged": true,
+      "label_short": "FTC v. Live Nation · Sept 2025 · case pending"
     },
     {
       "id": "b4",
@@ -1380,12 +1540,16 @@
         "index": 0,
         "motion": "static",
         "hand_marks": true,
+        "subject_x": [
+          0.06,
+          0.76
+        ],
         "marks": [
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -1398,15 +1562,31 @@
           {
             "type": "write",
             "text": "+60 %",
-            "x": 0.85,
-            "y": 0.45,
-            "w": 0.18,
-            "h": 0.1,
+            "x": 0.6380813953488372,
+            "y": 0.48,
+            "w": 0.17,
+            "h": 0.075,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "sixty"
+            "on": "sixty",
+            "fs": 0.06,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           }
         ]
       },
@@ -1512,15 +1692,18 @@
           {
             "type": "write",
             "text": "DOWNTOWN",
-            "x": 0.66,
-            "y": 0.575,
-            "w": 0.15,
-            "h": 0.085,
+            "x": 0.6245,
+            "y": 0.61,
+            "w": 0.2,
+            "h": 0.075,
             "angle": 0,
             "color": "#FFFFFF",
             "font": "marker",
             "dur": 0.7,
-            "on": "concert."
+            "on": "concert.",
+            "short": {
+              "until_on": "beach."
+            }
           }
         ],
         "manual": true,
@@ -1540,9 +1723,11 @@
           "alias": "Amenity fee · Destination fee",
           "tag": "SUSPECT",
           "stamp_pos": [
-            0.7,
-            0.12
+            0.5,
+            0.5
           ],
+          "stamp_angle": -10,
+          "stamp_w": 0.7,
           "type_on": [
             "Name:",
             "Aliases:"
@@ -1889,19 +2074,26 @@
       "section": "Why a split price feels cheaper",
       "text": "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
       "visual": {
-        "type": "image",
+        "type": "reuse",
+        "beat": "o1",
+        "index": 0,
         "motion": "static",
-        "prompt": "the code-drawn $30 concert ticket, blank stub",
-        "note": "code-drawn: images/n1.png (gen_script make_ticket)",
         "hand_marks": true,
         "short_fit": [
           0.04,
-          0.82
+          0.86
         ],
         "cam_rate": 0.006,
+        "subject_x": [
+          0.06,
+          0.76
+        ],
         "split": {
-          "x": 0.5327,
+          "x": 0.5072674418604651,
           "dx": 0.08,
+          "y0": 0.22535416666666666,
+          "y1": 0.7902708333333334,
+          "edge_w": 0.013020833333333334,
           "on": "surcharge.",
           "delay": 0.35,
           "dur": 0.75
@@ -1910,53 +2102,85 @@
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
             "color": "ink",
             "font": "marker",
-            "dur": 0.5,
-            "on": "split"
+            "dur": 0.01,
+            "at": 0.0,
+            "hand": false
           },
           {
             "type": "write",
             "text": "+ $18",
-            "x": 0.616,
-            "y": 0.452,
-            "w": 0.12,
+            "x": 0.6380813953488372,
+            "y": 0.45,
+            "w": 0.14,
             "h": 0.085,
             "angle": 0,
             "color": "ink",
             "font": "marker",
             "dur": 0.45,
-            "on": "prices",
-            "chain": true,
-            "follow": true
+            "on": "split",
+            "fs": 0.075,
+            "follow": true,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           },
           {
             "type": "write",
             "text": "FEES",
-            "x": 0.616,
-            "y": 0.572,
-            "w": 0.11,
+            "x": 0.6380813953488372,
+            "y": 0.565,
+            "w": 0.12,
             "h": 0.08,
             "angle": 0,
             "color": "ink",
             "font": "marker",
             "dur": 0.4,
             "on": "prices",
-            "delay": 0.5,
             "chain": true,
-            "follow": true
+            "fs": 0.075,
+            "follow": true,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ]
           },
           {
             "type": "dash",
-            "x": 0.5246999999999999,
-            "y": 0.508,
+            "x": 0.5072674418604651,
+            "y": 0.5078125,
             "w": 0.01,
-            "h": 0.48,
+            "h": 0.5338541666666666,
+            "until_split": true,
             "on": "base",
             "chain": true,
             "dur": 0.5,
@@ -1979,27 +2203,34 @@
       "text": "The total price was the same. It was just served in pieces.",
       "visual": {
         "type": "reuse",
-        "beat": "n1",
+        "beat": "o1",
         "index": 0,
         "motion": "static",
         "hand_marks": true,
         "short_fit": [
           0.04,
-          0.82
+          0.86
         ],
         "cam_rate": 0.006,
         "cam_continue": true,
+        "subject_x": [
+          0.06,
+          0.76
+        ],
         "split": {
-          "x": 0.5327,
+          "x": 0.5072674418604651,
           "dx": 0.08,
+          "y0": 0.22535416666666666,
+          "y1": 0.7902708333333334,
+          "edge_w": 0.013020833333333334,
           "done": true
         },
         "marks": [
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -2012,55 +2243,78 @@
           {
             "type": "write",
             "text": "+ $18",
-            "x": 0.616,
-            "y": 0.452,
-            "w": 0.12,
+            "x": 0.6380813953488372,
+            "y": 0.45,
+            "w": 0.14,
             "h": 0.085,
             "angle": 0,
             "color": "ink",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.075,
             "follow": true,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "write",
             "text": "FEES",
-            "x": 0.616,
-            "y": 0.572,
-            "w": 0.11,
+            "x": 0.6380813953488372,
+            "y": 0.565,
+            "w": 0.12,
             "h": 0.08,
             "angle": 0,
             "color": "ink",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
+            "fs": 0.075,
             "follow": true,
-            "hand": false
-          },
-          {
-            "type": "dash",
-            "x": 0.5246999999999999,
-            "y": 0.508,
-            "w": 0.01,
-            "h": 0.48,
-            "at": 0.0,
-            "dur": 0.01,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "write",
             "text": "SAME TOTAL",
-            "x": 0.573,
-            "y": 0.16,
-            "w": 0.26,
+            "x": 0.548,
+            "y": 0.15,
+            "w": 0.23,
             "h": 0.075,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.7,
-            "on": "same."
+            "on": "same.",
+            "fs": 0.058
           }
         ]
       },
@@ -2076,17 +2330,32 @@
         "index": 0,
         "motion": "static",
         "hand_marks": true,
-        "cam_rate": 0.008,
         "short_fit": [
           0.04,
-          0.96
+          0.86
         ],
+        "cam_rate": 0.006,
+        "cam_continue": true,
+        "subject_x": [
+          0.06,
+          0.76
+        ],
+        "split": {
+          "x": 0.5072674418604651,
+          "dx": 0.08,
+          "y0": 0.22535416666666666,
+          "y1": 0.7902708333333334,
+          "edge_w": 0.013020833333333334,
+          "done": true,
+          "back_on": "People",
+          "back_dur": 0.6
+        },
         "marks": [
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -2098,130 +2367,110 @@
           },
           {
             "type": "write",
-            "text": "+ $8 fee",
-            "x": 0.835,
-            "y": 0.37,
-            "w": 0.19,
-            "h": 0.068,
+            "text": "+ $18",
+            "x": 0.6380813953488372,
+            "y": 0.45,
+            "w": 0.14,
+            "h": 0.085,
             "angle": 0,
-            "color": "red",
-            "font": "marker",
-            "dur": 0.01,
-            "at": 0.0,
-            "fs": 0.062,
-            "align": "left",
-            "hand": false
-          },
-          {
-            "type": "write",
-            "text": "+ $6 fee",
-            "x": 0.835,
-            "y": 0.48,
-            "w": 0.19,
-            "h": 0.068,
-            "angle": 0,
-            "color": "red",
-            "font": "marker",
-            "dur": 0.01,
-            "at": 0.0,
-            "fs": 0.062,
-            "align": "left",
-            "hand": false
-          },
-          {
-            "type": "write",
-            "text": "+ $4 fee",
-            "x": 0.835,
-            "y": 0.59,
-            "w": 0.19,
-            "h": 0.068,
-            "angle": 0,
-            "color": "red",
-            "font": "marker",
-            "dur": 0.01,
-            "at": 0.0,
-            "fs": 0.062,
-            "align": "left",
-            "hand": false
-          },
-          {
-            "type": "underline",
-            "x": 0.818,
-            "y": 0.637,
-            "w": 0.15,
-            "h": 0.01,
             "color": "ink",
-            "target": [
-              0.743,
-              0.555,
-              0.893,
-              0.625
-            ],
-            "at": 0.0,
+            "font": "marker",
             "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.075,
+            "follow": true,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
             "hand": false
           },
           {
             "type": "write",
-            "text": "= $48",
-            "x": 0.835,
-            "y": 0.71,
-            "w": 0.19,
-            "h": 0.068,
+            "text": "FEES",
+            "x": 0.6380813953488372,
+            "y": 0.565,
+            "w": 0.12,
+            "h": 0.08,
+            "angle": 0,
+            "color": "ink",
+            "font": "marker",
+            "dur": 0.01,
+            "at": 0.0,
+            "fs": 0.075,
+            "follow": true,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
+            "printed": [
+              [
+                0.5617732558139535,
+                0.2708333333333333,
+                0.7143895348837209,
+                0.3411458333333333
+              ]
+            ],
+            "hand": false
+          },
+          {
+            "type": "write",
+            "text": "SAME TOTAL",
+            "x": 0.548,
+            "y": 0.15,
+            "w": 0.23,
+            "h": 0.075,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.062,
-            "align": "left",
-            "hand": false
-          },
-          {
-            "type": "circle",
-            "x": 0.815,
-            "y": 0.712,
-            "w": 0.18,
-            "h": 0.105,
-            "target": [
-              0.748,
-              0.676,
-              0.888,
-              0.748
-            ],
-            "at": 0.0,
-            "dur": 0.01,
+            "fs": 0.058,
             "hand": false
           },
           {
             "type": "write",
             "text": "REMEMBERED: LESS",
-            "x": 0.38,
-            "y": 0.105,
-            "w": 0.4,
-            "h": 0.068,
+            "x": 0.235,
+            "y": 0.1,
+            "w": 0.29,
+            "h": 0.06,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.75,
             "on": "remembered",
             "align": "left",
-            "fs": 0.064
+            "fs": 0.05
           },
           {
             "type": "write",
             "text": "BOUGHT: MORE",
-            "x": 0.38,
-            "y": 0.19,
-            "w": 0.4,
-            "h": 0.068,
+            "x": 0.235,
+            "y": 0.17,
+            "w": 0.29,
+            "h": 0.06,
             "angle": 0,
             "color": "red",
             "font": "marker",
             "dur": 0.6,
             "on": "bought",
             "align": "left",
-            "fs": 0.064
+            "fs": 0.05
           }
         ]
       },
@@ -2318,10 +2567,10 @@
             "text": "A",
             "x": 0.3,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -2420,7 +2669,7 @@
         "marks": [
           {
             "type": "write",
-            "text": "NOT JUST STOLEN BUYERS",
+            "text": "NOT JUST STOLEN SALES",
             "x": 0.5,
             "y": 0.7,
             "w": 0.46,
@@ -2538,6 +2787,19 @@
         "prompt": "the back of the code-drawn ticket on the customs desk",
         "note": "code-drawn: images/l2.png (make_l1_flip.py)",
         "hand_marks": true,
+        "marks": [
+          {
+            "type": "stamp",
+            "text": "USA · TOTAL UPFRONT · MAY 2025",
+            "x": 0.468,
+            "y": 0.392,
+            "w": 0.15,
+            "angle": -8,
+            "dur": 0.45,
+            "on": "America.",
+            "hand": true
+          }
+        ],
         "closeup": {
           "on": "short",
           "center": [
@@ -2554,8 +2816,8 @@
               "w": 0.15,
               "angle": -8,
               "dur": 0.45,
-              "on": "total",
-              "hand": true
+              "at": 0.0,
+              "hand": false
             }
           ],
           "motion": "zoom_in"
@@ -2609,10 +2871,10 @@
             "text": "B",
             "x": 0.7,
             "y": 0.2,
-            "w": 0.05,
-            "h": 0.08,
+            "w": 0.056,
+            "h": 0.09,
             "angle": 0,
-            "color": "#FFFFFF",
+            "color": "accent",
             "font": "marker",
             "dur": 0.01,
             "at": 0.0,
@@ -2669,7 +2931,8 @@
         "look": "print",
         "credit": "Library of Congress, FSA/OWI Collection (no known restrictions)",
         "motion": "zoom_in",
-        "caption": "Car showroom, Pierson Motor Company, Lititz, Pennsylvania, 1942 · Library of Congress"
+        "caption": "Car showroom, Pierson Motor Company, Lititz, Pennsylvania, 1942 · Library of Congress",
+        "caption_short": "Car showroom, Lititz, Pennsylvania, 1942 · Library of Congress"
       },
       "label": "Automobile Information Disclosure Act · 1958"
     },
@@ -2919,7 +3182,13 @@
             "plate": [
               1.25,
               1.3
-            ]
+            ],
+            "short": {
+              "x": 0.405,
+              "y": 0.13,
+              "w": 0.225,
+              "h": 0.095
+            }
           }
         ]
       },
@@ -2973,8 +3242,8 @@
           {
             "type": "write",
             "text": "$30",
-            "x": 0.2965,
-            "y": 0.66,
+            "x": 0.2892,
+            "y": 0.6576,
             "w": 0.2,
             "h": 0.1,
             "angle": 0,
@@ -2987,14 +3256,25 @@
           {
             "type": "stamp",
             "text": "UK · FINED · JUNE 2026",
-            "x": 0.85,
-            "y": 0.52,
-            "w": 0.2,
-            "angle": -7,
+            "x": 0.6380813953488372,
+            "y": 0.5,
+            "w": 0.165,
+            "angle": -8,
             "dur": 0.45,
+            "obj": [
+              0.5181686046511628,
+              0.22135416666666666,
+              0.7579941860465116,
+              0.7942708333333334,
+              0.0
+            ],
             "on": "fined",
             "hand": true
           }
+        ],
+        "subject_x": [
+          0.06,
+          0.76
         ]
       },
       "label": "CMA · June 2026"
@@ -3033,6 +3313,12 @@
               1.25,
               1.3
             ],
+            "short": {
+              "x": 0.405,
+              "y": 0.13,
+              "w": 0.225,
+              "h": 0.095
+            },
             "hand": false
           },
           {
@@ -3220,34 +3506,29 @@
             "text": "OFF",
             "x": 0.17,
             "y": 0.46,
-            "w": 0.09,
-            "h": 0.08,
+            "w": 0.1,
+            "h": 0.12,
             "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.7,
             "on": "One.",
-            "fs": 0.058,
-            "short": {
-              "fs": 0.11
-            }
+            "fs": 0.11
           },
           {
             "type": "write",
             "text": "ALL-IN PRICES",
             "x": 0.49,
-            "y": 0.19,
-            "w": 0.26,
-            "h": 0.06,
+            "y": 0.2125,
+            "w": 0.23,
+            "h": 0.075,
             "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.7,
             "on": "all-in",
-            "fs": 0.058,
-            "short": {
-              "fs": 0.07
-            }
+            "fs": 0.08,
+            "behind_moving": true
           }
         ],
         "manual": true,
@@ -3284,18 +3565,16 @@
             "type": "write",
             "text": "ALL-IN PRICES",
             "x": 0.49,
-            "y": 0.19,
-            "w": 0.26,
-            "h": 0.06,
+            "y": 0.2125,
+            "w": 0.23,
+            "h": 0.075,
             "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.058,
-            "short": {
-              "fs": 0.07
-            },
+            "fs": 0.08,
+            "behind_moving": true,
             "hand": false
           },
           {
@@ -3303,17 +3582,14 @@
             "text": "OFF",
             "x": 0.17,
             "y": 0.46,
-            "w": 0.09,
-            "h": 0.08,
+            "w": 0.1,
+            "h": 0.12,
             "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.01,
             "at": 0.0,
-            "fs": 0.058,
-            "short": {
-              "fs": 0.11
-            },
+            "fs": 0.11,
             "hand": false
           },
           {
@@ -3321,17 +3597,14 @@
             "text": "ON",
             "x": 0.76,
             "y": 0.46,
-            "w": 0.09,
-            "h": 0.08,
+            "w": 0.08,
+            "h": 0.12,
             "angle": 1.0,
             "color": "ink",
             "font": "headline",
             "dur": 0.7,
             "on": "included.",
-            "fs": 0.058,
-            "short": {
-              "fs": 0.11
-            }
+            "fs": 0.11
           }
         ]
       },
@@ -3440,9 +3713,9 @@
           {
             "type": "stamp",
             "text": "PAID $48",
-            "x": 0.578,
-            "y": 0.386,
-            "w": 0.068,
+            "x": 0.58,
+            "y": 0.387,
+            "w": 0.09,
             "angle": 19,
             "dur": 0.45,
             "on_object": true,
@@ -3457,9 +3730,14 @@
         "text": "Case closed",
         "on": "Case",
         "big": true,
-        "x": 0.735,
-        "y": 0.15,
-        "w": 0.4
+        "slip": {
+          "x": 0.735,
+          "y": 0.15,
+          "w": 0.4,
+          "angle": -6,
+          "slip_angle": -3,
+          "dark": true
+        }
       },
       "hero": true
     },
@@ -3484,9 +3762,9 @@
           {
             "type": "stamp",
             "text": "PAID $48",
-            "x": 0.598,
-            "y": 0.381,
-            "w": 0.075,
+            "x": 0.6,
+            "y": 0.382,
+            "w": 0.099,
             "angle": 19,
             "dur": 0.45,
             "at": 0.0,
@@ -3504,9 +3782,9 @@
             {
               "type": "stamp",
               "text": "PAID $48",
-              "x": 0.598,
-              "y": 0.381,
-              "w": 0.075,
+              "x": 0.6,
+              "y": 0.382,
+              "w": 0.099,
               "angle": 19,
               "dur": 0.45,
               "at": 0.0,
@@ -3632,8 +3910,8 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -3672,8 +3950,8 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -3685,25 +3963,40 @@
               },
               {
                 "type": "write",
-                "text": "+ $8 fee",
-                "x": 0.835,
-                "y": 0.37,
-                "w": 0.19,
+                "text": "+ $8 FEE",
+                "x": 0.6278779069767442,
+                "y": 0.405,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.45,
                 "on": "Eight.",
-                "fs": 0.062,
-                "align": "left"
+                "fs": 0.052,
+                "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ]
               },
               {
                 "type": "write",
-                "text": "+ $6 fee",
-                "x": 0.835,
+                "text": "+ $6 FEE",
+                "x": 0.6278779069767442,
                 "y": 0.48,
-                "w": 0.19,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
@@ -3711,15 +4004,30 @@
                 "dur": 0.45,
                 "on": "Six.",
                 "chain": true,
-                "fs": 0.062,
-                "align": "left"
+                "fs": 0.052,
+                "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ]
               },
               {
                 "type": "write",
-                "text": "+ $4 fee",
-                "x": 0.835,
-                "y": 0.59,
-                "w": 0.19,
+                "text": "+ $4 FEE",
+                "x": 0.6278779069767442,
+                "y": 0.555,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
@@ -3727,9 +4035,28 @@
                 "dur": 0.45,
                 "on": "Four.",
                 "chain": true,
-                "fs": 0.062,
-                "align": "left"
+                "fs": 0.052,
+                "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ]
               }
+            ],
+            "subject_x": [
+              0.06,
+              0.76
             ]
           },
           "label": "Illustration",
@@ -3748,8 +4075,8 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -3761,64 +4088,109 @@
               },
               {
                 "type": "write",
-                "text": "+ $8 fee",
-                "x": 0.835,
-                "y": 0.37,
-                "w": 0.19,
+                "text": "+ $8 FEE",
+                "x": 0.6278779069767442,
+                "y": 0.405,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.062,
+                "fs": 0.052,
                 "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "write",
-                "text": "+ $6 fee",
-                "x": 0.835,
+                "text": "+ $6 FEE",
+                "x": 0.6278779069767442,
                 "y": 0.48,
-                "w": 0.19,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.062,
+                "fs": 0.052,
                 "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "write",
-                "text": "+ $4 fee",
-                "x": 0.835,
-                "y": 0.59,
-                "w": 0.19,
+                "text": "+ $4 FEE",
+                "x": 0.6278779069767442,
+                "y": 0.555,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.062,
+                "fs": 0.052,
                 "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "underline",
-                "x": 0.818,
-                "y": 0.637,
-                "w": 0.15,
+                "x": 0.6380813953488372,
+                "y": 0.6,
+                "w": 0.17,
                 "h": 0.01,
                 "color": "ink",
                 "target": [
-                  0.743,
-                  0.555,
-                  0.893,
-                  0.625
+                  0.5480813953488373,
+                  0.53,
+                  0.7280813953488372,
+                  0.59
                 ],
                 "on": "Total:",
                 "dur": 0.3,
@@ -3827,9 +4199,9 @@
               {
                 "type": "write",
                 "text": "= $48",
-                "x": 0.835,
-                "y": 0.71,
-                "w": 0.19,
+                "x": 0.6278779069767442,
+                "y": 0.655,
+                "w": 0.17,
                 "h": 0.068,
                 "angle": 0,
                 "color": "red",
@@ -3837,20 +4209,35 @@
                 "dur": 0.5,
                 "on": "forty-eight.",
                 "chain": true,
-                "fs": 0.062,
-                "align": "left"
+                "fs": 0.052,
+                "align": "left",
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ]
               },
               {
                 "type": "circle",
-                "x": 0.815,
-                "y": 0.712,
-                "w": 0.18,
-                "h": 0.105,
+                "x": 0.5948779069767443,
+                "y": 0.656,
+                "w": 0.125,
+                "h": 0.09,
                 "target": [
-                  0.748,
-                  0.676,
-                  0.888,
-                  0.748
+                  0.5448779069767442,
+                  0.625,
+                  0.6428779069767442,
+                  0.69
                 ],
                 "on": "forty-eight.",
                 "delay": 0.6,
@@ -3858,6 +4245,10 @@
                 "chain": true,
                 "hand": true
               }
+            ],
+            "subject_x": [
+              0.06,
+              0.76
             ]
           },
           "pause_at": {
@@ -3879,9 +4270,11 @@
               "alias": "Service · Processing · Convenience",
               "tag": "SUSPECT",
               "stamp_pos": [
-                0.7,
-                0.12
+                0.5,
+                0.5
               ],
+              "stamp_angle": -10,
+              "stamp_w": 0.7,
               "type_on": [
                 "Name:",
                 "Aliases:"
@@ -3926,8 +4319,8 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -3961,10 +4354,10 @@
                 "text": "A",
                 "x": 0.3,
                 "y": 0.2,
-                "w": 0.05,
-                "h": 0.08,
+                "w": 0.056,
+                "h": 0.09,
                 "angle": 0,
-                "color": "#FFFFFF",
+                "color": "accent",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "split"
@@ -3974,10 +4367,10 @@
                 "text": "B",
                 "x": 0.7,
                 "y": 0.2,
-                "w": 0.05,
-                "h": 0.08,
+                "w": 0.056,
+                "h": 0.09,
                 "angle": 0,
-                "color": "#FFFFFF",
+                "color": "accent",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "buyers",
@@ -4002,10 +4395,10 @@
                 "text": "A",
                 "x": 0.3,
                 "y": 0.2,
-                "w": 0.05,
-                "h": 0.08,
+                "w": 0.056,
+                "h": 0.09,
                 "angle": 0,
-                "color": "#FFFFFF",
+                "color": "accent",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
@@ -4016,10 +4409,10 @@
                 "text": "B",
                 "x": 0.7,
                 "y": 0.2,
-                "w": 0.05,
-                "h": 0.08,
+                "w": 0.056,
+                "h": 0.09,
                 "angle": 0,
-                "color": "#FFFFFF",
+                "color": "accent",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
@@ -4073,10 +4466,10 @@
                   "text": "B",
                   "x": 0.7,
                   "y": 0.2,
-                  "w": 0.05,
-                  "h": 0.08,
+                  "w": 0.056,
+                  "h": 0.09,
                   "angle": 0,
-                  "color": "#FFFFFF",
+                  "color": "accent",
                   "font": "marker",
                   "dur": 0.01,
                   "at": 0.0,
@@ -4287,7 +4680,9 @@
           },
           "stamp": {
             "text": "Sept 1, 2015",
-            "on": "first,"
+            "on": "first,",
+            "x": 0.5,
+            "y": 0.37
           },
           "label": "NBER w25186",
           "id": "s2_6"
@@ -4310,19 +4705,22 @@
               {
                 "type": "write",
                 "text": "$18 FEES",
-                "x": 0.84,
-                "y": 0.56,
-                "w": 0.16,
-                "h": 0.07,
+                "x": 0.625,
+                "y": 0.15,
+                "w": 0.15,
+                "h": 0.065,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
                 "on": "Larry",
-                "fade_after": 0.75,
-                "short": {
-                  "fade_after": null
-                }
+                "fade_after": 1.3,
+                "plate": [
+                  1.3,
+                  1.75
+                ],
+                "note": true,
+                "note_pre": true
               }
             ],
             "hand_marks": true,
@@ -4374,7 +4772,7 @@
             "type": "stat",
             "stat": {
               "value": 37.5,
-              "label": "of Larry's total was fees · Illustration",
+              "label": "of Larry's total was fees",
               "decimals": 1,
               "suffix": "%"
             }
@@ -4384,6 +4782,7 @@
             "sec": 0.6,
             "hit": "stamp"
           },
+          "label": "Illustration",
           "id": "s3_1"
         },
         {
@@ -4394,20 +4793,17 @@
             "index": 0,
             "motion": "static",
             "hand_marks": true,
-            "push": {
-              "center": [
-                0.56,
-                0.5
-              ],
-              "zoom": 1.15
-            },
-            "cam_rate": 0.012,
+            "cam_rate": 0.008,
+            "subject_x": [
+              0.06,
+              0.76
+            ],
             "marks": [
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -4419,34 +4815,62 @@
               },
               {
                 "type": "write",
-                "text": "= 37.5 %",
-                "x": 0.835,
-                "y": 0.44,
-                "w": 0.19,
-                "h": 0.068,
+                "text": "= $18",
+                "x": 0.6380813953488372,
+                "y": 0.43,
+                "w": 0.17,
+                "h": 0.075,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.062,
-                "align": "left",
+                "fs": 0.06,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "IN FEES",
-                "x": 0.835,
-                "y": 0.55,
-                "w": 0.19,
-                "h": 0.068,
+                "x": 0.6380813953488372,
+                "y": 0.525,
+                "w": 0.17,
+                "h": 0.075,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.062,
-                "align": "left",
+                "fs": 0.06,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               }
             ]
@@ -4463,6 +4887,7 @@
             "one_shot": true
           },
           "label": "FTC v. Live Nation/Ticketmaster · filed Sept 2025 · case pending",
+          "label_short": "FTC v. Live Nation · Sept 2025 · case pending",
           "alleged": true,
           "id": "s3_3"
         },
@@ -4570,15 +4995,18 @@
               {
                 "type": "write",
                 "text": "DOWNTOWN",
-                "x": 0.66,
-                "y": 0.575,
-                "w": 0.15,
-                "h": 0.085,
+                "x": 0.6245,
+                "y": 0.61,
+                "w": 0.2,
+                "h": 0.075,
                 "angle": 0,
                 "color": "#FFFFFF",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "concert."
+                "on": "concert.",
+                "short": {
+                  "until_on": "beach."
+                }
               }
             ],
             "hand_marks": true,
@@ -4597,9 +5025,11 @@
               "alias": "Amenity fee · Destination fee",
               "tag": "SUSPECT",
               "stamp_pos": [
-                0.7,
-                0.12
+                0.5,
+                0.5
               ],
+              "stamp_angle": -10,
+              "stamp_w": 0.7,
               "type_on": [
                 "Name:",
                 "Aliases:"
@@ -4918,8 +5348,8 @@
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -4937,77 +5367,117 @@
           "text": "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.",
           "visual": {
             "type": "reuse",
-            "beat": "n1",
+            "beat": "o1",
+            "index": 0,
             "motion": "static",
+            "hand_marks": true,
+            "short_fit": [
+              0.04,
+              0.86
+            ],
+            "cam_rate": 0.006,
+            "subject_x": [
+              0.06,
+              0.76
+            ],
+            "split": {
+              "x": 0.5072674418604651,
+              "dx": 0.08,
+              "y0": 0.22535416666666666,
+              "y1": 0.7902708333333334,
+              "edge_w": 0.013020833333333334,
+              "on": "surcharge.",
+              "delay": 0.35,
+              "dur": 0.75
+            },
             "marks": [
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
-                "dur": 0.5,
-                "on": "split"
+                "dur": 0.01,
+                "at": 0.0,
+                "hand": false
               },
               {
                 "type": "write",
                 "text": "+ $18",
-                "x": 0.616,
-                "y": 0.452,
-                "w": 0.12,
+                "x": 0.6380813953488372,
+                "y": 0.45,
+                "w": 0.14,
                 "h": 0.085,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.45,
-                "on": "prices",
-                "chain": true,
-                "follow": true
+                "on": "split",
+                "fs": 0.075,
+                "follow": true,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ]
               },
               {
                 "type": "write",
                 "text": "FEES",
-                "x": 0.616,
-                "y": 0.572,
-                "w": 0.11,
+                "x": 0.6380813953488372,
+                "y": 0.565,
+                "w": 0.12,
                 "h": 0.08,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.4,
                 "on": "prices",
-                "delay": 0.5,
                 "chain": true,
-                "follow": true
+                "fs": 0.075,
+                "follow": true,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ]
               },
               {
                 "type": "dash",
-                "x": 0.5246999999999999,
-                "y": 0.508,
+                "x": 0.5072674418604651,
+                "y": 0.5078125,
                 "w": 0.01,
-                "h": 0.48,
+                "h": 0.5338541666666666,
+                "until_split": true,
                 "on": "base",
                 "chain": true,
                 "dur": 0.5,
                 "hand": true
               }
-            ],
-            "hand_marks": true,
-            "cam_rate": 0.006,
-            "split": {
-              "x": 0.5327,
-              "dx": 0.08,
-              "on": "surcharge.",
-              "delay": 0.35,
-              "dur": 0.75
-            },
-            "short_fit": [
-              0.04,
-              0.82
             ]
           },
           "sfx_at": [
@@ -5024,27 +5494,34 @@
           "text": "The total price was the same. It was just served in pieces.",
           "visual": {
             "type": "reuse",
-            "beat": "n1",
+            "beat": "o1",
             "index": 0,
             "motion": "static",
             "hand_marks": true,
             "short_fit": [
               0.04,
-              0.82
+              0.86
             ],
             "cam_rate": 0.006,
             "cam_continue": true,
+            "subject_x": [
+              0.06,
+              0.76
+            ],
             "split": {
-              "x": 0.5327,
+              "x": 0.5072674418604651,
               "dx": 0.08,
+              "y0": 0.22535416666666666,
+              "y1": 0.7902708333333334,
+              "edge_w": 0.013020833333333334,
               "done": true
             },
             "marks": [
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -5057,55 +5534,78 @@
               {
                 "type": "write",
                 "text": "+ $18",
-                "x": 0.616,
-                "y": 0.452,
-                "w": 0.12,
+                "x": 0.6380813953488372,
+                "y": 0.45,
+                "w": 0.14,
                 "h": 0.085,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.075,
                 "follow": true,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "FEES",
-                "x": 0.616,
-                "y": 0.572,
-                "w": 0.11,
+                "x": 0.6380813953488372,
+                "y": 0.565,
+                "w": 0.12,
                 "h": 0.08,
                 "angle": 0,
                 "color": "ink",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
+                "fs": 0.075,
                 "follow": true,
-                "hand": false
-              },
-              {
-                "type": "dash",
-                "x": 0.5246999999999999,
-                "y": 0.508,
-                "w": 0.01,
-                "h": 0.48,
-                "at": 0.0,
-                "dur": 0.01,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "SAME TOTAL",
-                "x": 0.573,
-                "y": 0.16,
-                "w": 0.26,
+                "x": 0.548,
+                "y": 0.15,
+                "w": 0.23,
                 "h": 0.075,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.7,
-                "on": "same."
+                "on": "same.",
+                "fs": 0.058
               }
             ]
           },
@@ -5120,17 +5620,32 @@
             "index": 0,
             "motion": "static",
             "hand_marks": true,
-            "cam_rate": 0.008,
             "short_fit": [
               0.04,
-              0.96
+              0.86
             ],
+            "cam_rate": 0.006,
+            "cam_continue": true,
+            "subject_x": [
+              0.06,
+              0.76
+            ],
+            "split": {
+              "x": 0.5072674418604651,
+              "dx": 0.08,
+              "y0": 0.22535416666666666,
+              "y1": 0.7902708333333334,
+              "edge_w": 0.013020833333333334,
+              "done": true,
+              "back_on": "People",
+              "back_dur": 0.6
+            },
             "marks": [
               {
                 "type": "write",
                 "text": "$30",
-                "x": 0.2965,
-                "y": 0.66,
+                "x": 0.2892,
+                "y": 0.6576,
                 "w": 0.2,
                 "h": 0.1,
                 "angle": 0,
@@ -5142,130 +5657,110 @@
               },
               {
                 "type": "write",
-                "text": "+ $8 fee",
-                "x": 0.835,
-                "y": 0.37,
-                "w": 0.19,
-                "h": 0.068,
+                "text": "+ $18",
+                "x": 0.6380813953488372,
+                "y": 0.45,
+                "w": 0.14,
+                "h": 0.085,
                 "angle": 0,
-                "color": "red",
-                "font": "marker",
-                "dur": 0.01,
-                "at": 0.0,
-                "fs": 0.062,
-                "align": "left",
-                "hand": false
-              },
-              {
-                "type": "write",
-                "text": "+ $6 fee",
-                "x": 0.835,
-                "y": 0.48,
-                "w": 0.19,
-                "h": 0.068,
-                "angle": 0,
-                "color": "red",
-                "font": "marker",
-                "dur": 0.01,
-                "at": 0.0,
-                "fs": 0.062,
-                "align": "left",
-                "hand": false
-              },
-              {
-                "type": "write",
-                "text": "+ $4 fee",
-                "x": 0.835,
-                "y": 0.59,
-                "w": 0.19,
-                "h": 0.068,
-                "angle": 0,
-                "color": "red",
-                "font": "marker",
-                "dur": 0.01,
-                "at": 0.0,
-                "fs": 0.062,
-                "align": "left",
-                "hand": false
-              },
-              {
-                "type": "underline",
-                "x": 0.818,
-                "y": 0.637,
-                "w": 0.15,
-                "h": 0.01,
                 "color": "ink",
-                "target": [
-                  0.743,
-                  0.555,
-                  0.893,
-                  0.625
-                ],
-                "at": 0.0,
+                "font": "marker",
                 "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.075,
+                "follow": true,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
                 "hand": false
               },
               {
                 "type": "write",
-                "text": "= $48",
-                "x": 0.835,
-                "y": 0.71,
-                "w": 0.19,
-                "h": 0.068,
+                "text": "FEES",
+                "x": 0.6380813953488372,
+                "y": 0.565,
+                "w": 0.12,
+                "h": 0.08,
+                "angle": 0,
+                "color": "ink",
+                "font": "marker",
+                "dur": 0.01,
+                "at": 0.0,
+                "fs": 0.075,
+                "follow": true,
+                "obj": [
+                  0.5181686046511628,
+                  0.22135416666666666,
+                  0.7579941860465116,
+                  0.7942708333333334,
+                  0.0
+                ],
+                "printed": [
+                  [
+                    0.5617732558139535,
+                    0.2708333333333333,
+                    0.7143895348837209,
+                    0.3411458333333333
+                  ]
+                ],
+                "hand": false
+              },
+              {
+                "type": "write",
+                "text": "SAME TOTAL",
+                "x": 0.548,
+                "y": 0.15,
+                "w": 0.23,
+                "h": 0.075,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.062,
-                "align": "left",
-                "hand": false
-              },
-              {
-                "type": "circle",
-                "x": 0.815,
-                "y": 0.712,
-                "w": 0.18,
-                "h": 0.105,
-                "target": [
-                  0.748,
-                  0.676,
-                  0.888,
-                  0.748
-                ],
-                "at": 0.0,
-                "dur": 0.01,
+                "fs": 0.058,
                 "hand": false
               },
               {
                 "type": "write",
                 "text": "REMEMBERED: LESS",
-                "x": 0.38,
-                "y": 0.105,
-                "w": 0.4,
-                "h": 0.068,
+                "x": 0.235,
+                "y": 0.1,
+                "w": 0.29,
+                "h": 0.06,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.75,
                 "on": "remembered",
                 "align": "left",
-                "fs": 0.064
+                "fs": 0.05
               },
               {
                 "type": "write",
                 "text": "BOUGHT: MORE",
-                "x": 0.38,
-                "y": 0.19,
-                "w": 0.4,
-                "h": 0.068,
+                "x": 0.235,
+                "y": 0.17,
+                "w": 0.29,
+                "h": 0.06,
                 "angle": 0,
                 "color": "red",
                 "font": "marker",
                 "dur": 0.6,
                 "on": "bought",
                 "align": "left",
-                "fs": 0.064
+                "fs": 0.05
               }
             ]
           },
@@ -5341,7 +5836,13 @@
                 "plate": [
                   1.25,
                   1.3
-                ]
+                ],
+                "short": {
+                  "x": 0.405,
+                  "y": 0.13,
+                  "w": 0.225,
+                  "h": 0.095
+                }
               }
             ],
             "hand_marks": true
@@ -5580,34 +6081,29 @@
                 "text": "OFF",
                 "x": 0.17,
                 "y": 0.46,
-                "w": 0.09,
-                "h": 0.08,
+                "w": 0.1,
+                "h": 0.12,
                 "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.7,
                 "on": "One.",
-                "fs": 0.058,
-                "short": {
-                  "fs": 0.11
-                }
+                "fs": 0.11
               },
               {
                 "type": "write",
                 "text": "ALL-IN PRICES",
                 "x": 0.49,
-                "y": 0.19,
-                "w": 0.26,
-                "h": 0.06,
+                "y": 0.2125,
+                "w": 0.23,
+                "h": 0.075,
                 "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.7,
                 "on": "all-in",
-                "fs": 0.058,
-                "short": {
-                  "fs": 0.07
-                }
+                "fs": 0.08,
+                "behind_moving": true
               }
             ],
             "hand_marks": true,
@@ -5649,18 +6145,16 @@
                 "type": "write",
                 "text": "ALL-IN PRICES",
                 "x": 0.49,
-                "y": 0.19,
-                "w": 0.26,
-                "h": 0.06,
+                "y": 0.2125,
+                "w": 0.23,
+                "h": 0.075,
                 "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.058,
-                "short": {
-                  "fs": 0.07
-                },
+                "fs": 0.08,
+                "behind_moving": true,
                 "hand": false
               },
               {
@@ -5668,17 +6162,14 @@
                 "text": "OFF",
                 "x": 0.17,
                 "y": 0.46,
-                "w": 0.09,
-                "h": 0.08,
+                "w": 0.1,
+                "h": 0.12,
                 "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.01,
                 "at": 0.0,
-                "fs": 0.058,
-                "short": {
-                  "fs": 0.11
-                },
+                "fs": 0.11,
                 "hand": false
               },
               {
@@ -5686,17 +6177,14 @@
                 "text": "ON",
                 "x": 0.76,
                 "y": 0.46,
-                "w": 0.09,
-                "h": 0.08,
+                "w": 0.08,
+                "h": 0.12,
                 "angle": 1.0,
                 "color": "ink",
                 "font": "headline",
                 "dur": 0.7,
                 "on": "included.",
-                "fs": 0.058,
-                "short": {
-                  "fs": 0.11
-                }
+                "fs": 0.11
               }
             ]
           },

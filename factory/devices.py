@@ -134,6 +134,7 @@ class Ledger:
         return img, hand
 
     def draw(self, frame: np.ndarray, t: float) -> None:
+        self.last_box = None
         if not self.visible(t):
             return
         g, cur = self._state(t)
@@ -148,6 +149,7 @@ class Ledger:
         small = cv2.resize(img, (w, h), interpolation=cv2.INTER_AREA)
         x = self.W - self.margin - w
         y = self.margin + int((1 - ease(a)) * -h * 0.5)  # Shorts: in the title band, above the picture (never on a face)
+        self.last_box = (x, y, x + w, y + h)  # QC plate_fit: plates never sit on the tab
         sh = np.zeros((h, w, 4), np.uint8)
         sh[..., 3] = 115
         blend(frame, cv2.GaussianBlur(sh, (0, 0), 6), x + 5, y + 7)

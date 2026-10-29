@@ -186,6 +186,42 @@ class CaseFileShot(Shot):
         self.stamp_at = float(spec.get("stamp_at", 0.6)) + lead_in
         self._cache = {}
 
+    def _inner(self) -> Image.Image:
+        """Inside of the cover; with "clip_image" (e.g. the case's hero ticket) that picture is paper-clipped to it, so the
+        left page of the open file is never an empty rectangle (Klot r84 item 25)."""
+        if getattr(self, "_inner_img", None) is not None:
+            return self._inner_img
+        fw, fh = self.fw, self.fh
+        inner = Image.new("RGBA", (fw, fh), _darker(self.manila, 0.96) + (255,))
+        d = ImageDraw.Draw(inner)
+        d.rectangle((0, 0, fw - 1, fh - 1), outline=_darker(self.manila, 0.75) + (255,), width=4)
+        ci = self.spec.get("_clip_img")
+        if ci:
+            try:
+                ph = Image.open(ci).convert("RGB")
+                box = self.spec.get("clip_box")  # crop of the picture (fractions), e.g. just the ticket
+                if box:
+                    W0, H0 = ph.size
+                    ph = ph.crop((int(box[0] * W0), int(box[1] * H0), int(box[2] * W0), int(box[3] * H0)))
+                tw = int(fw * 0.84)
+                th = int(ph.height * tw / ph.width)
+                ph = ph.resize((tw, th), Image.LANCZOS).convert("RGBA")
+                ph = ph.rotate(-3, resample=Image.BICUBIC, expand=True)
+                x, y = (fw - ph.width) // 2, int(fh * 0.30) - ph.height // 2 + int(fh * 0.08)
+                sh = Image.new("RGBA", ph.size, (0, 0, 0, 0))
+                sh.putalpha(Image.fromarray((np.array(ph)[..., 3] * 0.35).astype(np.uint8)).filter(ImageFilter.GaussianBlur(5)))
+                inner.alpha_composite(sh, (x + 6, y + 8))
+                inner.alpha_composite(ph, (x, y))
+                cx_, cy_ = x + int(ph.width * 0.22), y + 6  # a steel paper clip over the top edge
+                for k, (w_, h_) in enumerate(((22, 70), (14, 52))):
+                    d2 = ImageDraw.Draw(inner)
+                    d2.rounded_rectangle((cx_ - w_ // 2, cy_ - h_ // 2, cx_ + w_ // 2, cy_ + h_ // 2), radius=w_ // 2,
+                                         outline=(120, 120, 124, 255), width=5)
+            except Exception:  # noqa: BLE001 - a missing picture leaves the plain cover
+                pass
+        self._inner_img = inner
+        return inner
+
     def _scene(self, open_p: float, type_chars: int) -> np.ndarray:
         """The cover swings open on its spine like a real folder (perspective flip), revealing the typed page;
         the whole folder glides so the open spread ends up centred."""
@@ -224,9 +260,7 @@ class CaseFileShot(Shot):
                     tex = np.array(self.cover)
                     shade = 1 - 0.3 * sn
                 else:  # inside of the cover, now lying to the left of the spine
-                    inner = Image.new("RGBA", (fw, fh), _darker(self.manila, 0.96) + (255,))
-                    ImageDraw.Draw(inner).rectangle((0, 0, fw - 1, fh - 1), outline=_darker(self.manila, 0.75) + (255,), width=4)
-                    tex = np.array(inner)
+                    tex = np.array(self._inner())
                     shade = 1 - 0.25 * sn
                 tex = tex.copy()
                 tex[..., :3] = (tex[..., :3] * shade).astype(np.uint8)
@@ -372,13 +406,14 @@ class MugshotShot(Shot):
             rows.append((ui("NOTES"), spec["notes"]))
         lf = font(typew, int(BH * (0.017 if portrait else 0.03)))
         vf_path = head
+        self.text_dx = int(cw * 0.06) + max(26, int(BW * 0.018))  # rule 30: typed text starts right of the red margin line
         self.rows = []
         y = 0
         row_imgs = []
         self.row_type = []
         for label, value in rows:
             lab = text_block([label + ":"], lf, fill=pal["red"], align="left")
-            vfnt, vlines = fit_font(str(value).upper(), vf_path, int(cw * 0.86), int(BH * (0.09 if portrait else 0.16)), start=int(BH * (0.032 if portrait else 0.055)))
+            vfnt, vlines = fit_font(str(value).upper(), vf_path, int(cw - self.text_dx - cw * 0.06), int(BH * (0.09 if portrait else 0.16)), start=int(BH * (0.032 if portrait else 0.055)))
             val = text_block(vlines, vfnt, fill=pal["ink"], align="left")
             row_imgs.append((lab, val))
             self.row_type.append((vfnt, vlines))
@@ -396,10 +431,11 @@ class MugshotShot(Shot):
         self.BW, self.BH = BW, BH
         # marker word 'GUILTY?' scribble near the photo
         from .endscreen import _stamp
-        self.tag = _stamp(spec.get("tag", "WANTED"), cfg, int(pw * float(spec.get("stamp_w", 0.95))), pal["red"],
-                          float(spec.get("stamp_angle", 8)), seed + 5)  # a rubber stamp, dropped in (angle: + = rising, - = falling)
-        sp = spec.get("stamp_pos")  # (fx, fy) in photo fractions: where the SUSPECT stamp lands
-        self.tag_xy = (px + int(pw * sp[0]), py + int(ph * sp[1])) if sp else (px + pw - int(pw * 0.15), py - int(BH * 0.02))
+        # rule 29: the SUSPECT stamp lands across the middle of the booking photo, about -10 deg, ~70 % of its width
+        self.tag = _stamp(spec.get("tag", "WANTED"), cfg, int(pw * float(spec.get("stamp_w", 0.70))), pal["red"],
+                          float(spec.get("stamp_angle", -10)), seed + 5)  # a rubber stamp, dropped in (angle: + = rising, - = falling)
+        sp = spec.get("stamp_pos") or (0.5, 0.5)  # (fx, fy) in photo fractions: where the SUSPECT stamp lands
+        self.tag_xy = (px + int(pw * sp[0]), py + int(ph * sp[1]))
         # typing: each field types in letter by letter, in sync with the narration of that field
         n = len(row_imgs)
         ta = list(spec.get("_type_at") or [lead_in + 0.35 + i * 0.9 for i in range(n)])
@@ -426,7 +462,7 @@ class MugshotShot(Shot):
         for i, (lab, val) in enumerate(self.row_imgs):
             ta, td = self.type_at[i], self.type_dur[i]
             if t >= ta:
-                blend(canvas, lab, cx + int(self.BW * 0.03), y)
+                blend(canvas, lab, cx + self.text_dx, y)
                 vfnt, vlines = self.row_type[i]
                 total = sum(len(l) for l in vlines)
                 nch = total if t >= ta + td else int(total * (t - ta) / td)
@@ -446,7 +482,7 @@ class MugshotShot(Shot):
                         img = np.array(part)
                         self._typed[(i, nch)] = img
                 if nch > 0:
-                    blend(canvas, img, cx + int(self.BW * 0.03), y + lab.shape[0])
+                    blend(canvas, img, cx + self.text_dx, y + lab.shape[0])
             y += lab.shape[0] + val.shape[0] + int(self.BH * 0.015)
         if self.photo_marks:  # the hand writes / strikes on the booking photo (marks in photo fractions)
             from .shots import draw_marks

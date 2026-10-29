@@ -166,10 +166,48 @@ must report zero before a final render.
     give the mark that angle, keep it inside the surface's margins and centred on its empty area; a list is left-aligned
     on one margin ("align": "left", one "fs" for all lines); labels written in a column are centred on the clear paper
     between the subject and the frame margin, inside the push.
-29. Reveal pauses never cut a word (G4): "pause_at" cuts in the quietest 10 ms before the word (hiss of s / f / th
+29. Reveal pauses never cut a word (G4) - superseded by R33 below: "pause_at" no longer splices; it cut in the quietest 10 ms before the word (hiss of s / f / th
     counts as sound), soft 25 ms fade-out, 6 ms fade-in. tools/tts_scan.py (tts-scan.yml) synthesises every line like
     the build, transcribes it back (faster-whisper) and checks every join; run it on any new narration.
 30. A count-up lands on its value before the number is said (G5): with a reveal pause before the number, it lands as
     the silence starts; otherwise at the number's first syllable.
 31. Larry's tab never covers the subject (G6): a beat whose subject reaches into the tab's corner (top-right 18 % x
     22 %) gets "ledger_hide" (the tab steps aside); Shorts inherit it.
+
+## R-rules (Klot r84, from Ep.4 r85 on; long video AND Shorts, every episode)
+
+Numbered R26-R36 as Klot gave them (separate from rules 26-31 above). Every rule has an automatic check in
+factory/qc.py (run by the CI build -> qc_checks.md next to the videos, and locally by tools/qc/release_checks.py);
+any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
+
+- **R26 Plate fit:** every plate/caption fully inside the frame with >= 24 px margin, never overlapping another plate,
+  text never overflowing its plate. (Overlay._fit_plate shrinks, then wraps to two lines.) Check: plate_fit.
+- **R27 Shorts layout:** Shorts have their own layout pass - plates in the top band above the picture, stacked and
+  centred (cream archive caption, then the dark source/date plate with ALLEGED as its prefix; <= 88 % width, >= 40 px
+  side margins, cap height 36 -> min 30 px, then two lines; a caption or label too long for two lines gets a Shorts
+  version: visual "caption_short", beat "label_short"; Larry's tab steps aside while a band plate or a top card is up); one fixed crop window per beat containing the subject and
+  all its marks with >= 6 % margin (render.short_windows; push-ins zoom inside it). Checks: plate_fit, crop_fit.
+- **R28 No jitter:** camera moves are sub-pixel (float affine, never integer crops); picture-attached overlays are
+  composited onto the picture before the move; tracked clips are smoothed (shots._smooth_tracks). Screen-fixed
+  plates never move. Check: jitter_check (no reversal > 0.25 px).
+- **R29 Marks sit on their object:** handwriting and stamps land on blank paper of the object they belong to, inside it
+  with >= 6 % margin, level with the object (+-2 deg), never over printed text, never floating on a busy illustration
+  (use a cream note: mark "note": true). Ink on a surface a clip's moving part passes in front of (the switch lever)
+  gets "behind_moving": the engine hides the ink wherever the frame differs from the clip's still scene. Mugshot stamps centred, about -10 deg, ~70 % of the photo width. Give such
+  marks "obj": [x0, y0, x1, y1, angle] and "printed": [[x0, y0, x1, y1], ...] (picture fractions). Check: mark_on_object.
+- **R30 Typed card text starts right of the red margin line** (>= 16 px; props.Mugshot text_dx).
+- **R31 Kinetic text is laid out in its final position before the reveal;** nothing moves when a word appears (only the
+  background pushes). Check: text_stability.
+- **R32 Push-ins never crop the object they are about** (evidence card incl. its tag with >= 4 % margin, ticket, plate;
+  evidence._camera fits the zoom); a mark on the picture never leaves the frame while it is on screen - a clip's own
+  push-in included (fade it out first: "fade_after"). Checks: plate_fit, crop_fit, mark_in_frame.
+- **R33 Narration cuts/pauses only at word boundaries with silence on both sides;** otherwise regenerate with a break.
+  "pause_at" makes the voice itself pause (a "..." break in the text sent to the TTS) - no splicing unless
+  "splice": true and the scan shows >= 40 ms of silence on both sides. Check: voice_cut_check (RMS < -45 dBFS in the
+  30 ms before and after every edit point, every point listed) + tools/tts_scan.py.
+- **R34 Marker scratch SFX only while ink is being laid:** the sound is driven by the handwriting engine (one scratch
+  per stroke, from the first stroke to pen lift; a mark already there makes no sound). Check: sfx_sync (no scratch
+  outside an ink span, none > 80 ms after pen lift).
+- **R35 Chart bars grow monotonically from zero,** all together; labels without trailing zeros (37.5 %). Check: handcheck.
+- **R36 The same object keeps its position across consecutive beats** (no ticket jump between shots: one picture,
+  "cam_continue", one Shorts window per run of beats on the same picture). Checks: crop_fit, handcheck.

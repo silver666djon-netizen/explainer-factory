@@ -30,7 +30,7 @@ from .i18n import ui
 
 PAPER = (238, 226, 196)
 INK = (38, 32, 26)
-PUSH = 0.04   # camera push-in over the shot
+PUSH = 0.05   # camera push-in over the shot (even, rule 26)
 TILT = 0.7    # degrees of camera tilt over the shot
 DROP = 0.42   # seconds for the clipping to land
 
@@ -346,14 +346,49 @@ class EvidenceShot(Shot):
         dx, dy = (x - self.clip.w / 2) * s, (y - self.clip.h / 2) * s
         return (self.cx + dx * math.cos(a) - dy * math.sin(a), self.cy + dx * math.sin(a) + dy * math.cos(a))
 
+    def _obj_box(self):
+        """The card + its EVIDENCE tag on the board (px): what a push-in must never crop (rule 32)."""
+        if getattr(self, "_box", None) is None:
+            a = self._layer(1.0)[0][..., 3]
+            ys, xs = np.nonzero(a > 8)
+            self._box = (float(xs.min()), float(ys.min()), float(xs.max()), float(ys.max())) if len(xs) else (0, 0, self.BW, self.BH)
+        return self._box
+
     def _camera(self, t):
-        p = ease(t / max(self.duration, 1e-6))
-        z = (self.W / self.BW) * 1.10 * (1 + PUSH * p)  # board is 10 % larger than the frame
+        """Push-ins limited so the whole card incl. its tag stays inside the frame with a 4 % margin (rule 32)."""
+        M = self._camera_k(t, 1.0)
+        if not self._fits(M):
+            lo, hi = 0.0, 1.0
+            for _ in range(14):
+                mid = (lo + hi) / 2
+                if self._fits(self._camera_k(t, mid)):
+                    lo = mid
+                else:
+                    hi = mid
+            M = self._camera_k(t, lo)
+        return M
+
+    def _fits(self, M) -> bool:
+        x0, y0, x1, y1 = self._obj_box()
+        mx, my = 0.04 * self.W, 0.04 * self.H
+        for bx, by in ((x0, y0), (x1, y0), (x0, y1), (x1, y1)):
+            sx, sy = M[0, 0] * bx + M[0, 1] * by + M[0, 2], M[1, 0] * bx + M[1, 1] * by + M[1, 2]
+            if sx < mx - 0.5 or sx > self.W - mx + 0.5 or sy < my - 0.5 or sy > self.H - my + 0.5:
+                return False
+        return True
+
+    def _camera_k(self, t, k):
+        p = min(1.0, max(0.0, t / max(self.duration, 1e-6)))  # an even push: never still at the ends (rule 26)
+        base = (self.W / self.BW) * 1.10
+        x0, y0, x1, y1 = self._obj_box()
+        fit = min((self.W * 0.92) / max(1.0, x1 - x0), (self.H * 0.92) / max(1.0, y1 - y0))
+        base = min(base, fit) if k < 1.0 else base  # (a card that never fits at all is shown whole)
+        z = base * (1 + PUSH * p * k)
         pa = self.spec.get("_push_at")
         if pa is not None and t > pa and self.strokes:  # second framing: push in on the marked words
             ramp = self.spec.get("push_ease", 0.9)  # seconds, or "rest": a slow push across the rest of the shot
             ramp = max(0.3, self.duration - pa) if ramp == "rest" else float(ramp)
-            q = ease(min(1.0, (t - pa) / ramp))
+            q = ease(min(1.0, (t - pa) / ramp)) * k
             z *= 1 + float(self.spec.get("push_zoom", 0.32)) * q
             pts = np.concatenate(self.strokes)
             tx, ty = float(pts[:, 0].mean()), float(pts[:, 1].mean())

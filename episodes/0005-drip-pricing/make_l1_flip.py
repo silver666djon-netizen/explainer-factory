@@ -32,16 +32,16 @@ def fnt(name, size):
 
 def ticket_faces():
     """Front (as in images/l1.png: the o1 ticket with $30 written in ink) and back, both 880 x 400 RGBA."""
-    DX = -167
-    tx0, ty0, tx1, ty1 = 250 + DX, 190, 1130 + DX, 590
+    TK = dict(x0=83, y0=170, x1=1043, y1=610, sx=713)  # the ticket box of gen_script.py (TK)
+    tx0, ty0, tx1, ty1 = TK["x0"], TK["y0"], TK["x1"], TK["y1"]
     front = Image.open(OUT / "o1.png").convert("RGB").crop((tx0, ty0, tx1, ty1))
-    ImageDraw.Draw(front).text(((410 + 740) / 2 + DX - tx0, (460 + 550) / 2 - ty0), "$30", font=fnt("PermanentMarker-Regular.ttf", 74),
-                               fill=INK, anchor="mm")
+    ImageDraw.Draw(front).text(((tx0 + 150 + TK["sx"] - 150) / 2 - tx0, (ty0 + 280 + ty1 - 50) / 2 - ty0), "$30",
+                               font=fnt("PermanentMarker-Regular.ttf", 70), fill=INK, anchor="mm")
     w, h = front.size
     back = Image.new("RGB", (w, h), BG)
     d = ImageDraw.Draw(back)
     d.rounded_rectangle((0, 0, w - 1, h - 1), radius=26, fill=PAPER, outline=INK, width=10)
-    sx = 230  # the stub is on the left now
+    sx = w - (TK["sx"] - tx0)  # the stub is on the left now
     for yy in range(24, h - 20, 34):
         d.ellipse((sx - 7, yy - 7, sx + 7, yy + 7), fill=BG, outline=INK, width=3)
     d.text(((sx + w) / 2, 58), "BORDER CONTROL", font=fnt("ArchivoBlack-Regular.ttf", 30), fill=(196, 186, 166), anchor="mm")

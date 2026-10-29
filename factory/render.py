@@ -275,6 +275,11 @@ def _remap_mark(m: dict, box) -> dict:
     if m.get("target"):
         tx0, ty0, tx1, ty1 = m["target"]
         m["target"] = [(tx0 - bx0) / sx, (ty0 - by0) / sy, (tx1 - bx0) / sx, (ty1 - by0) / sy]
+    for k in ("obj", "printed"):  # QC mark_on_object boxes travel with the mark
+        if m.get(k):
+            bs = [m[k]] if k == "obj" else m[k]
+            bs = [[(b[0] - bx0) / sx, (b[1] - by0) / sy, (b[2] - bx0) / sx, (b[3] - by0) / sy] + list(b[4:]) for b in bs]
+            m[k] = bs[0] if k == "obj" else bs
     return m
 
 
@@ -338,9 +343,73 @@ def still_runs(plan: Plan, limit: float = 8.0) -> list[tuple[float, float, str]]
     return out
 
 
+def _mark_span(m: dict) -> tuple[float, float]:
+    x, w = float(m.get("x", 0.5)), float(m.get("w", 0.1))
+    lo, hi = x - w / 2, x + w / 2
+    if m.get("target"):
+        lo, hi = min(lo, float(m["target"][0])), max(hi, float(m["target"][2]))
+    if m.get("type") == "write" and m.get("follow"):
+        hi += 0.10  # a mark riding on a piece that slides
+    return lo, hi
+
+
+def short_windows(beats: list[dict], beat_lookup: dict) -> None:
+    """Rule 27 (Shorts layout): each beat gets ONE picture window that holds the subject and every mark of the beat
+    with a 6 % margin, fixed for the whole beat (closeups become marks on that same window; the push stays inside it),
+    and consecutive beats on the same picture share it (rule 36: the object never jumps between beats)."""
+    groups, cur, cur_key = [], [], None
+    for b in beats:
+        v = b.get("visual") or {}
+        if v.get("type") not in ("image", "reuse") or v.get("_short_window") is False:
+            if cur:
+                groups.append(cur)
+            cur, cur_key = [], None
+            continue
+        key = v["beat"] if v.get("type") == "reuse" else b.get("id")
+        if v.get("type") == "reuse" and (beat_lookup.get(v["beat"], {}).get("visual", {}).get("type") not in ("image",)):
+            if cur:
+                groups.append(cur)
+            cur, cur_key = [], None
+            continue
+        cu = v.get("closeup")
+        if cu:  # the closeup's marks join the beat's marks (they are given in picture fractions too)
+            extra = [dict(m) for m in (cu.get("marks") or [])]
+            for m in extra:
+                m.setdefault("on", cu.get("on"))
+            v["marks"] = list(v.get("marks") or []) + extra
+            v.pop("closeup", None)
+        if key != cur_key and cur:
+            groups.append(cur)
+            cur = []
+        cur_key = key
+        cur.append(b)
+    if cur:
+        groups.append(cur)
+    for g in groups:
+        lo, hi = 1.0, 0.0
+        for b in g:
+            v = b["visual"]
+            src = beat_lookup.get(v.get("beat"), {}).get("visual", {}) if v.get("type") == "reuse" else v
+            for m in v.get("marks") or []:
+                a, c = _mark_span({**m, **(m.get("short") or {})})
+                lo, hi = min(lo, a), max(hi, c)
+            for f in (v.get("short_fit"), src.get("short_fit"), v.get("subject_x"), src.get("subject_x")):
+                if f:
+                    lo, hi = min(lo, float(f[0])), max(hi, float(f[1]))
+        if hi <= lo:
+            continue
+        fit = [max(0.0, lo - 0.06), min(1.0, hi + 0.06)]
+        for b in g:
+            b["visual"]["short_fit"] = fit
+
+
 def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause: float = 0.0) -> Plan:
     from .draw import set_hand_style
     set_hand_style(cfg)  # Ep.4 on: narrator hands without Larry's sleeve
+    if kind == "short":
+        import copy as _copy
+        beats = _copy.deepcopy(beats)
+        short_windows(beats, beat_lookup)
     vcfg = cfg["video"]
     reveal_hits = []  # (beat index, word time, sfx) after inserted pauses
     voiced = list(voiced)
@@ -442,7 +511,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 visual["motion"] = "static"
                 capv = visual if vtype == "archive" else beat_lookup[visual["beat"]]["visual"]
                 if capv.get("caption"):
-                    plan.plates.append((shot_start, shot_end, str(capv["caption"])))  # captioned archive prints: a big push would slide the caption into the subtitles
+                    cap_txt = capv.get("caption_short") if kind == "short" and capv.get("caption_short") else capv["caption"]
+                    plan.plates.append((shot_start, shot_end, str(cap_txt)))  # Shorts: the band takes a 2-line version  # captioned archive prints: a big push would slide the caption into the subtitles
             marks = [{**m, **((m.get("short") or {}) if kind == "short" else {})} for m in (visual.get("marks") or [])]
             marks = [dict(m, at=_timed(m, v["words"], 0.6) + lead_in) for m in marks]  # "short": {x, y, at, ...} = Shorts placement
             for m in marks:  # a label that is replaced when another word is spoken
@@ -603,7 +673,12 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         sp_["t0"] = -100.0
                     else:
                         sp_["t0"] = _timed(sp_, v["words"], 1.0) + lead_in
+                    if sp_.get("back_on"):  # "back_on": word -> the halves slide back together from there
+                        sp_["t_back"] = _timed({"on": sp_["back_on"], "delay": sp_.get("back_delay", 0.0)}, v["words"], 0.5) + lead_in
                     shot.split = sp_
+                    for m in shot.marks:  # the dashed cut line is gone once the ticket is cut along it
+                        if m.get("until_split"):
+                            m["until"] = sp_["t0"] + 0.02
                 if visual.get("cam_rate") is not None and k == 0:  # slow even push; "cam_continue": on from the last shot
                     z0 = 1.0
                     prev = plan.shots[-1] if plan.shots else None
@@ -672,6 +747,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     cfs["open_stamp_at"] = _timed({"on": cfs["open_stamp_on"]}, v["words"], 2.5)
                 for wr_ in cfs.get("writes") or []:  # handwritten additions on the open page
                     wr_["at"] = _timed(wr_, v["words"], 2.5)
+                if cfs.get("clip_image") and cfs["clip_image"] in images:
+                    cfs["_clip_img"] = str(images[cfs["clip_image"]])
                 prop = CaseFileShot(shot_start, span, cfs, cfg, size, lead_in)
             plan.shots.append(prop)
             for at, kind_sfx in prop.sfx(shot_start):
@@ -873,7 +950,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 lw = word_time(v["words"], beat["label_on"])
                 if lw is not None:
                     l0 = start + lw + float(beat.get("label_delay", 0.0))
-            plan.labels.append((l0, shot_end, str(beat["label"])))
+            plan.labels.append((l0, shot_end, str(beat.get("label_short") if kind == "short" and beat.get("label_short") else beat["label"])))
         if beat.get("alleged"):
             plan.alleged.append((shot_start, shot_end))
         if beat.get("ledger_hide") or beat.get("hero") or visual.get("hero"):
@@ -898,6 +975,13 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         from .devices import Ledger
         # one hand at a time: Larry's tab is written only when no other hand is on screen
         busy = sorted(plan.hand_windows)
+        if kind == "short":  # R26: a Short's top-band card (hook, price card) and the tab never share the band -
+            # the tab steps aside while a card is up and writes its line just after the card has gone
+            for c in plan.cards:
+                plan.ledger_hide.append((c.start - 0.2, c.end + 0.2))
+                for row in ledger_rows:
+                    if c.start - 0.9 < row["at"] < c.end + 0.2:
+                        row["at"] = c.end + 0.35
         last = -1e9
         last_write = -1e9
         for row in sorted(ledger_rows, key=lambda r: r["at"]):
@@ -917,6 +1001,12 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             last = at + 0.15 + wd + HAND_OUT
             last_write = at + 0.15 + wd
             plan.hand_windows.append((at + 0.15 - (0.0 if row.get("chain") else HAND_IN), last))
+        if kind == "short":  # R26/R27: the band plates (archive caption, long source plate) never share the band with
+            # the tab - it steps aside while they are up, unless it is writing a line then
+            wr = [(r["at"] - 0.6, r["at"] + 0.15 + float(r.get("dur", Ledger.WRITE)) + 1.0) for r in ledger_rows]
+            for p0, p1, *_x in list(plan.plates) + [l for l in plan.labels if len(l[2]) > 22]:
+                if not any(a0 < p1 and p0 < a1 for a0, a1 in wr):
+                    plan.ledger_hide.append((p0 - 0.2, p1 + 0.2))
         plan.ledger = Ledger(ledger_rows, cfg, size, hide=plan.ledger_hide)
         for at, k_ in plan.ledger.sfx():
             plan.timeline.add_sfx(at, k_, seed=int(at * 10))
@@ -927,7 +1017,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
     return plan
 
 
-CARD_PUSH = {"StatShot": 0.045, "ChartShot": 0.04, "KineticShot": 0.045, "EvidenceShot": 0.05, "EndScreenShot": 0.012}
+CARD_PUSH = {"StatShot": 0.045, "ChartShot": 0.04, "EndScreenShot": 0.012}  # (evidence: its own even push, fitted)  # (kinetic: its paper moves, not the words)
 CARD_ANCHOR = {"EndScreenShot": (0.5, 0.0)}  # the end screen grows from its top edge: the next-case card is never cropped
 
 
@@ -994,7 +1084,7 @@ class Overlay:
         key = ("k", id(card))
         if key not in self.cache:
             fnt, lines = fit_font(card.text.upper(), self.head, int(self.W * (0.4 if card.corner else 0.72)),
-                                   int(self.H * (0.1 if self.plan.kind == "short" else 0.18)), start=int(self.H * 0.08))
+                                   int(self.H * (0.08 if self.plan.kind == "short" else 0.18)), start=int(self.H * 0.08))
             blk = text_block(lines, fnt, fill=self.pal["ink"], pad=int(fnt.size * 0.4))
             h, w = blk.shape[:2]
             frame_w = max(6, fnt.size // 9)
@@ -1117,13 +1207,129 @@ class Overlay:
                 x, y = int(self.W * 0.05), int(self.H * 0.66)
             blend(frame, img, x, y, opacity=op)
 
+    def _fit_plate(self, txt: str, path: str, fill, box_fill, max_w: int, cap0: int, cap_min: int, key) -> np.ndarray:
+        """Rule 26 (plate fit): one line at cap0 px cap height, shrunk down to cap_min if it is too wide, then wrapped
+        onto two lines (before a '·' when it can) - never wider than max_w."""
+        if key in self.cache:
+            return self.cache[key]
+        from .text import wrap_caption
+        cap = cap0
+        while True:
+            fnt = font(path, max(10, int(cap / 0.72)))
+            pad = int(fnt.size * 0.4)
+            if fnt.getlength(txt) + 2 * pad + 4 <= max_w or cap <= cap_min:
+                break
+            cap -= 1
+        lines = [txt]
+        if fnt.getlength(txt) + 2 * pad + 4 > max_w:
+            lines = wrap_caption(txt, fnt, max_w - 2 * pad - 4)
+            if len(lines) > 2 or max(fnt.getlength(l) for l in lines) + 2 * pad + 4 > max_w:
+                ws = txt.split()  # balanced two lines: the word break that makes the longer line shortest
+                best = min(range(1, len(ws)), key=lambda q: max(fnt.getlength(" ".join(ws[:q])), fnt.getlength(" ".join(ws[q:]))),
+                           default=None)
+                lines = [" ".join(ws[:best]), " ".join(ws[best:])] if best else [txt]
+                if max(fnt.getlength(l) for l in lines) + 2 * pad + 4 > max_w:
+                    lines = wrap(txt, fnt, max_w - 2 * pad - 4)
+        img = text_block(lines, fnt, fill=fill, box_fill=box_fill, pad=pad)
+        self.cache[key] = img
+        return img
+
+    def _rec(self, kind: str, x: int, y: int, im: np.ndarray, text_box=None) -> None:
+        self.boxes.append((kind, int(x), int(y), int(x + im.shape[1]), int(y + im.shape[0])))
+
+    def _window_top(self, t: float) -> int:
+        """Shorts: top of the picture window of the shot on screen (the plates' band ends above it)."""
+        from .shots import SHORT_VIEW_TOP
+        for sh in self.plan.shots:
+            if sh.start <= t < sh.start + sh.duration and getattr(sh, "full", None):
+                return int(getattr(sh, "y0", self.H * SHORT_VIEW_TOP))
+        return int(self.H * SHORT_VIEW_TOP)
+
+    def _short_rows(self, t: float):
+        """The band rows of a Short at t: [(kind, [plate images])] (kind plate | label | alleged | stack)."""
+        rows = []
+        k = self.W / 1080.0  # sizes are set for a 1080-wide Short
+        mw = min(int(self.W * 0.88), self.W - int(80 * k))
+        c0, c1 = int(round(36 * k)), int(round(30 * k))  # cap height: 36 px, shrunk to 30 px min, then two lines
+        for p0, p1, txt in self.plan.plates:
+            if p0 <= t < p1:
+                rows.append(("plate", [self._fit_plate(txt, self.body, self.pal["ink"], (250, 246, 236, 255), mw, c0, c1,
+                                                       ("sp", txt, mw))]))
+        lab = next((txt for l0, l1, txt in self.plan.labels if l0 <= t < l1), None)
+        alleged = any(a0 <= t < a1 for a0, a1 in self.plan.alleged)
+        if lab is not None or alleged:
+            al = self._fit_plate(ui("ALLEGED"), self.head, self.pal["paper"], self.pal["red"] + (240,), mw, c1, c1, ("sa", c1)) if alleged else None
+            aw = al.shape[1] + 10 if al is not None else 0
+            if lab is None:
+                rows.append(("alleged", [al]))
+            else:
+                im = self._fit_plate(lab.upper(), self.body, self.pal["paper"], self.pal["ink"] + (230,), mw - aw, c0, c1,
+                                     ("sl", lab, mw - aw))
+                if al is not None and (im.shape[1] > mw - aw or im.shape[0] > 3.2 * al.shape[0]):
+                    # too long for one row beside ALLEGED: ALLEGED sits directly on top of the dark plate, left-aligned
+                    im = self._fit_plate(lab.upper(), self.body, self.pal["paper"], self.pal["ink"] + (230,), mw, c0, c1, ("sl", lab, mw))
+                    rows.append(("stack", [al, im]))
+                else:
+                    rows.append(("label", ([al] if al is not None else []) + [im]))
+        return rows, alleged
+
+    def _rows_h(self, rows) -> int:
+        k = self.W / 1080.0
+        h = 0
+        for kind, parts in rows:
+            h += (parts[0].shape[0] + 4 + parts[1].shape[0]) if kind == "stack" else max(p_.shape[0] for p_ in parts)
+            h += int(12 * k)
+        return h
+
+    def _short_plates(self, frame: np.ndarray, t: float, hook_bottom: int | None) -> None:
+        """Rule 27: in a Short every plate of the beat sits in the empty band above the picture, centred and stacked -
+        the cream archive caption first, the dark source/date plate under it with ALLEGED as its red prefix."""
+        rows, alleged = self._short_rows(t)
+        k = self.W / 1080.0
+        if not rows:
+            return
+        y = (hook_bottom + int(18 * k)) if hook_bottom is not None else int(40 * k)
+        if hook_bottom is None:  # a tall stack starts higher (never closer than 24 px to the top edge)
+            y = max(int(24 * k), min(y, self._window_top(t) - self._rows_h(rows) - int(4 * k)))
+        lb = getattr(self.plan.ledger, "last_box", None) if self.plan.ledger is not None else None
+        if lb:  # R26: never on Larry's tab - a row that would reach under it starts below it (still centred)
+            wmax = max((max(p_.shape[1] for p_ in parts) if kind == "stack" else sum(p_.shape[1] for p_ in parts) + 10 * (len(parts) - 1))
+                       for kind, parts in rows)
+            if (self.W + wmax) // 2 > lb[0] - int(8 * k) and y < lb[3] + int(10 * k):
+                y = lb[3] + int(12 * k)
+        for kind, parts in rows:
+            if kind == "stack":
+                al, im = parts
+                x = (self.W - im.shape[1]) // 2
+                blend(frame, al, x, y)
+                self._rec("alleged", x, y, al)
+                y += al.shape[0] + 4
+                blend(frame, im, x, y)
+                self._rec("label", x, y, im)
+                y += im.shape[0] + int(12 * k)
+                continue
+            h = max(p_.shape[0] for p_ in parts)
+            w = sum(p_.shape[1] for p_ in parts) + 10 * (len(parts) - 1)
+            x = (self.W - w) // 2
+            for p_ in parts:
+                kd = "alleged" if (alleged and p_ is parts[0] and kind == "label" and len(parts) > 1) else kind
+                blend(frame, p_, x, y + (h - p_.shape[0]) // 2)
+                self._rec(kd, x, y + (h - p_.shape[0]) // 2, p_)
+                x += p_.shape[1] + 10
+            y += h + int(12 * k)
+
     def apply(self, frame: np.ndarray, t: float, cap_i: int, card_i: int, bub_i: int) -> None:
+        self.boxes = []
+        short = self.plan.kind == "short"
         for ins in self.plan.inserts:
             if ins.start <= t <= ins.end:
                 ins.draw(frame, t)
         if self.plan.ledger is not None:
             self.plan.ledger.draw(frame, t)
-        for p0, p1, txt in self.plan.plates:
+            lb = getattr(self.plan.ledger, "last_box", None)
+            if lb:
+                self.boxes.append(("ledger",) + tuple(int(v) for v in lb))
+        for p0, p1, txt in (self.plan.plates if not short else []):
             if p0 <= t < p1:
                 key = ("plate", txt)
                 if key not in self.cache:
@@ -1133,16 +1339,25 @@ class Overlay:
                 from .shots import SHORT_VIEW_TOP
                 py = int(self.H * SHORT_VIEW_TOP + self.W * 0.93) if self.plan.kind == "short" else int(self.H * 0.745)
                 blend(frame, im, (self.W - im.shape[1]) // 2, py - im.shape[0] // 2)
-        for l0, l1, txt in self.plan.labels:
+                self._rec("plate", (self.W - im.shape[1]) // 2, py - im.shape[0] // 2, im)
+        for l0, l1, txt in (self.plan.labels if not short else []):
             if l0 <= t < l1:
                 key = ("label", txt)
                 if key not in self.cache:
                     fnt = font(self.body, max(14, int(self.H * 0.026)))
+                    al_w = 0
+                    if any(a0 < l1 and l0 < a1 for a0, a1 in self.plan.alleged):  # room for the ALLEGED plate beside it
+                        al_w = int(font(self.head, max(14, int(self.H * 0.03))).getlength(ui("ALLEGED"))) + int(self.H * 0.03) + int(self.W * 0.008)
+                    mw = self.W - 2 * int(self.W * 0.03) - al_w
+                    while fnt.size > 14 and fnt.getlength(txt.upper()) + 2 * int(fnt.size * 0.4) + 4 > mw:
+                        fnt = font(self.body, fnt.size - 1)  # rule 26: never wider than the frame allows
                     self.cache[key] = text_block([txt.upper()], fnt, fill=self.pal["paper"], box_fill=self.pal["ink"] + (210,), pad=int(fnt.size * 0.4))
                 im = self.cache[key]
-                yb = self.H * (0.04 if self.H < self.W else 0.235)
-                blend(frame, im, self.W - im.shape[1] - int(self.W * 0.03), int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01))
-        for a0, a1 in self.plan.alleged:  # red ALLEGED plate, left of the source plate (or alone, bottom-right)
+                yb = self.H * 0.04
+                lx, ly = self.W - im.shape[1] - int(self.W * 0.03), int(self.H - yb - im.shape[0])
+                blend(frame, im, lx, ly)
+                self._rec("label", lx, ly, im)
+        for a0, a1 in (self.plan.alleged if not short else []):  # red ALLEGED plate, left of the source plate (or alone, bottom-right)
             if a0 <= t < a1:
                 key = ("alleged",)
                 if key not in self.cache:
@@ -1155,8 +1370,11 @@ class Overlay:
                     lw = self.cache.get(("label", lab), np.zeros((1, 0, 4), np.uint8)).shape[1] + int(self.W * 0.008)
                 yb = self.H * (0.04 if self.H < self.W else 0.235)
                 x = self.W - lw - im.shape[1] - int(self.W * 0.03)
-                y = int(self.H - yb - im.shape[0]) if self.H < self.W else int(self.W + self.H * 0.17 - im.shape[0] - self.H * 0.01)
+                lab_im = self.cache.get(("label", lab)) if lab is not None else None
+                y = int(self.H - yb - (lab_im.shape[0] if lab_im is not None else im.shape[0]))  # same row as the source plate
+                y += ((lab_im.shape[0] - im.shape[0]) // 2) if lab_im is not None else 0
                 blend(frame, im, x, y)
+                self._rec("alleged", x, y, im)
                 break
         for s0, s1, txt, slip, pos in self.plan.stamps:
             if slip and self.plan.kind == "short" and slip.get("short"):
@@ -1172,7 +1390,10 @@ class Overlay:
                         h0, w0 = self.cache[key].shape[:2]
                         pw_, ph_ = int(w0 * 1.16), int(h0 * 1.45)
                         sl = Image.new("RGBA", (pw_, ph_), (0, 0, 0, 0))
-                        ImageDraw.Draw(sl).rectangle((4, 4, pw_ - 5, ph_ - 5), fill=(246, 238, 216, 255), outline=(200, 190, 168, 255), width=2)
+                        if slip.get("dark"):  # a dark semi-opaque panel: the red stamp reads over bright stage lights
+                            ImageDraw.Draw(sl).rounded_rectangle((4, 4, pw_ - 5, ph_ - 5), radius=max(6, ph_ // 10), fill=(22, 20, 18, 185))
+                        else:
+                            ImageDraw.Draw(sl).rectangle((4, 4, pw_ - 5, ph_ - 5), fill=(246, 238, 216, 255), outline=(200, 190, 168, 255), width=2)
                         sl = sl.rotate(float(slip.get("slip_angle", -4)), resample=Image.BICUBIC, expand=True)
                         sh_ = Image.new("RGBA", sl.size, (0, 0, 0, 0))
                         sh_.putalpha(Image.fromarray((np.array(sl)[..., 3] * 0.45).astype(np.uint8)).filter(ImageFilter.GaussianBlur(6)))
@@ -1206,16 +1427,31 @@ class Overlay:
                 y = int(self.H * (0.25 if self.plan.kind == "short" else 0.05))
                 blend(frame, img, x, y, opacity=op)
         cards = self.plan.cards
+        fit_card = lambda im: im
+        if short:  # R27: the top card (hook / price card) shrinks so the band plates still fit above the picture
+            rows_, _al = self._short_rows(t)
+            if rows_:
+                room = self._window_top(t) - self.card_y - int(18 * self.W / 1080) - self._rows_h(rows_)
+                def fit_card(im, room=room):
+                    if im.shape[0] > room > 0:
+                        f = max(0.35, room / im.shape[0])
+                        im = cv2.resize(im, (max(1, int(im.shape[1] * f)), max(1, int(im.shape[0] * f))), interpolation=cv2.INTER_AREA)
+                    return im
         if card_i < len(cards) and cards[card_i].start <= t < cards[card_i].end:
             card = cards[card_i]
             if card.hook:  # Shorts opener: full card from frame 0 in the title band above the picture window
-                img = self.card_img(card)
+                img = fit_card(self.card_img(card))
                 blend(frame, img, (self.W - img.shape[1]) // 2, self.card_y, opacity=min(1.0, (card.end - t) / 0.15))
+                self._rec("hook", (self.W - img.shape[1]) // 2, self.card_y, img)
             else:
-                img, op = self._pop(self.card_img(card), t - card.start)
+                img, op = self._pop(fit_card(self.card_img(card)), t - card.start)
                 op *= min(1.0, (card.end - t) / 0.15)
                 x = int(self.W * 0.04) if card.corner else (self.W - img.shape[1]) // 2
                 blend(frame, img, x, self.card_y, opacity=op)
+                self._rec("card", x, self.card_y, img)
+        if short:
+            hb = max([b[4] for b in self.boxes if b[0] in ("hook", "card")] or [0]) or None
+            self._short_plates(frame, t, hb)
         bubs = self.plan.bubbles
         if bub_i < len(bubs) and bubs[bub_i].start <= t < bubs[bub_i].end:
             bub = bubs[bub_i]
@@ -1236,6 +1472,7 @@ class Overlay:
             img = self.caption_img(cap, active)
             cxp = int(self.W * cap.cx) if cap.cx is not None else self.W // 2
             blend(frame, img, cxp - img.shape[1] // 2, self.cap_y - img.shape[0] // 2)
+            self._rec("caption", cxp - img.shape[1] // 2, self.cap_y - img.shape[0] // 2, img)
 
 
 def _loudnorm_filter(wav_path: Path, lufs: float) -> str:

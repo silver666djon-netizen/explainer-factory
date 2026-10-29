@@ -243,3 +243,14 @@ gh run list --workflow render.yml -L 1 --json databaseId,status,conclusion
   print (Ticketmaster); the £3 fee that cost £4.2 m (AA); a resort fee at a city hotel (Marriott); your brain
   on partitioned prices; 1958 — the sticker that started it; same fee, three legal systems (US/UK/EU).
 - After Ep.4 angle is chosen: structure → script → scene list → preview → render, each approved by him.
+
+## r85 (Klot r84 list): release checks, Shorts band layout
+- factory/qc.py: plate_fit, crop_fit, jitter_check, mark_in_frame, mark_on_object, sfx_sync, voice_cut_check,
+  text_stability. The CI build runs them on the real plans and writes out/<slug>/qc_checks.md + .json (published with
+  the release); locally `python3 tools/qc/release_checks.py episodes/<slug> <timings.json> --skip voice_cut_check`.
+  Whole regression list before a release: `tools/qc/run_regression.sh episodes/<slug> <release dir>`
+  (docs/REGRESSION_CHECKS.md). Any FAIL blocks the release / the Telegram send.
+- New keys: mark "obj" / "printed" (QC boxes, picture fractions), mark "behind_moving" (clip's moving part hides the
+  ink), visual "caption_short" and beat "label_short" (Shorts band versions), mark "fade_after" (s after writing).
+- Shorts band (Overlay._short_rows / _short_plates): cream caption, then ALLEGED + dark plate (stacked when too long);
+  top card shrinks to leave the band room; the tab steps aside while a card or band plate is up.

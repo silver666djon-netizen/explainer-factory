@@ -421,7 +421,8 @@ def clip_cover(sh, limit=0.03):
             continue
         hi = max(cov)
         lo = min(cov, key=lambda c: c[1])
-        if hi[0] > limit:  # something moves across the ink while it is on screen
+        if hi[0] > limit and not m.get("behind_moving"):  # something moves across the ink while it is on screen
+            # ("behind_moving": the engine hides the ink where the moving part passes in front of it)
             out.append((hi[2], f"{typ} '{m.get('text', '')}' sits on a surface a moving part of the clip crosses "
                                f"({hi[0]:.0%} of its ink box at clip {hi[3]:.2f} s) - rule 25"))
         elif lo[1] > limit and not m.get("on_object"):

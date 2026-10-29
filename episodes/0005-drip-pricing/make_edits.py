@@ -58,11 +58,11 @@ Image.fromarray(im).save(OUT / "c4.png")
 desk = Image.open(CACHE / f"{FRAMES['l1']}.png").convert("RGB")
 W, H = desk.size
 tk = Image.open(OUT / "o1.png").convert("RGB")
-DX = -167  # TICKET_DX in gen_script.py: o1 draws the ticket 167 px left of the old place
-tx0, ty0, tx1, ty1 = 250 + DX, 190, 1130 + DX, 590
+TK = dict(x0=83, y0=170, x1=1043, y1=610, sx=713)  # the ticket box of gen_script.py (TK)
+tx0, ty0, tx1, ty1 = TK["x0"], TK["y0"], TK["x1"], TK["y1"]
 ticket = tk.crop((tx0, ty0, tx1, ty1))
 d = ImageDraw.Draw(ticket)  # the price, handwritten in ink as in the cold open
-d.text(((410 + 740) / 2 + DX - tx0, (460 + 550) / 2 - ty0), "$30", font=fnt("PermanentMarker-Regular.ttf", 74), fill=INK, anchor="mm")
+d.text(((tx0 + 150 + TK["sx"] - 150) / 2 - tx0, (ty0 + 280 + ty1 - 50) / 2 - ty0), "$30", font=fnt("PermanentMarker-Regular.ttf", 70), fill=INK, anchor="mm")
 alpha = Image.new("L", ticket.size, 0)
 ImageDraw.Draw(alpha).rounded_rectangle((0, 0, ticket.width - 1, ticket.height - 1), radius=26, fill=255)
 TW = int(W * 0.50)
