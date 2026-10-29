@@ -16,6 +16,7 @@ from .text import blend, fit_font, font, text_block
 
 MARGIN = 1.25  # source is prepared 25% larger than the frame so the camera can travel
 SHORT_VIEW_TOP = 0.17  # Shorts: top of the square picture window (title band above, captions below)
+SHORT_MIN_BAND = 0.5  # R38 (Klot r86): the Shorts picture band is at least half the frame height (960 of 1920 px)
 
 
 def ease(p: float) -> float:
@@ -97,19 +98,43 @@ def _jitter(n: int, amp: float, seed: int) -> np.ndarray:
     return np.interp(np.linspace(0, len(knots) - 1, n), np.arange(len(knots)), knots)
 
 
+def pen_travel(strokes: list, W: int, H: int) -> list[int]:
+    """Points the lifted pen spends travelling between two strokes (none for a short hop, e.g. dash to dash)."""
+    out = []
+    for a, b in zip(strokes, strokes[1:]):
+        d = float(np.hypot(*(np.asarray(b[0]) - np.asarray(a[-1]))))
+        out.append(int(min(24, d / (min(W, H) * 0.01))) if d > min(W, H) * 0.03 else 0)
+    return out
+
+
+def pen_path(strokes: list, W: int, H: int) -> np.ndarray:
+    """The tip's whole path: the strokes, with the lifted travel between them (same point count as draw_marks)."""
+    tr = pen_travel(strokes, W, H)
+    parts = [np.asarray(strokes[0], np.float64)]
+    for k, s in enumerate(strokes[1:]):
+        if tr[k]:
+            a, b = np.asarray(strokes[k][-1], np.float64), np.asarray(s[0], np.float64)
+            u = np.linspace(0, 1, tr[k] + 2)[1:-1, None]
+            arc = a + (b - a) * u
+            arc[:, 1] -= np.sin(u[:, 0] * math.pi) * min(W, H) * 0.02  # a little lift
+            parts.append(arc)
+        parts.append(np.asarray(s, np.float64))
+    return np.concatenate(parts)
+
+
 def mark_strokes(mark: dict, W: int, H: int, seed: int) -> list[np.ndarray]:
     """Hand-drawn stroke polylines (pixel coords) for one mark. Coordinates are 0..1 of the picture."""
     kind = mark.get("type", "circle")
     x, y = float(mark.get("x", 0.5)) * W, float(mark.get("y", 0.5)) * H
     w, h = float(mark.get("w", 0.22)) * W, float(mark.get("h", 0.18)) * H
     amp = min(W, H) * 0.006
-    if kind == "circle":
+    if kind == "circle":  # R37: one stroke from just left of the bottom, clockwise on screen (left side, top, right
+        # side) - tuned with qc.hand_over_ink so the right hand (turned 32 deg for rings) sits off the ink it has laid
         n = 140
-        a0 = -2.2
-        ang = np.linspace(a0, a0 + 2 * math.pi * 1.1, n)
+        a0 = 0.62 * math.pi
+        ang = a0 + np.linspace(0, 2 * math.pi, n)
         r = 1 + _jitter(n, 0.05, seed)
-        pts = np.stack([x + w / 2 * r * np.cos(ang), y + h / 2 * r * np.sin(ang)], 1)
-        return [pts]
+        return [np.stack([x + w / 2 * r * np.cos(ang), y + h / 2 * r * np.sin(ang)], 1)]
     if kind == "underline":
         n = 60
         xs = np.linspace(x - w / 2, x + w / 2, n)
@@ -123,6 +148,14 @@ def mark_strokes(mark: dict, W: int, H: int, seed: int) -> list[np.ndarray]:
         ang = math.radians(-float(mark.get("angle", 0)))
         ys = y + (xs - x) * math.tan(ang) + np.sin(np.linspace(0, 18, n)) * h * 0.18
         return [np.stack([xs, ys], 1)]
+    if kind == "dash" and mark.get("horizontal"):  # the portrait ticket's perforation: left to right
+        n_d = max(3, int(w / (min(W, H) * 0.045)))
+        out = []
+        for k in range(n_d):
+            a, b = k / n_d, (k + 0.6) / n_d
+            ts = np.linspace(a, b, 8)
+            out.append(np.stack([x - w / 2 + w * ts, y + _jitter(8, amp * 0.3, seed + k)], 1))
+        return out
     if kind == "dash":  # a dashed cut line from (x, y - h/2) to (x + slant, y + h/2), drawn dash by dash
         n_d = max(3, int(h / (min(W, H) * 0.045)))
         sl = float(mark.get("slant", 0.0)) * W
@@ -236,13 +269,16 @@ def draw_marks(base: np.ndarray, marks: list[dict], t: float, red, cfg: dict) ->
         if strokes is None:
             strokes = mark_strokes(mark, W, H, seed=17 + i)
             mark["_strokes"] = strokes
-        total = sum(len(s) for s in strokes)
+        travel = pen_travel(strokes, W, H)
+        total = sum(len(s) for s in strokes) + sum(travel)
         budget = int(total * p)
         scol = red
         if mark.get("color") and mark.get("color") != "red":  # e.g. an ink sum rule
             pal_ = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
             scol = tuple(int(c) for c in (pal_.get(mark["color"]) or hex_to_rgb(mark["color"])))
-        for s in strokes:
+        for k_, s in enumerate(strokes):
+            if k_ > 0:
+                budget -= travel[k_ - 1]  # the pen lifted, travelling to the next stroke
             if budget <= 1:
                 break
             seg = s[: min(len(s), budget)]
@@ -426,6 +462,7 @@ class ImageShot(Shot):
                 sw0, sh0 = image.size
                 c = min(1.0, (float(fit[1]) - float(fit[0])) * 1.10)  # + the static camera's 8 % push
                 hwin = int(round(self.W * sh0 / (c * sw0)))
+                hwin = max(hwin, int(round(self.full[1] * SHORT_MIN_BAND)))  # R38: the picture band never under half the frame
                 if hwin < self.W:
                     self.y0 += (self.W - hwin) // 2  # same centre as the square window
                     self.H = hwin
@@ -655,11 +692,8 @@ class ImageShot(Shot):
                 hs = 1.0
                 if isinstance(kind, tuple):
                     kind, hs = kind
-                mirrored = ftip(t0)[0] < self.BW * 0.4
-                side = next((m.get("hand_side") for m in self.marks if m.get("hand_side") and
-                             float(m.get("at", 0)) - 0.6 <= t <= float(m.get("at", 0)) + float(m.get("dur", 0.45)) + 0.6), None)
-                if side:  # "hand_side": the pen hand comes from that side (e.g. never across a face)
-                    mirrored = side == "left"
+                mirrored = False  # R37: always a right hand, right of and below the tip - every letter appears left of the
+                # pen and stays visible; near the right edge the frame crops the hand, never the mark
                 pos = hand_path(lambda tt: self._screen(*ftip(tt), tt), t0, t1, t, FW, FH, mirrored)
                 if pos:
                     paste_hand(out, kind, pos[0], pos[1], mirrored, scale=hs)
@@ -678,7 +712,8 @@ class ImageShot(Shot):
                 stamp_press(out, ghost, sx, sy, t, at)
 
     def split_dx(self, t: float) -> float:
-        """Picture split (visual "split"): how far (base px) the right piece has slid at shot time t."""
+        """Picture split (visual "split"): how far (base px) the second piece has slid at shot time t (to the right,
+        or down for "axis": "y" - the Shorts' portrait ticket has its stub under a horizontal perforation)."""
         sp = getattr(self, "split", None)
         if not sp:
             return 0.0
@@ -688,34 +723,43 @@ class ImageShot(Shot):
         if sp.get("t_back") is not None and t > float(sp["t_back"]):  # the halves slide back together
             qb = min(1.0, (t - float(sp["t_back"])) / max(1e-3, float(sp.get("back_dur", 0.6))))
             f *= 1 - qb * qb * (3 - 2 * qb)
-        return f * float(sp["dx"]) * self._geo[0]
+        return f * float(sp["dx"]) * (self._geo[1] if sp.get("axis") == "y" else self._geo[0])
 
     def _split_src(self, src: np.ndarray, t: float) -> np.ndarray:
         d = int(round(self.split_dx(t)))
         nw, nh, left, top = self._geo
-        xc = int(round(float(self.split["x"]) * nw - left))
-        xc = min(max(xc, 0), self.BW - 1)
+        sp = self.split
+        if sp.get("axis") == "y":  # same cut on the transposed picture: rows become columns
+            nw, nh, left, top = nh, nw, top, left
+            src_, base_ = src.transpose(1, 0, 2), self.base.transpose(1, 0, 2)
+        else:
+            src_, base_ = src, self.base
+        BW = src_.shape[1]
+        xc = int(round(float(sp["x"]) * nw - left))
+        xc = min(max(xc, 0), BW - 1)
+        col = tuple(int(c) for c in sp.get("edge_rgb", (30, 27, 24)))
+        out = None
         if d <= 0:
-            if self.split.get("t_back") is not None and t >= float(self.split["t_back"]) and self.split.get("y0") is not None:
-                out = src.copy()  # back together: the cut stays visible as a seam
-                y0, y1 = int(float(self.split["y0"]) * nh - top), int(float(self.split["y1"]) * nh - top)
-                th = max(2, int(float(self.split.get("edge_w", 0.0075)) * nh * 0.6))
-                cv2.rectangle(out, (xc - th // 2, y0), (xc + th // 2, y1), tuple(int(c) for c in self.split.get("edge_rgb", (30, 27, 24))), -1)
-                return out
+            if sp.get("t_back") is not None and t >= float(sp["t_back"]) and sp.get("y0") is not None:
+                out = np.ascontiguousarray(src_).copy()  # back together: the cut stays visible as a seam
+                y0, y1 = int(float(sp["y0"]) * nh - top), int(float(sp["y1"]) * nh - top)
+                th = max(2, int(float(sp.get("edge_w", 0.0075)) * nh * 0.6))
+                cv2.rectangle(out, (xc - th // 2, y0), (xc + th // 2, y1), col, -1)
+        else:
+            out = np.ascontiguousarray(src_).copy()
+            if xc + d < BW:
+                out[:, xc + d:] = src_[:, xc:BW - d]
+            fill = base_[:, BW - min(d, BW - xc):]  # the plain backdrop at the far edge
+            out[:, xc:xc + fill.shape[1]] = fill
+            if sp.get("y0") is not None:  # a clean straight cut: both cut edges get the ticket's dark outline
+                y0 = int(float(sp["y0"]) * nh - top)
+                y1 = int(float(sp["y1"]) * nh - top)
+                th = max(3, int(float(sp.get("edge_w", 0.0075)) * nh))
+                cv2.rectangle(out, (xc - th, y0), (xc - 1, y1), col, -1)
+                cv2.rectangle(out, (xc + d, y0), (xc + d + th - 1, y1), col, -1)
+        if out is None:
             return src
-        out = src.copy()
-        if xc + d < self.BW:
-            out[:, xc + d:] = src[:, xc:self.BW - d]
-        fill = self.base[:, self.BW - min(d, self.BW - xc):]  # the plain backdrop at the right edge
-        out[:, xc:xc + fill.shape[1]] = fill
-        if self.split.get("y0") is not None:  # a clean straight cut: both cut edges get the ticket's dark outline
-            y0 = int(float(self.split["y0"]) * nh - top)
-            y1 = int(float(self.split["y1"]) * nh - top)
-            th = max(3, int(float(self.split.get("edge_w", 0.0075)) * nh))
-            col = tuple(int(c) for c in self.split.get("edge_rgb", (30, 27, 24)))
-            cv2.rectangle(out, (xc - th, y0), (xc - 1, y1), col, -1)
-            cv2.rectangle(out, (xc + d, y0), (xc + d + th - 1, y1), col, -1)
-        return out
+        return np.ascontiguousarray(out.transpose(1, 0, 2)) if sp.get("axis") == "y" else out
 
     def _view(self, t: float) -> np.ndarray:
         p, s, M = self._matrix(t)
@@ -725,11 +769,12 @@ class ImageShot(Shot):
             src = self._ld.state((t - at) / dur)
         if getattr(self, "split", None):
             src = self._split_src(src, t)
-            dxf = self.split_dx(t) / self.BW
+            ax = "y" if self.split.get("axis") == "y" else "x"
+            dxf = self.split_dx(t) / (self.BH if ax == "y" else self.BW)
             for m in self.marks:  # marks written on the moving piece ride with it
                 if m.get("follow"):
-                    m.setdefault("_fx0", float(m["x"]))
-                    m["x"] = m["_fx0"] + dxf
+                    m.setdefault(f"_f{ax}0", float(m[ax]))
+                    m[ax] = m[f"_f{ax}0"] + dxf
         src = draw_marks(src, self.marks, t, self.red, self.cfg) if self.marks else src
         if self.depth is None:
             return cv2.warpAffine(src, M, (self.W, self.H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
@@ -799,9 +844,11 @@ class StatShot(Shot):
         self.W, self.H = size
         self.spec = spec
         # rule: the count-up lands on the spoken value no later than the first syllable of that number
-        self.ramp = max(0.6, min(1.4, duration * 0.45))
-        if land_at is not None:
-            self.ramp = max(0.25, min(self.ramp, land_at))
+        # R39 (Klot r86): the count-up lasts <= 0.5 s and ends on the landing time; before it the number is not shown
+        # (no in-between value long enough to read), the label appears with the final number
+        self.ramp = max(0.6, min(1.4, duration * 0.45)) if land_at is None else max(0.25, land_at)  # landing time
+        self.count = min(0.5, self.ramp)
+        self.t0 = self.ramp - self.count
         self.pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
         self.bg = _sunburst(size, self.pal, cfg, seed=9)
         self.head = resolve_font(cfg["fonts"]["headline"])
@@ -821,7 +868,9 @@ class StatShot(Shot):
 
     def frame(self, t: float) -> np.ndarray:
         out = self.bg.copy()
-        p = ease(t / self.ramp)
+        if t < self.t0:
+            return out
+        p = ease((t - self.t0) / max(1e-3, self.count))
         txt = self._num(float(self.spec["value"]) * p)
         if txt not in self.cache:
             fnt = font(self.head, int(self.H * (0.26 if self.W > self.H else 0.14)))
@@ -830,8 +879,9 @@ class StatShot(Shot):
         y_num = int(self.H * 0.42) - num.shape[0] // 2
         blend(out, num, (self.W - num.shape[1]) // 2, y_num)
         if self.label is not None:
-            blend(out, self.label, (self.W - self.label.shape[1]) // 2, y_num + num.shape[0] + int(self.H * 0.02),
-                  opacity=ease((t - 0.3) / 0.4))
+            if t >= self.ramp:  # R39: the subline appears with the final number
+                blend(out, self.label, (self.W - self.label.shape[1]) // 2, y_num + num.shape[0] + int(self.H * 0.02),
+                      opacity=ease((t - self.ramp) / 0.15))
         return out
 
 
@@ -1074,12 +1124,14 @@ class KineticShot(Shot):
         self.items = []  # (word_img, x, y, appear_time)
         wi = 0
         times = [s for _w, s, _e in words_timed] if words_timed else []
+        space = fnt.getlength(" ")
+        block_w = max(sum(fnt.getlength(w) for w in ln.split(" ")) + space * (len(ln.split(" ")) - 1) for ln in lines)
         for line in lines:
             ws = line.split(" ")
             widths = [fnt.getlength(w) for w in ws]
-            space = fnt.getlength(" ")
-            line_w = sum(widths) + space * (len(ws) - 1)
-            x = (self.W - line_w) / 2
+            # Klot r86: lines flush left in a centred block - a line being revealed word by word reads as typing, never
+            # as a block that re-centres when its last word lands
+            x = (self.W - block_w) / 2
             for w, ww in zip(ws, widths):
                 color = pal["red"] if (wi < len(accent) and accent[wi]) else fg
                 img = text_block([w], fnt, fill=color)

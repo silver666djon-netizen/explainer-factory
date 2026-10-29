@@ -153,6 +153,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         (out / "long.wav").unlink(missing_ok=True)
     from . import qc as _qc
     qc_res = {}
+    qc_plans = {"long": plan_long}
     if only in (None, "long"):  # Klot r84 part C: release-blocking checks on the real plan (real narration)
         qc_res["long"] = _qc.run_all(plan_long, cfg, episode["beats"])
         log("QC long: " + ", ".join(f"{c} {'ok' if not r['fails'] else 'FAIL ' + str(len(r['fails']))}" for c, r in qc_res["long"].items()))
@@ -172,6 +173,8 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
             render(plan, cfg, out / name, out / f"short_{short['id']}.wav", log)
             (out / f"short_{short['id']}.wav").unlink(missing_ok=True)
             qc_res[short["id"]] = _qc.run_all(plan, cfg, short["beats"])
+            if len(qc_plans) < 2:
+                qc_plans[short["id"]] = plan
             log(f"QC {short['id']}: " + ", ".join(f"{c} {'ok' if not r['fails'] else 'FAIL ' + str(len(r['fails']))}" for c, r in qc_res[short["id"]].items()))
         from .meta import music_credits
         cue = short["beats"][0].get("_music") if short["beats"] else None
@@ -179,9 +182,13 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
                             "music_credit": "\n".join(music_credits(episode, {cue} if cue else set()))})
 
     if qc_res:
-        (out / "qc_checks.md").write_text("# Release checks (CI build)\n\n" + _qc.table(qc_res) + "\n")
-        (out / "qc_checks.json").write_text(json.dumps(qc_res, indent=1))
-        log("QC checks: " + ("FAIL - release blocked" if _qc.failed(qc_res) else "all PASS"))
+        st_rows = _qc.selftest(qc_plans, cfg, {})  # R40: every check must FAIL on its planted bug
+        st_ok = _qc.selftest_ok(st_rows)
+        (out / "qc_checks.md").write_text("# Release checks (CI build)\n\n" + _qc.table(qc_res) + "\n\n## Check self-test (R40)\n\n"
+                                         + _qc.selftest_table(st_rows) + "\n")
+        (out / "qc_checks.json").write_text(json.dumps({**qc_res, "_selftest": st_rows}, indent=1))
+        log("QC checks: " + ("FAIL - release blocked" if _qc.failed(qc_res) or not st_ok else "all PASS")
+            + f" · self-test {'ok' if st_ok else 'BLIND CHECK'}")
     if episode.get("lang"):  # language version (review copy): no thumbnail; files carry the language code
         write_meta(out, episode, plan_long, shorts_info)
         code = episode["lang"]

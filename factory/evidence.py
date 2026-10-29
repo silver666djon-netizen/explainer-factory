@@ -505,7 +505,7 @@ class EvidenceShot(Shot):
             frame = np.clip(f, 0, 255).astype(np.uint8)
         if not self.flash and self.strokes:
             cx = np.concatenate(self.strokes)[:, 0].mean()
-            mirrored = self._clip_to_board(cx, 0)[0] < self.BW * 0.4
+            mirrored = False  # R37: always the right hand
             tip = hand_path(self._tip, self.mark_at, self.mark_at + self.mark_dur, t, self.W, self.H, mirrored, from_below=True)
             if tip:
                 paste_hand(frame, "marker_under", tip[0], tip[1] + self.H * 0.004, mirrored)  # hand below the line: words stay readable

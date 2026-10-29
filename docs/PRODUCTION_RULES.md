@@ -211,3 +211,24 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
 - **R35 Chart bars grow monotonically from zero,** all together; labels without trailing zeros (37.5 %). Check: handcheck.
 - **R36 The same object keeps its position across consecutive beats** (no ticket jump between shots: one picture,
   "cam_continue", one Shorts window per run of beats on the same picture). Checks: crop_fit, handcheck.
+
+## R-rules (Klot r86, from Ep.4 r87 on)
+
+- **R37 Writing hand:** always a right hand, to the right of and below the pen tip, never mirrored; the frame may crop
+  the hand, never the mark. (draw._hand: never mirrored, turned 18 deg clockwise about the tip; rings 32 deg and drawn
+  clockwise from just left of the bottom.) Check: hand_over_ink (<= 5 % of the ink already laid under the hand; the
+  letter under the nib, 2.5 % of the frame around the tip, is not counted).
+- **R38 Shorts picture band >= 50 % of the frame height** (960 of 1920 px; shots.SHORT_MIN_BAND); code-drawn objects use
+  vertical-native layouts in Shorts: visual "short_image" (e.g. the portrait ticket images/o1v.png, stub under a
+  horizontal perforation), mark "short" overrides, "short_split" ("axis": "y"), "short_subject_x"; wide props move their
+  marks in (switch OFF/ON) instead of shrinking the band. Check: shorts_picture_size.
+- **R39 Count-ups <= 0.5 s; the subline appears with the final number** (StatShot: nothing before the count starts,
+  so no in-between value is readable). Check: count_up.
+- **R40 Every automatic check must FAIL on its planted-bug test frame before a release can pass** (qc.selftest: one
+  planted bug per check - plate off the edge, a mark out of the window, shaking mark, mark off its object, mirrored hand
+  over its ink, 30 % picture band, 50 s Short, 1.4 s count-up, scratch without ink, edit point inside a word, kinetic
+  words re-centring). The self-test table sits under the checks table in qc_checks.md; a check that PASSES its planted
+  bug is blind and blocks the release.
+- Shorts length: <= 45.0 s (check: shorts_length). Kinetic cards: lines flush left in a centred block (a line revealed
+  word by word never looks like it re-centres). The long master's true peak <= -1.5 dBTP (channel.yaml
+  true_peak_max_long); the Telegram 480p copy keeps the mastered audio stream (no re-encode).

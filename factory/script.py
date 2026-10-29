@@ -215,6 +215,9 @@ def image_prompts(episode: dict) -> dict[str, dict]:
                 out[beat["id"]] = {"prompt": visual["fallback_prompt"], "style": visual.get("style", "ad"),
                                    "episode_dir": episode.get("_dir"), "refs": refs}
             continue
+        if visual.get("short_image"):  # R38: the Shorts' vertical-native version of a code-drawn prop (images/<key>.png)
+            out.setdefault(str(visual["short_image"]), {"prompt": f"code-drawn vertical version of {beat['id']}", "style": "ad",
+                                                         "episode_dir": episode.get("_dir"), "refs": [], "manual": True})
         prompts = visual.get("prompts") or [visual["prompt"]]
         for n, prompt in enumerate(prompts):
             out[beat["id"] if n == 0 else f"{beat['id']}.{n}"] = {"prompt": prompt, "style": visual.get("style", "ad"),

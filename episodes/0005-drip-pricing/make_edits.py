@@ -52,6 +52,18 @@ im[y0:y1, x0:x1] = (reg * (1 - m) + fill * m).astype(np.uint8)
 sy0, sy1, sx0, sx1 = int(0.288 * H), int(0.308 * H), int(0.350 * W), int(0.660 * W)
 strip = im[sy0:sy1, sx0:sx1]
 im[sy0:sy1, sx0:sx1] = np.where(strip.max(2, keepdims=True) < 200, fill[: sy1 - sy0, : sx1 - sx0] if fill.shape[0] >= sy1 - sy0 else paper, strip)
+# Klot r86 item 7: the fountain pen prop goes (the push cut it at the frame edge): the wall and the desk right of it are
+# cloned over it, column for column (the wood grain runs across), with a feathered seam
+px0, px1 = int(0.690 * W), int(0.772 * W)
+sx = int(0.790 * W)
+pw = px1 - px0
+src = im[:, sx:sx + pw].astype(np.float32)
+alpha = np.ones(pw, np.float32)
+fe = max(4, pw // 6)
+alpha[:fe] = np.linspace(0, 1, fe)
+alpha[-fe:] = np.linspace(1, 0, fe)
+a_ = alpha[None, :, None]
+im[:, px0:px1] = (im[:, px0:px1].astype(np.float32) * (1 - a_) + src * a_).astype(np.uint8)
 Image.fromarray(im).save(OUT / "c4.png")
 
 # ---- l1: the customs desk with the code-drawn $30 ticket (same ticket as o1) lying in the middle

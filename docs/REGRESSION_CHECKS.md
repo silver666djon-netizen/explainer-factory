@@ -5,7 +5,9 @@ Before every release run the WHOLE list, not only the checks for the current fix
     tools/qc/run_regression.sh episodes/<slug> <release dir with timings.json + the rendered files>
 
 It runs: mark audit (long + Shorts), handcheck (long + Shorts), release checks (plate_fit, crop_fit, jitter_check,
-mark_on_object, sfx_sync, text_stability; voice_cut_check comes from the CI build's qc_checks.md), the max-still warnings and
+mark_in_frame, mark_on_object, hand_over_ink, shorts_picture_size, shorts_length, count_up, sfx_sync, text_stability;
+voice_cut_check comes from the CI build's qc_checks.md) and the check self-test (R40: every check must FAIL on its
+planted bug), the max-still warnings and
 the static-frame scan, the true-peak / loudness gate and a full decode of every file. Any failure blocks the release.
 
 Checks (RC:mark_in_frame = R32 for picture-attached marks): **MA-n** = tools/qc/mark_audit.py check n · **HC** = tools/qc/handcheck.py · **RC:name** = factory/qc.py
@@ -78,6 +80,16 @@ check (release_checks.py / CI qc_checks.md) · **STILL** = build max-still warni
 | Ep.4 r85 QC | Shorts: hook card reaching down over the picture window | RC:plate_fit (band, hook/card) |
 | Ep.4 r85 QC | Shorts: pen hand entering across Larry's face (b1 note) | EYE (mark "hand_side") |
 | Ep.4 r85 QC | QC false FAILs: checks read the shot state the render left (clip track on its last frame, split-moved marks) | qc._set_clip / qc._mx (checks reset it) |
+| Ep.4 r86 #1 | writing hand mirrored to the left of the pen, covering the letters it had just written (15 places) | RC:hand_over_ink |
+| Ep.4 r86 #2 | Shorts: picture band 270-700 px of 1920 (ticket, switch, laptop, ledger, bank windows) | RC:shorts_picture_size |
+| Ep.4 r86 #3 | false PASS: plate_fit / text_stability blind to their bug | RC:check_selftest (R40) |
+| Ep.4 r86 #3 | kinetic card reading as left-aligned, then re-centred (centred lines revealed word by word) | RC:text_stability + flush-left layout |
+| Ep.4 r86 #4 | Shorts over 45 s (s3 47.9 s, s4 46.8 s) | RC:shorts_length |
+| Ep.4 r86 #5 | count-ups showing readable wrong values (≈14 % on the 21 % card, $3.0bn, 37.3 %…) | RC:count_up |
+| Ep.4 r86 #6 | sign plate blank ~3 s before TOTAL $48 | EYE (mark timing) |
+| Ep.4 r86 #7 | ledger shot static 9 s, fountain-pen prop cut by the frame | STATIC + EYE |
+| Ep.4 r86 #8 | grocery checkout photo under "the venue" | EYE (script review) |
+| Ep.4 r86 #9 | long master at -1.0 dBTP, Telegram copy -0.7 (AAC re-encode) | AG (long -1.5) |
 | Ep.4 r85 QC | ALL-IN PRICES ink drawn over the lever as it flips past the plate | MA-6 (unless "behind_moving") |
 
 Add a line here for every new bug, in the round it is found, with the check that now catches it (write the check if

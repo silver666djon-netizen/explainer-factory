@@ -19,6 +19,8 @@ from .config import ROOT
 
 HAND_DIR = ROOT / "assets" / "hands"
 HAND_HEIGHT = 0.62  # hand clipping height as a share of the frame height
+HAND_ROT = 18.0  # deg clockwise about the pen tip (R37: hand right of and below the tip)
+HAND_ROT_RING = 32.0  # rings: turned further (qc.hand_over_ink: <= 5 % of a ring covered)
 LINES_END = 0.5    # outlines by the pencil hand: 0 .. LINES_END of the draw time
 COLOR_START = 0.6  # colour by the marker hand: COLOR_START .. 1 (the hands swap in between)
 
@@ -30,12 +32,27 @@ def ease(p: float) -> float:
 
 @lru_cache(maxsize=8)
 def _hand(kind: str, height: int, mirrored: bool) -> tuple[np.ndarray, tuple[int, int]]:
+    mirrored = False  # R37 (Klot r86): the narrator's hand is never mirrored
+    rot = HAND_ROT
+    if "@" in kind:  # "red@32": the hand turned further for a ring (see mark_pen)
+        kind, r_ = kind.split("@", 1)
+        rot = float(r_)
     meta = json.loads((HAND_DIR / "hand.json").read_text())
     meta = meta.get(kind, meta.get("pencil", meta))  # per-hand tip position
     img = Image.open(HAND_DIR / f"hand_{kind}.png").convert("RGBA")
     s = height / float(meta.get("ref", img.height))  # extended sleeves: scale by the original hand size
     img = img.resize((max(1, int(img.width * s)), max(1, int(img.height * s))), Image.LANCZOS)
     tx, ty = meta["tip"][0] * s, meta["tip"][1] * s
+    if rot and kind not in ("stamp", "stamp_cuff"):  # R37: turned clockwise about the tip, so the fingers sit right
+        # of and below the pen tip, clear of the letters just written (padded first: nothing is clipped)
+        pad = int(max(img.size))
+        big = Image.new("RGBA", (img.width + 2 * pad, img.height + 2 * pad), (0, 0, 0, 0))
+        big.paste(img, (pad, pad))
+        cx, cy = tx + pad, ty + pad
+        big = big.rotate(-rot, resample=Image.BICUBIC, center=(cx, cy))
+        bb = big.getbbox() or (0, 0, big.width, big.height)
+        img = big.crop(bb)
+        tx, ty = cx - bb[0], cy - bb[1]
     if mirrored:
         img = img.transpose(Image.FLIP_LEFT_RIGHT)
         tx = img.width - 1 - tx
@@ -49,6 +66,9 @@ SLEEVED = ("ink", "colour", "marker", "ink_under", "marker_under", "stamp")
 
 
 def hand_kind(kind: str) -> str:
+    if "@" in kind:
+        base, r_ = kind.split("@", 1)
+        return f"{hand_kind(base)}@{r_}"
     return f"{kind}_cuff" if NO_SLEEVE and kind in SLEEVED else kind
 
 
@@ -72,7 +92,7 @@ def hand_path(tip_at, t0: float, t1: float, t: float, W: int, H: int, mirrored: 
     from_below: for the hands held under the line (arm hanging down) — they rise straight up from the
     bottom edge under the spot they write on, instead of crossing the frame diagonally."""
     enter, leave = 0.28, 0.32
-    off = (W * (-0.35 if mirrored else 1.35), H * 1.05)
+    off = (W * 1.35, H * 1.05)  # R37: the right hand enters and leaves on the right
     if from_below:
         sx, _ = tip_at(t0 if t < t0 else t1)
         off = (sx + W * 0.06, H * 1.25)
@@ -340,7 +360,8 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
             strokes = mark_strokes(m, W, H, seed=17 + i)
             if m.get("type") != "write" or m.get("_lay") is not None:
                 m["_strokes"], m["_strokes_WH"] = strokes, (W, H)
-        seg = (at, dur, np.concatenate(strokes), m)
+        from .shots import pen_path
+        seg = (at, dur, pen_path(strokes, W, H), m)
         if m.get("chain") and groups:
             groups[-1].append(seg)
         else:
@@ -365,6 +386,9 @@ def mark_pen(marks: list[dict], t: float, W: int, H: int):
                     return float(x0 + (x1 - x0) * u), float(y0 + (y1 - y0) * u - math.sin(u * math.pi) * H * 0.03)
             return float(g[-1][2][-1][0]), float(g[-1][2][-1][1])
         kind = pen_for(g[0][3])
+        cur = next((m_ for at_, dur_, _p, m_ in g if at_ <= t <= at_ + dur_ + 0.35), g[-1][3])
+        if cur.get("type") == "circle":
+            kind = f"{kind}@{HAND_ROT_RING:g}"  # R37: rings - the hand turned further, off the ring it has drawn
         if g[0][3].get("hand_scale"):  # a smaller hand for a note written near the frame edge
             kind = (kind, float(g[0][3]["hand_scale"]))
         return tip, a0, a1, kind

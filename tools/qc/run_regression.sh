@@ -12,7 +12,7 @@ run handcheck_long python3 tools/qc/handcheck.py "$TJ" long --no-frames
 run handcheck_shorts python3 tools/qc/handcheck.py "$TJ" shorts --no-frames
 run release_checks python3 tools/qc/release_checks.py "$EP_DIR" "$TJ" --out "$REL/qc_release_local.md" --skip voice_cut_check
 if [ -s "$REL/qc_checks.json" ]; then  # the CI build's checks on the real narration (voice_cut_check lives there)
-  run ci_checks python3 -c "import json,sys; r=json.load(open('$REL/qc_checks.json')); sys.exit(any(c['fails'] for v in r.values() for c in v.values()))"
+  run ci_checks python3 -c "import json,sys; r=json.load(open('$REL/qc_checks.json')); st=r.pop('_selftest', None); sys.exit(any(c['fails'] for v in r.values() for c in v.values()) or not st or any(x['result'] != 'FAIL' for x in st))"
 else res+=("| ci_checks | FAIL (no qc_checks.json in the release) |"); fail=1; fi
 if python3 -c "import json,sys; sys.exit(1 if json.load(open('$TJ')).get('max_still_warnings') else 0)"; then res+=("| max_still | PASS |"); else res+=("| max_still | FAIL |"); fail=1; fi
 for f in "$REL"/*.mp4; do

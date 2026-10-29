@@ -72,9 +72,9 @@ def _tg_copy(src: Path, dst: Path, limit: int = LIMIT) -> Path:
         return dst
     dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)],
                                capture_output=True, text=True).stdout.strip() or 600)
-    vbr = max(250, int((limit * 0.92 * 8 / dur) / 1000) - 96)
+    vbr = max(250, int((limit * 0.92 * 8 / dur) / 1000) - 192)
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(src), "-vf", "scale=-2:480", "-c:v", "libx264", "-preset", "veryfast",
-                    "-b:v", f"{vbr}k", "-maxrate", f"{int(vbr * 1.1)}k", "-bufsize", f"{vbr * 2}k", "-c:a", "aac", "-b:a", "96k",
+                    "-b:v", f"{vbr}k", "-maxrate", f"{int(vbr * 1.1)}k", "-bufsize", f"{vbr * 2}k", "-c:a", "copy",  # Klot r86: the mastered audio as is (a re-encode overshot to -0.7 dBTP)
                     "-movflags", "+faststart", str(dst)], check=True)
     return dst
 

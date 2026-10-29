@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import math
 
+import cv2
 import numpy as np
 
 SCRATCH = ("scribble", "marker", "pencil")
@@ -22,15 +23,15 @@ def _inter(a, b) -> bool:
     return a[1] < b[3] and b[1] < a[3] and a[2] < b[4] and b[2] < a[4]
 
 
-def plate_fit(plan, cfg, step: float = 0.5, margin: int = 24) -> list[str]:
+def plate_fit(plan, cfg, step: float = 0.25, margin: int = 24, t_from: float = 0.0, t_to: float | None = None) -> list[str]:
     from .render import Overlay
     ov = Overlay(cfg, plan)
     W, H = plan.size
     margin = int(round(margin * min(W, H) / 1080))  # 24 px at 1080p (QC builds may run at half size)
     fails, seen = [], set()
     caps, cards, bubs = plan.captions, plan.cards, plan.bubbles
-    t = 0.0
-    while t < plan.total:
+    t = t_from
+    while t < (plan.total if t_to is None else min(plan.total, t_to)):
         ci = next((i for i, c in enumerate(caps) if c.end > t), len(caps))
         ki = next((i for i, c in enumerate(cards) if c.end > t), len(cards))
         bi = next((i for i, c in enumerate(bubs) if c.end > t), len(bubs))
@@ -245,7 +246,7 @@ def mark_on_object(plan) -> list[str]:
             seen.add(key)
             BW, BH = sh.BW, sh.BH
             a = math.radians(float(m.get("angle", 0)))
-            cx, cy = _mx(m) * BW, float(m["y"]) * BH
+            cx, cy = _mx(m) * BW, float(m.get("_fy0", m["y"])) * BH
             if m["type"] == "write":
                 lay = write_layout(dict(m, x=_mx(m)), BW, BH, (210, 69, 47), sh.cfg)
                 hw = (lay["x1"] - lay["x0"]) / 2
@@ -271,6 +272,125 @@ def mark_on_object(plan) -> list[str]:
                 if ix0 < pb[2] * BW and pb[0] * BW < ix1 and iy0 < pb[3] * BH and pb[1] * BH < iy1:
                     fails.append(f"'{name}' crosses printed text")
                     break
+    return fails
+
+
+DEBUG_DIR = None
+
+
+def hand_over_ink(plan, limit: float = 0.05, mirror: bool = False) -> list[str]:
+    """R37: while a hand writes a mark, the hand sprite covers <= 5 % of the ink already laid for that mark (sampled at
+    35 / 60 / 85 % of the stroke; the letter under the nib - 2.5 % of the frame around the tip - is not counted). mirror=True renders the left hand the engine used before r87 (self-test)."""
+    from .draw import HAND_HEIGHT, _hand, hand_kind, hand_path, mark_pen
+    from .shots import ImageShot, draw_marks
+    fails, seen = [], set()
+    red = (210, 69, 47)
+    for sh in plan.shots:
+        if not isinstance(sh, ImageShot) or not sh.marks:
+            continue
+        if sh.base is None:
+            sh._prepare()
+        FW, FH = (sh.full if sh.full else (sh.W, sh.H))
+        y_off = sh.y0 if sh.full else 0
+        for m in sh.marks:
+            if not m.get("hand") or m.get("type") not in ("write", "circle", "underline", "cross", "dash"):
+                continue
+            at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))
+            if dur <= 0.05:
+                continue
+            worst = 0.0
+            for q in (0.35, 0.6, 0.85):
+                tt = at + dur * q
+                if tt >= sh.duration or tt < 0:
+                    continue  # (a mark carried over from the previous shot is checked there)
+                pen = mark_pen(sh.marks, tt, sh.BW, sh.BH)
+                if not pen:
+                    continue
+                ftip, t0, t1, kind = pen
+                if not (t0 - 1e-3 <= tt <= t1 + 1e-3):
+                    continue
+                hs = 1.0
+                if isinstance(kind, tuple):
+                    kind, hs = kind
+                _set_clip(sh, tt)
+                pos = hand_path(lambda u: sh._screen(*ftip(u), u), t0, t1, tt, FW, FH, mirror)
+                if not pos:
+                    continue
+                z = np.zeros((sh.BH, sh.BW, 3), np.uint8)
+                mi = {k: v for k, v in m.items() if k not in ("plate", "note", "note_pre", "_lay")}  # the ink, not its plate
+                b = draw_marks(z, [dict(mi)], tt, red, sh.cfg)
+                w = draw_marks(np.full_like(z, 255), [dict(mi)], tt, red, sh.cfg)
+                ink = (1.0 - (w.astype(np.float32) - b.astype(np.float32)).mean(2) / 255.0) > 0.35
+                if ink.sum() < 30:
+                    continue
+                _p, _s, M = sh._matrix(tt)
+                A = getattr(sh, "_cur", None)
+                M3 = np.vstack([M, [0, 0, 1]]).astype(np.float64)
+                if A is not None and hasattr(sh, "_A"):
+                    M3 = M3 @ np.vstack([np.float64(A), [0, 0, 1]])
+                scr = cv2.warpAffine(ink.astype(np.uint8), M3[:2].astype(np.float32), (sh.W, sh.H), flags=cv2.INTER_NEAREST)
+                frame_ink = np.zeros((FH, FW), np.uint8)
+                frame_ink[y_off:y_off + sh.H] = scr
+                img, (tx, ty) = _hand(hand_kind(kind), int(min(FW, FH) * HAND_HEIGHT * hs), False)
+                if mirror:
+                    img = img[:, ::-1]
+                    tx = img.shape[1] - 1 - tx
+                hx, hy = int(pos[0] - tx), int(pos[1] - ty)
+                ha = np.zeros((FH, FW), bool)
+                x0, y0 = max(0, hx), max(0, hy)
+                x1, y1 = min(FW, hx + img.shape[1]), min(FH, hy + img.shape[0])
+                if x1 > x0 and y1 > y0:
+                    ha[y0:y1, x0:x1] = img[y0 - hy:y1 - hy, x0 - hx:x1 - hx, 3] > 128
+                r_nib = int(0.025 * min(FW, FH))  # the nib on the letter it is forming: not counted
+                cv2.circle(frame_ink, (int(pos[0]), int(pos[1])), r_nib, 0, -1)
+                n = int(frame_ink.sum())
+                if n >= 200:  # (less than 200 px of ink outside the nib zone: nothing readable has been laid yet)
+                    cov = float((ha & (frame_ink > 0)).sum()) / n
+                    if DEBUG_DIR and cov > limit:
+                        dbg = np.zeros((FH, FW, 3), np.uint8)
+                        dbg[..., 2] = frame_ink * 255
+                        dbg[..., 0] = ha * 160
+                        cv2.imwrite(f"{DEBUG_DIR}/hoi_{plan.kind}_{sh.start + tt:.2f}.png", dbg)
+                    worst = max(worst, cov)
+            if worst > limit:
+                key = (m.get("text", m.get("type")), round(sh.start + at, 1))
+                if key not in seen:
+                    seen.add(key)
+                    fails.append(f"{_tc(sh.start + at)} hand covers {worst:.0%} of the ink of '{m.get('text', m.get('type'))}'")
+    return fails
+
+
+def shorts_picture_size(plan, step: float = 0.25) -> list[str]:
+    """R38: on every Short frame showing a picture, the picture band is >= 50 % of the frame height."""
+    if plan.kind != "short":
+        return []
+    fails = []
+    for sh in plan.shots:
+        full = getattr(sh, "full", None)
+        if not full:
+            continue  # full-frame cards
+        if sh.H < 0.5 * full[1] - 1:
+            fails.append(f"{_tc(sh.start)} picture band {sh.H} px < {0.5 * full[1]:.0f} px")
+    return fails
+
+
+def shorts_length(plan, limit: float = 45.0) -> list[str]:
+    if plan.kind != "short":
+        return []
+    return [f"Short is {plan.total:.1f} s > {limit:.0f} s"] if plan.total > limit + 1e-6 else []
+
+
+def count_up(plan) -> list[str]:
+    """R39: a stat card counts up in <= 0.5 s and shows its subline only with the final number."""
+    from .shots import StatShot
+    fails = []
+    for sh in plan.shots:
+        if isinstance(sh, StatShot):
+            c = float(getattr(sh, "count", sh.ramp))
+            if c > 0.5 + 1e-6:
+                fails.append(f"{_tc(sh.start)} count-up {c:.2f} s > 0.5 s")
+            if not hasattr(sh, "t0"):
+                fails.append(f"{_tc(sh.start)} stat card without the R39 reveal")
     return fails
 
 
@@ -320,7 +440,8 @@ def text_stability(plan, fps: float = 24.0) -> list[str]:
     return fails
 
 
-CHECKS = ("plate_fit", "crop_fit", "jitter_check", "mark_in_frame", "mark_on_object", "sfx_sync", "voice_cut_check", "text_stability")
+CHECKS = ("plate_fit", "crop_fit", "jitter_check", "mark_in_frame", "mark_on_object", "hand_over_ink", "shorts_picture_size",
+          "shorts_length", "count_up", "sfx_sync", "voice_cut_check", "text_stability")
 
 
 def run_all(plan, cfg, beats, skip=()) -> dict:
@@ -367,3 +488,144 @@ def table(results: dict) -> str:
 
 def failed(results: dict) -> bool:
     return any(r.get("fails") for v in results.values() for r in v.values())
+
+
+# ---------------------------------------------------------------- R40: every check must catch its planted bug
+def selftest(plans: dict, cfg: dict, beats: dict) -> list[dict]:
+    """Plant one known bug per check (on a copy of the state, restored after) and run the check on it: each must FAIL.
+    Returns [{"check", "planted", "result": "FAIL" (good) | "PASS" (the check is blind) | "ERROR"}]."""
+    from types import SimpleNamespace as NS
+    from .shots import ClipImageShot, ImageShot, KineticShot, StatShot
+    long_ = plans.get("long") or next(iter(plans.values()))
+    short = next((p for k, p in plans.items() if k != "long"), None)
+    rows = []
+
+    def img_mark(plan, need=lambda m: m.get("type") == "write", clip=False):
+        for sh in plan.shots:
+            if isinstance(sh, ImageShot) and (clip or not isinstance(sh, ClipImageShot)):
+                for m in sh.marks:
+                    if need(m):
+                        return sh, m
+        return None, None
+
+    def run(name, planted, fn):
+        try:
+            r = fn()
+            rows.append({"check": name, "planted": planted, "result": "FAIL" if r else "PASS", "detail": (r or [""])[0]})
+        except Exception as e:  # noqa: BLE001
+            rows.append({"check": name, "planted": planted, "result": "ERROR", "detail": f"{type(e).__name__}: {e}"})
+
+    def t_plate():
+        long_.labels.append((1.0, 2.0, "THIS SOURCE PLATE IS FAR TOO LONG " * 6))
+        try:
+            return plate_fit(long_, cfg, t_from=1.0, t_to=2.0)
+        finally:
+            long_.labels.pop()
+    run("plate_fit", "source plate wider than the frame (runs off both edges)", t_plate)
+
+    def t_crop():
+        sh, m = img_mark(short) if short else (None, None)
+        if sh is None:
+            return []
+        x0 = m["x"]
+        m["x"] = 1.35
+        try:
+            return crop_fit(short, [])
+        finally:
+            m["x"] = x0
+    run("crop_fit", "Short: a mark moved out of the beat's window", t_crop)
+
+    def t_jitter():
+        sh, m = img_mark(long_, lambda m: m.get("type") in ("write", "stamp", "circle") and not m.get("follow"))
+        orig = sh._screen
+        sh._screen = lambda bx, by, t, o=orig: (o(bx, by, t)[0] + 1.5 * math.sin(t * 60.0), o(bx, by, t)[1])
+        try:
+            return jitter_check(NS(shots=[sh]))
+        finally:
+            del sh._screen
+    run("jitter_check", "a mark shaking +-1.5 px frame to frame", t_jitter)
+
+    def t_inframe():
+        sh, m = img_mark(long_)
+        x0 = m["x"]
+        m["x"] = 1.15
+        try:
+            return mark_in_frame(NS(shots=[sh]))
+        finally:
+            m["x"] = x0
+    run("mark_in_frame", "a picture mark pushed off the right edge", t_inframe)
+
+    def t_obj():
+        sh, m = img_mark(long_, lambda m: bool(m.get("obj")) and m.get("type") == "write")
+        x0 = m["x"]
+        m["x"] = x0 + 0.25
+        m.pop("_fx0", None)
+        try:
+            return mark_on_object(NS(shots=[sh]))
+        finally:
+            m["x"] = x0
+    run("mark_on_object", "a stub mark moved off the ticket", t_obj)
+
+    def t_hand():
+        sh, m = img_mark(long_, lambda m: m.get("type") == "write" and m.get("hand") and float(m.get("dur", 0)) > 0.3
+                         and float(m.get("at", 0)) > 0.2)
+        return hand_over_ink(NS(shots=[sh], kind=long_.kind), mirror=True)
+    run("hand_over_ink", "the left (mirrored) hand of r86 over the letters it wrote", t_hand)
+
+    def t_size():
+        sh = next((s for s in (short.shots if short else []) if getattr(s, "full", None)), None)
+        if sh is None:
+            return []
+        h0 = sh.H
+        sh.H = int(sh.full[1] * 0.3)
+        try:
+            return shorts_picture_size(NS(kind="short", shots=[sh]))
+        finally:
+            sh.H = h0
+    run("shorts_picture_size", "Short picture band at 30 % of the frame height", t_size)
+    run("shorts_length", "a 50 s Short", lambda: shorts_length(NS(kind="short", total=50.0)))
+
+    def t_count():
+        st = next((s for s in long_.shots if isinstance(s, StatShot)), None)
+        c0 = st.count
+        st.count = 1.4
+        try:
+            return count_up(NS(shots=[st]))
+        finally:
+            st.count = c0
+    run("count_up", "a 1.4 s count-up", t_count)
+    run("sfx_sync", "a 0.5 s scratch with no ink being laid",
+        lambda: sfx_sync(NS(ink=[], timeline=NS(log=[(1.0, 1.5, "scribble:0.500")]))))
+
+    def t_voice():
+        from .audio import SR
+        v = np.zeros(int(2 * SR), np.float32)
+        v[int(0.9 * SR):int(1.1 * SR)] = 0.3 * np.sin(np.arange(int(0.2 * SR)) * 0.07)
+        return voice_cut_check(NS(timeline=NS(voice=v, voice_edits=[(1.0, "planted cut inside a word")])))[0]
+    run("voice_cut_check", "an edit point in the middle of a word", t_voice)
+
+    def t_text():
+        k = next((s for s in long_.shots if isinstance(s, KineticShot)), None)
+        orig = k.word_boxes
+        k.word_boxes = lambda t, o=orig: [(b[0] + (40 if t < k.duration / 2 else 0), b[1], b[2] + (40 if t < k.duration / 2 else 0), b[3])
+                                          for b in o(t)]
+        try:
+            return text_stability(NS(shots=[k]))
+        finally:
+            del k.word_boxes
+    run("text_stability", "kinetic words re-centring halfway through the card", t_text)
+    return rows
+
+
+def selftest_table(rows: list[dict]) -> str:
+    md = ["| check_selftest | planted bug | result |", "|---|---|---|"]
+    for r in rows:
+        md.append(f"| {r['check']} | {r['planted']} | {r['result']}{'' if r['result'] == 'FAIL' else ' - BLIND, release blocked'} |")
+    missing = [c for c in CHECKS if c not in {r["check"] for r in rows}]
+    for c in missing:
+        md.append(f"| {c} | (no planted bug) | MISSING - release blocked |")
+    return "\n".join(md)
+
+
+def selftest_ok(rows: list[dict]) -> bool:
+    return all(r["result"] == "FAIL" for r in rows) and all(c in {r["check"] for r in rows} for c in CHECKS)

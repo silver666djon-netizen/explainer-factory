@@ -393,7 +393,9 @@ def short_windows(beats: list[dict], beat_lookup: dict) -> None:
             for m in v.get("marks") or []:
                 a, c = _mark_span({**m, **(m.get("short") or {})})
                 lo, hi = min(lo, a), max(hi, c)
-            for f in (v.get("short_fit"), src.get("short_fit"), v.get("subject_x"), src.get("subject_x")):
+            subj = (v.get("short_subject_x"), src.get("short_subject_x")) if v.get("short_image") else \
+                (v.get("short_fit"), src.get("short_fit"), v.get("subject_x"), src.get("subject_x"))
+            for f in subj:
                 if f:
                     lo, hi = min(lo, float(f[0])), max(hi, float(f[1]))
         if hi <= lo:
@@ -507,6 +509,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.shots.append(cshot)
         elif vtype in ("image", "reuse", "photo", "clip", "archive"):
             keys = _image_keys(visual, beat_lookup)
+            if kind == "short" and visual.get("short_image"):  # R38: a vertical-native version of a code-drawn prop
+                keys = [str(visual["short_image"])]
             if vtype == "archive" or (vtype == "reuse" and beat_lookup.get(visual.get("beat"), {}).get("visual", {}).get("type") == "archive"):
                 visual["motion"] = "static"
                 capv = visual if vtype == "archive" else beat_lookup[visual["beat"]]["visual"]
@@ -667,8 +671,9 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 shot._still_src = None if live is not None else str(path)  # max-still check (a live clip is not a still)
                 if visual.get("cam_dy") and k == 0:
                     shot.cam_dy = float(visual["cam_dy"])
-                if visual.get("split") and k == 0 and live is None:  # the picture is cut along x and the right piece slides
-                    sp_ = dict(visual["split"])
+                spv = visual.get("short_split") if (kind == "short" and visual.get("short_split")) else visual.get("split")
+                if spv and k == 0 and live is None:  # the picture is cut along x (or y) and the second piece slides
+                    sp_ = dict(spv)
                     if sp_.get("done"):
                         sp_["t0"] = -100.0
                     else:
@@ -903,7 +908,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             c = beat["counter"]
             appear = start + _timed(c, v["words"], 0.5)
             plan.counters.append(Counter(appear, start + dur, float(c.get("from", 0)), float(c["to"]),
-                                         float(c.get("dur", 1.2)), str(c.get("prefix", "")), str(c.get("suffix", "")),
+                                         min(0.5, float(c.get("dur", 0.5))), str(c.get("prefix", "")), str(c.get("suffix", "")),  # R39
                                          int(c.get("decimals", 0)), str(c.get("label", ""))))
             for k in range(6):
                 plan.timeline.add_sfx(appear + k * float(c.get("dur", 1.2)) / 6, "tick", seed=i + k)
@@ -1527,7 +1532,8 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     W, H = plan.size
     A.write_wav(wav_path, plan.timeline.mix())
     lufs = cfg["audio"].get("target_lufs", -14)
-    loud_af = _gain_filter(wav_path, lufs, LIMIT0, log)
+    lim0 = LIMIT0_LONG if plan.kind == "long" else LIMIT0  # the long master sits lower (-1.5 dBTP gate)
+    loud_af = _gain_filter(wav_path, lufs, lim0, log)
     cmd = [
         "ffmpeg", "-y", "-v", "error",
         "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(fps), "-i", "-",
@@ -1535,7 +1541,7 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
         "-map", "0:v", "-map", "1:a",
         "-c:v", "libx264", "-preset", cfg["video"].get("x264_preset", "veryfast"),
         "-crf", str(cfg["video"].get("crf", 21)), "-pix_fmt", "yuv420p",
-        "-af", _master_af(loud_af, LIMIT0), *AAC_ARGS,
+        "-af", _master_af(loud_af, lim0), *AAC_ARGS,
         "-shortest", "-movflags", "+faststart", str(out_path),
     ]
     proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
@@ -1608,13 +1614,14 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     if code != 0:
         raise RuntimeError(f"ffmpeg failed with exit code {code}")
     log(f"Rendered {out_path.name}: {plan.total:.1f}s in {time.time() - t0:.0f}s")
-    _gate_with_remaster(out_path, wav_path, loud_af, cfg, log)
+    _gate_with_remaster(out_path, wav_path, loud_af, cfg, log, kind=plan.kind, lim0=lim0)
     return out_path
 
 
 # Master: loudnorm (linear) -> 4x oversampled limiter -> 48 kHz -> AAC with an 18 kHz cutoff (the native AAC
 # encoder overshoots on the scribble/stamp transients' top end; capping it keeps true peaks predictable).
 LIMIT0 = 0.72
+LIMIT0_LONG = 0.62
 AAC_ARGS = ["-c:a", "aac", "-b:a", "192k", "-cutoff", "18000", "-ar", "48000"]
 
 
@@ -1622,12 +1629,20 @@ def _master_af(loud_af: str, limit: float) -> str:
     return loud_af + f",aresample=192000,alimiter=limit={limit}:attack=1:release=60:level=false,aresample=48000"
 
 
-def _gate_with_remaster(out_path: Path, wav_path: Path, loud_af: str, cfg: dict, log=print) -> None:
+def _ceiling(cfg: dict, kind: str | None) -> float:
+    a = cfg.get("audio", {})
+    if kind == "long" and a.get("true_peak_max_long") is not None:  # Klot r86: the long master at -1.5 dBTP
+        return float(a["true_peak_max_long"])
+    return float(a.get("true_peak_max", -1.0))
+
+
+def _gate_with_remaster(out_path: Path, wav_path: Path, loud_af: str, cfg: dict, log=print, kind: str | None = None,
+                        lim0: float = LIMIT0) -> None:
     """True-peak gate. A file over the ceiling gets its audio remastered with a lower limiter ceiling (video stream
     copied untouched), up to three times; if it still fails, the build fails."""
-    ceiling = float(cfg.get("audio", {}).get("true_peak_max", -1.0))
+    ceiling = _ceiling(cfg, kind)
     _i, tp = measure_audio(out_path)
-    for limit in (0.66, 0.60, 0.54):
+    for limit in [x for x in (0.66, 0.62, 0.58, 0.54, 0.50) if x < lim0 - 1e-6]:
         if tp <= ceiling or not Path(wav_path).exists():
             break
         log(f"  audio {out_path.name}: true peak {tp:.1f} dBTP over {ceiling:.1f} - remastering at limit {limit}")
@@ -1637,7 +1652,7 @@ def _gate_with_remaster(out_path: Path, wav_path: Path, loud_af: str, cfg: dict,
                         str(tmp)], check=True)
         tmp.replace(out_path)
         _i, tp = measure_audio(out_path)
-    audio_gate(out_path, cfg, log)
+    audio_gate(out_path, cfg, log, kind=kind)
 
 
 def measure_audio(path: Path) -> tuple[float, float]:
@@ -1657,9 +1672,9 @@ class AudioGateError(RuntimeError):
     pass
 
 
-def audio_gate(path: Path, cfg: dict, log=print) -> None:
-    """QC gate: true peak above audio.true_peak_max (default -1.0 dBTP) fails the build."""
-    ceiling = float(cfg.get("audio", {}).get("true_peak_max", -1.0))
+def audio_gate(path: Path, cfg: dict, log=print, kind: str | None = None) -> None:
+    """QC gate: true peak above audio.true_peak_max (default -1.0 dBTP; long video: true_peak_max_long) fails the build."""
+    ceiling = _ceiling(cfg, kind)
     i, tp = measure_audio(path)
     log(f"  audio {path.name}: {i:.1f} LUFS, true peak {tp:.1f} dBTP (ceiling {ceiling:.1f})")
     if tp > ceiling:

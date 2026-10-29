@@ -41,16 +41,18 @@ def main() -> int:
             sh["beats"][0]["_hook"] = True
     T = json.load(open(tj))
     beats = {"long": ep["beats"], **{sh["id"]: sh["beats"] for sh in ep.get("shorts") or []}}
-    res = {}
+    res, plans = {}, {}
     for name, plan in MA.build(ep, cfg, T, True):
+        plans[name] = plan
         res[name] = qc.run_all(plan, cfg, beats[name], skip)
         print(f"{name}: " + ", ".join(f"{c} {'ok' if not r['fails'] else len(r['fails'])}" for c, r in res[name].items()), flush=True)
-    md = "# Release checks " + ep["slug"] + "\n\n" + qc.table(res) + "\n"
+    st = qc.selftest(plans, cfg, beats)
+    md = ("# Release checks " + ep["slug"] + "\n\n" + qc.table(res) + "\n\n## Check self-test (R40)\n\n" + qc.selftest_table(st) + "\n")
     print(md)
     if out:
         Path(out).write_text(md)
-        Path(out).with_suffix(".json").write_text(json.dumps(res, indent=1))
-    return 1 if qc.failed(res) else 0
+        Path(out).with_suffix(".json").write_text(json.dumps({**res, "_selftest": st}, indent=1))
+    return 1 if qc.failed(res) or not qc.selftest_ok(st) else 0
 
 
 if __name__ == "__main__":
