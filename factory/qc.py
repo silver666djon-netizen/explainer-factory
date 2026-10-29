@@ -292,7 +292,12 @@ def hand_over_ink(plan, limit: float = 0.05, mirror: bool = False) -> list[str]:
             sh._prepare()
         FW, FH = (sh.full if sh.full else (sh.W, sh.H))
         y_off = sh.y0 if sh.full else 0
-        for m in sh.marks:
+        # the marks as they were when written: a "follow" mark sits at its own place (the render may have left it moved
+        # with the split), and no stroke / layout cache from the render's last frame
+        clean = [{**{k: v for k, v in mm.items() if k not in ("_strokes", "_strokes_WH", "_lay", "_note")},
+                  "x": float(mm.get("_fx0", mm.get("x", 0.5))), "y": float(mm.get("_fy0", mm.get("y", 0.5)))}
+                 for mm in sh.marks]
+        for m in clean:
             if not m.get("hand") or m.get("type") not in ("write", "circle", "underline", "cross", "dash"):
                 continue
             at, dur = float(m.get("at", 0.6)), float(m.get("dur", 0.45))
@@ -303,7 +308,7 @@ def hand_over_ink(plan, limit: float = 0.05, mirror: bool = False) -> list[str]:
                 tt = at + dur * q
                 if tt >= sh.duration or tt < 0:
                     continue  # (a mark carried over from the previous shot is checked there)
-                pen = mark_pen(sh.marks, tt, sh.BW, sh.BH)
+                pen = mark_pen(clean, tt, sh.BW, sh.BH)
                 if not pen:
                     continue
                 ftip, t0, t1, kind = pen

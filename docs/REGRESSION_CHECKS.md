@@ -90,6 +90,7 @@ check (release_checks.py / CI qc_checks.md) · **STILL** = build max-still warni
 | Ep.4 r86 #7 | ledger shot static 9 s, fountain-pen prop cut by the frame | STATIC + EYE |
 | Ep.4 r86 #8 | grocery checkout photo under "the venue" | EYE (script review) |
 | Ep.4 r86 #9 | long master at -1.0 dBTP, Telegram copy -0.7 (AAC re-encode) | AG (long -1.5) |
+| Ep.4 r87 QC | false FAIL: hand_over_ink read split-moved marks + render caches after release() (n1 "+ $18") | qc.hand_over_ink uses the marks as written |
 | Ep.4 r85 QC | ALL-IN PRICES ink drawn over the lever as it flips past the plate | MA-6 (unless "behind_moving") |
 
 Add a line here for every new bug, in the round it is found, with the check that now catches it (write the check if
