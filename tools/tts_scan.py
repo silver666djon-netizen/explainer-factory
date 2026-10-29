@@ -78,6 +78,7 @@ def main():
             seen[key]["also"].append(f"{where}:{b['id']}")
             continue
         chunks, joins, toks, off = [], [], [], 0.0
+        phon = []  # (word, phonemes) - the G2P result Kokoro speaks (pronunciation check: "Live" = lˈIv)
         for r in pipe(text, voice=vc.get("voice", "am_michael"), speed=float(vc.get("speed", 1.0)), split_pattern=r"\n+"):
             a = getattr(r, "audio", None)
             if a is None:
@@ -86,6 +87,8 @@ def main():
             if chunks:
                 joins.append(off)
             for tk in getattr(r, "tokens", None) or []:
+                if re.search(r"\w", tk.text or ""):
+                    phon.append((tk.text, getattr(tk, "phonemes", None)))
                 if getattr(tk, "start_ts", None) is not None and re.search(r"\w", tk.text or ""):
                     toks.append((tk.text, off + float(tk.start_ts), off + float(tk.end_ts)))
             chunks.append(a)
@@ -141,7 +144,8 @@ def main():
         rec = {"id": bid, "where": where, "text": text, "dur": round(len(audio) / SAMPLE_RATE, 2), "chunks": len(chunks),
                "level_db": round(lvl, 1), "speech_from": round(lead, 2), "speech_to": round(tail, 2),
                "ends_in_speech": bool(endcut), "checks": checks, "repeats": repeats, "diffs": diffs,
-               "heard": " ".join(w for w, _, _ in heard), "also": []}
+               "heard": " ".join(w for w, _, _ in heard), "also": [],
+               "phonemes": " ".join(f"{w}/{p}/" for w, p in phon)}
         seen[key] = rec
         report.append(rec)
         print(f"{bid}: {len(chunks)} chunk(s), {lvl:.1f} dB, repeats {len(repeats)}, diffs {len(diffs)}", flush=True)
@@ -161,6 +165,7 @@ def main():
         md.append(f"## {r['id']} ({r['dur']} s, {r['chunks']} chunk(s){', also ' + ', '.join(r['also']) if r['also'] else ''})")
         md.append(f"- text: {r['text']}")
         md.append(f"- heard: {r['heard']}")
+        md.append(f"- phonemes: {r.get('phonemes', '')}")
         md += [f"- **{f}**" for f in flags] or ["- ok"]
         md.append("")
     (out / "scan.md").write_text("\n".join(md))

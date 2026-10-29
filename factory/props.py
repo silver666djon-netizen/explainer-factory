@@ -400,7 +400,9 @@ class MugshotShot(Shot):
         cw = int(BW * (0.78 if portrait else 0.38))
         cx = int(BW * (0.5 if portrait else 0.73)) - cw // 2
         cy = int(BH * (0.43 if portrait else 0.2))
-        rows = [(ui(k), v) for k, v in (("NAME", spec.get("name", "")), ("ALIAS", spec.get("alias", "")),
+        # Klot r89: "ALIASES" when more than one alias is listed (narration: "Aliases")
+        al_key = "ALIASES" if any(sep in str(spec.get("alias", "")) for sep in ("·", ",", " / ")) else "ALIAS"
+        rows = [(ui(k), v) for k, v in (("NAME", spec.get("name", "")), (al_key, spec.get("alias", "")),
                                         ("LAST SEEN", spec.get("last_seen", ""))) if str(v).strip()]
         if spec.get("notes"):
             rows.append((ui("NOTES"), spec["notes"]))

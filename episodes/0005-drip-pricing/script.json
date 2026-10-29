@@ -836,7 +836,7 @@
     {
       "id": "a2b",
       "section": "Tuesday 8:12 PM: The experiment",
-      "text": "and a company that tested them on its own customers.",
+      "text": "to a company that tested them on its own customers.",
       "visual": {
         "type": "archive",
         "file": "radio_city_ticket_booth_1942.jpg",
@@ -1258,7 +1258,7 @@
       "pause_at": {
         "word": "twenty-one",
         "sec": 0.6,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -1277,7 +1277,7 @@
       "pause_at": {
         "word": "fourteen",
         "sec": 0.6,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -1292,7 +1292,7 @@
         "marks": [
           {
             "type": "write",
-            "text": "+5 %",
+            "text": "+5%",
             "x": 0.7,
             "y": 0.4,
             "w": 0.1,
@@ -1335,7 +1335,7 @@
         },
         "manual": true
       },
-      "label": "Seat choice = at least 28 % of the revenue gap · NBER w25186"
+      "label": "Seat choice = at least 28% of the revenue gap · NBER w25186"
     },
     {
       "id": "a12",
@@ -1558,7 +1558,7 @@
       "pause_at": {
         "word": "thirty-seven",
         "sec": 0.6,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -1769,7 +1769,7 @@
       "pause_at": {
         "word": "sixteen",
         "sec": 0.6,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -1835,7 +1835,7 @@
           },
           {
             "type": "write",
-            "text": "+60 %",
+            "text": "+60%",
             "x": 0.6380813953488372,
             "y": 0.48,
             "w": 0.17,
@@ -1894,7 +1894,7 @@
       "label": "Illustration",
       "ledger": [
         {
-          "label": "= 37.5 % of the total · +60 % on the $30 shown",
+          "label": "= 37.5% of the total · +60% on the $30 shown",
           "amount": "",
           "on": "sixty",
           "note": true
@@ -2082,7 +2082,7 @@
       "pause_at": {
         "word": "one",
         "sec": 0.5,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -3181,7 +3181,7 @@
         "doc": {
           "source": "NBER Working Paper 25186 · p. 27",
           "headline": "What the switch did",
-          "body": "These findings suggest that the switch to BF at StubHub was market-expanding, rather than pure business-stealing.",
+          "body": "These findings suggest that the switch to [back-end fees] at StubHub was market-expanding, rather than pure business-stealing.",
           "highlight": "market-expanding, rather than pure business-stealing",
           "on": "market-expanding,",
           "mark": "underline",
@@ -3380,7 +3380,7 @@
     {
       "id": "l2",
       "section": "Friday 9:00 AM: One fee, three laws",
-      "text": "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront.",
+      "text": "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to vacation rentals, must show the total price upfront.",
       "visual": {
         "type": "image",
         "motion": "static",
@@ -3445,7 +3445,7 @@
       "pause_at": {
         "word": "ten",
         "sec": 0.6,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -3811,7 +3811,7 @@
       "pause_at": {
         "word": "four",
         "sec": 0.6,
-        "hit": "stamp"
+        "hit": null
       }
     },
     {
@@ -3823,8 +3823,8 @@
         "stat": {
           "value": 760,
           "label": "refunded to learners · CMA, April 2026",
-          "prefix": "over £",
-          "suffix": "k"
+          "prefix": "OVER £",
+          "suffix": "K"
         }
       }
     },
@@ -4454,7 +4454,7 @@
           "next": {
             "number": "005",
             "title": "Tip screens",
-            "tagline": "18 % · 22 % · 25 % · No tip?",
+            "tagline": "18% · 22% · 25% · No tip?",
             "image_file": "next_tablet.png",
             "copies": 1,
             "writes": [
@@ -4466,7 +4466,7 @@
               }
             ],
             "label": [
-              "72 % say tipping is expected in more places",
+              "72% say tipping is expected in more places",
               "Pew Research Center · Nov 2023"
             ],
             "label_under": true,
@@ -5380,7 +5380,7 @@
           "pause_at": {
             "word": "twenty-one",
             "sec": 0.6,
-            "hit": "stamp"
+            "hit": null
           },
           "id": "s2_2"
         },
@@ -5398,7 +5398,7 @@
           "pause_at": {
             "word": "fourteen",
             "sec": 0.6,
-            "hit": "stamp"
+            "hit": null
           },
           "id": "s2_3"
         },
@@ -5411,7 +5411,7 @@
             "marks": [
               {
                 "type": "write",
-                "text": "+5 %",
+                "text": "+5%",
                 "x": 0.7,
                 "y": 0.4,
                 "w": 0.1,
@@ -5629,7 +5629,7 @@
           "pause_at": {
             "word": "thirty-seven",
             "sec": 0.6,
-            "hit": "stamp"
+            "hit": null
           },
           "label": "Illustration",
           "id": "s3_1"
@@ -5685,7 +5685,7 @@
           "pause_at": {
             "word": "sixteen",
             "sec": 0.6,
-            "hit": "stamp"
+            "hit": null
           },
           "id": "s3_4"
         },
@@ -5818,7 +5818,7 @@
           "pause_at": {
             "word": "one",
             "sec": 0.5,
-            "hit": "stamp"
+            "hit": null
           },
           "id": "s4_3"
         },
@@ -6843,7 +6843,7 @@
           "pause_at": {
             "word": "four",
             "sec": 0.6,
-            "hit": "stamp"
+            "hit": null
           },
           "id": "s6_1"
         },

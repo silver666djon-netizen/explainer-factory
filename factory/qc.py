@@ -385,17 +385,18 @@ def shorts_length(plan, limit: float = 45.0) -> list[str]:
     return [f"Short is {plan.total:.1f} s > {limit:.0f} s"] if plan.total > limit + 1e-6 else []
 
 
-def count_up(plan) -> list[str]:
-    """R39: a stat card counts up in <= 0.5 s and shows its subline only with the final number."""
+def count_up(plan, fps: float = 24.0) -> list[str]:
+    """R39 (Klot r89): no count-ups - every frame of a number card shows the final value (a wrong number on screen is
+    a factual error)."""
     from .shots import StatShot
     fails = []
     for sh in plan.shots:
         if isinstance(sh, StatShot):
-            c = float(getattr(sh, "count", sh.ramp))
-            if c > 0.5 + 1e-6:
-                fails.append(f"{_tc(sh.start)} count-up {c:.2f} s > 0.5 s")
-            if not hasattr(sh, "t0"):
-                fails.append(f"{_tc(sh.start)} stat card without the R39 reveal")
+            for k in range(max(1, int(sh.duration * fps))):
+                v = sh.shown(k / fps)
+                if v != sh.final:
+                    fails.append(f"{_tc(sh.start + k / fps)} number card shows {v!r}, not {sh.final!r}")
+                    break
     return fails
 
 
@@ -416,6 +417,58 @@ def card_not_empty(plan, fps: float = 12.0) -> list[str]:
         elif isinstance(sh, KineticShot):
             if not sh.word_boxes(0.0):
                 fails.append(f"{_tc(sh.start)} kinetic card opens empty")
+    return fails
+
+
+def _texts(obj, path=""):
+    """Every on-screen string of a beat list (i18n.TEXT_KEYS / LIST_KEYS), with where it sits."""
+    from .i18n import LIST_KEYS, SKIP_KEYS, TEXT_KEYS
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if k in SKIP_KEYS or k.startswith("_"):
+                continue
+            if k in TEXT_KEYS and isinstance(v, str):
+                yield f"{path}.{k}", v
+            elif k in TEXT_KEYS and isinstance(v, list) and all(isinstance(x, str) for x in v):
+                for i, x in enumerate(v):
+                    yield f"{path}.{k}[{i}]", x
+            elif k in LIST_KEYS and isinstance(v, list):
+                for i, x in enumerate(v):
+                    if isinstance(x, str):
+                        yield f"{path}.{k}[{i}]", x
+                    else:
+                        yield from _texts(x, f"{path}.{k}[{i}]")
+            else:
+                yield from _texts(v, f"{path}.{k}")
+    elif isinstance(obj, list):
+        for i, x in enumerate(obj):
+            yield from _texts(x, f"{path}[{i}]")
+
+
+def text_lint(beats) -> list[str]:
+    """Klot r89: render text style - no space before % ("+5 %"), no lowercase word start on a number card (cards are all
+    caps: "over £760k"), no double spaces (the "  ·  " kicker separators excepted), no mix of straight and curly quotes."""
+    import re
+    fails, all_txt = [], []
+    for b in beats or []:
+        bid = b.get("id", "?")
+        for where, t in _texts(b, bid):
+            all_txt.append(t)
+            if re.search(r"\d %", t):
+                fails.append(f"{where}: space before % in {t!r}")
+            if re.search(r"(?<!·) {2,}(?!·)", t):
+                fails.append(f"{where}: double space in {t!r}")
+        st = (b.get("visual") or {}).get("stat")
+        if st:
+            dec = int(st.get("decimals", 0))
+            final = f"{st.get('prefix', '')}{float(st['value']):,.{dec}f}{st.get('suffix', '')}"
+            if re.search(r"(^|\s)[a-z]", final):
+                fails.append(f"{bid}: lowercase on the number card {final!r}")
+    joined = "\n".join(all_txt)
+    if "'" in joined and "\u2019" in joined:
+        fails.append("straight (') and curly (\u2019) apostrophes mixed")
+    if '"' in joined and ("\u201c" in joined or "\u201d" in joined):
+        fails.append('straight (") and curly quotes mixed')
     return fails
 
 
@@ -466,7 +519,7 @@ def text_stability(plan, fps: float = 24.0) -> list[str]:
 
 
 CHECKS = ("plate_fit", "crop_fit", "jitter_check", "mark_in_frame", "mark_on_object", "hand_over_ink", "shorts_picture_size",
-          "shorts_length", "count_up", "card_not_empty", "sfx_sync", "voice_cut_check", "text_stability")
+          "shorts_length", "count_up", "card_not_empty", "text_lint", "sfx_sync", "voice_cut_check", "text_stability")
 
 
 def run_all(plan, cfg, beats, skip=()) -> dict:
@@ -481,6 +534,8 @@ def run_all(plan, cfg, beats, skip=()) -> dict:
                 r = plate_fit(plan, cfg)
             elif name == "crop_fit":
                 r = crop_fit(plan, beats)
+            elif name == "text_lint":
+                r = text_lint(beats)
             elif name == "voice_cut_check":
                 r, pts = voice_cut_check(plan)
                 out[name] = {"fails": r, "notes": pts}
@@ -612,23 +667,26 @@ def selftest(plans: dict, cfg: dict, beats: dict) -> list[dict]:
 
     def t_count():
         st = next((s for s in long_.shots if isinstance(s, StatShot)), None)
-        c0 = st.count
-        st.count = 1.4
+        st.legacy_count = 1.4
         try:
             return count_up(NS(shots=[st]))
         finally:
-            st.count = c0
-    run("count_up", "a 1.4 s count-up", t_count)
+            st.legacy_count = None
+    run("count_up", "an old-style 1.4 s count-up (wrong values on screen)", t_count)
 
     def t_empty():
         st = next((s for s in long_.shots if isinstance(s, StatShot)), None)
-        lab, t0 = st.label, st.t0
-        st.label, st.t0 = None, min(1.0, st.duration / 2)
+        orig = st.frame
+        st.frame = lambda t, o=orig, b=st.bg: b.copy() if t < 1.0 else o(t)
         try:
             return card_not_empty(NS(shots=[st]))
         finally:
-            st.label, st.t0 = lab, t0
-    run("card_not_empty", "a stat card with no subline, its number waiting 1 s", t_empty)
+            del st.frame
+    run("card_not_empty", "a number card blank for its first second", t_empty)
+    run("text_lint", "\"+5 %\", \"over £760k\", a double space, straight + curly apostrophes",
+        lambda: text_lint([{"id": "x", "text": "it's", "visual": {"type": "image", "marks": [{"text": "+5 %"}, {"text": "a  b"},
+                                                                                        {"text": "isn\u2019t"}]}},
+                           {"id": "y", "text": "", "visual": {"type": "stat", "stat": {"value": 760, "prefix": "over £", "suffix": "k"}}}]))
     run("sfx_sync", "a 0.5 s scratch with no ink being laid",
         lambda: sfx_sync(NS(ink=[], timeline=NS(log=[(1.0, 1.5, "scribble:0.500")]))))
 

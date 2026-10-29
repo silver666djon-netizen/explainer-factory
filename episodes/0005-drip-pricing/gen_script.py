@@ -363,7 +363,7 @@ beat("a1", S_EXP, "Larry has a ticket in his basket.",
 beat("a2", S_EXP, "To see how the fees got there, we go back to 2015,",
      arch("box_office_loews_capitol_1939.jpg", "Ticket line, Loew's Capitol, Washington, D.C., 1939 · Library of Congress", motion="zoom_in"),
      label="StubHub · 2015")
-beat("a2b", S_EXP, "and a company that tested them on its own customers.",
+beat("a2b", S_EXP, "to a company that tested them on its own customers.",
      arch("radio_city_ticket_booth_1942.jpg", "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress", motion="zoom_in"),
      label="StubHub · 2015")
 beat("a3", S_EXP, "StubHub, the ticket resale site, was owned by eBay back then.",
@@ -396,18 +396,18 @@ beat("a7", S_EXP, "Same tickets. Same fees. The only thing that changed was the 
      label="Aug 19–31, 2015", ledger_hide=True)
 beat("a8", S_EXP, "The ones who met the fees late spent almost twenty-one percent more.",
      stat(21, "more spent when fees came at checkout · NBER w25186 · 2015 test", prefix="≈", suffix="%"),
-     pause_at={"word": "twenty-one", "sec": 0.6, "hit": "stamp"})
+     pause_at={"word": "twenty-one", "sec": 0.6, "hit": None})
 beat("a9", S_EXP, "They were fourteen point one percent more likely to buy at all.",
      stat(14.1, "more likely to buy · NBER w25186 · 2015 test", decimals=1, suffix="%"),
-     pause_at={"word": "fourteen", "sec": 0.6, "hit": "stamp"})
+     pause_at={"word": "fourteen", "sec": 0.6, "hit": None})
 beat("a10", S_EXP, "And the buyers among them picked seats about five percent pricier.",
      manual(img("a 1950s concert hall seen from the stage, rows of red velvet seats, the front rows lit by a warm spotlight, empty hall",
-         motion="static", hand_marks=True, marks=[write("+5 %", on="five", x=0.70, y=0.40, w=0.10, h=0.07, plate=[1.35, 1.45])]), clip=True),  # cream plate on the seats: the clip's push-in takes the floor away
+         motion="static", hand_marks=True, marks=[write("+5%", on="five", x=0.70, y=0.40, w=0.10, h=0.07, plate=[1.35, 1.45])]), clip=True),  # cream plate on the seats: the clip's push-in takes the floor away
      pause_at={"word": "five", "sec": 0.5, "hit": "stamp"})
 beat("a11", S_EXP, "A seat looks cheaper when its fees are still offstage, so you pick a better one.",
      manual(img("last frame of the a10 clip", note="images/a11.png = last frame of clips/a10.mp4", motion="static",
                 push={"center": [0.50, 0.60], "zoom": 1.15})),
-     label="Seat choice = at least 28 % of the revenue gap · NBER w25186")
+     label="Seat choice = at least 28% of the revenue gap · NBER w25186")
 beat("a12", S_EXP, "Then the fees walk on.",
      manual(img("three small paper price slips with tiny cartoon legs walking onto a 1950s theatre stage in a spotlight, red curtain, playful print-ad style",
          motion="static", hand_marks=True, clip_until=4.0, short_still=True,  # Grok clip: the slips walk to centre stage and stop (frozen at 4.0 s); the Short keeps the still
@@ -431,7 +431,7 @@ beat("b1", S_TM, "Larry reads his receipt. Eighteen dollars of fees on a forty-e
              tab("HIDDEN", "$18.00", "Eighteen", dur=0.5, chain=True, loss=True, circle=True)])  # one pass of the tab hand
 beat("b2", S_TM, "That's thirty-seven and a half percent of what he paid.",
      stat(37.5, "of Larry's total was fees", decimals=1, suffix="%"), label="Illustration",
-     pause_at={"word": "thirty-seven", "sec": 0.6, "hit": "stamp"})
+     pause_at={"word": "thirty-seven", "sec": 0.6, "hit": None})
 beat("b3a", S_TM, "Is that unusual?",  # Klot r78 item 7: the statue appears once; this line is on Larry's ticket + the 37.5 % note
      reuse("o1", hand_marks=True, cam_rate=0.008, subject_x=TICKET_SUBJ, **TSHORT,
            marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("= $18", at=0.0, **STUB_NOTE(0.430)), write("IN FEES", at=0.0, **STUB_NOTE(0.525))]),
@@ -448,15 +448,15 @@ beat("b4", S_TM, "They allege the fees run from twenty-four to forty-four percen
      pause_at={"word": "twenty-four", "sec": 0.4, "hit": None})
 beat("b5", S_TM, "And that fans paid over sixteen point four billion dollars in mandatory fees.",
      stat(16.4, "in mandatory fees · FTC complaint, Sept 2025 · ALLEGED", decimals=1, prefix="$", suffix="bn"),
-     pause_at={"word": "sixteen", "sec": 0.6, "hit": "stamp"})
+     pause_at={"word": "sixteen", "sec": 0.6, "hit": None})
 beat("b6", S_TM, "Larry's thirty-seven and a half percent sits right inside that range.",
      {"type": "chart", "chart": {"kind": "bar", "title": "Fees as a share of the total", "labels": ["Low (alleged)", "Larry", "High (alleged)"],
                                  "values": [24, 37.5, 44], "unit": "%", "highlight": 1, "value_labels": True,
                                  "note": "FTC complaint ¶36 (alleged) · Larry: illustration"}})
 beat("b7", S_TM, "His thirty-dollar ticket grew by sixty percent between the first screen and the last.",
-     reuse("o1", hand_marks=True, subject_x=TICKET_SUBJ, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+60 %", on="sixty", **STUB_NOTE(0.480))]),
+     reuse("o1", hand_marks=True, subject_x=TICKET_SUBJ, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+60%", on="sixty", **STUB_NOTE(0.480))]),
      pause_at={"word": "sixty", "sec": 0.5, "hit": "stamp"}, label="Illustration",
-     ledger=[tab("= 37.5 % of the total · +60 % on the $30 shown", "", "sixty", note=True)])
+     ledger=[tab("= 37.5% of the total · +60% on the $30 shown", "", "sixty", note=True)])
 beat("b8", S_TM, "Larry, it turns out, is perfectly average.", reuse("b1", push={"center": [0.40, 0.35], "zoom": 1.7}), hero=True)
 beat("b9", S_TM, "In September 2026, a judge refused to throw the case out. It goes on.",
      doc("U.S. District Court, C.D. Cal. · Order · Sept 28, 2026", "Motion to dismiss",
@@ -487,7 +487,7 @@ beat("c2", S_HOTEL, "In 2019, the Attorney General for Washington, D.C., sued Ma
      label="DC Attorney General v. Marriott · July 2019", alleged=True)
 beat("c3", S_HOTEL, "The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:",
      stat(189, "Marriott hotels with resort fees · DC complaint, 2019 · ALLEGED"),
-     pause_at={"word": "one", "sec": 0.5, "hit": "stamp"})
+     pause_at={"word": "one", "sec": 0.5, "hit": None})
 # c4/c5/c7 hotel bill (Klot r78 item 3): no blank form on screen - the camera starts on the first table line and the hand
 # writes RESORT FEE ... $9-$95 as the shot starts; then TAXES AND FEES as a level heading in the header row, then the ring.
 # Measured on images/c4.png: header row y .315-.415 (description box x .33-.517), first line y .425-.47 (description
@@ -631,7 +631,7 @@ beat("d2b", S_DEF, "It went back in the fall of 2015.",
      label="StubHub statement · White House event · March 2023")
 beat("d3", S_DEF, "Two: its own economists saw it differently. Their finding on the switch to late fees: market-expanding, rather than pure business-stealing.",
      doc("NBER Working Paper 25186 · p. 27", "What the switch did",
-         "These findings suggest that the switch to BF at StubHub was market-expanding, rather than pure business-stealing.",
+         "These findings suggest that the switch to [back-end fees] at StubHub was market-expanding, rather than pure business-stealing.",
          "market-expanding, rather than pure business-stealing", on="market-expanding,", kicker="WORKING PAPER  ·  QUOTED", seed=76, lead=0.6,
          push_on="market-expanding,"),
      label="NBER w25186")
@@ -666,14 +666,14 @@ beat("l1", S_LAW, "Larry's ticket goes on a trip. Three borders. Three stamps.",
      manual(img(DESK, note="images/l1.png: the code-drawn $30 ticket on the desk; clips/l1.mp4: the hand flips it (make_l1_flip.py)",
                 motion="static", cam_rate=0.006, clip_sync={"from": "borders.", "from_delay": -0.55, "start": 0.0, "end": 1.4}), clip=True),
      sfx_at=[{"on": "borders.", "delay": -0.2, "kind": "paper"}])
-beat("l2", S_LAW, "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to holiday rentals, must show the total price upfront.",
+beat("l2", S_LAW, "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to vacation rentals, must show the total price upfront.",
      img("the back of the code-drawn ticket on the customs desk", note="code-drawn: images/l2.png (make_l1_flip.py)", motion="static",
          hand_marks=True, marks=[ST(STAMP_USA, on='America.')],  # r84 item 23: lands on "Border one: America"
          closeup=closeup("short", [0.47, 0.43], 1.35, [ST(STAMP_USA, at=0.0)])),
      pause_at={"word": "May", "sec": 0.4, "hit": None})
 beat("l3", S_LAW, "In April 2026, StubHub agreed to pay ten million dollars back to buyers,",
      stat(10, "StubHub settlement · FTC · April 2026", prefix="$", suffix="m"),
-     pause_at={"word": "ten", "sec": 0.6, "hit": "stamp"})
+     pause_at={"word": "ten", "sec": 0.6, "hit": None})
 beat("l3b", S_LAW, "over fees it showed too late.",
      reuse("a5", hand_marks=True, push={"center": [0.62, 0.36], "zoom": 1.7},
            marks=[write("B", at=0.0, **AB_B), write("$30", at=0.0, **GLASS_B), write("+ fees", at=0.0, **GLASS_B2)]),
@@ -706,9 +706,9 @@ beat("l8", S_LAW, "A driving-school group hid a three-pound booking fee charged 
      label="CMA · April 2026")
 beat("l9", S_LAW, "It paid a four point two million pound fine,",
      stat(4.2, "fine · CMA, April 2026", decimals=1, prefix="£", suffix="m"),
-     pause_at={"word": "four", "sec": 0.6, "hit": "stamp"})
+     pause_at={"word": "four", "sec": 0.6, "hit": None})
 beat("l9b", S_LAW, "and over seven hundred and sixty thousand pounds in refunds.",
-     stat(760, "refunded to learners · CMA, April 2026", prefix="over £", suffix="k"))
+     stat(760, "refunded to learners · CMA, April 2026", prefix="OVER £", suffix="K"))
 beat("l10", S_LAW, "In June, StubHub's British arm was fined too.",
      reuse("o1", hand_marks=True, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), stamp('UK · FINED · JUNE 2026', STUB_X, 0.500, on='fined', angle=-8, w=0.165, obj=STUB_OBJ)], subject_x=TICKET_SUBJ),
      label="CMA · June 2026")
@@ -764,9 +764,9 @@ ES = {"number": "004", "title": "The fee at the end", "stamp": "Case closed",
       # four lines at the Ep.3 letter size, each written from its first spoken word (real-voice word times)
       "verdict": ["Guilty: the checkout fee", "and its cousin, the resort fee.", "Accomplice:", "the first number on the screen."],
       "verdict_at": [1.4, 3.17, 5.36, 6.25], "verdict_dur": [1.55, 1.9, 0.72, 1.55],
-      "next": {"number": "005", "title": "Tip screens", "tagline": "18 % · 22 % · 25 % · No tip?", "image_file": "next_tablet.png",
+      "next": {"number": "005", "title": "Tip screens", "tagline": "18% · 22% · 25% · No tip?", "image_file": "next_tablet.png",
                "copies": 1, "writes": [{"text": "No tip", "x": 0.5, "y": 0.880, "h": 0.085}],
-               "label": ["72 % say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True,
+               "label": ["72% say tipping is expected in more places", "Pew Research Center · Nov 2023"], "label_under": True,
                "subject_scale": 1.5, "subject_top": 0.285, "label_gap": 0.03, "tagline_y": 0.214, "tagline_h": 0.075},  # tablet 1.5x for phones, Pew plate under it
       # timed on the real voice (CI timings 2026-10-21): verdict lines written as spoken, swap after "screen.",
       # sketch with "Next case", "No tip" on "tip", Pew plate after "coffee", click on "Subscribe"

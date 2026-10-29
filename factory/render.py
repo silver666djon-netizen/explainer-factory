@@ -853,17 +853,17 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             for _w, s0, _e in words_rel[:: max(1, len(words_rel) // 4)]:
                 plan.timeline.add_sfx(start + s0, "hit", seed=i)
         elif vtype == "stat":
-            land = _number_spoken_at(v["words"], visual["stat"].get("on"))
-            pa_ = beat.get("pause_at")
-            if land is not None and pa_:  # a reveal pause right before the number: the count lands as the silence
-                pw = word_time(v["words"], pa_["word"])  # starts, so the value is on screen before it is said
-                if pw is not None and abs(pw - land) < 0.05:
-                    prev_end = max([e0 for _w, s0, e0 in v["words"] if s0 < pw - 0.01] or [pw - 0.3])
-                    land = max(prev_end + 0.05, pw - 1.2) if pw - prev_end > 0.15 else pw - 0.25
-            land = None if land is None else lead_in + land - 0.08
-            st = StatShot(shot_start, span, visual["stat"], cfg, size, land_at=land)
+            # R39 (Klot r89): the card - final number whole, subline with it - arrives on the first word of the
+            # sentence that carries the number (one sentence per stat beat); the shot before it holds until then
+            fw = lead_in + (float(v["words"][0][1]) if v["words"] else 0.0)
+            delta = max(0.0, min(fw - 0.03, span - 0.6))
+            if delta > 0.04 and plan.shots and plan.shots[-1].start + plan.shots[-1].duration >= shot_start - 0.02:
+                plan.shots[-1].duration += delta
+            else:
+                delta = 0.0
+            st = StatShot(shot_start + delta, span - delta, visual["stat"], cfg, size)
             plan.shots.append(st)
-            plan.timeline.add_sfx(shot_start + st.ramp, "pop", seed=i)
+            plan.timeline.add_stab(shot_start + delta, "ub_sting_brass")  # the brass stab with the stamp
         elif vtype == "chart":
             shot = ChartShot(shot_start, span, visual["chart"], cfg, size)
             plan.shots.append(shot)

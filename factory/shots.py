@@ -837,18 +837,20 @@ class TitleShot(Shot):
 
 
 class StatShot(Shot):
-    """Big number that counts up: value, prefix, suffix, label, decimals."""
+    """Big number card: value, prefix, suffix, label, decimals.
+    R39 (Klot r89): no count-up - the final number appears whole with a short pop (110 % -> 100 % over 0.2 s) on the
+    first word of its sentence (the card itself starts there), its subline with it. A wrong number is a factual error."""
+
+    POP = 0.2
 
     def __init__(self, start, duration, spec: dict, cfg: dict, size, land_at: float | None = None):
         super().__init__(start, duration)
         self.W, self.H = size
         self.spec = spec
-        # rule: the count-up lands on the spoken value no later than the first syllable of that number
-        # R39 (Klot r86/r87): the count-up lasts <= 0.5 s and ends on the landing time; before it only the number waits
-        # (no in-between value long enough to read) - the subline is there from the first frame
-        self.ramp = max(0.6, min(1.4, duration * 0.45)) if land_at is None else max(0.25, land_at)  # landing time
-        self.count = min(0.5, self.ramp)
-        self.t0 = self.ramp - self.count
+        self.ramp = 0.0  # the number is final from the first frame
+        self.count = 0.0
+        self.t0 = 0.0
+        self.legacy_count = None  # (QC self-test only) a planted old-style count-up of this many seconds
         self.pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
         self.bg = _sunburst(size, self.pal, cfg, seed=9)
         self.head = resolve_font(cfg["fonts"]["headline"])
@@ -860,10 +862,8 @@ class StatShot(Shot):
                                   caption=True)  # a name or a source never splits across lines
             self.label = text_block(lines, fnt, fill=self.pal["ink"])
         self.cache: dict[str, np.ndarray] = {}
-        if self.label is None:  # nothing else on the card: the number is there from the first frame
-            self.t0 = 0.0
-        # r87 item 1: the layout is set by the final number, so the subline sits still from the first frame
-        self._num_h = self._num_img(self._num(float(spec["value"]))).shape[0]
+        self.final = self._num(float(spec["value"]))
+        self._num_h = self._num_img(self.final).shape[0]
 
     def _num_img(self, txt: str) -> np.ndarray:
         if txt not in self.cache:
@@ -872,8 +872,14 @@ class StatShot(Shot):
         return self.cache[txt]
 
     def has_text(self, t: float) -> bool:
-        """QC card_not_empty: the card shows its subline or its number at shot time t."""
-        return self.label is not None or t >= self.t0
+        return True
+
+    def shown(self, t: float) -> str:
+        """The value on screen at shot time t (QC count_up: only ever the final one)."""
+        if self.legacy_count:
+            p = ease(min(1.0, max(0.0, t / self.legacy_count)))
+            return self._num(float(self.spec["value"]) * p)
+        return self.final
 
     def _num(self, v: float) -> str:
         dec = int(self.spec.get("decimals", 0))
@@ -883,12 +889,13 @@ class StatShot(Shot):
     def frame(self, t: float) -> np.ndarray:
         out = self.bg.copy()
         y_num = int(self.H * 0.42) - self._num_h // 2
-        if self.label is not None:  # r87 item 1: the subline is on the card from its first frame; only the number waits
+        if self.label is not None:
             blend(out, self.label, (self.W - self.label.shape[1]) // 2, y_num + self._num_h + int(self.H * 0.02))
-        if t < self.t0:
-            return out
-        p = ease((t - self.t0) / max(1e-3, self.count))
-        num = self._num_img(self._num(float(self.spec["value"]) * p))
+        num = self._num_img(self.shown(t))
+        q = min(1.0, max(0.0, t / self.POP))
+        sc = 1.10 - 0.10 * (1 - (1 - q) ** 2)  # the stamp: 110 % -> 100 %
+        if sc > 1.0005:
+            num = cv2.resize(num, (max(1, int(num.shape[1] * sc)), max(1, int(num.shape[0] * sc))), interpolation=cv2.INTER_LINEAR)
         blend(out, num, (self.W - num.shape[1]) // 2, int(self.H * 0.42) - num.shape[0] // 2)
         return out
 

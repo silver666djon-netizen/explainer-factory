@@ -391,6 +391,17 @@ class Timeline:
         clip = clip / (np.abs(clip).max() + 1e-9)  # peak 1.0: scaled against the voice in mix()
         self._add(self.stings, max(0.0, at), clip)
 
+    def add_stab(self, at: float, name: str, dur: float = 0.55) -> None:
+        """A short brass stab (the head of a sting, quick fade): a number card's stamp."""
+        path = music_file(name)
+        self.log.append((at, at + dur, f"stab:{name}"))
+        if path is None:
+            return
+        clip = _decode(path)[: int(dur * SR)].copy()
+        clip = clip * _env(len(clip), 0.004, min(0.3, dur * 0.5))
+        clip = 0.8 * clip / (np.abs(clip).max() + 1e-9)
+        self._add(self.stings, max(0.0, at), clip)
+
     def _add(self, track: np.ndarray, at: float, clip: np.ndarray) -> None:
         i = max(0, int(at * SR))
         j = min(self.n, i + len(clip))
