@@ -98,14 +98,25 @@ def main():
         if pa:
             from factory.render import word_time
             w0 = word_time(v["words"], pa["word"])
-            if w0 is not None:  # where r78 cut (word start - 30 ms, no fade)
-                checks.append(join_check(audio, SAMPLE_RATE, w0 - 0.03, f"r78 pause cut '{pa['word']}'"))
-            v2, wt = _with_pause(v, pa["word"], float(pa.get("sec", 1.2)))
-            if wt is not None:
-                cut = wt - float(pa.get("sec", 1.2))
-                checks.append(join_check(v2["audio"], SAMPLE_RATE, cut - 0.001, f"pause_at '{pa['word']}' (before the silence)"))
-                checks.append(join_check(v2["audio"], SAMPLE_RATE, wt + 0.001, f"pause_at '{pa['word']}' (after the silence)"))
-            v = v2
+            if w0 is not None:  # rule 33: the voice's own break before the word - how long it is silent there
+                fr = int(0.01 * SAMPLE_RATE)
+                i1 = int(w0 * SAMPLE_RATE)
+                k = i1
+                while k - fr > 0 and rms_db(audio[k - fr:k]) < -45:
+                    k -= fr
+                gap = (i1 - k) / SAMPLE_RATE
+                checks.append({"t": round(w0, 3), "kind": f"break before '{pa['word']}'", "before_db": None, "after_db": None,
+                               "flags": [] if gap >= 0.08 else [f"only {gap * 1000:.0f} ms of silence before the number"],
+                               "gap_ms": round(gap * 1000)})
+            if pa.get("splice"):
+                v, _wt = _with_pause(v, pa["word"], float(pa.get("sec", 1.2)))
+        a_ = v["audio"]  # voice_cut_check: the line's own start and end (the only edit points left)
+        for t_, lab in ((0.0, "line start"), (len(a_) / SAMPLE_RATE, "line end")):
+            w = int(0.03 * SAMPLE_RATE)
+            seg = a_[:w] if t_ == 0.0 else a_[-w:]
+            lv = rms_db(seg)
+            checks.append({"t": round(t_, 3), "kind": lab, "before_db": round(lv, 1), "after_db": None,
+                           "flags": [] if lv < -45 else [f"{lv:.0f} dBFS in the 30 ms at the edit point"]})
         audio = v["audio"]
         bid = f"{where}_{b['id']}" if where != "long" else b["id"]
         sf.write(out / "wav" / f"{bid}.wav", audio, SAMPLE_RATE)

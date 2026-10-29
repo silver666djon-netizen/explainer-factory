@@ -479,10 +479,11 @@ class EvidenceShot(Shot):
     def sfx(self, shot_start: float) -> list[tuple[float, str]]:
         out = [(shot_start + 0.02, "paper")]
         if not self.flash and self.strokes:
-            out.append((shot_start + self.mark_at, "marker"))
-            if self.mark_dur > 0.6:
-                out.append((shot_start + self.mark_at + self.mark_dur * 0.5, "marker"))
+            out.append((shot_start + self.mark_at, f"scribble:{self.mark_dur:.3f}"))  # rule 34
         return out
+
+    def ink_spans(self, shot_start: float) -> list[tuple[float, float]]:
+        return [(shot_start + self.mark_at, shot_start + self.mark_at + self.mark_dur)] if (not self.flash and self.strokes) else []
 
 
 def tape_strip(w: int, h: int, seed: int) -> Image.Image:

@@ -9,8 +9,23 @@ SAMPLE_RATE = 24000
 
 
 def spoken_text(beat: dict) -> str:
-    """'say' overrides what the narrator pronounces (e.g. "nine ninety-nine" for "$9.99")."""
-    return str(beat.get("say") or beat["text"]).strip()
+    """'say' overrides what the narrator pronounces (e.g. "nine ninety-nine" for "$9.99").
+    A reveal pause ('pause_at': {"word": ...}) is spoken by the voice itself (rule 33): the line is synthesised with a
+    break ("...") before that word, so the silence comes from the voice model at a real word boundary - the audio is
+    never cut or spliced."""
+    text = str(beat.get("say") or beat["text"]).strip()
+    pa = beat.get("pause_at")
+    if pa and not beat.get("say") and not pa.get("splice"):
+        words = text.split()
+        target = [w for w in str(pa["word"]).split()]
+        norm = lambda w: re.sub(r"[^\w'-]", "", w).lower()
+        for i in range(1, len(words) - len(target) + 1):
+            if [norm(w) for w in words[i:i + len(target)]] == [norm(w) for w in target]:
+                if re.search(r"[.!?]['\"]?$", words[i - 1]):
+                    return text  # a sentence end: the voice already stops there
+                words[i - 1] = words[i - 1].rstrip(",;:") + "..."
+                return " ".join(words)
+    return text
 
 
 def _proportional_words(text: str, duration: float) -> list[tuple[str, float, float]]:

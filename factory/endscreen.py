@@ -570,25 +570,44 @@ class EndScreenShot(Shot):
             out = cv2.warpAffine(out, M, (W, H), flags=cv2.INTER_LINEAR, borderMode=cv2.BORDER_REFLECT)
         return out
 
+    def ink_spans(self, start_abs: float) -> list[tuple[float, float]]:
+        """When a hand lays ink on the end screen (QC sfx_sync)."""
+        tt = self.t
+        out = [(start_abs + t0, start_abs + t0 + vd) for t0, vd in self.v_times]
+        if self.draw is not None:
+            out.append((start_abs + tt["draw"], start_abs + tt["draw"] + tt["ddur"]))
+        for i in range(len(self.tags)):
+            t0 = tt["p1"] if i == 0 else tt["p2"]
+            out.append((start_abs + t0, start_abs + t0 + tt["pdur"] + 0.6))
+        if len(self.tags) >= 2:
+            out.append((start_abs + tt["p2"] + tt["pdur"] + 0.1, start_abs + tt["p2"] + tt["pdur"] + 0.6))
+        if self.fees:
+            out.append((start_abs + tt["fees"], start_abs + tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.6))
+        for k in range(len(getattr(self, "nwrites", []))):
+            t0 = tt.get("writes", tt["tagline"] - 1.4) + k * 0.9
+            out.append((start_abs + t0, start_abs + t0 + 0.6))
+        out.append((start_abs + tt["zone"], start_abs + tt["zone"] + tt["zdur"]))
+        if self.sketch is not None:
+            out.append((start_abs + tt["sketch"], start_abs + tt["sketch"] + tt["skdur"]))
+        return out
+
     def sfx(self, start_abs: float) -> list[tuple[float, str]]:
         tt = self.t
         out = [(start_abs + tt["stamp"], "stamp")]
         for t0, vd in self.v_times:
-            out += [(start_abs + t0 + k * 0.3, "marker") for k in range(max(1, int(vd / 0.3)))]
+            out.append((start_abs + t0, f"scribble:{vd:.3f}"))  # rule 34: one scratch, exactly as long as the line is written
         out += [(start_abs + tt["swap"], "whoosh"), (start_abs + tt["swap"] + 0.5, "paper")]
         if self.draw is not None:
             k = 0.0
             while k < tt["ddur"] * LINES_END:
                 out.append((start_abs + tt["draw"] + k, "pencil"))
                 k += 0.17
-            k = tt["ddur"] * COLOR_START
-            while k < tt["ddur"]:
-                out.append((start_abs + tt["draw"] + k, "marker"))
-                k += 0.24
+            c0 = tt["ddur"] * COLOR_START
+            out.append((start_abs + tt["draw"] + c0, f"scribble:{tt['ddur'] - c0:.3f}"))
         for i in range(len(self.tags)):
             out.append((start_abs + tt["tags"] + i * 0.15 + 0.3, "paper"))
             t0 = tt["p1"] if i == 0 else tt["p2"]
-            out += [(start_abs + t0, "marker"), (start_abs + t0 + 0.4, "marker")]
+            out.append((start_abs + t0, f"scribble:{tt['pdur']:.3f}"))
         if len(self.tags) >= 2:
             out.append((start_abs + tt["p2"] + tt["pdur"] + 0.1, "scribble"))
         if getattr(self, "strike", None):
@@ -598,10 +617,10 @@ class EndScreenShot(Shot):
         if self.fees:
             out.append((start_abs + tt["fees"] + (len(self.fees) - 1) * tt["fgap"] + tt["fdur"] + 0.15, "scribble"))
         for k in range(len(getattr(self, "nwrites", []))):
-            out.append((start_abs + tt.get("writes", tt["tagline"] - 1.4) + k * 0.9, "marker"))
+            out.append((start_abs + tt.get("writes", tt["tagline"] - 1.4) + k * 0.9, "scribble:0.6"))
         if self.tagline is not None:
             out.append((start_abs + tt["tagline"], "stamp"))
-        out += [(start_abs + tt["zone"], "marker")]
+        out += [(start_abs + tt["zone"], f"scribble:{tt['zdur']:.3f}")]
         if self.sketch is not None:
             k = 0.0
             while k < tt["skdur"]:

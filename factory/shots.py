@@ -1188,6 +1188,31 @@ def clip_event(clip: str, which: str = "end") -> float:
     return t
 
 
+def _smooth_tracks(arr: np.ndarray) -> np.ndarray:
+    """Rule 28 (no jitter): a clip's camera is a smooth move, so the per-frame feature fits (noisy by a few px) are
+    reduced to scale / angle / shift, cleaned of outliers (running median) and fitted with a wide Savitzky-Golay curve;
+    marks carried by the result move with the picture without shaking."""
+    from scipy.ndimage import median_filter
+    from scipy.signal import savgol_filter
+    a, b = arr[:, 0, 0].astype(np.float64), arr[:, 1, 0].astype(np.float64)
+    sc, an = np.hypot(a, b), np.arctan2(b, a)
+    tx, ty = arr[:, 0, 2].astype(np.float64), arr[:, 1, 2].astype(np.float64)
+    n = len(arr)
+    out = []
+    for v in (sc, an, tx, ty):
+        if n >= 9:
+            v = median_filter(v, size=9, mode="nearest")
+        win = min(61, n if n % 2 else n - 1)
+        if win >= 7:
+            v = savgol_filter(v, win, 2, mode="interp")
+        out.append(v)
+    sc, an, tx, ty = out
+    res = np.zeros_like(arr, dtype=np.float32)
+    res[:, 0, 0], res[:, 0, 1], res[:, 0, 2] = sc * np.cos(an), -sc * np.sin(an), tx
+    res[:, 1, 0], res[:, 1, 1], res[:, 1, 2] = sc * np.sin(an), sc * np.cos(an), ty
+    return res
+
+
 def clip_tracks(clip: str, still_base: np.ndarray, BW: int, BH: int, focus) -> list:
     """Per clip frame: 2x3 similarity mapping still-picture px (the covered still) -> clip-frame px (same cover).
     ORB features on the static background, RANSAC (moving subjects are outliers), then a 7-frame moving average."""
@@ -1225,7 +1250,7 @@ def clip_tracks(clip: str, still_base: np.ndarray, BW: int, BH: int, focus) -> l
         _TRACK_CACHE[key] = []
         return []
     arr = np.stack(raw)
-    sm = np.stack([arr[max(0, i - 3):i + 4].mean(0) for i in range(len(arr))])
+    sm = _smooth_tracks(arr)
     S, Si = np.diag([sc, sc, 1.0]), np.diag([1 / sc, 1 / sc, 1.0])
     out = []
     for A in sm:  # back to full-size px: A_full = S^-1 . A_small . S

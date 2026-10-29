@@ -97,6 +97,7 @@ class Plan:
     plates: list = field(default_factory=list)  # (start, end, text) archive captions on a solid cream plate  # (start, end, text) small RECONSTRUCTION-style labels, bottom-right
     ledger_hide: list = field(default_factory=list)
     hand_cuts: list = field(default_factory=list)
+    ink: list = field(default_factory=list)  # (start, end): a hand is laying ink (QC sfx_sync)
     hand_windows: list = field(default_factory=list)  # (start, end) a drawing hand is on screen (one at a time)  # times a drawing hand acts on a picture (counts as a picture change)
 
 
@@ -196,6 +197,21 @@ def _number_spoken_at(words, on: str | None = None) -> float | None:
         if any(c.isdigit() for c in core) or core in _NUM_WORDS or core in num_words():
             return s0
     return None
+
+
+def _ink_sfx(plan, t0: float, m: dict, seed: int = 0) -> None:
+    """Rule 34: the marker scratch plays only while ink is being laid - from the first stroke, as long as the pen
+    writes; a mark that is already there (at 0, no hand) makes no sound. A pressed stamp: the kachunk."""
+    dur = float(m.get("dur", 0.45))
+    if m.get("type") == "stamp":
+        if m.get("hand"):
+            plan.timeline.add_sfx(t0 + float(m["at"]), "kachunk", seed=seed)
+        return
+    if not m.get("hand") or dur <= 0.05:
+        return
+    at = t0 + float(m["at"])
+    plan.timeline.add_sfx(at, f"scribble:{max(0.12, dur):.3f}", seed=seed)
+    plan.ink.append((at, at + dur))
 
 
 def _with_pause(v: dict, word: str, sec: float) -> tuple[dict, float | None]:
@@ -331,7 +347,10 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
     for i, b in enumerate(beats):
         pa = b.get("pause_at")
         if pa:
-            voiced[i], wt = _with_pause(voiced[i], pa["word"], float(pa.get("sec", 1.2)))
+            if pa.get("splice"):  # (old path: silence spliced into the audio - rule 33 forbids it for new lines)
+                voiced[i], wt = _with_pause(voiced[i], pa["word"], float(pa.get("sec", 1.2)))
+            else:  # the voice already pauses there (spoken_text puts a break before the word)
+                wt = word_time(voiced[i]["words"], pa["word"])
             if wt is not None and pa.get("hit", "stamp"):
                 reveal_hits.append((i, wt, pa.get("hit", "stamp")))
     pause = float(vcfg.get("pause_after_beat", 0.18)) + extra_pause
@@ -477,7 +496,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                         if m["hand"] and m.get("at", 0) > 0.05 and float(m.get("dur", 0.7)) > 0.05:
                             plan.hand_cuts.append(shot_start + a0 + m["at"])
                             plan.hand_windows.append((shot_start + a0 + m["at"] - HAND_IN, shot_start + a0 + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
-                        plan.timeline.add_sfx(shot_start + a0 + m["at"], "kachunk" if m.get("type") == "stamp" else "scribble", seed=i + k)
+                        _ink_sfx(plan, shot_start + a0, m, seed=i + k)
                     shot = ImageShot(shot_start + a0, dur0, im0, mot, size, cfg, marks=mk, photo=is_archive_photo(path),
                                      seed=i * 7 + k, depth=depth_of(path) if (k == 0 and not cr) else None)
                     shot._archive = False
@@ -523,6 +542,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                     shot_draw = dr
                     from .draw import COLOR_START, LINES_END
                     t0, d0 = shot_start + dr["at"], float(dr["dur"])
+                    plan.ink.append((t0, t0 + d0 + 0.3))
                     rng = np.random.default_rng(i)
                     tt = t0
                     while tt < t0 + d0 * LINES_END:  # pencil strokes
@@ -597,9 +617,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 for at in projector_sfx_times(shot_start, span):
                     plan.timeline.add_sfx(at, "projector", seed=i)
             for m in marks:
-                if m.get("type") == "stamp" and not m.get("hand"):
-                    continue
-                plan.timeline.add_sfx(shot_start + m["at"], "kachunk" if m.get("type") == "stamp" else "scribble", seed=i)
+                _ink_sfx(plan, shot_start, m, seed=i)
         elif vtype == "title":
             plan.shots.append(TitleShot(shot_start, span, visual["text"], cfg, size))
         elif vtype in ("split", "receipts", "baskets", "battery"):
@@ -636,7 +654,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
                 _hand_prep(sus["photo_marks"], True)
                 _serialize_hands(sus["photo_marks"])
                 for m in sus["photo_marks"]:
-                    plan.timeline.add_sfx(shot_start + m["at"], "scribble", seed=i)
+                    _ink_sfx(plan, shot_start, m, seed=i)
                     plan.hand_cuts.append(shot_start + m["at"])
                     plan.hand_windows.append((shot_start + m["at"] - HAND_IN, shot_start + m["at"] + float(m.get("dur", 0.45)) + HAND_OUT))
                 if sus.get("type_on"):  # each card field types in when the narrator reads it
@@ -658,6 +676,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.shots.append(prop)
             for at, kind_sfx in prop.sfx(shot_start):
                 plan.timeline.add_sfx(at, kind_sfx, seed=i)
+            if hasattr(prop, "writes"):  # case-file handwriting
+                plan.ink += [(shot_start + w_[3], shot_start + w_[3] + w_[4]) for w_ in prop.writes]
         elif vtype == "doc":
             from .evidence import EvidenceShot
             doc = visual["doc"]
@@ -708,6 +728,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.hand_windows.append((c0 + _es.mark_at - HAND_IN, c0 + _es.mark_at + _es.mark_dur + HAND_OUT))
             for at, k_ in plan.shots[-1].sfx(c0):
                 plan.timeline.add_sfx(at, k_, seed=i)
+            plan.ink += plan.shots[-1].ink_spans(c0)
             plan.ledger_hide.append((c0, c1))
             if c1 < shot_end:
                 _still(doc.get("post") or doc.get("pre"), c1, shot_end, "zoom_out")
@@ -738,6 +759,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             plan.shots.append(shot)
             for at, k_ in shot.sfx(shot_start):
                 plan.timeline.add_sfx(at, k_, seed=i)
+            plan.ink += shot.ink_spans(shot_start)
             plan.ledger_hide.append((shot_start, total))
             plan.timeline.align_end = True
         elif vtype == "kinetic":
@@ -752,7 +774,8 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             if land is not None and pa_:  # a reveal pause right before the number: the count lands as the silence
                 pw = word_time(v["words"], pa_["word"])  # starts, so the value is on screen before it is said
                 if pw is not None and abs(pw - land) < 0.05:
-                    land -= float(pa_.get("sec", 1.2))
+                    prev_end = max([e0 for _w, s0, e0 in v["words"] if s0 < pw - 0.01] or [pw - 0.3])
+                    land = max(prev_end + 0.05, pw - 1.2) if pw - prev_end > 0.15 else pw - 0.25
             land = None if land is None else lead_in + land - 0.08
             st = StatShot(shot_start, span, visual["stat"], cfg, size, land_at=land)
             plan.shots.append(st)
@@ -897,6 +920,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
         plan.ledger = Ledger(ledger_rows, cfg, size, hide=plan.ledger_hide)
         for at, k_ in plan.ledger.sfx():
             plan.timeline.add_sfx(at, k_, seed=int(at * 10))
+        plan.ink += plan.ledger.ink_spans()
     for sh in plan.shots:  # rule 26: no frame is ever fully static - cards get the same slow even push as the stills
         if type(sh).__name__ in CARD_PUSH:
             _card_push(sh, CARD_PUSH[type(sh).__name__])

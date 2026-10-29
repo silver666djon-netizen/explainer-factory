@@ -63,8 +63,8 @@ def sfx(kind: str, seed: int = 0) -> np.ndarray:
         n = int(0.035 * SR)
         t = np.arange(n) / SR
         return (np.sin(2 * np.pi * 2200 * t) * np.exp(-t * 180) * 0.7).astype(np.float32)
-    if kind == "scribble":  # marker on paper
-        n = int(0.45 * SR)
+    if kind.startswith("scribble"):  # marker on paper; "scribble:0.62" = exactly as long as the pen writes (rule 34)
+        n = int((float(kind.split(":")[1]) if ":" in kind else 0.45) * SR)
         noise = rnd.standard_normal(n).astype(np.float32)
         sos = butter(2, [1800, 6000], btype="band", fs=SR, output="sos")
         out = sosfilt(sos, noise)
@@ -373,6 +373,8 @@ class Timeline:
         self.hits = np.zeros(self.n, dtype=np.float32)    # impacts (stamp, hit, cash…): set to -6 dB under voice peaks
         self.stings = np.zeros(self.n, dtype=np.float32)
         self.cues: list[tuple[float, str]] = []
+        self.log: list[tuple[float, float, str]] = []  # (start, end, kind) of every sfx: QC sfx_sync reads it
+        self.voice_edits: list[tuple[float, str]] = []  # (time, what): every point where narration audio starts/ends
         self.align_end = False  # last music cue ends exactly on the last frame (music resolves on the end card)
 
     def music_cue(self, at: float, cue: str) -> None:
@@ -397,12 +399,14 @@ class Timeline:
 
     def add_voice(self, at: float, audio24k: np.ndarray, src_sr: int) -> None:
         self._add(self.voice, at, to_sr(audio24k, src_sr) * db(self.cfg.get("narration_db", 0)))
+        self.voice_edits += [(at, "line start"), (at + len(audio24k) / src_sr, "line end")]
 
     HIT_KINDS = ("stamp", "kachunk", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter", "snip")
 
     def add_sfx(self, at: float, kind: str, seed: int = 0) -> None:
         if not kind or kind == "none":
             return
+        self.log.append((at, at + len(sfx(kind, seed)) / SR, kind))
         if kind in self.HIT_KINDS:
             c = sfx(kind, seed)
             self._add(self.hits, at, c / (np.abs(c).max() + 1e-9))

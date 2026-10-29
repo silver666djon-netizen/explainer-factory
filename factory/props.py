@@ -310,7 +310,7 @@ class CaseFileShot(Shot):
                 osa = start_abs + self.lead_in + float(self.spec["open_stamp_at"])
                 out += [(osa, "kachunk")]
             for w_ in self.writes:
-                out += [(start_abs + w_[3], "marker"), (start_abs + w_[3] + w_[4] * 0.5, "marker")]
+                out.append((start_abs + w_[3], f"scribble:{w_[4]:.3f}"))
             return out
         return [(start_abs + self.stamp_at, "thud"), (start_abs + self.stamp_at + 0.01, "hit")]
 

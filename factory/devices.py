@@ -206,9 +206,16 @@ class Ledger:
     def sfx(self) -> list[tuple[float, str]]:
         out = [(self.rows[0]["at"] - 0.3, "paper")] if self.rows else []
         for r in self.rows:
-            out += [(r["at"] + 0.15, "marker"), (r["at"] + 0.5, "marker")]
+            out.append((r["at"] + 0.15, f"scribble:{self._wd(r):.3f}"))  # rule 34: as long as the row is written
             if r.get("circle"):
-                out += [(r["at"] + 0.15 + self._wd(r), "scribble")]  # (no stamp sound: nothing is stamped here)
+                out += [(r["at"] + 0.15 + self._wd(r), "scribble:0.35")]  # (no stamp sound: nothing is stamped here)
+        return out
+
+    def ink_spans(self) -> list[tuple[float, float]]:
+        out = []
+        for r in self.rows:
+            a = r["at"] + 0.15
+            out.append((a, a + self._wd(r) + (0.4 if r.get("circle") else 0.0)))
         return out
 
 
