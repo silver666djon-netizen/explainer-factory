@@ -83,7 +83,8 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
-          key: kokoro-v1
+          key: kokoro-whisper-v1
+          restore-keys: kokoro-
 
       - name: Restore generated images
         uses: actions/cache/restore@v4
@@ -134,6 +135,7 @@ jobs:
         run: |
           pip install -q torch --index-url https://download.pytorch.org/whl/cpu
           pip install -q -r requirements.txt
+          pip install -q faster-whisper  # Klot r89: the narration is transcribed and diffed against the script (qc.stt_diff)
 
       - name: Cyrillic fonts (language versions)
         if: github.event.inputs.lang != ''

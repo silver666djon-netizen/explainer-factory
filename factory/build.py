@@ -152,6 +152,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         render(plan_long, cfg, out / "long.mp4", out / "long.wav", log)
         (out / "long.wav").unlink(missing_ok=True)
     from . import qc as _qc
+    _qc.STT_KNOWN = [(k["script"], k["heard"]) for k in episode.get("stt_known") or []]
     qc_res = {}
     qc_plans = {"long": plan_long}
     if only in (None, "long"):  # Klot r84 part C: release-blocking checks on the real plan (real narration)

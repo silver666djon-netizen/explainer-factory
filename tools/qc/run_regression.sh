@@ -10,7 +10,7 @@ run() { local name="$1"; shift; if "$@" > "$REL/qc_$name.log" 2>&1; then res+=("
 run mark_audit python3 tools/qc/mark_audit.py "$EP_DIR" "$TJ" --shorts
 run handcheck_long python3 tools/qc/handcheck.py "$TJ" long --no-frames
 run handcheck_shorts python3 tools/qc/handcheck.py "$TJ" shorts --no-frames
-run release_checks python3 tools/qc/release_checks.py "$EP_DIR" "$TJ" --full --out "$REL/qc_release_local.md" --skip voice_cut_check
+run release_checks python3 tools/qc/release_checks.py "$EP_DIR" "$TJ" --full --out "$REL/qc_release_local.md" --skip voice_cut_check,stt_diff
 if [ -s "$REL/qc_checks.json" ]; then  # the CI build's checks on the real narration (voice_cut_check lives there)
   run ci_checks python3 -c "import json,sys; r=json.load(open('$REL/qc_checks.json')); st=r.pop('_selftest', None); sys.exit(any(c['fails'] for v in r.values() for c in v.values()) or not st or any(x['result'] != 'FAIL' for x in st))"
 else res+=("| ci_checks | FAIL (no qc_checks.json in the release) |"); fail=1; fi

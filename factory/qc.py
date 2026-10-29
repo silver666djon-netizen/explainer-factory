@@ -472,6 +472,22 @@ def text_lint(beats) -> list[str]:
     return fails
 
 
+def stt_diff(plan, beats) -> tuple[list[str], list[str]]:
+    """Klot r89: the narration (voice track) transcribed with faster-whisper and diffed against the script, word by
+    word after normalising both (numbers / money / years to words). Any difference blocks the release."""
+    from .audio import SR
+    from . import sttdiff
+    v = plan.timeline.voice
+    if not np.any(v):
+        return [], ["(no narration audio in this build: transcribed in the CI build)"]
+    script = " ".join(str(b.get("text", "")) for b in beats or [])
+    heard = sttdiff.transcribe(v, SR)
+    return sttdiff.diff(script, heard, STT_KNOWN), [heard]
+
+
+STT_KNOWN: list = []  # the episode's "stt_known" (set by the build / release checks)
+
+
 def sfx_sync(plan, lead: float = 0.05, tail: float = 0.08) -> list[str]:
     fails = []
     ink = sorted(plan.ink)
@@ -519,7 +535,8 @@ def text_stability(plan, fps: float = 24.0) -> list[str]:
 
 
 CHECKS = ("plate_fit", "crop_fit", "jitter_check", "mark_in_frame", "mark_on_object", "hand_over_ink", "shorts_picture_size",
-          "shorts_length", "count_up", "card_not_empty", "text_lint", "sfx_sync", "voice_cut_check", "text_stability")
+          "shorts_length", "count_up", "card_not_empty", "text_lint", "sfx_sync", "voice_cut_check", "stt_diff",
+          "text_stability")
 
 
 def run_all(plan, cfg, beats, skip=()) -> dict:
@@ -539,6 +556,10 @@ def run_all(plan, cfg, beats, skip=()) -> dict:
             elif name == "voice_cut_check":
                 r, pts = voice_cut_check(plan)
                 out[name] = {"fails": r, "notes": pts}
+                continue
+            elif name == "stt_diff":
+                r, heard = stt_diff(plan, beats)
+                out[name] = {"fails": r, "notes": heard}
                 continue
             else:
                 r = globals()[name](plan)
@@ -683,6 +704,12 @@ def selftest(plans: dict, cfg: dict, beats: dict) -> list[dict]:
         finally:
             del st.frame
     run("card_not_empty", "a number card blank for its first second", t_empty)
+
+    def t_stt():
+        from . import sttdiff
+        return sttdiff.diff("Larry pays thirty dollars for the ticket, from hotels to vacation rentals.",
+                            "Larry pays $30 for the ticket, from hotels to holiday rentals.")
+    run("stt_diff", "the narration says 'holiday' where the script says 'vacation'", t_stt)
     run("text_lint", "\"+5 %\", \"over £760k\", a double space, straight + curly apostrophes",
         lambda: text_lint([{"id": "x", "text": "it's", "visual": {"type": "image", "marks": [{"text": "+5 %"}, {"text": "a  b"},
                                                                                         {"text": "isn\u2019t"}]}},
