@@ -35,6 +35,7 @@ def main() -> int:
         MA.build_plan = big
     ep = load_episode(ep_dir)
     cfg = load_config(ep.get("config"))
+    qc.STT_KNOWN = [(k["script"], k["heard"]) for k in ep.get("stt_known") or []]
     for sh in ep.get("shorts") or []:
         if sh.get("hook"):
             sh["beats"][0]["on_screen"] = sh["hook"]

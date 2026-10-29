@@ -93,6 +93,13 @@ check (release_checks.py / CI qc_checks.md) · **STILL** = build max-still warni
 | Ep.4 r87 #1 | stat cards empty (sunburst only) up to 2.3 s before the number, one-frame empty flash between cards | RC:card_not_empty |
 | Ep.4 r87 #2 | white ink from a grey pencil on the desk wood, second line against the subtitle | RC:mark_on_object (d4 on the stub) + EYE (ink = pen colour) |
 | Ep.4 r87 #3 | REMEMBERED / BOUGHT jammed at the top edge, hand over ADMIT ONE; too small in the Short | RC:mark_in_frame + EYE |
+| Ep.4 r89 #1 | count-ups showing wrong values long enough to read (13.7 % for 37.5 %, $5.9bn for $16.4bn) | RC:count_up (final value on every frame) |
+| Ep.4 r89 #2 | unexplained abbreviation "BF" inside a quote | EYE (rule: expand in [brackets]) |
+| Ep.4 r89 #3 | "+5 %", "28 %", "18 % · 22 %…" (space before %) | RC:text_lint |
+| Ep.4 r89 #4 | "over £760k" lowercase on a number card | RC:text_lint |
+| Ep.4 r89 #5 | "ALIAS:" with several aliases | EYE (props.Mugshot ALIASES) |
+| Ep.4 r89 #6 | British "holiday rentals" in the US section; "and a company" | RC:stt_diff (narration = script) + EYE |
+| Ep.4 r89 #7 | pronunciation of names / numbers never verified | RC:stt_diff + TTS phonemes |
 | Ep.4 r87 QC | false FAIL: hand_over_ink read split-moved marks + render caches after release() (n1 "+ $18") | qc.hand_over_ink uses the marks as written |
 | Ep.4 r85 QC | ALL-IN PRICES ink drawn over the lever as it flips past the plate | MA-6 (unless "behind_moving") |
 

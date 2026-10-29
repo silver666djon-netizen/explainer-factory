@@ -222,9 +222,10 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
   vertical-native layouts in Shorts: visual "short_image" (e.g. the portrait ticket images/o1v.png, stub under a
   horizontal perforation), mark "short" overrides, "short_split" ("axis": "y"), "short_subject_x"; wide props move their
   marks in (switch OFF/ON) instead of shrinking the band. Check: shorts_picture_size.
-- **R39 Count-ups <= 0.5 s, landing on the spoken number** (StatShot: only the number waits for the count). Amended r87:
-  the subline is on the card from its first frame - no frame of a card ever shows only its background. Checks: count_up,
-  card_not_empty.
+- **R39 (replaced, Klot r89) No count-ups; numbers appear whole.** The number card - final value and its subline -
+  arrives with a short stamp (110 % -> 100 % over 0.2 s, brass stab) on the first word of the sentence that carries
+  the number (the shot before it holds until then). A wrong number on screen is a factual error. Checks: count_up
+  (every frame of a number card shows the final value), card_not_empty.
 - **R40 Every automatic check must FAIL on its planted-bug test frame before a release can pass** (qc.selftest: one
   planted bug per check - plate off the edge, a mark out of the window, shaking mark, mark off its object, mirrored hand
   over its ink, 30 % picture band, 50 s Short, 1.4 s count-up, scratch without ink, edit point inside a word, kinetic
@@ -233,3 +234,14 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
 - Shorts length: <= 45.0 s (check: shorts_length). Kinetic cards: lines flush left in a centred block (a line revealed
   word by word never looks like it re-centres). The long master's true peak <= -1.5 dBTP (channel.yaml
   true_peak_max_long); the Telegram 480p copy keeps the mastered audio stream (no re-encode).
+
+## Text and voice (Klot r89)
+
+- No unexplained abbreviation inside a quote: expand it in square brackets ("the switch to [back-end fees] at StubHub").
+- No space before % ("+5%", "28%"); number cards are all caps ("OVER £760K"); no double spaces (the "  ·  " kicker
+  separators excepted); one kind of quotes per episode. Check: text_lint (every on-screen string of every beat).
+- Index cards say ALIASES when more than one alias is listed (props.Mugshot).
+- Every render's narration (the voice track) is transcribed (faster-whisper medium.en) and diffed against the script
+  after normalising numbers / money / years to words; any difference blocks the release (check: stt_diff). A
+  transcription slip may only be waived in the episode's "stt_known" with its reason, after the voice's own phonemes
+  (tools/tts_scan.py: per-word G2P) confirm the word is spoken right.

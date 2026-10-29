@@ -52,9 +52,23 @@ def number(tok: str) -> str:
             return f"{cardinal(int(a))} and a half"
         return f"{cardinal(int(a))} point " + " ".join(ONES[int(c)] for c in b)
     n = int(t)
-    if 1900 <= n <= 2099 and "," not in tok:
+    if 1900 <= n <= 2099 and "," not in tok and "." not in tok:
         return year(n)
     return cardinal(n)
+
+
+ORD = {1: "first", 2: "second", 3: "third", 5: "fifth", 8: "eighth", 9: "ninth", 12: "twelfth"}
+SPELLING = {"defence": "defense", "licence": "license", "colour": "color", "favourite": "favorite", "centre": "center",
+            "okay": "ok"}  # British / American spellings of the same spoken word
+
+
+def ordinal(n: int) -> str:
+    if n in ORD:
+        return ORD[n]
+    if n > 20 and n % 10 and n % 10 in ORD:
+        return TENS[n // 10] + " " + ORD[n % 10]
+    w = _lt100(n)
+    return (w[:-1] + "ieth") if w.endswith("y") else w + "th"
 
 
 SCALE = {"k": "thousand", "m": "million", "bn": "billion", "million": "million", "billion": "billion", "thousand": "thousand"}
@@ -64,14 +78,19 @@ CUR = {"$": "dollar", "£": "pound", "€": "euro"}
 def words(text: str) -> list[str]:
     t = text.replace("’", "'").replace("—", " ").replace("–", " ")
     t = re.sub(r"(\d)\s+\.(\d)", r"\1.\2", t)  # whisper's "14 .1"
+    t = re.sub(r"(\d)\s+,(\d{3})", r"\1,\2", t)  # whisper's "80 ,000"
+    t = re.sub(r"\b(\d{1,2})[.:](\d{2})\s?(a\.?m\.?|p\.?m\.?)", lambda m: f"{_lt100(int(m.group(1)))} {_lt100(int(m.group(2)))} "
+               f"{m.group(3).replace('.', '')}", t, flags=re.I)  # times: "11.40pm"
+    t = re.sub(r"\b(\d{1,2})(st|nd|rd|th)\b", lambda m: ordinal(int(m.group(1))), t)
     t = re.sub(r"(?<=\d)\s*%", " percent", t)
 
     def money(m):
         cur, num, scale = m.group(1), m.group(2), (m.group(3) or "").lower()
         s = number(num) + (" " + SCALE[scale] if scale else "")
         return s + " " + CUR[cur]
-    t = re.sub(r"([$£€])\s?(\d[\d,]*(?:\.\d+)?)(?:\s?(bn|million|billion|thousand|k|m)\b)?", money, t, flags=re.I)
-    t = re.sub(r"\d[\d,]*(?:\.\d+)?", lambda m: number(m.group(0)), t)
+    NUM = r"(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
+    t = re.sub(r"([$£€])\s?(" + NUM + r")(?:\s?(bn|million|billion|thousand|k|m)\b)?", money, t, flags=re.I)
+    t = re.sub(NUM, lambda m: number(m.group(0)), t)
     t = t.lower()
     t = re.sub(r"[^a-z' ]+", " ", t.replace("-", " ").replace(".", ""))
     out = []
@@ -81,6 +100,7 @@ def words(text: str) -> list[str]:
             continue
         if w in ("dollars", "pounds", "euros", "percents"):
             w = w[:-1]
+        w = SPELLING.get(w, w)
         out.append(w)
     return out
 

@@ -280,7 +280,7 @@ DEBUG_DIR = None
 
 def hand_over_ink(plan, limit: float = 0.05, mirror: bool = False) -> list[str]:
     """R37: while a hand writes a mark, the hand sprite covers <= 5 % of the ink already laid for that mark (sampled at
-    35 / 60 / 85 % of the stroke; the letter under the nib - 2.5 % of the frame around the tip - is not counted). mirror=True renders the left hand the engine used before r87 (self-test)."""
+    35 / 60 / 85 % of the stroke; the letter under the nib - one glyph, at least 2.5 % of the frame, around the tip - is not counted). mirror=True renders the left hand the engine used before r87 (self-test)."""
     from .draw import HAND_HEIGHT, _hand, hand_kind, hand_path, mark_pen
     from .shots import ImageShot, draw_marks
     fails, seen = [], set()
@@ -347,6 +347,10 @@ def hand_over_ink(plan, limit: float = 0.05, mirror: bool = False) -> list[str]:
                 if x1 > x0 and y1 > y0:
                     ha[y0:y1, x0:x1] = img[y0 - hy:y1 - hy, x0 - hx:x1 - hx, 3] > 128
                 r_nib = int(0.025 * min(FW, FH))  # the nib on the letter it is forming: not counted
+                if m.get("type") == "write":  # (about one glyph of this mark's size)
+                    from .shots import write_layout
+                    bh_ = float(write_layout(dict(m), sh.BW, sh.BH, red, sh.cfg).get("bh", 0))
+                    r_nib = max(r_nib, int(0.6 * bh_ * float(M[0, 0])))
                 cv2.circle(frame_ink, (int(pos[0]), int(pos[1])), r_nib, 0, -1)
                 n = int(frame_ink.sum())
                 if n >= 200:  # (less than 200 px of ink outside the nib zone: nothing readable has been laid yet)

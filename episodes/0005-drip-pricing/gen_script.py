@@ -454,7 +454,7 @@ beat("b6", S_TM, "Larry's thirty-seven and a half percent sits right inside that
                                  "values": [24, 37.5, 44], "unit": "%", "highlight": 1, "value_labels": True,
                                  "note": "FTC complaint ¶36 (alleged) · Larry: illustration"}})
 beat("b7", S_TM, "His thirty-dollar ticket grew by sixty percent between the first screen and the last.",
-     reuse("o1", hand_marks=True, subject_x=TICKET_SUBJ, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+60%", on="sixty", **STUB_NOTE(0.480))]),
+     reuse("o1", hand_marks=True, subject_x=TICKET_SUBJ, marks=[write("$30", at=0.0, **TICKET_PRICE_BOX, color="ink"), write("+60%", on="sixty", hand_scale=0.75, **STUB_NOTE(0.480))]),
      pause_at={"word": "sixty", "sec": 0.5, "hit": "stamp"}, label="Illustration",
      ledger=[tab("= 37.5% of the total · +60% on the $30 shown", "", "sixty", note=True)])
 beat("b8", S_TM, "Larry, it turns out, is perfectly average.", reuse("b1", push={"center": [0.40, 0.35], "zoom": 1.7}), hero=True)
@@ -846,7 +846,21 @@ for sh in SHORTS:
     for k, b in enumerate(sh["beats"]):
         b["id"] = f"{sh['id']}_{k}"
 
+# Klot r89 item 7: transcription slips of the STT diff (faster-whisper medium.en), each checked against the voice's own
+# phonemes (tools/tts_scan.py per-word G2P, scan-0005-drip-pricing): the word is spoken right, the transcriber misheard
+STT_KNOWN = [
+    {"script": "not", "heard": "naught", "why": "o4 'not' = /nˌɒt/ (British vowel)"},
+    {"script": "resale", "heard": "resource", "why": "a3 'resale' = /ɹˈiːsAl/ (ree-sail)"},
+    {"script": "amenity", "heard": "immunity", "why": "m2 'amenity' = /əmˈiːnɪti/ (British a-MEE-nity)"},
+    {"script": "associates", "heard": "associate", "why": "m2b 'associates' = /əsˈQʃɪəts/ (final s spoken)"},
+    {"script": "D.C.", "heard": "Day C", "why": "c2 'D.C.' = /dˌiːsˈiː/ (dee-see)"},
+    {"script": "rivals", "heard": "rifles", "why": "d4 'rivals' = /ɹˈIvᵊlz/ (rye-vulz)"},
+    {"script": "and", "heard": "in", "why": "l2 'and' = /and/ (weak form before 'short')"},
+    {"script": "hid", "heard": "hit", "why": "l8 'hid' = /hˈɪd/"},
+]
+
 ep = {
+    "stt_known": STT_KNOWN,
     "config": {"ledger": {"hand": "ink_cuff", "hand_scale": 0.43, "from": "right"},  # plain cuff hand, from the right edge
                "hands": {"sleeve": False}},  # rule 21: Larry's jacket belongs only to Larry
     "slug": "0005-drip-pricing",
