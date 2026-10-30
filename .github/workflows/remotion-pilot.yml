@@ -1,0 +1,101 @@
+name: Remotion pilot
+# Klot (Ep.4 r90): the overlay layer of 3 beats rendered in Remotion over the same pictures / audio, long + Shorts.
+# 1) tools/remotion/export_pilot.py: the r90 plan -> data + pictures + r90 audio (pilot/remotion/public)
+# 2) Remotion renders each piece (+ 3 debug passes for the pixel QC), timed
+# 3) tools/remotion/pilot_qc.py + side-by-side files -> draft release pilot-remotion (private)
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "r90 release the pilot copies"
+        required: true
+        default: "0005-drip-pricing-r90"
+      only:
+        description: "piece names, comma separated (empty = all 6)"
+        required: false
+        default: ""
+permissions:
+  contents: write
+concurrency:
+  group: remotion-pilot
+  cancel-in-progress: false
+jobs:
+  pilot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng fonts-noto-color-emoji
+      - name: Python packages
+        run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt scikit-image fonttools
+      - name: Fonts
+        run: |
+          mkdir -p assets/fonts
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf ofl/bangers/Bangers-Regular.ttf \
+                   apache/permanentmarker/PermanentMarker-Regular.ttf ofl/ptserif/PT_Serif-Web-Regular.ttf \
+                   ofl/oldstandardtt/OldStandard-Regular.ttf ofl/oldstandardtt/OldStandard-Bold.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
+      - name: r90 release, storyboard frames, archive media
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep=0005-drip-pricing
+          tools/rel.sh download "${{ github.event.inputs.tag }}" rel "*.mp4" "timings.json"
+          mkdir -p ".cache/images/$ep" assets/archive
+          tools/rel.sh download "frames-$ep" ".cache/images/$ep" "*.png"
+          gh release download archive -D assets/archive --clobber || true
+      - name: Export the r90 plan for Remotion
+        run: |
+          set -o pipefail
+          python tools/remotion/export_pilot.py rel pilot/remotion/public 2>&1 | tee export.log \
+            || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+      - name: Remotion install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -5
+      - name: Render (timed)
+        working-directory: pilot/remotion
+        run: |
+          set -o pipefail
+          mkdir -p ../../rd
+          only="${{ github.event.inputs.only }}"
+          names=$(python3 -c "import json;print(' '.join(json.load(open('public/pieces.json'))))")
+          echo "| piece | frames | seconds of video | render s | s per min of video |" > ../../rd/timing.md
+          echo "|---|---|---|---|---|" >> ../../rd/timing.md
+          for n in $names; do
+            if [ -n "$only" ] && ! echo ",$only," | grep -q ",$n,"; then continue; fi
+            fr=$(python3 -c "import json;print(json.load(open('public/pieces.json'))['$n']['frames'])")
+            s0=$(date +%s.%N)
+            npx remotion render src/index.ts Piece "../../rd/$n.mp4" --props="{\"name\":\"$n\"}" --concurrency=4 --log=error 2>&1 | tail -20 \
+              || { echo "::error title=render $n::see log"; exit 1; }
+            s1=$(date +%s.%N)
+            python3 -c "fr=$fr; d=$s1-$s0; v=fr/30; print(f'| $n | {fr} | {v:.1f} | {d:.0f} | {d/v*60:.0f} |')" >> ../../rd/timing.md
+            for dbg in nohand ink text; do
+              npx remotion render src/index.ts Piece "../../rd/${n}_$dbg.mp4" --props="{\"name\":\"$n\",\"debug\":\"$dbg\"}" --concurrency=4 --muted --crf=1 --log=error 2>&1 | tail -5
+            done
+          done
+          cat ../../rd/timing.md
+      - name: QC + side by side
+        run: |
+          python tools/remotion/pilot_qc.py pilot/remotion/public rd rd/pilot_qc.md || echo "::warning::pilot QC has failures (see pilot_qc.md)"
+          bash tools/remotion/sbs.sh pilot/remotion/public rel rd
+          for f in rd/beat*_*.mp4; do b=$(basename "$f" .mp4); case "$b" in *_nohand|*_ink|*_text|*_sbs) continue;; esac; cp "$f" "rd/cs_pilot_remotion_$b.mp4"; done
+          ls -la rd
+      - name: Publish (draft release pilot-remotion)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh delete pilot-remotion || true
+          files=$(ls rd/cs_pilot_remotion_*.mp4 rd/pilot_qc.md rd/timing.md 2>/dev/null || true)
+          [ -n "$files" ] && gh release create pilot-remotion $files --title "CoinSense · PILOT · Remotion" --notes "Remotion overlay pilot (Ep.4 r90, 3 beats). Draft, not for upload." --prerelease --draft

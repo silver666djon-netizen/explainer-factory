@@ -1,0 +1,18 @@
+{
+  "name": "coinsense-remotion-pilot",
+  "private": true,
+  "description": "Remotion pilot: the overlay / motion layer of CoinSense Ep.4 r90 (3 beats). Data from tools/remotion/export_pilot.py.",
+  "scripts": {
+    "render": "remotion render src/index.ts Piece"
+  },
+  "dependencies": {
+    "@remotion/cli": "4.0.290",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "remotion": "4.0.290"
+  },
+  "devDependencies": {
+    "@types/react": "18.3.3",
+    "typescript": "5.4.5"
+  }
+}
