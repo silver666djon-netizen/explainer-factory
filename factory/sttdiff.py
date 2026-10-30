@@ -73,6 +73,11 @@ def ordinal(n: int) -> str:
 
 SCALE = {"k": "thousand", "m": "million", "bn": "billion", "million": "million", "billion": "billion", "thousand": "thousand"}
 CUR = {"$": "dollar", "£": "pound", "€": "euro"}
+MONTHS = {"january", "february", "march", "april", "may", "june", "july", "august", "september", "october",
+          "november", "december"}
+ORD_WORDS = {"first", "second", "third", "fourth", "fifth", "sixth", "seventh", "eighth", "ninth", "tenth", "eleventh",
+             "twelfth", "thirteenth", "fourteenth", "fifteenth", "sixteenth", "seventeenth", "eighteenth", "nineteenth",
+             "twentieth", "twenty", "thirtieth", "thirty"}
 SYM = "qqsym"  # marks a currency word whisper wrote as a symbol ("$18"): its "dollars" may not have been spoken
 
 
@@ -83,7 +88,7 @@ def words(text: str) -> list[str]:
     t = re.sub(r"\b(\d{1,2})[.:]?(\d{2})\s?(a\.?m\.?|p\.?m\.?)", lambda m: f"{_lt100(int(m.group(1)))} {_lt100(int(m.group(2)))} "
                f"{m.group(3).replace('.', '')}", t, flags=re.I)  # times: "11.40pm"
     t = re.sub(r"\b(\d{1,2})(st|nd|rd|th)\b", lambda m: ordinal(int(m.group(1))), t)
-    t = re.sub(r"(?<=\d)\s*%", " percent", t)
+    t = re.sub(r"(?<=\d)\s*%", " " + SYM + "percent", t)  # "24% to 44%": whisper may write % for an unspoken one
 
     def money(m):
         cur, num, scale = m.group(1), m.group(2), (m.group(3) or "").lower()
@@ -103,7 +108,9 @@ def words(text: str) -> list[str]:
             w = w[:-1]
         w = SPELLING.get(w, w)
         out.append(w)
-    return out
+    # "September the first" / "September first" (whisper writes both "September 1st"): the date's "the" is dropped
+    return [w for k, w in enumerate(out) if not (w == "the" and 0 < k < len(out) - 1 and out[k - 1] in MONTHS
+                                                  and (out[k + 1] in ORD_WORDS))]
 
 
 def _digit_runs(script_words: list[str], heard: str) -> str:
