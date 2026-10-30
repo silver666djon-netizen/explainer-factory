@@ -1,0 +1,117 @@
+name: Motion study reel
+# Klot (after Ep.4 r90): study of Remotion + HyperFrames -> a demo reel of the adopted techniques on Ep.4 assets.
+# 1) package check: every official @remotion/* package at the pin, latest 4.x / 5.x, HyperFrames packages -> packages.md
+# 2) export_pilot.py + export_reel.py (r90 plan, pictures, audio, depth split for the parallax)
+# 3) Remotion renders reel_long (16:9) + reel_short (9:16); contact sheets + loudness -> draft release study-motion
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        default: "0005-drip-pricing-r90"
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: motion-study
+  cancel-in-progress: false
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Package check (npm registry)
+        run: |
+          pin=$(python3 -c "import json;print(json.load(open('pilot/remotion/package.json'))['dependencies']['remotion'])")
+          {
+            echo "| package | at pin $pin | latest |"; echo "|---|---|---|"
+            for p in remotion @remotion/cli @remotion/renderer @remotion/bundler @remotion/player @remotion/studio @remotion/lambda @remotion/cloudrun \
+                     @remotion/transitions @remotion/paths @remotion/shapes @remotion/noise @remotion/motion-blur @remotion/layout-utils \
+                     @remotion/captions @remotion/install-whisper-cpp @remotion/openai-whisper @remotion/whisper-web @remotion/google-fonts @remotion/fonts \
+                     @remotion/lottie @remotion/three @remotion/gif @remotion/media-utils @remotion/media-parser @remotion/webcodecs @remotion/media \
+                     @remotion/animation-utils @remotion/animated-emoji @remotion/rive @remotion/skia @remotion/tailwind @remotion/tailwind-v4 \
+                     @remotion/zod-types @remotion/preload @remotion/rounded-text-box @remotion/sfx @remotion/light-leaks @remotion/licensing @remotion/web-renderer; do
+              at=$(npm view "$p@$pin" version 2>/dev/null || true); lt=$(npm view "$p" version 2>/dev/null || true)
+              echo "| $p | ${at:-—} | ${lt:-not on npm} |"
+            done
+            echo; echo "remotion dist-tags: $(npm view remotion dist-tags --json 2>/dev/null | tr -d '\n ')"
+            echo "remotion 4.x newest: $(npm view remotion versions --json 2>/dev/null | python3 -c 'import json,sys; v=[x for x in json.load(sys.stdin) if x.startswith("4.")]; print(v[-1])')"
+            echo; echo "| HyperFrames package | latest | license |"; echo "|---|---|---|"
+            for p in hyperframes @hyperframes/core @hyperframes/engine @hyperframes/producer @hyperframes/studio @hyperframes/player @hyperframes/shader-transitions; do
+              echo "| $p | $(npm view "$p" version 2>/dev/null || echo 'not on npm') | $(npm view "$p" license 2>/dev/null) |"
+            done
+          } > packages.md
+          cat packages.md
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-whisper-v1
+          restore-keys: kokoro-
+      - name: Python packages
+        run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt scikit-image fonttools
+      - name: Fonts
+        run: |
+          mkdir -p assets/fonts
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf ofl/bangers/Bangers-Regular.ttf \
+                   apache/permanentmarker/PermanentMarker-Regular.ttf ofl/ptserif/PT_Serif-Web-Regular.ttf \
+                   ofl/oldstandardtt/OldStandard-Regular.ttf ofl/oldstandardtt/OldStandard-Bold.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
+      - name: r90 release, storyboard frames, archive media
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          ep=0005-drip-pricing
+          tools/rel.sh download "${{ github.event.inputs.tag }}" rel "*.mp4" "timings.json"
+          mkdir -p ".cache/images/$ep" assets/archive
+          tools/rel.sh download "frames-$ep" ".cache/images/$ep" "*.png"
+          gh release download archive -D assets/archive --clobber || true
+      - name: Export (pilot beats + reel)
+        run: |
+          set -o pipefail
+          { python tools/remotion/export_pilot.py rel pilot/remotion/public && python tools/remotion/export_reel.py rel pilot/remotion/public; } 2>&1 | tee export.log \
+            || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+      - name: Remotion install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -5
+      - name: Render the reel (timed)
+        working-directory: pilot/remotion
+        run: |
+          set -o pipefail
+          mkdir -p ../../rd
+          for n in reel_long reel_short; do
+            s0=$(date +%s)
+            npx remotion render src/index.ts Reel "../../rd/cs_study_$n.mp4" --props="{\"name\":\"$n\"}" --concurrency=4 --log=error 2>&1 | tail -30 > "../../rd/$n.log" \
+              || { tail -n 30 "../../rd/$n.log" | python3 -c 'import sys; print("::error title=render::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+            echo "$n: $(( $(date +%s) - s0 )) s" >> ../../rd/timing.txt
+          done
+          cat ../../rd/timing.txt
+      - name: Contact sheets + loudness
+        run: |
+          for n in reel_long reel_short; do
+            f=rd/cs_study_$n.mp4
+            ffmpeg -v error -y -i "$f" -vf "fps=1/2,scale=480:-1,tile=6x8" -frames:v 1 "rd/sheet_$n.png"
+            ffmpeg -nostats -i "$f" -af ebur128=peak=true -f null - 2>&1 | grep -E "^\s+(I:|Peak:)" | tr -s ' ' > "rd/loud_$n.txt" || true
+            ffprobe -v error -show_entries format=duration -of csv=p=0 "$f" >> "rd/loud_$n.txt"
+          done
+          cp packages.md rd/
+          cat rd/loud_*.txt
+      - name: Publish (draft release study-motion)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh delete study-motion || true
+          files=$(ls rd/cs_study_*.mp4 rd/sheet_*.png rd/loud_*.txt rd/timing.txt rd/packages.md rd/*.log 2>/dev/null | sort -u || true)
+          [ -n "$files" ] && gh release create study-motion $files --title "CoinSense · STUDY · Remotion + HyperFrames" --notes "Motion study reel (draft, not for upload)." --prerelease --draft

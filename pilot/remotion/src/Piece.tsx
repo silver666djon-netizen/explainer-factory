@@ -5,15 +5,15 @@ import React, {useEffect, useState} from 'react';
 import {AbsoluteFill, Audio, Img, Sequence, continueRender, delayRender, staticFile, useCurrentFrame} from 'remotion';
 
 type Pt = [number, number];
-const ease = (p: number) => {
+export const ease = (p: number) => {
 	const q = Math.min(1, Math.max(0, p));
 	return q * q * (3 - 2 * q);
 };
-const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
-const fontFam = (f: string) => `'${f}'`;
+export const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
+export const fontFam = (f: string) => `'${f}'`;
 
 // ------------------------------------------------------------------ fonts (the same TTF files as the Python engine)
-const useFonts = (fonts: Record<string, string>) => {
+export const useFonts = (fonts: Record<string, string>) => {
 	const [handle] = useState(() => delayRender('fonts'));
 	useEffect(() => {
 		Promise.all(
@@ -84,7 +84,7 @@ export const TextEl: React.FC<{d: any; debugText?: boolean}> = ({d}) => {
 };
 
 // ------------------------------------------------------------------ camera (factory.shots.ImageShot._matrix, float)
-const camera = (sh: any, local: number): {s: number; tx: number; ty: number} => {
+export const camera = (sh: any, local: number): {s: number; tx: number; ty: number} => {
 	const p = local / Math.max(sh.duration, 1e-6);
 	let z = 1,
 		dx = 0,
@@ -297,8 +297,8 @@ const handTip = (sh: any, t: number, toScreen: (b: Pt) => Pt, FW: number, FH: nu
 };
 
 // ------------------------------------------------------------------ shots
-const ImageShotView: React.FC<{sh: any; local: number; FW: number; FH: number; debug: string; id: string}> = ({sh, local, FW, FH, debug, id}) => {
-	const {s, tx, ty} = camera(sh, local);
+export const ImageShotView: React.FC<{sh: any; local: number; FW: number; FH: number; debug: string; id: string; cam?: (sh: any, local: number) => {s: number; tx: number; ty: number}}> = ({sh, local, FW, FH, debug, id, cam}) => {
+	const {s, tx, ty} = (cam || camera)(sh, local);
 	const toScreen = (b: Pt): Pt => [s * b[0] + tx, s * b[1] + ty + sh.y0];
 	const hand = debug === 'nohand' || debug === 'ink' ? null : handTip(sh, local, toScreen, FW, FH);
 	const hs = hand ? sh.hands[hand.kind] || Object.values(sh.hands)[0] : null;
@@ -327,7 +327,7 @@ const ImageShotView: React.FC<{sh: any; local: number; FW: number; FH: number; d
 	);
 };
 
-const StatView: React.FC<{sh: any; local: number; W: number; H: number}> = ({sh, local, W, H}) => {
+export const StatView: React.FC<{sh: any; local: number; W: number; H: number}> = ({sh, local, W, H}) => {
 	const q = clamp(local / sh.pop, 0, 1);
 	const sc = 1.1 - 0.1 * (1 - (1 - q) * (1 - q)); // the stamp: 110 % -> 100 %
 	const n = sh.numEl;
@@ -347,7 +347,7 @@ const StatView: React.FC<{sh: any; local: number; W: number; H: number}> = ({sh,
 	);
 };
 
-const ChartView: React.FC<{sh: any; local: number; W: number; H: number}> = ({sh, local, W, H}) => {
+export const ChartView: React.FC<{sh: any; local: number; W: number; H: number}> = ({sh, local, W, H}) => {
 	const [x0, y0, x1, y1] = sh.area;
 	const vals = sh.values.map(Number);
 	const vmax = Math.max(...vals) * 1.15 || 1;
@@ -387,7 +387,7 @@ const ChartView: React.FC<{sh: any; local: number; W: number; H: number}> = ({sh
 	);
 };
 
-const KineticView: React.FC<{sh: any; local: number; W: number; H: number; debug: string}> = ({sh, local, W, H, debug}) => {
+export const KineticView: React.FC<{sh: any; local: number; W: number; H: number; debug: string}> = ({sh, local, W, H, debug}) => {
 	const z = 1 + 0.045 * Math.min(1, Math.max(0, local) / Math.max(4, sh.duration));
 	return (
 		<AbsoluteFill style={{background: debug === 'text' ? '#000' : undefined}}>
@@ -521,7 +521,9 @@ const LedgerView: React.FC<{lg: any; f: number; t: number; W: number; H: number;
 };
 
 // ------------------------------------------------------------------ one segment of the r90 timeline
-const Segment: React.FC<{seg: any; piece: any; debug: string; id: string}> = ({seg, piece, debug, id}) => {
+// variants (motion study reel): replace one shot view with the studied technique, everything else as in r90
+export type Variants = {stat?: React.FC<any>; chart?: React.FC<any>; picture?: (el: React.ReactNode) => React.ReactNode; cam?: (sh: any, local: number) => {s: number; tx: number; ty: number}};
+export const Segment: React.FC<{seg: any; piece: any; debug: string; id: string; v?: Variants}> = ({seg, piece, debug, id, v = {}}) => {
 	const f = useCurrentFrame();
 	const W = piece.W,
 		H = piece.H;
@@ -541,9 +543,11 @@ const Segment: React.FC<{seg: any; piece: any; debug: string; id: string}> = ({s
 	return (
 		<AbsoluteFill style={{background: debug === 'ink' || debug === 'text' ? '#000' : '#F3E9D2', overflow: 'hidden'}}>
 			<AbsoluteFill style={{transform: `scale(${z})`, transformOrigin: '50% 50%'}}>
-				{shot.type === 'image' && debug !== 'text' ? <ImageShotView sh={shot} local={local} FW={W} FH={H} debug={debug} id={id} /> : null}
-				{shot.type === 'stat' && overlays ? <StatView sh={shot} local={local} W={W} H={H} /> : null}
-				{shot.type === 'chart' && overlays ? <ChartView sh={shot} local={local} W={W} H={H} /> : null}
+				{shot.type === 'image' && debug !== 'text'
+					? (v.picture || ((el: React.ReactNode) => el))(<ImageShotView sh={shot} local={local} FW={W} FH={H} debug={debug} id={id} cam={v.cam} />)
+					: null}
+				{shot.type === 'stat' && overlays ? React.createElement(v.stat || StatView, {sh: shot, local, W, H}) : null}
+				{shot.type === 'chart' && overlays ? React.createElement(v.chart || ChartView, {sh: shot, local, W, H}) : null}
 				{shot.type === 'kinetic' && (overlays || debug === 'text') ? <KineticView sh={shot} local={local} W={W} H={H} debug={debug} /> : null}
 			</AbsoluteFill>
 			{overlays ? <Img src={staticFile(piece.vignette)} style={{position: 'absolute', left: 0, top: 0, width: W, height: H}} /> : null}
