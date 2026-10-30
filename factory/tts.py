@@ -136,7 +136,18 @@ class EdgeVoice:
         last = None
         # attempts: the configured voice, retried with growing pauses; last, sentence boundaries (words spread)
         # (the pitch never changes: every line must sound like the same narrator)
-        plans = [(None, "WordBoundary")] * 9 + [(None, "SentenceBoundary")] * 3
+        plans = [(None, "WordBoundary")] * 36 + [(None, "SentenceBoundary")] * 4  # the service drops ~half the requests
+        import hashlib
+        import json as _json
+        from pathlib import Path as _P
+        cdir = _P(".cache") / "tts"
+        key = hashlib.sha1(f"{self.voice}|{self.rate}|{self.pitch}|{text}".encode()).hexdigest()[:16]
+        if (cdir / f"{key}.mp3").exists():  # voiced in an earlier run (the render workflow keeps .cache/tts)
+            mp3 = (cdir / f"{key}.mp3").read_bytes()
+            words = [tuple(w) for w in _json.loads((cdir / f"{key}.json").read_text())]
+            pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", "pipe:0", "-f", "f32le", "-ac", "1", "-ar", str(SAMPLE_RATE), "pipe:1"],
+                                 input=mp3, capture_output=True, check=True).stdout
+            return np.frombuffer(pcm, dtype=np.float32).copy(), words
         for attempt, (pitch, bnd) in enumerate(plans):
             try:
                 time.sleep(0.8)  # the free service drops requests that come too fast
@@ -151,13 +162,16 @@ class EdgeVoice:
                 words = [w for w in words if re.search(r"\w", w[0] or "")]
                 if bnd != "WordBoundary":  # sentence timings: words spread over their sentence
                     words = [(w_, s0 + a_, s0 + b_) for st, s0, e0 in words for w_, a_, b_ in _proportional_words(st, e0 - s0)]
+                cdir.mkdir(parents=True, exist_ok=True)
+                (cdir / f"{key}.mp3").write_bytes(mp3)
+                (cdir / f"{key}.json").write_text(_json.dumps(words))
                 if not words:
                     words = _proportional_words(text, len(audio) / SAMPLE_RATE)
                 return audio, words
             except Exception as exc:  # noqa: BLE001 - network hiccups: retry
                 last = exc
                 print(f"edge-tts attempt {attempt + 1} failed for {text[:40]!r}: {exc}")
-                time.sleep(min(30, 3 + 4 * attempt))
+                time.sleep(min(20, 2 + 2 * attempt))
         raise RuntimeError(f"edge-tts failed for {text[:60]!r}: {last}")
 
 

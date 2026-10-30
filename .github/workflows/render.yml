@@ -90,6 +90,14 @@ jobs:
           key: kokoro-whisper-v1
           restore-keys: kokoro-
 
+      - run: mkdir -p .cache/tts
+      - name: Voiced lines (online TTS of language versions)
+        uses: actions/cache/restore@v4
+        with:
+          path: .cache/tts
+          key: tts-${{ github.run_id }}
+          restore-keys: tts-
+
       - name: Restore generated images
         uses: actions/cache/restore@v4
         with:
@@ -165,6 +173,13 @@ jobs:
           for ep in ${{ steps.pick.outputs.list }}; do
             python -m factory build "episodes/$ep" --out "out/$ep" ${only:+--only $only} ${{ github.event.inputs.preview == 'yes' && '--preview' || '' }} ${{ github.event.inputs.upto && format('--upto {0}', github.event.inputs.upto) || '' }} ${{ github.event.inputs.lang && format('--lang {0}', github.event.inputs.lang) || '' }} 2>&1 | tee -a build.log
           done
+
+      - name: Save voiced lines (even if the render failed)
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: .cache/tts
+          key: tts-${{ github.run_id }}
 
       - name: Save generated images (even if the render failed)
         if: always()
