@@ -415,6 +415,15 @@ def export_write(m: dict, BW: int, BH: int, cfg: dict) -> dict:
             "handScale": float(m.get("hand_scale", 1.0)), "kind": m.get("type")}
 
 
+def stroke_col(m, red, cfg):
+    """The ink colour of a circle / underline (factory.shots.draw_marks: red unless the mark names a colour)."""
+    from factory.config import hex_to_rgb
+    if m.get("color") and m.get("color") != "red":
+        pal = {k: hex_to_rgb(v) for k, v in cfg["style"]["palette"].items()}
+        return tuple(int(c) for c in (pal.get(m["color"]) or hex_to_rgb(m["color"])))
+    return tuple(int(c) for c in red)
+
+
 def hand_sprite(kind: str, height: int) -> dict:
     import factory.draw as D
     img, (tx, ty) = D._hand(D.hand_kind(kind), height, False)
@@ -442,7 +451,7 @@ def export_shot(sh, cfg, size):
             elif m.get("type") in ("circle", "underline", "strike", "cross", "arrow"):
                 st = mark_strokes(m, sh.BW, sh.BH, seed=17 + i)
                 e = {"kind": m["type"], "strokes": [[[round(float(x), 2), round(float(y), 2)] for x, y in s_] for s_ in st],
-                     "pen": max(4, int(min(sh.BW, sh.BH) * 0.007)), "color": col(tuple(sh.red) + (255,)),
+                     "pen": max(4, int(min(sh.BW, sh.BH) * 0.007)), "color": col(tuple(stroke_col(m, sh.red, cfg)) + (255,)),
                      "at": float(m.get("at", 0.6)), "dur": float(m.get("dur", 0.45)), "hand": bool(m.get("hand")),
                      "chain": bool(m.get("chain")), "handScale": float(m.get("hand_scale", 1.0))}
             else:

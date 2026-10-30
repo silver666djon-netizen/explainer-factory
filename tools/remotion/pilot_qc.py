@@ -28,6 +28,70 @@ def frames(path: Path, W: int, H: int):
     p.wait()
 
 
+def ease(p):
+    p = min(1.0, max(0.0, p))
+    return p * p * (3 - 2 * p)
+
+
+def camera(sh, local):
+    """pilot/remotion/src/Piece.tsx camera() (= factory.shots.ImageShot._matrix)."""
+    p = local / max(sh["duration"], 1e-6)
+    z, dx, dy = 1.0, 0.0, 0.0
+    if sh.get("zoomLin"):
+        z = sh["zoomLin"][0] + sh["zoomLin"][1] * p * sh["duration"]
+    else:
+        e, zm, mo = ease(p), sh["zmax"], sh["motion"]
+        if mo == "zoom_in":
+            z = 1 + (zm * 0.98 - 1) * e
+        elif mo == "zoom_out":
+            z = zm * 0.98 - (zm * 0.98 - 1) * e
+        elif mo in ("pan_left", "pan_right", "pan_up", "pan_down"):
+            z, tr, sg = 1.12, 2 * e - 1, (1 if mo in ("pan_left", "pan_up") else -1)
+            dx, dy = (-sg * tr, 0.0) if mo in ("pan_left", "pan_right") else (0.0, -sg * tr)
+        elif mo == "drift":
+            z, dx, dy = 1.05 + 0.12 * e, 0.6 * (e - 0.5), 0.4 * (0.5 - e)
+        else:
+            z = 1.02 + 0.06 * p
+    dy += sh.get("camDy") or 0
+    ww, wh = sh["BW"] / z, sh["BH"] / z
+    cx = sh["BW"] / 2 + dx * (sh["BW"] - ww) / 2 * 0.95
+    cy = sh["BH"] / 2 + dy * (sh["BH"] - wh) / 2 * 0.95
+    s = sh["W"] / ww
+    return s, sh["W"] / 2 - s * cx, sh["H"] / 2 - s * cy
+
+
+def pen_tip(m, p, lift=0.6):
+    """Piece.tsx penState(): the tip after progress p (mark coordinates)."""
+    st = [np.array(s, np.float64) for s in m["strokes"] if len(s) > 1]
+    lens = [float(np.sum(np.hypot(*np.diff(s, axis=0).T))) for s in st]
+    starts, acc = [], 0.0
+    for i, s in enumerate(st):
+        if i:
+            acc += lift * float(np.hypot(*(s[0] - st[i - 1][-1])))
+        starts.append(acc)
+        acc += lens[i]
+    d = min(1.0, max(0.0, p)) * acc
+    for i, s in enumerate(st):
+        if d < starts[i]:
+            return tuple(st[i - 1][-1])
+        if d <= starts[i] + lens[i]:
+            r = d - starts[i]
+            for a, b in zip(s, s[1:]):
+                l_ = float(np.hypot(*(b - a)))
+                if r <= l_:
+                    return tuple(a + (b - a) * (r / l_ if l_ else 0))
+                r -= l_
+    return tuple(st[-1][-1]) if st else (0.0, 0.0)
+
+
+def to_base(m, pt):
+    if m.get("kind") != "write":
+        return pt
+    a = np.radians(m["angle"])
+    u, v = pt[0] - m["bw"] / 2, pt[1] - m["bh"] / 2
+    return (m["x"] + u * np.cos(a) + v * np.sin(a), m["y"] - u * np.sin(a) + v * np.cos(a))
+
+
 def segment_of(piece, f):
     acc = 0
     for s in piece["segments"]:
@@ -65,26 +129,57 @@ def check(pub: Path, rd: Path, name: str) -> dict:
     vid, noh, ink, txt = (rd / f"{name}.mp4", rd / f"{name}_nohand.mp4", rd / f"{name}_ink.mp4", rd / f"{name}_text.mp4")
     inks = [(fr.max(2) > 60) for fr in frames(ink, W, H)] if ink.exists() else []
     if inks:
-        lag = 8  # 0.25 s
+        # the same sampling as qc.hand_over_ink: each hand-written mark at 35 / 60 / 85 % of its writing; the ink of THAT
+        # mark already laid (its screen box); the glyph under the nib (max(2.5 % of the frame, 0.6 x glyph height)) not counted
+        samples = {}
+        acc = 0
+        for seg in piece["segments"]:
+            for sh in seg["shots"]:
+                if sh.get("type") != "image":
+                    continue
+                for m in sh["marks"]:
+                    if not m.get("hand") or m.get("dur", 0) <= 0.05:
+                        continue
+                    for q in (0.35, 0.6, 0.85):
+                        t = sh["start"] + m["at"] + q * m["dur"]
+                        f = acc + int(round((t - seg["t0"]) * piece["fps"]))
+                        if acc <= f < acc + seg["frames"]:
+                            samples.setdefault(f, []).append((sh, m, q, t - sh["start"]))
+            acc += seg["frames"]
         worst = 0.0
         for f, (a, b) in enumerate(zip(frames(vid, W, H), frames(noh, W, H))):
-            if f >= len(inks):
-                break
-            old = inks[f] & inks[max(0, f - lag)]
-            n_old = int(old.sum())
-            diff = np.abs(a.astype(np.int16) - b.astype(np.int16)).max(2) > 40
-            if n_old < 200 or not diff.any():
+            if f not in samples or f >= len(inks):
                 continue
-            cov = float((diff & old).sum()) / n_old
-            worst = max(worst, cov)
-            if cov > 0.05:
-                res["hand_over_ink"].append(f"f{f}: hand covers {cov:.0%} of the ink already laid")
-        notes["hand_over_ink"] = f"worst {worst:.1%} of the laid ink under the hand"
+            diff = np.abs(a.astype(np.int16) - b.astype(np.int16)).max(2) > 40
+            for sh, m, q, local in samples[f]:
+                s_, tx, ty = camera(sh, local)
+                y0 = sh.get("y0", 0) if sh.get("full") else 0
+                tip = to_base(m, pen_tip(m, q))
+                tx_, ty_ = s_ * tip[0] + tx, s_ * tip[1] + ty + y0
+                box = [to_base(m, c) for c in ((0, 0), (m.get("bw", 0), 0), (0, m.get("bh", 0)), (m.get("bw", 0), m.get("bh", 0)))] \
+                    if m.get("kind") == "write" else [tuple(p_) for st in m["strokes"] for p_ in st]
+                xs = [s_ * p_[0] + tx for p_ in box]
+                ys = [s_ * p_[1] + ty + y0 for p_ in box]
+                x0, x1 = max(0, int(min(xs)) - 3), min(W, int(max(xs)) + 4)
+                y0_, y1 = max(0, int(min(ys)) - 3), min(H, int(max(ys)) + 4)
+                mine = np.zeros_like(inks[f])
+                mine[y0_:y1, x0:x1] = inks[f][y0_:y1, x0:x1]
+                r = max(0.025 * max(W, H), 0.6 * m.get("bh", 0) * s_)
+                yy, xx = np.ogrid[:H, :W]
+                mine &= (xx - tx_) ** 2 + (yy - ty_) ** 2 > r * r
+                n_old = int(mine.sum())
+                if n_old < 200:
+                    continue
+                cov = float((diff & mine).sum()) / n_old
+                worst = max(worst, cov)
+                if cov > 0.05:
+                    res["hand_over_ink"].append(f"f{f}: '{m.get('text', m.get('kind'))}' at {q:.0%}: hand covers {cov:.0%} of its laid ink")
+        notes["hand_over_ink"] = f"worst {worst:.1%} of a mark's laid ink under the hand (limit 5 %)"
         # jitter: centroid of the ink while no new ink is laid (finished marks riding with the camera)
         cs, prev = [], None
         for f, mk in enumerate(inks):
             n = int(mk.sum())
-            if prev is not None and n > 50 and abs(n - prev) <= max(3, n * 0.002):
+            if prev is not None and n > 50 and abs(n - prev) <= 2:
                 ys, xs = np.nonzero(mk)
                 cs.append((f, xs.mean(), ys.mean()))
             else:

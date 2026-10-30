@@ -9,7 +9,10 @@ import json, subprocess, sys
 pub, rel, rd = sys.argv[1:4]
 idx = json.load(open(f"{pub}/pieces.json"))
 font = "assets/fonts/ArchivoBlack-Regular.ttf"
+import os
 for name, p in idx.items():
+    if not os.path.exists(f"{rd}/{name}.mp4"):
+        continue
     W, H = p["W"], p["H"]
     parts = []
     for k, (video, t0, frames, letterbox) in enumerate(p["segments"]):
