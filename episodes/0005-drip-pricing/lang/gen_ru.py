@@ -18,7 +18,15 @@ def b(bid, text, anchors=None, say=None, patch=None):
     B[bid] = d
 
 
-SB = "Стабхаб"  # brand names: Latin on screen (as on the cards), Russian spelling for the voice
+SB = "Стабхаб"
+
+# the hotel bill (c4/c5/c7): the Russian words are longer - smaller letters, so КУРОРТНЫЙ СБОР stays clear of "$9–$95" and
+# НАЛОГИ И СБОРЫ stays inside its red ring (the boxes and the ring are where the English ones are)
+def RU_C(heading_idx):
+    p = {"visual.marks.0.fs": 0.021}
+    if heading_idx is not None:
+        p[f"visual.marks.{heading_idx}.fs"] = 0.03
+    return p  # brand names: Latin on screen (as on the cards), Russian spelling for the voice
 
 SECTIONS = {
     "The case": "Дело",
@@ -87,12 +95,11 @@ b("c2", "В две тысячи девятнадцатом генеральны�
 b("c3", "Согласно иску, как минимум сто восемьдесят девять отелей Marriott брали эти сборы:", {"one": "сто"},
   say="Согласно иску, как минимум сто восемьдесят девять отелей Марриотт брали эти сборы:")
 b("c4", "от девяти до девяноста пяти долларов за номер в сутки.", {"ninety-five": "девяноста"},
-  patch={"visual.marks.0.fs": 0.025, "visual.marks.0.w": 0.13})  # the RU line on one line (no wrap under the hand)
+  patch=RU_C(None))
 b("c5", "Ближе к концу бронирования сбор прятался под официально звучащим заголовком: «Налоги и сборы».",
-  {"heading": "заголовком", "Fees.": "сборы"}, patch={"visual.marks.0.fs": 0.025, "visual.marks.0.w": 0.13})
+  {"heading": "заголовком", "Fees.": "сборы"}, patch=RU_C(2))
 b("c6", "Только с клиентов из округа Колумбия, по словам прокурора, набежали миллионы долларов.", {"millions": "миллионы"})
-b("c7", "Курортный сбор — не налог. Он просто любит сидеть рядом с налогами.", {"aren't": "не"},
-  patch={"visual.marks.0.fs": 0.025, "visual.marks.0.w": 0.13})
+b("c7", "Курортный сбор — не налог. Он просто любит сидеть рядом с налогами.", {"aren't": "не"}, patch=RU_C(2))
 b("c8", "В две тысячи двадцать третьем Marriott договорился с Техасом показывать итоговую цену на самом видном месте.",
   say="В две тысячи двадцать третьем Марриотт договорился с Техасом показывать итоговую цену на самом видном месте.")
 b("n1", "Почему это работает? В тысяча девятьсот девяносто восьмом трое исследователей маркетинга разделили цены на базовую часть и надбавку.",

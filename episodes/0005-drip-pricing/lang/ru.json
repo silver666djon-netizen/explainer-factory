@@ -241,8 +241,7 @@
     "ninety-five": "девяноста"
    },
    "patch": {
-    "visual.marks.0.fs": 0.025,
-    "visual.marks.0.w": 0.13
+    "visual.marks.0.fs": 0.021
    }
   },
   "c5": {
@@ -252,8 +251,8 @@
     "Fees.": "сборы"
    },
    "patch": {
-    "visual.marks.0.fs": 0.025,
-    "visual.marks.0.w": 0.13
+    "visual.marks.0.fs": 0.021,
+    "visual.marks.2.fs": 0.03
    }
   },
   "c6": {
@@ -268,8 +267,8 @@
     "aren't": "не"
    },
    "patch": {
-    "visual.marks.0.fs": 0.025,
-    "visual.marks.0.w": 0.13
+    "visual.marks.0.fs": 0.021,
+    "visual.marks.2.fs": 0.03
    }
   },
   "c8": {
