@@ -1,0 +1,440 @@
+CoinSense · EP04 · r90 · RU REVIEW — русский текст озвучки (под каждой строкой — английский оригинал)
+
+
+=== Дело  /  The case ===
+
+[o1] Билет на концерт. Тридцать долларов.
+      EN: A concert ticket. Thirty dollars.
+
+[o2] Потом сборы. Восемь. Шесть. Четыре.
+      EN: Then the fees. Eight. Six. Four.
+
+[o3] Итого: сорок восемь.
+      EN: Total: forty-eight.
+
+[o4] Ларри выдуман. Сборы — нет.
+      EN: Larry is made up. The fees are not.
+
+[cf1] Дело номер четыре. Сбор в конце.
+      EN: Case file number four. The fee at the end.
+
+[m1] Подозреваемый номер один. Имя: сбор при оформлении. Они же: сервисный сбор, сбор за обработку, сбор за удобство.
+      EN: Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee.
+
+[m1b] Последний раз замечен за один клик до кнопки «Оплатить». Он никогда не трогает цену, которую вы видите. Он ждёт цену, которую вы платите.
+      EN: Last seen: one click before Pay. It never touches the price you see. It waits for the price you pay.
+
+
+=== Вторник, 20:12 — Эксперимент  /  Tuesday 8:12 PM: The experiment ===
+
+[t1] Вторник, восемь двенадцать вечера.
+      EN: Tuesday, eight-twelve p.m.
+
+[a1] У Ларри в корзине билет.
+      EN: Larry has a ticket in his basket.
+
+[a2] Чтобы понять, откуда взялись сборы, вернёмся в две тысячи пятнадцатый год,
+      EN: To see how the fees got there, we go back to 2015,
+
+[a2b] к компании, которая проверила их на собственных покупателях.
+      EN: to a company that tested them on its own customers.
+
+[a3] StubHub, сайт перепродажи билетов, тогда принадлежал eBay.
+      EN: StubHub, the ticket resale site, was owned by eBay back then.
+
+[a4] Пару лет до того лета он показывал все сборы сразу. Цена на экране и была ценой, которую вы платили.
+      EN: For a couple of years before that summer, it showed every fee upfront. The price on the screen was the price you paid.
+
+[a5] Потом, на двенадцать дней в августе две тысячи пятнадцатого, он разделил покупателей надвое.
+      EN: Then, for twelve days in August 2015, it split its buyers in two.
+
+[a6] Одна половина видела полную цену на экране. Другая — только билет, а сборы ждали при оформлении.
+      EN: Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout.
+
+[a7] Те же билеты. Те же сборы. Изменился только момент, когда вы их видели.
+      EN: Same tickets. Same fees. The only thing that changed was the moment you saw them.
+
+[a8] Те, кто встретил сборы в конце, потратили почти на двадцать один процент больше.
+      EN: The ones who met the fees late spent almost twenty-one percent more.
+
+[a9] Вероятность покупки у них была на четырнадцать целых одну десятую процента выше.
+      EN: They were fourteen point one percent more likely to buy at all.
+
+[a10] А покупатели среди них выбирали места примерно на пять процентов дороже.
+      EN: And the buyers among them picked seats about five percent pricier.
+
+[a11] Место кажется дешевле, пока его сборы за кулисами, — и вы берёте получше.
+      EN: A seat looks cheaper when its fees are still offstage, so you pick a better one.
+
+[a12] А потом сборы выходят на сцену.
+      EN: Then the fees walk on.
+
+[a13] Двенадцать дней науки. А потом наука вышла в эфир.
+      EN: Twelve days of science. Then the science went live.
+
+[a14] Первого сентября переключился весь сайт. Сборы в конце — для всех.
+      EN: On September the first, the whole site switched. Fees at the end, for everyone.
+
+
+=== Среда, 10:00 — $16,4 миллиарда  /  Wednesday 10:00 AM: $16.4 billion ===
+
+[t2] Среда, десять утра.
+      EN: Wednesday, ten a.m.
+
+[b1] Ларри читает чек. Восемнадцать долларов сборов на билете за сорок восемь.
+      EN: Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.
+
+[b2] Это тридцать семь с половиной процентов от того, что он заплатил.
+      EN: That's thirty-seven and a half percent of what he paid.
+
+[b3a] Это необычно?
+      EN: Is that unusual?
+
+[b3] В сентябре две тысячи двадцать пятого Федеральная торговая комиссия США и семь штатов подали в суд на Live Nation и Ticketmaster.
+      EN: In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.
+
+[b4] По их версии, сборы составляют от двадцати четырёх до сорока четырёх процентов итоговой цены.
+      EN: They allege the fees run from twenty-four to forty-four percent of the total price.
+
+[b5] И что фанаты заплатили больше шестнадцати целых четырёх десятых миллиарда долларов обязательных сборов.
+      EN: And that fans paid over sixteen point four billion dollars in mandatory fees.
+
+[b6] Тридцать семь с половиной процентов Ларри — ровно внутри этого диапазона.
+      EN: Larry's thirty-seven and a half percent sits right inside that range.
+
+[b7] Его билет за тридцать долларов вырос на шестьдесят процентов между первым экраном и последним.
+      EN: His thirty-dollar ticket grew by sixty percent between the first screen and the last.
+
+[b8] Ларри, как выясняется, совершенно средний.
+      EN: Larry, it turns out, is perfectly average.
+
+[b9] В сентябре две тысячи двадцать шестого судья отказался прекратить дело. Оно продолжается.
+      EN: In September 2026, a judge refused to throw the case out. It goes on.
+
+[b9b] Пока суд не решил, каждое слово в нём — обвинение.
+      EN: Until a court decides, every word of it is an allegation.
+
+
+=== Четверг, 23:40 — Курортный сбор  /  Thursday 11:40 PM: The resort fee ===
+
+[t3] Четверг, двадцать три сорок.
+      EN: Thursday, eleven-forty p.m.
+
+[c1] Ларри нужен отель на время концерта. В центре города. Вдали от любого пляжа.
+      EN: Larry needs a hotel for the concert. Downtown. Nowhere near a beach.
+
+[m2] Подозреваемый номер два. Имя: курортный сбор. Они же: сбор за удобства, сбор за направление.
+      EN: Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.
+
+[m2b] Известные сообщники: бассейн, в котором вы никогда не поплаваете.
+      EN: Known associates: a pool you will never swim in.
+
+[c2] В две тысячи девятнадцатом генеральный прокурор Вашингтона, округ Колумбия, подал в суд на Marriott.
+      EN: In 2019, the Attorney General for Washington, D.C., sued Marriott.
+
+[c3] Согласно иску, как минимум сто восемьдесят девять отелей Marriott брали эти сборы:
+      EN: The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:
+
+[c4] от девяти до девяноста пяти долларов за номер в сутки.
+      EN: from nine to ninety-five dollars, per room, per day.
+
+[c5] Ближе к концу бронирования сбор прятался под официально звучащим заголовком: «Налоги и сборы».
+      EN: Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.
+
+[c6] Только с клиентов из округа Колумбия, по словам прокурора, набежали миллионы долларов.
+      EN: From customers in D.C. alone, the Attorney General says, that came to millions of dollars.
+
+[c7] Курортный сбор — не налог. Он просто любит сидеть рядом с налогами.
+      EN: Resort fees aren't taxes. They just like to sit next to them.
+
+[c8] В две тысячи двадцать третьем Marriott договорился с Техасом показывать итоговую цену на самом видном месте.
+      EN: In 2023, Marriott agreed with Texas to show the total price most prominently.
+
+
+=== Почему разделённая цена кажется дешевле  /  Why a split price feels cheaper ===
+
+[n1] Почему это работает? В тысяча девятьсот девяносто восьмом трое исследователей маркетинга разделили цены на базовую часть и надбавку.
+      EN: Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.
+
+[n2] Итоговая цена была той же. Её просто подавали по частям.
+      EN: The total price was the same. It was just served in pieces.
+
+[n3] Люди запоминали, что заплатили меньше. И покупали больше.
+      EN: People remembered paying less in total. And they bought more.
+
+[n4] Мозг записывает первое число. Всё, что после него, — мелкий шрифт.
+      EN: Your brain files the first number. Everything after it is small print.
+
+[sub] Если вам нравится ловить цены с поличным — подпишитесь. У Инспектора ещё много дел.
+      EN: If you like catching prices in the act, subscribe. The Inspector has more files.
+
+
+=== В защиту обвиняемых  /  In defence of the accused ===
+
+[t4] В защиту обвиняемых.
+      EN: In defence of the accused.
+
+[d1] Первое: StubHub говорит, что пробовал честность.
+      EN: One: StubHub says it tried honesty.
+
+[d2] По его словам, в две тысячи четырнадцатом он перешёл на цены со всеми сборами и потерял клиентов в пользу конкурентов, которые сборы оставили.
+      EN: In 2014, it says, it moved to all-in prices, and lost customers to rivals who kept their fees.
+
+[d2b] Осенью две тысячи пятнадцатого он вернулся обратно.
+      EN: It went back in the fall of 2015.
+
+[d3] Второе: собственные экономисты компании увидели это иначе. Их вывод о переходе на поздние сборы: рынок расширился, а не просто перераспределился между продавцами.
+      EN: Two: its own economists saw it differently. Their finding on the switch to late fees: market-expanding, rather than pure business-stealing.
+
+[d4] Проще говоря, скрытые сборы не просто переманили покупателей у конкурентов. Они заставили людей тратить больше.
+      EN: In plain English, hidden fees didn't just win buyers from rivals. They made people spend more.
+
+[d5] Третье: сборы оплачивают реальные вещи. Платежи картой, персонал, площадку.
+      EN: Three: fees pay for real things. Card payments, staff, the venue.
+
+[d6] Новое правило Америки не запрещает ни одного сбора. Оно лишь требует итоговую цену — сразу.
+      EN: America's new rule bans no fee at all. It only wants the total, upfront.
+
+[d7] Сбор может быть честным. Прятать его — нет.
+      EN: The fee may be fair. Hiding it isn't.
+
+
+=== Пятница, 9:00 — Один сбор, три закона  /  Friday 9:00 AM: One fee, three laws ===
+
+[t5] Пятница, девять утра.
+      EN: Friday, nine a.m.
+
+[l1] Билет Ларри отправляется в путешествие. Три границы. Три печати.
+      EN: Larry's ticket goes on a trip. Three borders. Three stamps.
+
+[l2] Граница первая: Америка. С мая две тысячи двадцать пятого продавцы билетов и краткосрочного жилья, от отелей до съёмных квартир на отдых, обязаны сразу показывать итоговую цену.
+      EN: Border one: America. Since May 2025, ticket sellers and short stays, from hotels to vacation rentals, must show the total price upfront.
+
+[l3] В апреле две тысячи двадцать шестого StubHub согласился вернуть покупателям десять миллионов долларов,
+      EN: In April 2026, StubHub agreed to pay ten million dollars back to buyers,
+
+[l3b] за сборы, которые он показывал слишком поздно.
+      EN: over fees it showed too late.
+
+[l4] Америка это уже проходила. В тысяча девятьсот пятьдесят восьмом закон поместил наклейку на окно каждой новой машины:
+      EN: America has done this before. In 1958, a law put a sticker on the window of every new car:
+
+[l5] цену, каждую опцию, доставку и итог.
+      EN: the price, every option, the delivery charge, and the total.
+
+[l6] Машины получили итоговую цену на шестьдесят семь лет раньше, чем билеты на концерты.
+      EN: Cars got the total sixty-seven years before concert tickets did.
+
+[l7] Граница вторая: Британия. С апреля две тысячи двадцать пятого цена должна включать каждый сбор, которого не избежать.
+      EN: Border two: Britain. Since April 2025, the price must include every fee you can't avoid.
+
+[l8] Сеть автошкол спрятала сбор за бронирование в три фунта, который взяли с более чем восьмидесяти тысяч учеников.
+      EN: A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.
+
+[l9] Она заплатила штраф в четыре целых две десятых миллиона фунтов,
+      EN: It paid a four point two million pound fine,
+
+[l9b] и вернула ученикам больше семисот шестидесяти тысяч фунтов.
+      EN: and over seven hundred and sixty thousand pounds in refunds.
+
+[l10] В июне оштрафовали и британское подразделение StubHub.
+      EN: In June, StubHub's British arm was fined too.
+
+[l11] Три фунта. Очень дорогие фунты.
+      EN: Three pounds. Very expensive pounds.
+
+[l12] Граница третья: Европейский союз. Итоговая цена, с налогами, до оплаты.
+      EN: Border three: the European Union. The total price, taxes included, before you pay.
+
+[l13] А любой дополнительный платёж требует вашего явного «да». Заранее поставленная галочка — не «да».
+      EN: And any extra charge needs your clear yes. A pre-ticked box is not a yes.
+
+[l14] Один билет. Три печати. Одна мысль: покажите итог.
+      EN: One ticket. Three stamps. One message: show the total.
+
+
+=== Суббота, 10:00 — Три проверки  /  Saturday 10:00 AM: Three checks ===
+
+[t6] Суббота, десять утра.
+      EN: Saturday, ten a.m.
+
+[x1] Три проверки перед оплатой. Первая. Ищите переключатель «Итоговые цены».
+      EN: Three checks before you pay. One. Look for the all-in switch.
+
+[x2] Некоторые сайты с билетами умеют показывать цены со всеми сборами. Включите это до того, как начнёте смотреть, а не после того, как влюбились в место.
+      EN: Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.
+
+[x3] Вторая. Дойдите до последнего экрана, прежде чем решать. Настоящая цена живёт за один клик до кнопки «Оплатить».
+      EN: Two. Go to the last screen before you decide. The real price lives one click before Pay.
+
+[x4] Третья. Сравнивайте итоги, а не заголовки. Билет за сорок долларов без сборов выгоднее билета за тридцать с восемнадцатью долларами сборов.
+      EN: Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.
+
+[x5] Самый дешёвый билет — тот, у которого последнее число меньше всех.
+      EN: The cheapest ticket is the one with the smallest last number.
+
+
+=== Дело закрыто  /  Case closed ===
+
+[z0] Дело закрыто. Ларри заплатил сорок восемь долларов за билет за тридцать.
+      EN: Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket.
+
+[z0b] На концерт он всё равно сходил. Группа стоила тридцати. Оформление заказа не стоило ничего. Теперь он знает, куда ушли восемнадцать.
+      EN: He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went.
+
+[z1] Приговор. Виновен: сбор при оформлении и его кузен, курортный сбор. Соучастник: первое число на экране.
+      EN: The verdict. Guilty: the checkout fee and its cousin, the resort fee. Accomplice: the first number on the screen.
+
+[z4] Следующее дело: экран, который спрашивает, сколько вы хотите оставить на чай, — ещё до того, как вы выпили кофе.
+      EN: Next case: the screen that asks how much you'd like to tip, before you've had your coffee.
+
+[z5] Подпишитесь, чтобы следующее дело нашло вас.
+      EN: Subscribe, so the next case file finds you.
+
+
+=== SHORT s1 · Билет за $30, который стоит $48 #shorts  /  The $30 ticket that costs $48 #shorts ===
+
+[s1_0] Билет на концерт. Тридцать долларов.
+      EN: A concert ticket. Thirty dollars.
+
+[s1_1] Потом сборы. Восемь. Шесть. Четыре.
+      EN: Then the fees. Eight. Six. Four.
+
+[s1_2] Итого: сорок восемь.
+      EN: Total: forty-eight.
+
+[s1_3] Подозреваемый номер один. Имя: сбор при оформлении. Они же: сервисный сбор, сбор за обработку, сбор за удобство.
+      EN: Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee.
+
+[s1_4] Тридцать семь с половиной процентов Ларри — ровно внутри этого диапазона.
+      EN: Larry's thirty-seven and a half percent sits right inside that range.
+
+[s1_5] Так что, прежде чем платить тридцать, спросите, сколько это стоит на самом деле.
+      EN: So before you pay thirty, ask what it costs.
+
+
+=== SHORT s2 · StubHub проверил скрытые сборы на своих покупателях #shorts  /  StubHub tested hidden fees on its own buyers #shorts ===
+
+[s2_0] StubHub показывал все сборы сразу. Потом, на двенадцать дней в августе две тысячи пятнадцатого, он разделил покупателей надвое.
+      EN: StubHub showed every fee upfront. Then, for twelve days in August 2015, it split its buyers in two.
+
+[s2_1] Одна половина видела полную цену на экране. Другая — только билет, а сборы ждали при оформлении.
+      EN: Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout.
+
+[s2_2] Те, кто встретил сборы в конце, потратили почти на двадцать один процент больше.
+      EN: The ones who met the fees late spent almost twenty-one percent more.
+
+[s2_3] Вероятность покупки у них была на четырнадцать целых одну десятую процента выше.
+      EN: They were fourteen point one percent more likely to buy at all.
+
+[s2_4] А покупатели среди них выбирали места примерно на пять процентов дороже.
+      EN: And the buyers among them picked seats about five percent pricier.
+
+[s2_5] А потом сборы выходят на сцену.
+      EN: Then the fees walk on.
+
+[s2_6] Первого сентября переключился весь сайт. Сборы в конце — для всех.
+      EN: On September the first, the whole site switched. Fees at the end, for everyone.
+
+
+=== SHORT s3 · $16,4 миллиарда сборов (по версии истца) #shorts  /  $16.4 billion in fees (alleged) #shorts ===
+
+[s3_0] Ларри читает чек. Восемнадцать долларов сборов на билете за сорок восемь.
+      EN: Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket.
+
+[s3_1] Это тридцать семь с половиной процентов от того, что он заплатил.
+      EN: That's thirty-seven and a half percent of what he paid.
+
+[s3_2] В сентябре две тысячи двадцать пятого Федеральная торговая комиссия и семь штатов подали в суд на Live Nation и Ticketmaster.
+      EN: In September 2025, the Federal Trade Commission and seven states sued Live Nation and Ticketmaster.
+
+[s3_3] По их версии, сборы составляют от двадцати четырёх до сорока четырёх процентов итоговой цены.
+      EN: They allege the fees run from twenty-four to forty-four percent of the total price.
+
+[s3_4] И что фанаты заплатили больше шестнадцати целых четырёх десятых миллиарда долларов сборов.
+      EN: And that fans paid over sixteen point four billion dollars in fees.
+
+[s3_5] В сентябре две тысячи двадцать шестого судья отказался прекратить дело. Оно продолжается.
+      EN: In September 2026, a judge refused to throw the case out. It goes on.
+
+[s3_6] Тридцать семь с половиной процентов Ларри — ровно внутри этого диапазона.
+      EN: Larry's thirty-seven and a half percent sits right inside that range.
+
+
+=== SHORT s4 · Курортный сбор в городском отеле #shorts  /  A resort fee at a city hotel #shorts ===
+
+[s4_0] Ларри нужен отель на время концерта. В центре города. Вдали от любого пляжа.
+      EN: Larry needs a hotel for the concert. Downtown. Nowhere near a beach.
+
+[s4_1] Подозреваемый номер два. Имя: курортный сбор. Они же: сбор за удобства, сбор за направление.
+      EN: Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee.
+
+[s4_2] В две тысячи девятнадцатом генеральный прокурор Вашингтона, округ Колумбия, подал в суд на Marriott.
+      EN: In 2019, the Attorney General for Washington, D.C., sued Marriott.
+
+[s4_3] Согласно иску, как минимум сто восемьдесят девять отелей Marriott брали эти сборы:
+      EN: The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:
+
+[s4_4] от девяти до девяноста пяти долларов за номер в сутки.
+      EN: from nine to ninety-five dollars, per room, per day.
+
+[s4_5] Ближе к концу бронирования сбор прятался под официально звучащим заголовком: «Налоги и сборы».
+      EN: Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees.
+
+[s4_6] Курортный сбор — не налог. Он просто любит сидеть рядом с налогами.
+      EN: Resort fees aren't taxes. They just like to sit next to them.
+
+
+=== SHORT s5 · Почему разделённая цена кажется дешевле #shorts  /  Why a split price feels cheaper #shorts ===
+
+[s5_0] Тридцать долларов. Потом сборы.
+      EN: Thirty dollars. Then the fees.
+
+[s5_1] Почему это работает? В тысяча девятьсот девяносто восьмом трое исследователей маркетинга разделили цены на базовую часть и надбавку.
+      EN: Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge.
+
+[s5_2] Итоговая цена была той же. Её просто подавали по частям.
+      EN: The total price was the same. It was just served in pieces.
+
+[s5_3] Люди запоминали, что заплатили меньше. И покупали больше.
+      EN: People remembered paying less in total. And they bought more.
+
+[s5_4] Мозг записывает первое число. Всё, что после него, — мелкий шрифт.
+      EN: Your brain files the first number. Everything after it is small print.
+
+
+=== SHORT s6 · Сбор в £3, который обошёлся в £4,2 миллиона #shorts  /  The £3 fee that cost £4.2 million #shorts ===
+
+[s6_0] Сеть автошкол спрятала сбор за бронирование в три фунта, который взяли с более чем восьмидесяти тысяч учеников.
+      EN: A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers.
+
+[s6_1] Она заплатила штраф в четыре целых две десятых миллиона фунтов,
+      EN: It paid a four point two million pound fine,
+
+[s6_2] Америка это уже проходила. В тысяча девятьсот пятьдесят восьмом закон поместил наклейку на окно каждой новой машины:
+      EN: America has done this before. In 1958, a law put a sticker on the window of every new car:
+
+[s6_3] цену, каждую опцию, доставку и итог.
+      EN: the price, every option, the delivery charge, and the total.
+
+[s6_4] Машины получили итоговую цену на шестьдесят семь лет раньше, чем билеты на концерты.
+      EN: Cars got the total sixty-seven years before concert tickets did.
+
+
+=== SHORT s7 · 3 проверки перед оплатой #shorts  /  3 checks before you pay #shorts ===
+
+[s7_0] Три проверки перед оплатой. Первая. Ищите переключатель «Итоговые цены».
+      EN: Three checks before you pay. One. Look for the all-in switch.
+
+[s7_1] Некоторые сайты с билетами умеют показывать цены со всеми сборами. Включите это до того, как начнёте смотреть, а не после того, как влюбились в место.
+      EN: Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat.
+
+[s7_2] Вторая. Дойдите до последнего экрана, прежде чем решать. Настоящая цена живёт за один клик до кнопки «Оплатить».
+      EN: Two. Go to the last screen before you decide. The real price lives one click before Pay.
+
+[s7_3] Третья. Сравнивайте итоги, а не заголовки. Билет за сорок долларов без сборов выгоднее билета за тридцать с восемнадцатью долларами сборов.
+      EN: Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.
+
+[s7_4] Самый дешёвый билет — тот, у которого последнее число меньше всех.
+      EN: The cheapest ticket is the one with the smallest last number.
+
