@@ -97,5 +97,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           tools/rel.sh delete pilot-remotion || true
-          files=$(ls rd/cs_pilot_remotion_*.mp4 rd/pilot_qc.md rd/timing.md 2>/dev/null || true)
+          (cd rd && zip -q qc_passes.zip beat*_nohand.mp4 beat*_ink.mp4 beat*_text.mp4 || true)
+          files=$(ls rd/cs_pilot_remotion_*.mp4 rd/pilot_qc.md rd/timing.md rd/qc_passes.zip 2>/dev/null || true)
           [ -n "$files" ] && gh release create pilot-remotion $files --title "CoinSense · PILOT · Remotion" --notes "Remotion overlay pilot (Ep.4 r90, 3 beats). Draft, not for upload." --prerelease --draft

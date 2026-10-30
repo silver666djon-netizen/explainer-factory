@@ -163,7 +163,15 @@ def check(pub: Path, rd: Path, name: str) -> dict:
                 x0, x1 = max(0, int(min(xs)) - 3), min(W, int(max(xs)) + 4)
                 y0_, y1 = max(0, int(min(ys)) - 3), min(H, int(max(ys)) + 4)
                 mine = np.zeros_like(inks[f])
-                mine[y0_:y1, x0:x1] = inks[f][y0_:y1, x0:x1]
+                if m.get("kind") == "write":
+                    mine[y0_:y1, x0:x1] = inks[f][y0_:y1, x0:x1]
+                else:  # a ring / line: only the ink along its own stroke (not the words it rings)
+                    import cv2
+                    band = np.zeros((H, W), np.uint8)
+                    for st in m["strokes"]:
+                        pts = np.array([[s_ * p_[0] + tx, s_ * p_[1] + ty + y0] for p_ in st], np.int32)
+                        cv2.polylines(band, [pts], False, 1, int(m["pen"] * s_) + 4)
+                    mine = inks[f] & (band > 0)
                 r = max(0.025 * max(W, H), 0.6 * m.get("bh", 0) * s_)
                 yy, xx = np.ogrid[:H, :W]
                 mine &= (xx - tx_) ** 2 + (yy - ty_) ** 2 > r * r
