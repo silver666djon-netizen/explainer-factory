@@ -1,0 +1,10 @@
+Remotion as the overlay layer: 3 beats of Ep.4 r90, long + Shorts, the same pictures, timing and audio.
+Files: *_sbs.mp4 = left r90 (Python), right Remotion; cs_pilot_remotion_beat*.mp4 = the pilot alone.
+
+Better: real handwriting (the pen draws each letter along its strokes, tip on the line; r90 wipes left to right), vector text, float motion (finished marks move 0.000 px backwards).
+Same: speed, 140-210 s per minute of video on a GitHub runner (about 35 min for a whole episode), no gain over Python.
+Cost: a second toolchain (Node + headless Chrome); our QC has to read pixels or the exported data.
+QC: plate_fit, mark_in_frame, jitter, text_stability PASS everywhere; hand_over_ink PASS except the red ring in the beat 1 Short (15 % on a stricter pixel measure; same hand position as r90).
+Found in r90: a chain of marks keeps the first pen, so the red ring around = $48 is drawn with the graphite pencil. The pilot uses each mark's own pen.
+License: free for an individual or a company of up to 3 people (current LICENSE.md, Remotion 4.x; 5.0 will change the text, so the pilot is pinned at 4.0.290).
+Ep.5 move: about 3-4 sessions to port the rest (stamps, evidence cards, case file / mugshot, split ticket, marks on clips, end screen) + 1 for QC, then one episode rendered by both engines. Full note: REMOTION_PILOT.md.
