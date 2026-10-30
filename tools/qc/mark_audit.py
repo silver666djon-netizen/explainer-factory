@@ -167,7 +167,7 @@ def main(argv):
             (cx, cy), (x0, y0, x1, y1) = rec["c"], rec["plate"]
             if not (x0 <= cx <= x1 and y0 <= cy <= y1):
                 problems.append((name, "?", None, f"stamp centre ({cx:.2f},{cy:.2f}) outside its plate"))
-        print(f"  [{name}] stamp presses checked: {sum(1 for r in D.STAMP_LOG if r["plate"])}")
+        print(f"  [{name}] stamp presses checked: {sum(1 for r in D.STAMP_LOG if r['plate'])}")
         D.STAMP_LOG = None
         # 4. writing in frame: the mark box and its target stay inside the frame while the hand writes
         # 5. ... and no subtitle sits on it meanwhile
