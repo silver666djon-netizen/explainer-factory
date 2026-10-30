@@ -1,0 +1,36 @@
+name: Send release files to Telegram
+# Sends chosen files of a checked (draft) release under one header (rule 22: only after QC).
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+      header:
+        description: "e.g. CoinSense · PILOT · Remotion"
+        required: true
+      text:
+        description: "a file of the release sent first as the message text (optional)"
+        required: false
+        default: ""
+      files:
+        description: "file names, space separated, in send order"
+        required: true
+permissions:
+  contents: write
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -q requests pyyaml
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          tools/rel.sh download "${{ github.event.inputs.tag }}" rel
+          python tools/send_files.py rel "${{ github.event.inputs.header }}" ${{ github.event.inputs.text && format('--text {0}', github.event.inputs.text) || '' }} ${{ github.event.inputs.files }}
