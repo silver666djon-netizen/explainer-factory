@@ -1,0 +1,8 @@
+Study of Remotion 4 (all official packages checked on npm at our pin 4.0.290 and at the latest 4.0.539) and HyperFrames 0.8.222 (Apache-2.0).
+
+Reel, 62 s in 16:9 + 9:16, Ep.4 assets, r90 narration and music, no new generations. 10 techniques, each with a corner tag:
+01 true-stroke handwriting · 02 spring stamp + synced hit · 03 eased chart build · 04 kinetic title (fitText) · 05 animated route "three borders" · 06 parallax from one still · 07 paper, ink + noise wobble, highlighter · 08 word-accurate karaoke · 09 print-style ink wipe · 10 camera motion blur.
+
+Verdict: Remotion renders, Python plans (script, voice, layout rules, audio mastering, checks). From HyperFrames we take ideas, not the engine: its determinism lint, its overflow / occlusion "inspect" and its pacing checks become our QC, and some of its catalog recipes get rebuilt in our print style.
+Licences: Remotion free for an individual or a company of up to 3 people (pin below 5.0); HyperFrames Apache-2.0.
+The catalogue (38 rows) and the Ep.5 plan are in MOTION_STUDY.md; packages.md is the npm check.
