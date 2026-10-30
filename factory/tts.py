@@ -113,12 +113,13 @@ class EdgeVoice:
         self.rate = vcfg.get("rate", "+0%")
         self.pitch = vcfg.get("pitch", "+0Hz")
 
-    async def _run(self, text: str):
+    async def _run(self, text: str, pitch: str | None = None, boundary: str = "WordBoundary"):
         import edge_tts
+        pitch = pitch or self.pitch
         try:
-            com = edge_tts.Communicate(text, self.voice, rate=self.rate, pitch=self.pitch, boundary="WordBoundary")
+            com = edge_tts.Communicate(text, self.voice, rate=self.rate, pitch=pitch, boundary=boundary)
         except TypeError:  # edge-tts < 7: word boundaries are the default
-            com = edge_tts.Communicate(text, self.voice, rate=self.rate, pitch=self.pitch)
+            com = edge_tts.Communicate(text, self.voice, rate=self.rate, pitch=pitch)
         audio, words = bytearray(), []
         async for ch in com.stream():
             if ch["type"] == "audio":
@@ -133,20 +134,30 @@ class EdgeVoice:
         import subprocess
         import time
         last = None
-        for attempt in range(4):
+        # attempts: the configured voice; the same after a pause; default pitch; sentence boundaries (a service that
+        # returns no audio for one combination usually answers another - the voice and rate never change)
+        plans = [(None, "WordBoundary"), (None, "WordBoundary"), ("+0Hz", "WordBoundary"), (None, "SentenceBoundary"),
+                 ("+0Hz", "SentenceBoundary"), (None, "WordBoundary")]
+        for attempt, (pitch, bnd) in enumerate(plans):
             try:
-                mp3, words = asyncio.run(self._run(text))
+                time.sleep(0.25)
+                mp3, words = asyncio.run(self._run(text, pitch, bnd))
+                if attempt:
+                    print(f"::warning::edge-tts: {text[:40]!r} voiced on attempt {attempt + 1} (pitch {pitch or self.pitch}, {bnd})")
                 if not mp3:
                     raise RuntimeError("no audio")
                 pcm = subprocess.run(["ffmpeg", "-v", "error", "-i", "pipe:0", "-f", "f32le", "-ac", "1", "-ar", str(SAMPLE_RATE), "pipe:1"],
                                      input=mp3, capture_output=True, check=True).stdout
                 audio = np.frombuffer(pcm, dtype=np.float32).copy()
                 words = [w for w in words if re.search(r"\w", w[0] or "")]
+                if bnd != "WordBoundary":  # sentence timings: words spread over their sentence
+                    words = [(w_, s0 + a_, s0 + b_) for st, s0, e0 in words for w_, a_, b_ in _proportional_words(st, e0 - s0)]
                 if not words:
                     words = _proportional_words(text, len(audio) / SAMPLE_RATE)
                 return audio, words
             except Exception as exc:  # noqa: BLE001 - network hiccups: retry
                 last = exc
+                print(f"edge-tts attempt {attempt + 1} failed for {text[:40]!r}: {exc}")
                 time.sleep(2 + 3 * attempt)
         raise RuntimeError(f"edge-tts failed for {text[:60]!r}: {last}")
 
