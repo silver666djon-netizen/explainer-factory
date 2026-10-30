@@ -44,7 +44,7 @@ const Tag: React.FC<{n: number; text: string; W: number; H: number}> = ({n, text
 	return (
 		<div
 			style={{
-				position: 'absolute', left: Math.round(W * 0.016), top: Math.round(portrait ? H * 0.012 : H * 0.022), opacity: a,
+				position: 'absolute', left: Math.round(W * 0.016), top: Math.round(portrait ? H * 0.952 : H * 0.022), opacity: a,
 				display: 'flex', alignItems: 'stretch', fontFamily: fontFam(BODY), fontSize: fs, letterSpacing: 0.5,
 				boxShadow: '0 3px 10px rgba(0,0,0,0.35)',
 			}}
@@ -302,8 +302,15 @@ const RouteView: React.FC<{s: any; W: number; H: number}> = ({s, W, H}) => {
 	const fs = Math.round(Math.min(W, H) * 0.045);
 	return (
 		<AbsoluteFill style={{background: PAL.paper}}>
-			<Img src={staticFile(s.desk)} style={{position: 'absolute', left: 0, top: 0, width: W, height: H, objectFit: 'cover', opacity: 0.18, filter: 'grayscale(1) contrast(1.2)'}} />
 			<svg width={W} height={H} style={{position: 'absolute', left: 0, top: 0}}>
+				{Array.from({length: 9}).map((_, i) => (
+					<path key={`m${i}`} d={`M ${(i + 0.5) * W / 9 - W * 0.03} 0 Q ${(i + 0.5) * W / 9 + W * 0.02} ${H / 2} ${(i + 0.5) * W / 9 - W * 0.03} ${H}`} fill="none" stroke="rgba(46,107,79,0.13)" strokeWidth={2} />
+				))}
+				{Array.from({length: 6}).map((_, i) => (
+					<path key={`p${i}`} d={`M 0 ${(i + 0.5) * H / 6} Q ${W / 2} ${(i + 0.5) * H / 6 - H * 0.03} ${W} ${(i + 0.5) * H / 6}`} fill="none" stroke="rgba(46,107,79,0.13)" strokeWidth={2} />
+				))}
+				<rect x={W * 0.02} y={H * 0.03} width={W * 0.96} height={H * 0.94} fill="none" stroke="rgba(30,27,24,0.35)" strokeWidth={3} />
+				<rect x={W * 0.028} y={H * 0.045} width={W * 0.944} height={H * 0.91} fill="none" stroke="rgba(30,27,24,0.2)" strokeWidth={1.5} />
 				<path d={d} fill="none" stroke="rgba(30,27,24,0.15)" strokeWidth={4} strokeDasharray="2 14" strokeLinecap="round" />
 				<mask id="route-reveal">
 					<path d={d} fill="none" stroke="#fff" strokeWidth={14} strokeDasharray={ev.strokeDasharray} strokeDashoffset={ev.strokeDashoffset} />
@@ -358,17 +365,17 @@ const ParallaxView: React.FC<{s: any; W: number; H: number; dur: number}> = ({s,
 	const p = interpolate(f / fps, [0, dur], [0, 1], {easing: Easing.inOut(Easing.sin)});
 	const [iw, ih] = s.size;
 	const sc = Math.max(W / iw, H / ih) * 1.12;
-	const fx = H > W ? 0.38 : 0.5;
-	const base = (k: number, dx: number) => ({
-		position: 'absolute' as const, width: iw * sc * k, height: ih * sc * k,
-		left: W * fx - iw * sc * k * fx + dx, top: (H - ih * sc * k) / 2,
-	});
-	const bgK = 1 + 0.02 * p;
-	const fgK = 1.0 + 0.07 * p;
+	const [ax, ay] = s.feet; // Larry's feet (fractions of the picture): both layers grow about them
+	const w0 = iw * sc,
+		h0 = ih * sc;
+	const left0 = W * (H > W ? 0.5 : 0.5) - w0 * (H > W ? ax : 0.5);
+	const top0 = (H - h0) / 2;
+	const origin = `${ax * 100}% ${ay * 100}%`;
+	const lay = {position: 'absolute' as const, left: left0, top: top0, width: w0, height: h0, transformOrigin: origin};
 	return (
 		<AbsoluteFill>
-			<Img src={staticFile(s.bg)} style={base(bgK, -W * 0.012 * p)} />
-			<Img src={staticFile(s.fg)} style={{...base(fgK, W * 0.022 * p), filter: 'drop-shadow(0 10px 18px rgba(0,0,0,0.28))'}} />
+			<Img src={staticFile(s.bg)} style={{...lay, transform: `scale(${1 + 0.012 * p}) translateX(${-0.004 * w0 * p}px)`}} />
+			<Img src={staticFile(s.fg)} style={{...lay, transform: `scale(${1 + 0.055 * p})`}} />
 		</AbsoluteFill>
 	);
 };
@@ -497,8 +504,8 @@ const InkWipeComp: React.FC<TransitionPresentationComponentProps<{W: number; H: 
 	const p = Easing.inOut(Easing.cubic)(presentationProgress);
 	const pts: string[] = [];
 	const edge: [number, number][] = [];
-	for (let y = -20; y <= H + 20; y += 24) {
-		const x = p * (W + 320) - 160 + noise2D('wipe', y / 70, 0) * 70 + (y / H) * 120 - 60;
+	for (let y = -20; y <= H + 20; y += 10) {
+		const x = p * (W + 320) - 160 + noise2D('wipe', y / 260, 0) * 34 + noise2D('wipe2', y / 40, 3) * 6 + (y / H) * 120 - 60;
 		edge.push([x, y]);
 	}
 	pts.push('0px -20px', ...edge.map(([x, y]) => `${x}px ${y}px`), `0px ${H + 20}px`);

@@ -65,7 +65,9 @@ def main(rel: str, pub: str) -> int:
     keep = 1 + int(np.argmax(stats[1:, cv2.CC_STAT_AREA])) if n > 1 else 0
     fg = (lab == keep).astype(np.uint8)
     fg = cv2.morphologyEx(fg, cv2.MORPH_CLOSE, np.ones((25, 25), np.uint8))
-    fg = cv2.dilate(fg, np.ones((5, 5), np.uint8))
+    fg = cv2.dilate(fg, np.ones((9, 9), np.uint8))
+    ys_, xs_ = np.nonzero(fg)
+    feet = [round(float(np.median(xs_[ys_ > np.percentile(ys_, 97)])) / fg.shape[1], 4), round(float(ys_.max()) / fg.shape[0], 4)]
     a = cv2.GaussianBlur(fg.astype(np.float32), (0, 0), 2.0)
     arr = np.array(c1)
     Image.fromarray(np.dstack([arr, (a * 255).astype(np.uint8)])).save(P / "reel" / "c1_fg.png")
@@ -76,7 +78,7 @@ def main(rel: str, pub: str) -> int:
     m3 = cv2.GaussianBlur(cv2.dilate(fg, np.ones((31, 31), np.uint8)).astype(np.float32), (0, 0), 6)[..., None]
     Image.fromarray((arr * (1 - m3) + bg_full * m3).astype(np.uint8)).save(P / "reel" / "c1_bg.jpg", quality=93)
     Image.fromarray((fg * 255).astype(np.uint8)).save(P / "reel" / "c1_mask.png")
-    print("parallax: foreground", round(float(fg.mean()) * 100, 1), "% of the picture, depth threshold", round(thr, 2))
+    print("parallax: feet", feet, "foreground", round(float(fg.mean()) * 100, 1), "% of the picture, depth threshold", round(thr, 2))
 
     o1, o1sz = img("o1", EP / "images" / "o1.png")
     b1, b1sz = img("b1", EP / "images" / "b1.png")
@@ -111,7 +113,7 @@ def main(rel: str, pub: str) -> int:
         # 06 parallax from one still (c1)
         a, b = win("c1")
         add("PARALLAX FROM ONE STILL · depth split", "parallax", round((b - a) * FPS), audio(f"c1_{kind}", a, b),
-            t0=a, fg="reel/c1_fg.png", bg="reel/c1_bg.jpg", size=[c1w, c1h], words=words("c1"))
+            t0=a, fg="reel/c1_fg.png", bg="reel/c1_bg.jpg", size=[c1w, c1h], feet=feet, words=words("c1"))
         # 07 evidence card on paper: noise wobble, ink texture, highlighter
         a, b = win("d3")
         add("PAPER, INK + NOISE WOBBLE · @remotion/noise", "evidence", round((b - a) * FPS), audio(f"d3_{kind}", a, b),
