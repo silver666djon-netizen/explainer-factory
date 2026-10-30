@@ -244,4 +244,6 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
 - Every render's narration (the voice track) is transcribed (faster-whisper medium.en) and diffed against the script
   after normalising numbers / money / years to words; any difference blocks the release (check: stt_diff). A
   transcription slip may only be waived in the episode's "stt_known" with its reason, after the voice's own phonemes
-  (tools/tts_scan.py: per-word G2P) confirm the word is spoken right.
+  (tools/tts_scan.py: per-word G2P) confirm the word is spoken right. Transcription is line by line (each beat's own
+  voice span), never one pass over the whole track (whisper carries words across lines). The published files are
+  checked the same way on their final audio before FINAL: tools/qc/stt_release.py (stt-release.yml) -> stt_diff.md.

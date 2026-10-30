@@ -73,6 +73,7 @@ def ordinal(n: int) -> str:
 
 SCALE = {"k": "thousand", "m": "million", "bn": "billion", "million": "million", "billion": "billion", "thousand": "thousand"}
 CUR = {"$": "dollar", "£": "pound", "€": "euro"}
+SYM = "qqsym"  # marks a currency word whisper wrote as a symbol ("$18"): its "dollars" may not have been spoken
 
 
 def words(text: str) -> list[str]:
@@ -87,7 +88,7 @@ def words(text: str) -> list[str]:
     def money(m):
         cur, num, scale = m.group(1), m.group(2), (m.group(3) or "").lower()
         s = number(num) + (" " + SCALE[scale] if scale else "")
-        return s + " " + CUR[cur]
+        return s + " " + SYM + CUR[cur]
     NUM = r"(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?"
     t = re.sub(r"([$£€])\s?(" + NUM + r")(?:\s?(bn|million|billion|thousand|k|m)\b)?", money, t, flags=re.I)
     t = re.sub(NUM, lambda m: number(m.group(0)), t)
@@ -105,10 +106,30 @@ def words(text: str) -> list[str]:
     return out
 
 
+def _digit_runs(script_words: list[str], heard: str) -> str:
+    """'Eight. Six. Four.' is read as three numbers; whisper may write them as one ('$864'). A heard digit string
+    whose digits are, one by one, consecutive words of the script is written back as those single digits."""
+    sw = " " + " ".join(script_words) + " "
+
+    def sub(m):
+        d = m.group(2)
+        if len(d) < 2:
+            return m.group(0)
+        spoken = " ".join(ONES[int(c)] for c in d)
+        return " " + spoken + " " if " " + spoken + " " in sw else m.group(0)
+    return re.sub(r"([$£€]?)(?<![\d.,])(\d{2,4})(?![\d.,]\d)", sub, heard)
+
+
 def diff(script: str, heard: str, known=()) -> list[str]:
     """known: [(script words, heard words)] - transcription slips already confirmed against the voice's phonemes
-    (episode "stt_known", each with its reason); everything else is a difference."""
-    a, b = words(script), words(heard)
+    (episode "stt_known", each with its reason); everything else is a difference.
+    A currency word that exists only because whisper wrote a symbol ("Total, $48" for "Total: forty-eight") is not a
+    difference; a currency word the script has and the voice drops still is."""
+    a = words(script)
+    a = [w[len(SYM):] if w.startswith(SYM) else w for w in a]
+    b0 = words(_digit_runs(a, heard))
+    sym = [w.startswith(SYM) for w in b0]
+    b = [w[len(SYM):] if w.startswith(SYM) else w for w in b0]
     kn = {(" ".join(words(k[0])), " ".join(words(k[1]))) for k in known}
     sm = difflib.SequenceMatcher(a=a, b=b, autojunk=False)
     out = []
@@ -119,9 +140,26 @@ def diff(script: str, heard: str, known=()) -> list[str]:
             continue  # split / merged compound
         if (" ".join(a[i1:i2]), " ".join(b[j1:j2])) in kn:
             continue
+        if op == "insert" and all(sym[j1:j2]):
+            continue  # "$" written by whisper, not a spoken "dollars"
         ctx = " ".join(a[max(0, i1 - 3):i1])
         out.append(f"{op}: script '{' '.join(a[i1:i2]) or '-'}' | heard '{' '.join(b[j1:j2]) or '-'}' (after '…{ctx}')")
     return out
+
+
+def check_lines(voice, sr: int, lines, texts: dict, known=(), tc=lambda t: f"{t:.1f}s", pad: float = 0.12):
+    """Each narration line (start, end, beat id) transcribed on its own and diffed against that beat's text.
+    Returns (failures, notes: one 'id: heard' per line)."""
+    fails, notes = [], []
+    for t0, t1, bid in lines:
+        text = texts.get(bid, "")
+        if not text.strip():
+            continue
+        i, j = max(0, int((t0 - pad) * sr)), min(len(voice), int((t1 + pad) * sr))
+        heard = transcribe(voice[i:j], sr)
+        notes.append(f"{tc(t0)} {bid}: {heard}")
+        fails += [f"{tc(t0)} {bid}: {d}" for d in diff(text, heard, known)]
+    return fails, notes
 
 
 _MODEL = None

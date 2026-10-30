@@ -1,0 +1,51 @@
+name: STT diff of a release
+# Klot r89 #7: the published videos' narration transcribed line by line and diffed against the script
+# (tools/qc/stt_release.py check). Spans come from patches/<tag>/stt_spans.json (stt_release.py spans, run locally).
+# Writes stt_diff.md / stt_diff.json into the release. Any difference fails this job and blocks the release.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "release tag, e.g. 0005-drip-pricing-r90"
+        required: true
+      episode:
+        required: true
+        default: "0005-drip-pricing"
+permissions:
+  contents: write
+jobs:
+  stt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-whisper-v1
+          restore-keys: kokoro-
+      - run: |
+          pip install -q torch --index-url https://download.pytorch.org/whl/cpu
+          pip install -q -r requirements.txt faster-whisper
+      - name: Download the videos
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/rel.sh download "${{ github.event.inputs.tag }}" rel "*.mp4"
+      - name: Transcribe + diff
+        id: stt
+        run: |
+          t="${{ github.event.inputs.tag }}"
+          python tools/qc/stt_release.py check "episodes/${{ github.event.inputs.episode }}" "patches/$t/stt_spans.json" rel stt_diff.md \
+            && echo "ok=1" >> "$GITHUB_OUTPUT" || echo "ok=0" >> "$GITHUB_OUTPUT"
+      - name: Publish the report
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -s stt_diff.md ] && tools/rel.sh upload "${{ github.event.inputs.tag }}" stt_diff.md stt_diff.json
+          [ "${{ steps.stt.outputs.ok }}" = "1" ]

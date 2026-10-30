@@ -478,15 +478,16 @@ def text_lint(beats) -> list[str]:
 
 def stt_diff(plan, beats) -> tuple[list[str], list[str]]:
     """Klot r89: the narration (voice track) transcribed with faster-whisper and diffed against the script, word by
-    word after normalising both (numbers / money / years to words). Any difference blocks the release."""
+    word after normalising both (numbers / money / years to words). Any difference blocks the release.
+    r90: transcribed line by line (each beat's own voice span), as the TTS scan does - one long pass let whisper
+    carry words across lines and drop or repeat them ("Three borders. Three stamps." heard "Three, three stamps")."""
     from .audio import SR
     from . import sttdiff
     v = plan.timeline.voice
     if not np.any(v):
         return [], ["(no narration audio in this build: transcribed in the CI build)"]
-    script = " ".join(str(b.get("text", "")) for b in beats or [])
-    heard = sttdiff.transcribe(v, SR)
-    return sttdiff.diff(script, heard, STT_KNOWN), [heard]
+    texts = {str(b.get("id", "")): str(b.get("text", "")) for b in beats or []}
+    return sttdiff.check_lines(v, SR, plan.timeline.voice_lines, texts, STT_KNOWN, _tc)
 
 
 STT_KNOWN: list = []  # the episode's "stt_known" (set by the build / release checks)

@@ -374,6 +374,7 @@ class Timeline:
         self.stings = np.zeros(self.n, dtype=np.float32)
         self.cues: list[tuple[float, str]] = []
         self.log: list[tuple[float, float, str]] = []  # (start, end, kind) of every sfx: QC sfx_sync reads it
+        self.voice_lines: list[tuple[float, float, str]] = []  # (start, end, beat id): one narration line (qc.stt_diff)
         self.voice_edits: list[tuple[float, str]] = []  # (time, what): every point where narration audio starts/ends
         self.align_end = False  # last music cue ends exactly on the last frame (music resolves on the end card)
 
@@ -408,8 +409,9 @@ class Timeline:
         if j > i:
             track[i:j] += clip[: j - i]
 
-    def add_voice(self, at: float, audio24k: np.ndarray, src_sr: int) -> None:
+    def add_voice(self, at: float, audio24k: np.ndarray, src_sr: int, tag: str = "") -> None:
         self._add(self.voice, at, to_sr(audio24k, src_sr) * db(self.cfg.get("narration_db", 0)))
+        self.voice_lines.append((at, at + len(audio24k) / src_sr, tag))
         self.voice_edits += [(at, "line start"), (at + len(audio24k) / src_sr, "line end")]
 
     HIT_KINDS = ("stamp", "kachunk", "hit", "thud", "cash", "ding", "chips", "whirr", "shutter", "snip")

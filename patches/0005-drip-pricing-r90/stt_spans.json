@@ -1,0 +1,798 @@
+{
+ "long": [
+  [
+   0.25,
+   3.375,
+   "o1",
+   "A concert ticket. Thirty dollars."
+  ],
+  [
+   3.555,
+   6.855,
+   "o2",
+   "Then the fees. Eight. Six. Four."
+  ],
+  [
+   7.385,
+   9.51,
+   "o3",
+   "Total: forty-eight."
+  ],
+  [
+   9.69,
+   12.99,
+   "o4",
+   "Larry is made up. The fees are not."
+  ],
+  [
+   13.17,
+   16.745,
+   "cf1",
+   "Case file number four. The fee at the end."
+  ],
+  [
+   16.925,
+   25.075,
+   "m1",
+   "Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee."
+  ],
+  [
+   25.255,
+   32.73,
+   "m1b",
+   "Last seen: one click before Pay. It never touches the price you see. It waits for the price you pay."
+  ],
+  [
+   33.91,
+   36.56,
+   "t1",
+   "Tuesday, eight-twelve p.m."
+  ],
+  [
+   36.74,
+   39.915,
+   "a1",
+   "Larry has a ticket in his basket."
+  ],
+  [
+   40.095,
+   44.695,
+   "a2",
+   "To see how the fees got there, we go back to 2015,"
+  ],
+  [
+   44.875,
+   49.025,
+   "a2b",
+   "to a company that tested them on its own customers."
+  ],
+  [
+   49.205,
+   54.08,
+   "a3",
+   "StubHub, the ticket resale site, was owned by eBay back then."
+  ],
+  [
+   54.26,
+   62.535,
+   "a4",
+   "For a couple of years before that summer, it showed every fee upfront. The price on the screen was the price you paid."
+  ],
+  [
+   62.715,
+   68.39,
+   "a5",
+   "Then, for twelve days in August 2015, it split its buyers in two."
+  ],
+  [
+   68.57,
+   76.12,
+   "a6",
+   "Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout."
+  ],
+  [
+   76.3,
+   82.6,
+   "a7",
+   "Same tickets. Same fees. The only thing that changed was the moment you saw them."
+  ],
+  [
+   82.78,
+   88.08,
+   "a8",
+   "The ones who met the fees late spent almost twenty-one percent more."
+  ],
+  [
+   88.26,
+   93.16,
+   "a9",
+   "They were fourteen point one percent more likely to buy at all."
+  ],
+  [
+   93.34,
+   98.29,
+   "a10",
+   "And the buyers among them picked seats about five percent pricier."
+  ],
+  [
+   98.47,
+   103.895,
+   "a11",
+   "A seat looks cheaper when its fees are still offstage, so you pick a better one."
+  ],
+  [
+   104.075,
+   106.5,
+   "a12",
+   "Then the fees walk on."
+  ],
+  [
+   110.28,
+   114.405,
+   "a13",
+   "Twelve days of science. Then the science went live."
+  ],
+  [
+   114.585,
+   120.26,
+   "a14",
+   "On September the first, the whole site switched. Fees at the end, for everyone."
+  ],
+  [
+   121.44,
+   123.915,
+   "t2",
+   "Wednesday, ten a.m."
+  ],
+  [
+   124.095,
+   129.97,
+   "b1",
+   "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket."
+  ],
+  [
+   130.15,
+   134.525,
+   "b2",
+   "That's thirty-seven and a half percent of what he paid."
+  ],
+  [
+   134.705,
+   137.105,
+   "b3a",
+   "Is that unusual?"
+  ],
+  [
+   137.285,
+   146.06,
+   "b3",
+   "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster."
+  ],
+  [
+   146.24,
+   152.715,
+   "b4",
+   "They allege the fees run from twenty-four to forty-four percent of the total price."
+  ],
+  [
+   152.895,
+   159.27,
+   "b5",
+   "And that fans paid over sixteen point four billion dollars in mandatory fees."
+  ],
+  [
+   159.45,
+   164.875,
+   "b6",
+   "Larry's thirty-seven and a half percent sits right inside that range."
+  ],
+  [
+   165.055,
+   171.53,
+   "b7",
+   "His thirty-dollar ticket grew by sixty percent between the first screen and the last."
+  ],
+  [
+   171.71,
+   175.335,
+   "b8",
+   "Larry, it turns out, is perfectly average."
+  ],
+  [
+   175.515,
+   182.09,
+   "b9",
+   "In September 2026, a judge refused to throw the case out. It goes on."
+  ],
+  [
+   182.27,
+   186.945,
+   "b9b",
+   "Until a court decides, every word of it is an allegation."
+  ],
+  [
+   188.125,
+   191.125,
+   "t3",
+   "Thursday, eleven-forty p.m."
+  ],
+  [
+   191.305,
+   196.805,
+   "c1",
+   "Larry needs a hotel for the concert. Downtown. Nowhere near a beach."
+  ],
+  [
+   196.985,
+   204.26,
+   "m2",
+   "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee."
+  ],
+  [
+   204.44,
+   208.44,
+   "m2b",
+   "Known associates: a pool you will never swim in."
+  ],
+  [
+   208.62,
+   214.62,
+   "c2",
+   "In 2019, the Attorney General for Washington, D.C., sued Marriott."
+  ],
+  [
+   214.8,
+   221.35,
+   "c3",
+   "The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:"
+  ],
+  [
+   221.53,
+   225.655,
+   "c4",
+   "from nine to ninety-five dollars, per room, per day."
+  ],
+  [
+   225.835,
+   232.335,
+   "c5",
+   "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees."
+  ],
+  [
+   233.015,
+   239.99,
+   "c6",
+   "From customers in D.C. alone, the Attorney General says, that came to millions of dollars."
+  ],
+  [
+   240.17,
+   244.87,
+   "c7",
+   "Resort fees aren't taxes. They just like to sit next to them."
+  ],
+  [
+   245.05,
+   251.9,
+   "c8",
+   "In 2023, Marriott agreed with Texas to show the total price most prominently."
+  ],
+  [
+   252.08,
+   259.88,
+   "n1",
+   "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge."
+  ],
+  [
+   260.06,
+   264.96,
+   "n2",
+   "The total price was the same. It was just served in pieces."
+  ],
+  [
+   265.14,
+   269.565,
+   "n3",
+   "People remembered paying less in total. And they bought more."
+  ],
+  [
+   269.745,
+   275.07,
+   "n4",
+   "Your brain files the first number. Everything after it is small print."
+  ],
+  [
+   275.25,
+   281.275,
+   "sub",
+   "If you like catching prices in the act, subscribe. The Inspector has more files."
+  ],
+  [
+   282.455,
+   285.23,
+   "t4",
+   "In defence of the accused."
+  ],
+  [
+   285.41,
+   288.885,
+   "d1",
+   "One: StubHub says it tried honesty."
+  ],
+  [
+   289.065,
+   296.715,
+   "d2",
+   "In 2014, it says, it moved to all-in prices, and lost customers to rivals who kept their fees."
+  ],
+  [
+   296.895,
+   300.395,
+   "d2b",
+   "It went back in the fall of 2015."
+  ],
+  [
+   300.575,
+   310.6,
+   "d3",
+   "Two: its own economists saw it differently. Their finding on the switch to late fees: market-expanding, rather than pure business-stealing."
+  ],
+  [
+   310.78,
+   317.83,
+   "d4",
+   "In plain English, hidden fees didn't just win buyers from rivals. They made people spend more."
+  ],
+  [
+   318.01,
+   323.335,
+   "d5",
+   "Three: fees pay for real things. Card payments, staff, the venue."
+  ],
+  [
+   323.515,
+   329.615,
+   "d6",
+   "America's new rule bans no fee at all. It only wants the total, upfront."
+  ],
+  [
+   329.795,
+   333.045,
+   "d7",
+   "The fee may be fair. Hiding it isn't."
+  ],
+  [
+   334.225,
+   336.65,
+   "t5",
+   "Friday, nine a.m."
+  ],
+  [
+   336.83,
+   341.505,
+   "l1",
+   "Larry's ticket goes on a trip. Three borders. Three stamps."
+  ],
+  [
+   341.685,
+   353.085,
+   "l2",
+   "Border one: America. Since May 2025, ticket sellers and short stays, from hotels to vacation rentals, must show the total price upfront."
+  ],
+  [
+   353.265,
+   359.84,
+   "l3",
+   "In April 2026, StubHub agreed to pay ten million dollars back to buyers,"
+  ],
+  [
+   360.02,
+   362.745,
+   "l3b",
+   "over fees it showed too late."
+  ],
+  [
+   362.925,
+   370.7,
+   "l4",
+   "America has done this before. In 1958, a law put a sticker on the window of every new car:"
+  ],
+  [
+   370.88,
+   375.505,
+   "l5",
+   "the price, every option, the delivery charge, and the total."
+  ],
+  [
+   375.685,
+   380.785,
+   "l6",
+   "Cars got the total sixty-seven years before concert tickets did."
+  ],
+  [
+   380.965,
+   388.69,
+   "l7",
+   "Border two: Britain. Since April 2025, the price must include every fee you can't avoid."
+  ],
+  [
+   388.87,
+   395.845,
+   "l8",
+   "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers."
+  ],
+  [
+   396.025,
+   400.05,
+   "l9",
+   "It paid a four point two million pound fine,"
+  ],
+  [
+   400.23,
+   405.08,
+   "l9b",
+   "and over seven hundred and sixty thousand pounds in refunds."
+  ],
+  [
+   405.26,
+   409.21,
+   "l10",
+   "In June, StubHub's British arm was fined too."
+  ],
+  [
+   409.39,
+   412.84,
+   "l11",
+   "Three pounds. Very expensive pounds."
+  ],
+  [
+   413.02,
+   419.745,
+   "l12",
+   "Border three: the European Union. The total price, taxes included, before you pay."
+  ],
+  [
+   419.925,
+   425.825,
+   "l13",
+   "And any extra charge needs your clear yes. A pre-ticked box is not a yes."
+  ],
+  [
+   426.005,
+   430.705,
+   "l14",
+   "One ticket. Three stamps. One message: show the total."
+  ],
+  [
+   431.885,
+   434.31,
+   "t6",
+   "Saturday, ten a.m."
+  ],
+  [
+   434.49,
+   439.49,
+   "x1",
+   "Three checks before you pay. One. Look for the all-in switch."
+  ],
+  [
+   439.67,
+   448.095,
+   "x2",
+   "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat."
+  ],
+  [
+   448.275,
+   454.95,
+   "x3",
+   "Two. Go to the last screen before you decide. The real price lives one click before Pay."
+  ],
+  [
+   455.13,
+   463.88,
+   "x4",
+   "Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen."
+  ],
+  [
+   464.06,
+   468.635,
+   "x5",
+   "The cheapest ticket is the one with the smallest last number."
+  ],
+  [
+   469.815,
+   475.015,
+   "z0",
+   "Case closed. Larry paid forty-eight dollars for a thirty-dollar ticket."
+  ],
+  [
+   475.195,
+   483.82,
+   "z0b",
+   "He went to the concert anyway. The band was worth thirty. The checkout was worth nothing. Now he knows where the eighteen went."
+  ],
+  [
+   484.0,
+   492.35,
+   "z1",
+   "The verdict. Guilty: the checkout fee and its cousin, the resort fee. Accomplice: the first number on the screen."
+  ],
+  [
+   492.53,
+   498.63,
+   "z4",
+   "Next case: the screen that asks how much you'd like to tip, before you've had your coffee."
+  ],
+  [
+   498.81,
+   502.41,
+   "z5",
+   "Subscribe, so the next case file finds you."
+  ]
+ ],
+ "s1": [
+  [
+   0.05,
+   3.175,
+   "s1_0",
+   "A concert ticket. Thirty dollars."
+  ],
+  [
+   3.355,
+   6.655,
+   "s1_1",
+   "Then the fees. Eight. Six. Four."
+  ],
+  [
+   7.185,
+   9.31,
+   "s1_2",
+   "Total: forty-eight."
+  ],
+  [
+   9.49,
+   17.64,
+   "s1_3",
+   "Suspect number one. Name: the checkout fee. Aliases: service fee, processing fee, convenience fee."
+  ],
+  [
+   17.82,
+   23.245,
+   "s1_4",
+   "Larry's thirty-seven and a half percent sits right inside that range."
+  ],
+  [
+   23.425,
+   26.887,
+   "s1_5",
+   "So before you pay thirty, ask what it costs."
+  ]
+ ],
+ "s2": [
+  [
+   0.05,
+   6.973,
+   "s2_0",
+   "StubHub showed every fee upfront. Then, for twelve days in August 2015, it split its buyers in two."
+  ],
+  [
+   7.153,
+   14.703,
+   "s2_1",
+   "Half kept the full price on screen. The other half saw the ticket alone, with the fees waiting at checkout."
+  ],
+  [
+   14.883,
+   20.183,
+   "s2_2",
+   "The ones who met the fees late spent almost twenty-one percent more."
+  ],
+  [
+   20.363,
+   25.263,
+   "s2_3",
+   "They were fourteen point one percent more likely to buy at all."
+  ],
+  [
+   25.443,
+   30.393,
+   "s2_4",
+   "And the buyers among them picked seats about five percent pricier."
+  ],
+  [
+   30.573,
+   32.998,
+   "s2_5",
+   "Then the fees walk on."
+  ],
+  [
+   33.778,
+   39.453,
+   "s2_6",
+   "On September the first, the whole site switched. Fees at the end, for everyone."
+  ]
+ ],
+ "s3": [
+  [
+   0.05,
+   5.925,
+   "s3_0",
+   "Larry reads his receipt. Eighteen dollars of fees on a forty-eight-dollar ticket."
+  ],
+  [
+   6.105,
+   10.48,
+   "s3_1",
+   "That's thirty-seven and a half percent of what he paid."
+  ],
+  [
+   10.66,
+   16.429,
+   "s3_2",
+   "In September 2025, the Federal Trade Commission and seven states sued Live Nation and Ticketmaster."
+  ],
+  [
+   16.609,
+   23.084,
+   "s3_3",
+   "They allege the fees run from twenty-four to forty-four percent of the total price."
+  ],
+  [
+   23.264,
+   27.88,
+   "s3_4",
+   "And that fans paid over sixteen point four billion dollars in fees."
+  ],
+  [
+   28.06,
+   34.635,
+   "s3_5",
+   "In September 2026, a judge refused to throw the case out. It goes on."
+  ],
+  [
+   34.815,
+   40.24,
+   "s3_6",
+   "Larry's thirty-seven and a half percent sits right inside that range."
+  ]
+ ],
+ "s4": [
+  [
+   0.05,
+   5.55,
+   "s4_0",
+   "Larry needs a hotel for the concert. Downtown. Nowhere near a beach."
+  ],
+  [
+   5.73,
+   13.005,
+   "s4_1",
+   "Suspect number two. Name: the resort fee. Aliases: amenity fee, destination fee."
+  ],
+  [
+   13.185,
+   19.185,
+   "s4_2",
+   "In 2019, the Attorney General for Washington, D.C., sued Marriott."
+  ],
+  [
+   19.365,
+   25.915,
+   "s4_3",
+   "The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees:"
+  ],
+  [
+   26.095,
+   30.22,
+   "s4_4",
+   "from nine to ninety-five dollars, per room, per day."
+  ],
+  [
+   30.4,
+   36.9,
+   "s4_5",
+   "Near the end of booking, the fee sat under a heading that sounded official: Taxes and Fees."
+  ],
+  [
+   37.58,
+   42.28,
+   "s4_6",
+   "Resort fees aren't taxes. They just like to sit next to them."
+  ]
+ ],
+ "s5": [
+  [
+   0.05,
+   1.973,
+   "s5_0",
+   "Thirty dollars. Then the fees."
+  ],
+  [
+   2.153,
+   9.953,
+   "s5_1",
+   "Why does it work? In 1998, three marketing researchers split prices into a base and a surcharge."
+  ],
+  [
+   10.133,
+   15.033,
+   "s5_2",
+   "The total price was the same. It was just served in pieces."
+  ],
+  [
+   15.213,
+   19.638,
+   "s5_3",
+   "People remembered paying less in total. And they bought more."
+  ],
+  [
+   19.818,
+   25.143,
+   "s5_4",
+   "Your brain files the first number. Everything after it is small print."
+  ]
+ ],
+ "s6": [
+  [
+   0.05,
+   7.025,
+   "s6_0",
+   "A driving-school group hid a three-pound booking fee charged to over eighty thousand learner drivers."
+  ],
+  [
+   7.205,
+   11.23,
+   "s6_1",
+   "It paid a four point two million pound fine,"
+  ],
+  [
+   11.41,
+   19.185,
+   "s6_2",
+   "America has done this before. In 1958, a law put a sticker on the window of every new car:"
+  ],
+  [
+   19.365,
+   23.99,
+   "s6_3",
+   "the price, every option, the delivery charge, and the total."
+  ],
+  [
+   24.17,
+   29.27,
+   "s6_4",
+   "Cars got the total sixty-seven years before concert tickets did."
+  ]
+ ],
+ "s7": [
+  [
+   0.05,
+   5.05,
+   "s7_0",
+   "Three checks before you pay. One. Look for the all-in switch."
+  ],
+  [
+   5.23,
+   13.655,
+   "s7_1",
+   "Some ticket sites can show prices with fees included. Turn it on before you browse, not after you've fallen for a seat."
+  ],
+  [
+   13.835,
+   20.51,
+   "s7_2",
+   "Two. Go to the last screen before you decide. The real price lives one click before Pay."
+  ],
+  [
+   20.69,
+   29.44,
+   "s7_3",
+   "Three. Compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen."
+  ],
+  [
+   29.62,
+   34.195,
+   "s7_4",
+   "The cheapest ticket is the one with the smallest last number."
+  ]
+ ]
+}

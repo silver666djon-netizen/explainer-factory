@@ -870,7 +870,7 @@ def build_plan(beats, voiced, images, cfg, size, kind, beat_lookup, extra_pause:
             for rt in shot.reveal_times():
                 plan.timeline.add_sfx(shot_start + rt, "tick", seed=i)
 
-        plan.timeline.add_voice(start, v["audio"], v["sr"])
+        plan.timeline.add_voice(start, v["audio"], v["sr"], str(beat.get("id", "")))
         if beat.get("cta"):  # retro SUBSCRIBE button: pops in, gets clicked, bell rings
             c = beat["cta"] if isinstance(beat["cta"], dict) else {}
             appear = start + _timed(c, v["words"], 0.3)
