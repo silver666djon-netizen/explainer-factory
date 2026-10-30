@@ -269,8 +269,10 @@ const handTip = (sh: any, t: number, toScreen: (b: Pt) => Pt, FW: number, FH: nu
 			}
 			return toScreen(markTip(g[g.length - 1], 1));
 		};
-		let kind = g[0].penKind || 'red';
-		const cur = g.find((m) => m.at <= t && t <= m.at + m.dur + 0.35) || g[g.length - 1];
+		// ink colour = pen colour: the hand of the mark being written (r90 kept the first mark's pen for a whole chain,
+		// so a red ring after a black rule was drawn with the graphite pencil)
+		const cur = [...g].reverse().find((m) => m.at - 0.05 <= t) || g[0];
+		let kind = cur.penKind || 'red';
 		if (cur.kind === 'circle') kind = kind + '@ring'; // R37: rings - the hand turned further, off the ring it has drawn
 		const enter = 0.28,
 			leave = 0.32;
