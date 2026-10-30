@@ -134,13 +134,12 @@ class EdgeVoice:
         import subprocess
         import time
         last = None
-        # attempts: the configured voice; the same after a pause; default pitch; sentence boundaries (a service that
-        # returns no audio for one combination usually answers another - the voice and rate never change)
-        plans = [(None, "WordBoundary"), (None, "WordBoundary"), ("+0Hz", "WordBoundary"), (None, "SentenceBoundary"),
-                 ("+0Hz", "SentenceBoundary"), (None, "WordBoundary")]
+        # attempts: the configured voice, retried with growing pauses; last, sentence boundaries (words spread)
+        # (the pitch never changes: every line must sound like the same narrator)
+        plans = [(None, "WordBoundary")] * 9 + [(None, "SentenceBoundary")] * 3
         for attempt, (pitch, bnd) in enumerate(plans):
             try:
-                time.sleep(0.25)
+                time.sleep(0.8)  # the free service drops requests that come too fast
                 mp3, words = asyncio.run(self._run(text, pitch, bnd))
                 if attempt:
                     print(f"::warning::edge-tts: {text[:40]!r} voiced on attempt {attempt + 1} (pitch {pitch or self.pitch}, {bnd})")
@@ -158,7 +157,7 @@ class EdgeVoice:
             except Exception as exc:  # noqa: BLE001 - network hiccups: retry
                 last = exc
                 print(f"edge-tts attempt {attempt + 1} failed for {text[:40]!r}: {exc}")
-                time.sleep(2 + 3 * attempt)
+                time.sleep(min(30, 3 + 4 * attempt))
         raise RuntimeError(f"edge-tts failed for {text[:60]!r}: {last}")
 
 
