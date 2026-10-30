@@ -464,6 +464,8 @@ def export_shot(sh, cfg, size):
                 kind = D.pen_for(m)
                 if kind not in o["hands"]:
                     o["hands"][kind] = hand_sprite(kind, int(Hh * D.HAND_HEIGHT * e["handScale"]))
+                if m.get("type") == "circle" and kind + "@ring" not in o["hands"]:  # R37: rings - the hand turned further
+                    o["hands"][kind + "@ring"] = hand_sprite(f"{kind}@{D.HAND_ROT_RING:g}", int(Hh * D.HAND_HEIGHT * e["handScale"]))
         return o
     if isinstance(sh, StatShot):
         lab = sh.label
@@ -604,7 +606,8 @@ def main(rel: str, out: str) -> int:
         "beat2_long": ("long", "long", [beat_window(L, "b2"), beat_window(L, "b6")]),
         "beat3_long": ("long", "long", [beat_window(L, "x5"), beat_window(L, "l4")]),
         "beat1_short": ("s1", "s1", [ts(0.0, plans["s1"].beat_starts["s1_3"])]),
-        "beat2_short": ("s3", "s3", [beat_window(plans["s3"], "s3_1"), beat_window(plans["s3"], "s3_6")]),
+        # the chart from s1 (s1_4): in s3 it follows Short-only lines whose r90 timings are not in timings.json
+        "beat2_short": [("s3", "s3", [beat_window(plans["s3"], "s3_1")], 0.0), ("s1", "s1", [beat_window(plans["s1"], "s1_4")], 0.0)],
         "beat3_short": (None, None, None),
     }
     xs0, xs1 = beat_window(plans["x5short"], "x5")

@@ -269,7 +269,9 @@ const handTip = (sh: any, t: number, toScreen: (b: Pt) => Pt, FW: number, FH: nu
 			}
 			return toScreen(markTip(g[g.length - 1], 1));
 		};
-		const kind = g[0].penKind || 'red';
+		let kind = g[0].penKind || 'red';
+		const cur = g.find((m) => m.at <= t && t <= m.at + m.dur + 0.35) || g[g.length - 1];
+		if (cur.kind === 'circle') kind = kind + '@ring'; // R37: rings - the hand turned further, off the ring it has drawn
 		const enter = 0.28,
 			leave = 0.32;
 		const off: Pt = [FW * 1.35, FH * 1.05];
