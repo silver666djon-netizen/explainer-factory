@@ -1,6 +1,7 @@
 name: STT diff of a release
 # Klot r89 #7: the published videos' narration transcribed line by line and diffed against the script
-# (tools/qc/stt_release.py check). Spans come from patches/<tag>/stt_spans.json (stt_release.py spans, run locally).
+# (tools/qc/stt_release.py). The line spans are rebuilt here from the release's timings.json with the real voice
+# (Short-only lines are not in timings.json), then every line of every video is transcribed on its own.
 # Writes stt_diff.md / stt_diff.json into the release. Any difference fails this job and blocks the release.
 on:
   workflow_dispatch:
@@ -32,20 +33,29 @@ jobs:
       - run: |
           pip install -q torch --index-url https://download.pytorch.org/whl/cpu
           pip install -q -r requirements.txt faster-whisper
-      - name: Download the videos
+      - name: Download the videos, timings, storyboard frames and archive media
         env:
           GH_TOKEN: ${{ github.token }}
-        run: tools/rel.sh download "${{ github.event.inputs.tag }}" rel "*.mp4"
+        run: |
+          ep="${{ github.event.inputs.episode }}"
+          tools/rel.sh download "${{ github.event.inputs.tag }}" rel "*.mp4" "timings.json"
+          mkdir -p ".cache/images/$ep" assets/archive
+          tools/rel.sh download "frames-$ep" ".cache/images/$ep" "*.png" || true
+          gh release download archive -D assets/archive --clobber || true
+      - name: Line spans (real plan, real voice)
+        env:
+          STT_REAL_VOICE: "1"
+        run: python tools/qc/stt_release.py spans "episodes/${{ github.event.inputs.episode }}" rel/timings.json stt_spans.json
       - name: Transcribe + diff
         id: stt
         run: |
           t="${{ github.event.inputs.tag }}"
-          python tools/qc/stt_release.py check "episodes/${{ github.event.inputs.episode }}" "patches/$t/stt_spans.json" rel stt_diff.md \
+          python tools/qc/stt_release.py check "episodes/${{ github.event.inputs.episode }}" stt_spans.json rel stt_diff.md \
             && echo "ok=1" >> "$GITHUB_OUTPUT" || echo "ok=0" >> "$GITHUB_OUTPUT"
       - name: Publish the report
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          [ -s stt_diff.md ] && tools/rel.sh upload "${{ github.event.inputs.tag }}" stt_diff.md stt_diff.json
+          [ -s stt_diff.md ] && tools/rel.sh upload "${{ github.event.inputs.tag }}" stt_diff.md stt_diff.json stt_spans.json
           [ "${{ steps.stt.outputs.ok }}" = "1" ]

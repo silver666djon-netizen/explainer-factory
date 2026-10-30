@@ -80,7 +80,7 @@ def words(text: str) -> list[str]:
     t = text.replace("’", "'").replace("—", " ").replace("–", " ")
     t = re.sub(r"(\d)\s+\.(\d)", r"\1.\2", t)  # whisper's "14 .1"
     t = re.sub(r"(\d)\s+,(\d{3})", r"\1,\2", t)  # whisper's "80 ,000"
-    t = re.sub(r"\b(\d{1,2})[.:](\d{2})\s?(a\.?m\.?|p\.?m\.?)", lambda m: f"{_lt100(int(m.group(1)))} {_lt100(int(m.group(2)))} "
+    t = re.sub(r"\b(\d{1,2})[.:]?(\d{2})\s?(a\.?m\.?|p\.?m\.?)", lambda m: f"{_lt100(int(m.group(1)))} {_lt100(int(m.group(2)))} "
                f"{m.group(3).replace('.', '')}", t, flags=re.I)  # times: "11.40pm"
     t = re.sub(r"\b(\d{1,2})(st|nd|rd|th)\b", lambda m: ordinal(int(m.group(1))), t)
     t = re.sub(r"(?<=\d)\s*%", " percent", t)

@@ -31,9 +31,17 @@ def spans(ep_dir: str, tj: str, out: str) -> int:
     def big(beats, vb, images, cfg_, size, kind, lookup, *r):
         return _bp(beats, vb, images, cfg_, (1920, 1080) if kind == "long" else (1080, 1920), kind, lookup, *r)
     MA.build_plan = big
+    if os.environ.get("STT_REAL_VOICE"):  # CI: lines missing from timings.json (Short-only lines) get the real voice,
+        from factory.tts import make_voice  # so their spans are the rendered ones, not estimates
+        MA.make_voice = lambda cfg, offline, extra=None: make_voice(cfg, False, extra)
+        os.environ.setdefault("MARK_AUDIT_ALLOW_PLACEHOLDERS", "1")
     os.chdir(ROOT)
     ep = load_episode(ep_dir)
     cfg = load_config(ep.get("config"))
+    for sh in ep.get("shorts") or []:  # as the build does: the hook card is the Short's first beat on screen
+        if sh.get("hook"):
+            sh["beats"][0]["on_screen"] = sh["hook"]
+            sh["beats"][0]["_hook"] = True
     beats = {"long": ep["beats"], **{sh["id"]: sh["beats"] for sh in ep.get("shorts") or []}}
     res = {}
     for name, plan in MA.build(ep, cfg, json.load(open(tj)), True):

@@ -857,6 +857,11 @@ STT_KNOWN = [
     {"script": "rivals", "heard": "rifles", "why": "d4 'rivals' = /ɹˈIvᵊlz/ (rye-vulz)"},
     {"script": "and", "heard": "in", "why": "l2 'and' = /and/ (weak form before 'short')"},
     {"script": "hid", "heard": "hit", "why": "l8 'hid' = /hˈɪd/"},
+    # r90, published audio (music under the voice); the voice-only scan heard these words right
+    {"script": "D.C.", "heard": "Desi", "why": "c2 / s4_2 'D.C.' = /dˌiːsˈiː/ (dee-see); voice-only scan: 'D.C.'"},
+    {"script": "charged", "heard": "charge", "why": "c3 'charged' = /ʧˈɑːʤd/ (final d before 'these'); voice-only scan: 'charged'"},
+    {"script": "over fees it showed", "heard": "overfees its show", "why": "l3b 'it showed' = /ɪt ʃˈQd/; voice-only scan: 'it showed'"},
+    {"script": "all-in", "heard": "Orleans", "why": "x1 / s7_0 'all-in' = /ˈɔːlˌɪn/; long x1 and voice-only scan: 'all-in'"},
 ]
 
 ep = {
