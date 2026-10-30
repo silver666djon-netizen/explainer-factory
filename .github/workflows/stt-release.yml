@@ -45,12 +45,15 @@ jobs:
       - name: Line spans (real plan, real voice)
         env:
           STT_REAL_VOICE: "1"
-        run: python tools/qc/stt_release.py spans "episodes/${{ github.event.inputs.episode }}" rel/timings.json stt_spans.json
+        run: |
+          set -o pipefail
+          python tools/qc/stt_release.py spans "episodes/${{ github.event.inputs.episode }}" rel/timings.json stt_spans.json 2>&1 | tee spans.log \
+            || { tail -n 25 spans.log | python3 -c 'import sys; print("::error title=spans::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
       - name: Transcribe + diff
         id: stt
         run: |
           t="${{ github.event.inputs.tag }}"
-          python tools/qc/stt_release.py check "episodes/${{ github.event.inputs.episode }}" stt_spans.json rel stt_diff.md \
+          python tools/qc/stt_release.py check "episodes/${{ github.event.inputs.episode }}" stt_spans.json rel stt_diff.md 2> check.log \
             && echo "ok=1" >> "$GITHUB_OUTPUT" || echo "ok=0" >> "$GITHUB_OUTPUT"
       - name: Publish the report
         if: always()
@@ -58,4 +61,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           [ -s stt_diff.md ] && tools/rel.sh upload "${{ github.event.inputs.tag }}" stt_diff.md stt_diff.json stt_spans.json
+          [ -s check.log ] && tail -n 25 check.log | python3 -c 'import sys; t=sys.stdin.read()[-4000:]; t and print("::warning title=check stderr::" + t.replace("%","%25").replace("\n","%0A"))'
           [ "${{ steps.stt.outputs.ok }}" = "1" ]
