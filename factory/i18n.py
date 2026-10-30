@@ -32,7 +32,7 @@ UI = {
         "NEXT CASE  >": "СЛЕДУЮЩЕЕ ДЕЛО  >",
         "SUBSCRIBE": "ПОДПИСАТЬСЯ",
         "SUBSCRIBED": "ВЫ ПОДПИСАНЫ",
-        "ALLEGED": "ПО ВЕРСИИ ИСТЦА",
+        "ALLEGED": "НЕ ДОКАЗАНО",  # short: it sits beside the source plate (Shorts band)
         "SUSPECT No.": "ПОДОЗРЕВАЕМЫЙ №",
         "NAME": "ИМЯ",
         "ALIAS": "ОН ЖЕ",
@@ -70,7 +70,8 @@ NUM_WORDS = {
 }
 
 ANCHOR_KEYS = ("on", "word", "label_on", "sting_on", "click_on", "open_stamp_on", "until_on", "circle_on", "stamp_on",
-               "push_on", "hook_on")
+               "push_on", "hook_on", "back_on")
+ANCHOR_IN = {"clip_sync": ("from", "to")}  # words inside these dicts are anchors too
 ANCHOR_LISTS = ("type_on",)
 TEXT_KEYS = {"text", "label", "caption", "caption_short", "label_short", "title", "headline", "body", "highlight", "kicker", "source", "name", "alias",
              "tag", "stamp", "tagline", "newsreel", "prefix", "suffix", "quote", "open_stamp", "amount", "footnote"}
@@ -141,6 +142,12 @@ def apply(ep: dict, ep_dir: str | Path, code: str) -> dict:
                     for a, b in zip(x, o[k]):
                         if not _in_text(b, narration):
                             missing.append(f"anchor  {w}: {a!r} -> {b!r} not in the translated narration")
+                elif k in ANCHOR_IN and isinstance(x, dict):
+                    for kk in ANCHOR_IN[k]:
+                        if isinstance(x.get(kk), str):
+                            x[kk] = anchors.get(x[kk], shared_anchors.get(x[kk], x[kk]))
+                            if not _in_text(x[kk], narration):
+                                missing.append(f"anchor  {w}.{kk}: -> {x[kk]!r} not in the translated narration")
                 elif k == "image_file" and isinstance(x, str):
                     o[k] = assets.get(x, x)
                 elif k == "note" and ctx == "chart" and isinstance(x, str):
@@ -157,11 +164,13 @@ def apply(ep: dict, ep_dir: str | Path, code: str) -> dict:
             for n, it in enumerate(o):
                 walk(it, f"{where}[{n}]", anchors, narration, ctx)
 
-    for beat in ep["beats"]:
-        bt = (tr.get("beats") or {}).get(beat["id"])
+    by_text = {b["text"]: b["id"] for b in ep["beats"]}  # Short lines that repeat a long line share its translation
+
+    def do_beat(beat):
+        bt = (tr.get("beats") or {}).get(beat["id"]) or (tr.get("beats") or {}).get(by_text.get(beat["text"], ""))
         if not bt or not str(bt.get("text", "")).strip():
             missing.append(f"narration  {beat['id']}: {beat['text']!r}")
-            continue
+            return
         beat["text"] = bt["text"]
         beat["_lang"] = code  # captions: word-for-word timing of the new voice (tts.caption_words)
         sec = beat.get("section")
@@ -195,10 +204,18 @@ def apply(ep: dict, ep_dir: str | Path, code: str) -> dict:
         doc = vis.get("doc") if isinstance(vis.get("doc"), dict) else None
         if doc and doc.get("highlight") and doc["highlight"] not in doc.get("body", ""):
             missing.append(f"highlight  {beat['id']}: {doc['highlight']!r} is not a part of the translated body")
+
+    for beat in ep["beats"]:
+        do_beat(beat)
+    for sh in ep.get("shorts") or []:  # Shorts are translated too (Klot r90 RU review: long + all Shorts)
+        for beat in sh["beats"]:
+            do_beat(beat)
+        for k in ("hook", "title"):
+            if isinstance(sh.get(k), str):
+                sh[k] = tstr(sh[k], f"{sh['id']}.{k}")
     for k in ("title", "description"):
         if tr.get(k):
             ep[k] = tr[k]
-    ep["shorts"] = []  # language versions: long video only
     ep["lang"] = code
     if tr.get("voice"):
         ep["_voice"] = tr["voice"]

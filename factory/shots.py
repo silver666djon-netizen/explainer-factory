@@ -867,8 +867,14 @@ class StatShot(Shot):
 
     def _num_img(self, txt: str) -> np.ndarray:
         if txt not in self.cache:
-            fnt = font(self.head, int(self.H * (0.26 if self.W > self.H else 0.14)))
-            self.cache[txt] = text_block([txt], fnt, fill=self.pal["red"], stroke=max(4, self.H // 160), stroke_fill=self.pal["ink"])
+            size = int(self.H * (0.26 if self.W > self.H else 0.14))
+            for _ in range(12):  # a longer (translated) number line shrinks to fit 90 % of the width
+                fnt = font(self.head, size)
+                im = text_block([txt], fnt, fill=self.pal["red"], stroke=max(4, self.H // 160), stroke_fill=self.pal["ink"])
+                if im.shape[1] <= self.W * 0.9:
+                    break
+                size = int(size * self.W * 0.88 / im.shape[1])
+            self.cache[txt] = im
         return self.cache[txt]
 
     def has_text(self, t: float) -> bool:
@@ -884,6 +890,9 @@ class StatShot(Shot):
     def _num(self, v: float) -> str:
         dec = int(self.spec.get("decimals", 0))
         txt = f"{v:,.{dec}f}"
+        from .i18n import lang
+        if lang() == "ru":  # 16,4 · 1 000
+            txt = txt.replace(",", " ").replace(".", ",")
         return f"{self.spec.get('prefix', '')}{txt}{self.spec.get('suffix', '')}"
 
     def frame(self, t: float) -> np.ndarray:

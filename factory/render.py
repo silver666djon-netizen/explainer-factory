@@ -131,10 +131,13 @@ def _clip_path(beat: dict, visual: dict, beat_lookup: dict[str, dict]):
     keys = [beat["id"]]
     if visual.get("type") == "reuse":
         keys.insert(0, visual["beat"])
+    from .i18n import lang
+    dirs = ([_P(ep_dir) / "lang" / lang() / "clips"] if (ep_dir and lang()) else []) + ([_P(ep_dir) / "clips"] if ep_dir else [])
     for key in keys:
-        for ext in (".mp4", ".mov", ".webm"):
-            if ep_dir and (_P(ep_dir) / "clips" / f"{key}{ext}").exists():
-                return _P(ep_dir) / "clips" / f"{key}{ext}"
+        for d in dirs:  # a language version's own clip (words baked in) wins
+            for ext in (".mp4", ".mov", ".webm"):
+                if (d / f"{key}{ext}").exists():
+                    return d / f"{key}{ext}"
     return None
 
 
@@ -1560,6 +1563,7 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     shots, caps, cards, bubs = plan.shots, plan.captions, plan.cards, plan.bubbles
     t0 = time.time()
     next_report = 0.1
+    wm = _review_mark(cfg, W, H)
     try:
         for f in range(n_frames):
             t = f / fps
@@ -1605,6 +1609,8 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
                 b = bubs[bub_i]  # the bubble rides on the picture (camera moves never slide it onto a face)
                 b.cur = shot.to_screen(b.x, b.y, local) if hasattr(shot, "to_screen") and shot.start <= b.start + 0.05 else None
             overlay.apply(frame, t, cap_i, card_i, bub_i)
+            if wm is not None:  # language review copy: small mark top-left on every frame (Klot r90 RU)
+                blend(frame, wm, int(W * 0.012), int(H * 0.010))
             proc.stdin.write(frame.tobytes())
             if f / n_frames >= next_report:
                 rate = (f + 1) / max(1e-6, time.time() - t0)
@@ -1618,6 +1624,16 @@ def render(plan: Plan, cfg: dict, out_path: Path, wav_path: Path, log=print) -> 
     log(f"Rendered {out_path.name}: {plan.total:.1f}s in {time.time() - t0:.0f}s")
     _gate_with_remaster(out_path, wav_path, loud_af, cfg, log, kind=plan.kind, lim0=lim0)
     return out_path
+
+
+def _review_mark(cfg: dict, W: int, H: int):
+    """'RU REVIEW COPY · NOT FOR UPLOAD' (language versions only): small, top-left, on a dim plate."""
+    from .i18n import lang
+    if not lang():
+        return None
+    fnt = font(resolve_font(cfg["fonts"]["body"]), max(11, int(min(W, H) * 0.019)))
+    return text_block([f"{lang().upper()} REVIEW COPY · NOT FOR UPLOAD"], fnt, fill=(255, 255, 255),
+                      box_fill=(20, 18, 16, 170), pad=int(fnt.size * 0.35))
 
 
 # Master: loudnorm (linear) -> 4x oversampled limiter -> 48 kHz -> AAC with an 18 kHz cutoff (the native AAC

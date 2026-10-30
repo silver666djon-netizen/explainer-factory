@@ -155,15 +155,21 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
     _qc.STT_KNOWN = [(k["script"], k["heard"]) for k in episode.get("stt_known") or []]
     qc_res = {}
     qc_plans = {"long": plan_long}
+    # language review copy (Klot r90 RU): the narration is not the English script and Shorts may run long
+    qc_skip = ("stt_diff", "text_lint", "shorts_length") if episode.get("lang") else ()
     if only in (None, "long"):  # Klot r84 part C: release-blocking checks on the real plan (real narration)
-        qc_res["long"] = _qc.run_all(plan_long, cfg, episode["beats"])
+        qc_res["long"] = _qc.run_all(plan_long, cfg, episode["beats"], qc_skip)
         log("QC long: " + ", ".join(f"{c} {'ok' if not r['fails'] else 'FAIL ' + str(len(r['fails']))}" for c, r in qc_res["long"].items()))
 
+    short_timings = []
     shorts_info = []
     size_short = (cfg["video"]["short"]["width"], cfg["video"]["short"]["height"])
     for short in episode.get("shorts") or []:
         voiced = voice_beats(voice, short["beats"])
         plan = build_plan(short["beats"], voiced, images, cfg, size_short, "short", beat_lookup)
+        short_timings += [{"id": b["id"], "start": plan.beat_starts.get(b["id"]), "voice": round(v["duration"], 3), "text": b["text"],
+                           "words": [[w, round(s0, 3), round(e0, 3)] for w, s0, e0 in v["words"]]}
+                          for b, v in zip(short["beats"], voiced)]
         name = f"short_{short['id']}.mp4"
         log(f"Short {short['id']}: {plan.total:.1f}s")
         for a, b, nm in still_runs(plan, lim):
@@ -173,7 +179,7 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         if only in (None, "shorts"):
             render(plan, cfg, out / name, out / f"short_{short['id']}.wav", log)
             (out / f"short_{short['id']}.wav").unlink(missing_ok=True)
-            qc_res[short["id"]] = _qc.run_all(plan, cfg, short["beats"])
+            qc_res[short["id"]] = _qc.run_all(plan, cfg, short["beats"], qc_skip)
             if len(qc_plans) < 2:
                 qc_plans[short["id"]] = plan
             log(f"QC {short['id']}: " + ", ".join(f"{c} {'ok' if not r['fails'] else 'FAIL ' + str(len(r['fails']))}" for c, r in qc_res[short["id"]].items()))
@@ -182,6 +188,10 @@ def build(episode_path: str, out_dir: str | None, offline: bool, only: str | Non
         shorts_info.append({"id": short["id"], "title": short.get("title", ""), "file": name, "duration_seconds": round(plan.total, 1),
                             "music_credit": "\n".join(music_credits(episode, {cue} if cue else set()))})
 
+    if short_timings and (out / "timings.json").exists():  # the Shorts' own lines too (mark audit / stt spans)
+        tj = json.loads((out / "timings.json").read_text())
+        tj["short_beats"] = short_timings
+        (out / "timings.json").write_text(json.dumps(tj, indent=1))
     if qc_res:
         st_rows = _qc.selftest(qc_plans, cfg, {})  # R40: every check must FAIL on its planted bug
         st_ok = _qc.selftest_ok(st_rows)
@@ -282,7 +292,7 @@ def main(argv: list[str] | None = None) -> int:
     b.add_argument("--only", choices=["long", "shorts"])
     b.add_argument("--preview", action="store_true", help="fast half-size 15 fps draft for checking")
     b.add_argument("--upto", help="render only the beats up to and including this id (opening preview)")
-    b.add_argument("--lang", help="language version from episodes/<slug>/lang/<code>.json (long video only), e.g. ru")
+    b.add_argument("--lang", help="language version from episodes/<slug>/lang/<code>.json (long + Shorts), e.g. ru")
     c = sub.add_parser("check", help="validate a script without rendering")
     c.add_argument("episode")
     args = ap.parse_args(argv)
@@ -297,7 +307,7 @@ def main(argv: list[str] | None = None) -> int:
             return 0
         if getattr(args, "lang", None):
             os.environ["FACTORY_LANG"] = args.lang
-        build(args.episode, args.out, args.offline, "long" if getattr(args, "lang", None) else args.only, args.preview, args.upto)
+        build(args.episode, args.out, args.offline, args.only, args.preview, args.upto)
         return 0
     except ScriptError as exc:
         print(f"Script error:\n{exc}", file=sys.stderr)

@@ -93,7 +93,7 @@ def script_marks(ep: dict, shorts: bool):
 
 
 def build(ep, cfg, timings, shorts):
-    T = {b["id"]: b for b in timings["beats"]}
+    T = {b["id"]: b for b in timings["beats"] + (timings.get("short_beats") or [])}  # Shorts' own lines (builds >= r90 RU)
     TXT = {b["text"]: b for b in timings["beats"]}
     cache = ROOT / ".cache" / "images" / ep["slug"]
     images = ensure_images(cfg, image_prompts(ep), cache, True, lambda *a: None)

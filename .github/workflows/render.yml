@@ -24,7 +24,11 @@ on:
         required: false
         default: "no"
       lang:
-        description: "language version from episodes/<slug>/lang/<code>.json, e.g. ru (long video only; release <slug>-<code>-rN)"
+        description: "language version from episodes/<slug>/lang/<code>.json, e.g. ru (long + Shorts; release <slug>-<code>-rN)"
+        required: false
+        default: ""
+      as_run:
+        description: "language version: the English master's run number it copies (files cs_ep04_r90_ru_*, tag <slug>-ru-r90); empty = this run"
         required: false
         default: ""
 
@@ -199,11 +203,14 @@ jobs:
             exit 0
           fi
           for ep in ${{ steps.pick.outputs.list }}; do
-            tag="$ep-r${{ github.run_number }}"
+            rn="${{ github.run_number }}"
             lang="${{ github.event.inputs.lang }}"
-            [ -n "$lang" ] && tag="$ep-$lang-r${{ github.run_number }}"
+            [ -n "$lang" ] && [ -n "${{ github.event.inputs.as_run }}" ] && rn="${{ github.event.inputs.as_run }}"
+            tag="$ep-r$rn"
+            [ -n "$lang" ] && tag="$ep-$lang-r$rn"
+            [ -n "$lang" ] && tools/rel.sh delete "$tag" 2>/dev/null || true  # a re-render of the same review copy replaces it
             title=$(python -c "import json;print(json.load(open('out/$ep/metadata.json'))['title'])")
-            python -m factory.naming rename "out/$ep" "episodes/$ep" "${{ github.run_number }}" "$lang"  # cs_ep04_r78_long.mp4 ...
+            python -m factory.naming rename "out/$ep" "episodes/$ep" "$rn" "$lang"  # cs_ep04_r78_long.mp4 ...
             run gh release create "$tag" out/$ep/* --title "$title" --notes-file "$(ls out/$ep/*description.txt | head -1)" --draft  # unreleased video: private until published
             url=$(tools/rel.sh url "$tag")
             if [ "${{ github.event.inputs.send }}" = "yes" ]; then python -m factory.notify "out/$ep" "$url" --tag "$tag"; fi
