@@ -101,6 +101,10 @@ check (release_checks.py / CI qc_checks.md) · **STILL** = build max-still warni
 | Ep.4 r89 #6 | British "holiday rentals" in the US section; "and a company" | RC:stt_diff (narration = script) + EYE |
 | Ep.4 r89 #7 | pronunciation of names / numbers never verified | RC:stt_diff + TTS phonemes |
 | Ep.4 r90 QC | false FAILs: one whisper pass over the whole narration carried words across lines ("Three, three stamps", "it never Whatever touches"); "Eight. Six. Four." written "$864"; "$" added to bare numbers | RC:stt_diff line by line (sttdiff.check_lines) + script-guided digit runs + whisper-only currency / % symbols + "September (the) first"; tools/qc/stt_release.py on the published audio (stt-release.yml) |
+| Ep.4 r90 RU | "→" missing from the Cyrillic headline font: Shorts hooks showed an empty box | i18n.apply glyph check (the build stops) |
+| Ep.4 r90 RU | translated words longer than their places (КУРОРТНЫЙ СБОР into "$9–$95", НАЛОГИ И СБОРЫ out of its ring) | RC:hand_over_ink + RC:crop_fit + EYE (lang patch: smaller letters) |
+| Ep.4 r90 RU | online TTS (edge) drops about half of the requests from runners: renders failed | tts.EdgeVoice retries + voiced lines cached across runs (.cache/tts) |
+| Ep.4 r90 (Remotion pilot) | a chain of marks keeps the first mark's pen: the red ring round "= $48" drawn with the graphite pencil | EYE; fix in the engine for Ep.5 (draw.mark_pen: the pen of the mark being written) |
 | Ep.4 r87 QC | false FAIL: hand_over_ink read split-moved marks + render caches after release() (n1 "+ $18") | qc.hand_over_ink uses the marks as written |
 | Ep.4 r85 QC | ALL-IN PRICES ink drawn over the lever as it flips past the plate | MA-6 (unless "behind_moving") |
 

@@ -219,6 +219,16 @@ def apply(ep: dict, ep_dir: str | Path, code: str) -> dict:
     ep["lang"] = code
     if tr.get("voice"):
         ep["_voice"] = tr["voice"]
+    fl = FONTS.get(code) or {}
+    try:  # every translated character exists in the language's fonts (a missing glyph renders as an empty box)
+        from fontTools.ttLib import TTFont
+        cmaps = [TTFont(p_).getBestCmap() for k_ in ("headline", "body", "marker") for p_ in fl.get(k_, [])[:1] if Path(p_).exists()]
+        if cmaps:
+            used = set("".join(strings.values()))
+            for ch in sorted(c for c in used if not c.isspace() and any(ord(c) not in cm for cm in cmaps)):
+                missing.append(f"glyph  {ch!r} (U+{ord(ch):04X}) is missing from a {code} font")
+    except ImportError:
+        pass
     if missing:
         raise ValueError(f"{path}: {len(missing)} untranslated item(s):\n  " + "\n  ".join(missing))
     return ep
