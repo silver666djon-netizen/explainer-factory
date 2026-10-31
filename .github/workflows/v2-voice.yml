@@ -31,7 +31,7 @@ jobs:
           OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
         run: |
           set -o pipefail
-          python tools/v2_voice.py v2 2>&1 | tee v2.log; rc=$?
+          python tools/v2_voice.py v2 2>&1 | tee v2.log || true
           grep -E "^(total|DIFF)" v2.log | python3 -c 'import sys; print("::notice title=voice::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
           ffmpeg -v error -y -f f32le -ar 24000 -ac 1 -i <(python3 -c "import numpy,sys; sys.stdout.buffer.write(numpy.load('v2/_voice.npy').astype('float32').tobytes())") -c:a flac v2/voice_24k.flac
           ls -la v2
