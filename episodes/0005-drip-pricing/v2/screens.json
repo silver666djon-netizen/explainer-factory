@@ -1,3 +1,87 @@
-{"_note": "blank laptop screens for screen-replace: TL, TR, BR, BL in px of the original still (measured: bright screen region, checked by eye)",
- "ep04v2_s02_over_shoulder": [[1630, 906], [3507, 911], [3545, 1972], [1579, 1966]],
- "ep04v2_s03_laptop_close": [[1435, 583], [3647, 585], [3671, 1841], [1408, 1841]]}
+{
+ "_note": "blank laptop screens for screen-replace: TL, TR, BR, BL in px of the original still (measured: bright screen region, checked by eye)",
+ "ep04v2_s02_over_shoulder": [
+  [
+   1630,
+   906
+  ],
+  [
+   3507,
+   911
+  ],
+  [
+   3545,
+   1972
+  ],
+  [
+   1579,
+   1966
+  ]
+ ],
+ "ep04v2_s03_laptop_close": [
+  [
+   1540,
+   924
+  ],
+  [
+   3544,
+   925
+  ],
+  [
+   3586,
+   2009
+  ],
+  [
+   1492,
+   2008
+  ]
+ ],
+ "ep04v2_p04_two_laptops": [
+  [
+   [
+    517,
+    582
+   ],
+   [
+    2291,
+    576
+   ],
+   [
+    2290,
+    1597
+   ],
+   [
+    504,
+    1600
+   ]
+  ],
+  [
+   [
+    2725,
+    576
+   ],
+   [
+    4498,
+    581
+   ],
+   [
+    4510,
+    1597
+   ],
+   [
+    2723,
+    1597
+   ]
+  ]
+ ],
+ "_clock_note": "blank clock faces: centre x,y and face radius in px of the original",
+ "clocks": {
+  "ep04v2_s04_wall_clock": {
+   "c": [
+    2087,
+    1148
+   ],
+   "r": 355
+  }
+ }
+}

@@ -1295,7 +1295,30 @@ const KeyCard: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	);
 };
 
-const PicShot: React.FC<P & {short: boolean}> = ({s, t, dur, SW, SH, u, short}) => {
+// hands painted on a blank clock face (image px): hour + minute in ink, a thin red second hand ticking
+const DialHands: React.FC<{d: {c: number[]; r: number}; time: string; t: number}> = ({d, time, t}) => {
+	const [h, m] = time.split(':').map(Number);
+	const r = d.r, cx = d.c[0], cy = d.c[1];
+	const hand = (deg: number, len: number, w: number, col: string, tail = 0.12) => {
+		const a = (deg * Math.PI) / 180;
+		return <line x1={cx - Math.sin(a) * len * tail} y1={cy + Math.cos(a) * len * tail} x2={cx + Math.sin(a) * len} y2={cy - Math.cos(a) * len} stroke={col} strokeWidth={w} strokeLinecap="round" />;
+	};
+	const sec = (Math.floor(t) * 6) % 360;
+	return (
+		<svg width={1} height={1} style={{position: 'absolute', left: 0, top: 0, overflow: 'visible', filter: `drop-shadow(${r * 0.02}px ${r * 0.03}px ${r * 0.02}px rgba(30,27,24,0.35))`}}>
+			{Array.from({length: 12}, (_, i) => {
+				const a = (i * 30 * Math.PI) / 180, k = i % 3 === 0 ? 0.8 : 0.86;
+				return <line key={i} x1={cx + Math.sin(a) * r * k} y1={cy - Math.cos(a) * r * k} x2={cx + Math.sin(a) * r * 0.93} y2={cy - Math.cos(a) * r * 0.93} stroke={C.ink} strokeWidth={r * (i % 3 === 0 ? 0.035 : 0.018)} strokeLinecap="round" />;
+			})}
+			{hand(((h % 12) + m / 60) * 30, r * 0.5, r * 0.06, C.ink)}
+			{hand(m * 6, r * 0.75, r * 0.04, C.ink)}
+			{hand(sec, r * 0.82, r * 0.012, C.red, 0.2)}
+			<circle cx={cx} cy={cy} r={r * 0.045} fill={C.ink} />
+		</svg>
+	);
+};
+
+const PicShot: React.FC<P & {short: boolean}> =({s, t, dur, SW, SH, u, short}) => {
 	if (s.base_kind === 'flat') return <KeyCard s={s} t={t} dur={dur} SW={SW} SH={SH} u={u} fps={30} />;
 	const U = Math.min(SW / 1920, SH / 1080);
 	let world: React.ReactNode;
@@ -1323,6 +1346,7 @@ const PicShot: React.FC<P & {short: boolean}> = ({s, t, dur, SW, SH, u, short}) 
 								background: 'linear-gradient(125deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 55%), radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0) 60%, rgba(30,27,24,0.28) 100%)'}} />
 						</>
 					) : null}
+					{s.dial ? <DialHands d={s.dial} time={s.clock || '8:12'} t={t} /> : null}
 				</div>
 				{q && s.screen ? <AbsoluteFill style={{background: `radial-gradient(ellipse at ${(((q[0][0] + q[2][0]) / 2) * sc + tx) / SW * 100}% ${(((q[0][1] + q[2][1]) / 2) * sc + ty) / SH * 100}%, rgba(159,216,255,0.18) 0%, rgba(159,216,255,0) 45%)`, mixBlendMode: 'screen', pointerEvents: 'none'}} /> : null}
 				{s.dream ? <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 55%, rgba(255,236,190,0.0) 30%, rgba(255,236,190,0.35) 100%)', mixBlendMode: 'screen'}} /> : null}

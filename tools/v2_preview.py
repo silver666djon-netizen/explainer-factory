@@ -119,7 +119,7 @@ S: dict[str, dict] = {
     "A1.15a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.55, 0.42, 1.12]], screen=W_(mode="timer", timer_=0.0, secs=360)),
     "A1.15b": W_(base="a4_seat", cam=[[0.5, 0.55, 1.08], [0.5, 0.58, 1.2]], dream=True),
     "A1.16": W_(base="s03", cam=[[0.5, 0.45, 1.1], [0.55, 0.55, 1.25]], screen=W_(mode="pay", press_on="presses"), sfx=[{"kind": "tap", "on": "presses"}]),
-    "A1.17a": W_(base="s04", cam=[[0.42, 0.42, 1.1], [0.38, 0.38, 1.22]],
+    "A1.17a": W_(base="s04", cam=[[0.42, 0.54, 1.1], [0.41, 0.52, 1.18]],
                  overs=[W_(t="timeline_strip", steps=[["8:12", "TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"], ["8:18", "FEES"], ["8:19", "PAY"]], at=0.2)]),
     "A1.17b": W_(base="o4", cam=[[0.45, 0.35, 1.25], [0.45, 0.32, 1.4]], overs=[W_(t="tag_circle", text="$18", x=0.78, y=0.3, circle_on="number")]),
     "A1.18": W_(base="s01", cam=[[0.5, 0.5, 1.05], [0.5, 0.48, 1.15]],
@@ -384,6 +384,9 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
             if not q:
                 raise SystemExit(f"{s['id']}: {KLOT[b]} has no screen quad in v2/screens.json (measure it first)")
             s["quad"] = [[x * f, y * f] for x, y in q]
+        d = screens.get("clocks", {}).get(KLOT[b])
+        if d:  # blank clock face: we paint the hands (the in-world time)
+            s["dial"] = {"c": [d["c"][0] * f, d["c"][1] * f], "r": d["r"] * f}
         return
     if b in STANDIN:
         src, (x0, y0, x1, y1), grade = STANDIN[b]
