@@ -28,7 +28,7 @@ jobs:
       - name: Python packages
         run: |
           pip install -q chatterbox-tts 2>&1 | tail -3
-          pip install -q "kokoro>=0.9.4" requests soundfile 2>&1 | tail -3
+          pip install -q "kokoro>=0.9.4" requests soundfile faster-whisper 2>&1 | tail -3
           python -c "import torch, chatterbox, kokoro; print('torch', torch.__version__)"
       - name: Voice the cold open
         env:
@@ -41,7 +41,7 @@ jobs:
           mkdir -p vs
           tools/rel.sh download ep04v2-stage1 vs voice_samples.json 2>/dev/null || true
           python tools/voice_samples.py vs 2>&1 | tee vs.log || true
-          grep -E "^(A_|B_|C_|openrouter audio|GEMINI)" vs.log | python3 -c 'import sys; t=sys.stdin.read(); print("::notice title=voices::" + t.replace("%","%25").replace("\n","%0A"))'
+          grep -E "^(A_|B_|C_|openrouter audio|GEMINI|  retake)" vs.log | python3 -c 'import sys; t=sys.stdin.read(); print("::notice title=voices::" + t.replace("%","%25").replace("\n","%0A"))'
           ls -la vs
       - name: STT check of every sample (in the release + made now)
         env:

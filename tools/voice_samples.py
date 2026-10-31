@@ -96,7 +96,7 @@ def openrouter(text: str, note: str, voice: str, log: dict) -> np.ndarray:
     models = [log["model"]] if log.get("model") else log.setdefault("_models", openrouter_models())
     last = None
     for model in models:
-        for attempt in range(4):
+        for attempt in range(6):
             body = {"model": model, "stream": True, "modalities": ["text", "audio"],
                     "audio": {"voice": voice, "format": "pcm16"},
                     "messages": [{"role": "system", "content":
@@ -129,14 +129,38 @@ def openrouter(text: str, note: str, voice: str, log: dict) -> np.ndarray:
                     pcm.append(base64.b64decode(ch["data"]))
                 if ch.get("transcript"):
                     said.append(ch["transcript"])
-            a, b = _words(text), _words("".join(said))
-            ok = bool(pcm) and (not b or (len(set(a) & set(b)) / max(1, len(set(a))) > 0.9 and len(b) <= len(a) + 2))
-            if not ok:
-                last = f"{model}: transcript mismatch {''.join(said)[:120]!r}"
+            x = np.frombuffer(b"".join(pcm), np.int16).astype(np.float32) / 32768.0
+            heard = hear(x) if len(x) else ""
+            ratio = _match(text, heard)
+            if ratio < 0.97:
+                last = f"{model}: take {attempt + 1} heard {heard[:120]!r} ({ratio:.0%})"
+                print("  retake:", last, flush=True)
                 continue
             log["model"] = model
-            return np.frombuffer(b"".join(pcm), np.int16).astype(np.float32) / 32768.0
+            return x
     raise RuntimeError(f"OpenRouter audio failed: {last}")
+
+
+_WM = None
+
+
+def hear(x: np.ndarray) -> str:
+    """What a listener hears in one voiced line (faster-whisper small.en on the 24 kHz take)."""
+    global _WM
+    from faster_whisper import WhisperModel
+    if _WM is None:
+        _WM = WhisperModel("small.en", device="cpu", compute_type="int8")
+    y = np.interp(np.linspace(0, len(x) - 1, int(len(x) * 16000 / SR)), np.arange(len(x)), x).astype(np.float32)
+    segs, _ = _WM.transcribe(y, beam_size=5)
+    return " ".join(sg.text.strip() for sg in segs)
+
+
+def _match(text: str, heard: str) -> float:
+    import difflib
+    a, b = _words(text), _words(heard)
+    sm = difflib.SequenceMatcher(a=a, b=b, autojunk=False)
+    hit = sum(m.size for m in sm.get_matching_blocks())
+    return hit / max(len(a), len(b), 1)
 
 
 _CB = None
