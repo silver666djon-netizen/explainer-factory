@@ -1,18 +1,15 @@
-PREVIEW 2, picture-first (R41-R43): cold open + Act 1, 0:00 to the first ad break (3:56). It uses the joke voice track (16:13 in total; the 11 jokes are in it). No full render.
+PREVIEW 2 (update): cold open + Act 1, 0:00 to the first ad break (3:56), joke voice track (16:13 in total, the 11 jokes are in it). No full render.
 
-What changed:
-- Every shot now stands on a picture with camera motion: your new Act 1 set (s01-s06), Ep.4 stills and clips, and archive photos.
-- The checkout, tabs, seat map, timer, card form and fee lines are screen-replaced into the blank laptop screens of s02 and s03 (perspective, glow, reflection). We cut between the screen and Larry's face (s05 gulp, s06 smug).
-- Diagrams only sit on pictures, as paper strips and tags.
-- The drawing hand writes on the pictures: the crossed icons, the crown, the $18 circle, the 8:12-8:19 line, the notes and the blueprint lines. The stamp hand presses FICTIONAL.
-- Flat cards are left only for the ACT 1 title and the key number $48.
+New in this version (your stills):
+- a1_wallet: Larry counting his bills. The "$50 until Friday" strip now sits beside him over the window, not over his face.
+- g01_blueprint: the blank blueprint; the hand draws the plan lines on it (cold open end and Act 1 end).
+- g04_daydream: the hot dog bubble; the camera pushes in on it and it pops on "won't".
+- g05_bomb: your bomb already has a red and a blue wire, so only the scissors are added, hesitating between them.
+- s03 redo: the same kitchen as s01/s02; all the app screens sit on its laptop.
+- s04 redo: night, blank face; the video paints the hands (8:14, then 8:19) with a ticking red second hand.
 
-Picture base now: 80% of the time. The 4 stills still missing (a1_wallet, g01 blueprint, g04 daydream, g05 bomb) sit on labelled placeholder cards; with them in, it is 97%. Two stand-ins carry a tag on screen: a1_glow -> a close crop of s01, and a4_seat -> the Ep.4 hall.
-All other checks pass, and every check fails on its planted bug (qc_preview2.md). The writing hand and the marks are checked by eye, not by a script yet.
-
-Your 6 stills:
-s01 flat wide, s02 over-shoulder (screen measured), s03 laptop close (screen measured), s04 wall clock, s05 gulp, s06 smug.
-Redo suggestions: s04 is lit by daylight (needs night) and has fixed hands (the rewind in Act 4 needs a blank face). s03's kitchen does not match s01/s02 (wooden table and a suburban window, against the formica table and the city window).
+No placeholders left in this part. Two tagged stand-ins remain until their stills come: a1_glow (a close crop of s01) and a4_seat (the Ep.4 hall).
+Checks: see qc_preview2.md.
 
 ---
-RU: ПРЕВЬЮ 2 «сначала картинка»: холодное открытие + акт 1, до первой рекламной паузы (3:56), с новым голосом (16:13, 11 шуток в нём). Каждый кадр теперь стоит на картинке с движением камеры. Интерфейс кассы вставлен прямо в пустые экраны ноутбука на s02/s03, со склейками на лицо Ларри. Схемы — только поверх картинок (бумажные полоски и ярлыки). Рисующая рука пишет на картинках, штамп ставит рука со штампом. Плоские карточки — только заголовок акта и ключевое число $48. Сейчас картинка занимает 80% времени: 4 недостающих кадра стоят на заглушках, с ними будет 97%. Остальные проверки пройдены; руку и пометки пока проверяю глазами. Переделать: s04 (дневной свет и стрелки на циферблате — нужна ночь и пустой циферблат) и s03 (другая кухня).
+RU: ПРЕВЬЮ 2 (обновление): холодное открытие + акт 1, до первой рекламной паузы (3:56), голос с шутками. Новое: a1_wallet (Ларри считает купюры; полоска «$50 до пятницы» теперь сбоку, не на лице), g01 (чертёж, рука рисует план), g04 (мечта о хот-доге, пузырь лопается на «won't»), g05 (у бомбы уже свои провода — добавлены только ножницы, которые колеблются между ними), s03 (та же кухня), s04 (ночь, пустой циферблат — стрелки рисует видео: 20:14, потом 20:19, секундная тикает). Заглушек в этой части больше нет; две временные замены с пометкой: a1_glow и a4_seat. Проверки — в qc_preview2.md.
