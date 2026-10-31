@@ -202,9 +202,6 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
             for t in spec.get("tabs", []):
                 if "on" in t:
                     t["at"] = round(word_time(b, t.pop("on")) - s0, 3)
-            for f in spec.get("fees", []):
-                if len(f) == 3:
-                    f[2] = round(word_time(b, f[2]) - s0, 3)
             ev = []
             for x in spec.pop("sfx", []):
                 at = (word_time(b, x["on"]) - x.get("lead", 0.0)) if "on" in x else s0 + x["at"]

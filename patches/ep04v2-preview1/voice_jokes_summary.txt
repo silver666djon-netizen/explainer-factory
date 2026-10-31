@@ -1,0 +1,12 @@
+The 11 approved jokes are now in the narration, voiced with fable in the same style: dry and deadpan, with one second of silence after each punchline. "Facility fee: six. Processing: four dollars…" became its own line, and so did "A driving school. You'd think they'd check their mirrors." Nothing else in the script changed.
+
+The PREVIEW 1 track (14:53, 102 lines) did NOT have the jokes. This new track replaces it: 114 lines, 16:13. Every line was transcribed and diffed against the script: 0 differences. Only the new and changed lines were voiced again; all the others are the same takes as before.
+
+Ad breaks for YouTube Studio (from timings.json): 3:56 · 9:02 · 12:17.
+
+Scene list updated (ep04v2_scenes.md): each joke has its visual gag, and the timing now comes from the real voice: 201 shots, none over 8 s. New in the gap list: 6 GPT stills (g04 daydream, g05 bomb, g06 diet, g07 car, g08 mirror, g09 hotdog) and 2 Grok clips (k5 bomb fuse, k6 car wink), with their prompts.
+
+The drawing hand: the doc also lists every place it will write in the full render.
+
+---
+RU: 11 утверждённых шуток вставлены в текст и озвучены голосом fable в той же манере: сухо, с невозмутимым лицом, после каждой шутки секунда тишины. «Сбор площадки…» и «Автошкола…» стали отдельными репликами; больше в сценарии ничего не менялось. В дорожке PREVIEW 1 (14:53) шуток НЕ было. Новая дорожка её заменяет: 114 реплик, 16:13, 0 расхождений со сценарием. Перезаписаны только новые и изменённые реплики. Рекламные паузы: 3:56 · 9:02 · 12:17. В план добавлены гэги, тайминг теперь по реальному голосу: 201 кадр, ни один не дольше 8 с. Новые кадры: 6 для GPT и 2 клипа Grok, промпты в документе. Там же список всех мест, где в полном рендере пишет рисующая рука.

@@ -10,7 +10,7 @@
   }
  },
  "sr": 24000,
- "total": 893.135,
+ "total": 973.52,
  "acts": [
   {
    "act": "COLD",
@@ -26,19 +26,19 @@
   },
   {
    "act": "A2",
-   "start": 217.025,
+   "start": 239.365,
    "name": "Act 2 · The Lab",
    "palette": "lab green #2F5D50 + cream #F2EAD3, blueprint paper"
   },
   {
    "act": "A3",
-   "start": 507.235,
+   "start": 545.39,
    "name": "Act 3 · The Gang",
    "palette": "warm hotel amber #C8862E + walnut #3B2416"
   },
   {
    "act": "A4",
-   "start": 683.055,
+   "start": 740.91,
    "name": "Act 4 · The Cops and the Escape",
    "palette": "red #B3262E + gold #D9A93A"
   }
@@ -1257,11 +1257,124 @@
    "diff": []
   },
   {
-   "id": "A1.6",
+   "id": "A1.J1",
    "act": "A1",
    "start": 93.485,
-   "end": 106.195,
-   "next": 106.795,
+   "end": 101.285,
+   "next": 102.285,
+   "text": "He's already deciding what to spend the ten dollars on. He won't have to decide for long.",
+   "ru": "Он уже решает, на что потратить эти десять долларов. Решать ему придётся недолго.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "dreamy harp glide; a soft POP on 'long'",
+   "words": [
+    [
+     "He's",
+     0.0,
+     0.24
+    ],
+    [
+     "already",
+     0.24,
+     0.62
+    ],
+    [
+     "deciding",
+     0.62,
+     1.2
+    ],
+    [
+     "what",
+     1.2,
+     1.56
+    ],
+    [
+     "to",
+     1.56,
+     1.76
+    ],
+    [
+     "spend",
+     1.76,
+     2.14
+    ],
+    [
+     "the",
+     2.14,
+     2.36
+    ],
+    [
+     "ten",
+     2.36,
+     2.66
+    ],
+    [
+     "dollars",
+     2.36,
+     2.66
+    ],
+    [
+     "on.",
+     2.66,
+     3.2
+    ],
+    [
+     "He",
+     4.26,
+     4.42
+    ],
+    [
+     "won't",
+     4.42,
+     4.78
+    ],
+    [
+     "have",
+     4.78,
+     4.94
+    ],
+    [
+     "to",
+     4.94,
+     5.18
+    ],
+    [
+     "decide",
+     5.18,
+     5.54
+    ],
+    [
+     "for",
+     5.54,
+     5.8
+    ],
+    [
+     "long.",
+     5.8,
+     6.14
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "GPT ep04v2_g04_daydream: Larry daydreaming of a hot dog in a thought bubble",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "closer on the thought bubble (new angle); on 'won't' the bubble pops (code-drawn pop burst over it)",
+     "tech": "push-in + T2 pop",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "He's already deciding what to spend the $10 on. He won't have to decide for long.",
+   "diff": []
+  },
+  {
+   "id": "A1.6",
+   "act": "A1",
+   "start": 102.285,
+   "end": 114.995,
+   "next": 115.595,
    "text": "Remember that number. Thirty. Hold on to it — because over the next seven minutes it's going to change, quietly, three times.",
    "ru": "Запомните это число. Тридцать. Держитесь за него — потому что за следующие семь минут оно тихо изменится трижды.",
    "note": "slower, leaning in, a quiet warning",
@@ -1397,9 +1510,9 @@
   {
    "id": "A1.7",
    "act": "A1",
-   "start": 106.795,
-   "end": 115.255,
-   "next": 115.755,
+   "start": 115.595,
+   "end": 124.055,
+   "next": 124.555,
    "text": "8:13. The seat map. Row G, seat 12. Larry can already hear the band.",
    "ru": "20:13. Схема зала. Ряд G, место 12. Ларри уже слышит группу.",
    "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
@@ -1495,9 +1608,9 @@
   {
    "id": "A1.8",
    "act": "A1",
-   "start": 115.755,
-   "end": 127.62,
-   "next": 128.32,
+   "start": 124.555,
+   "end": 136.42,
+   "next": 137.12,
    "text": "8:14. A little clock appears. \"Your ticket is held for ten minutes.\" Nobody is rushing Larry. The clock is just... there.",
    "ru": "20:14. Появляются маленькие часы. «Ваш билет забронирован на десять минут». Никто Ларри не торопит. Часы просто… есть.",
    "note": "calm, then a small dry pause before 'there'",
@@ -1626,11 +1739,119 @@
    "diff": []
   },
   {
+   "id": "A1.J2",
+   "act": "A1",
+   "start": 137.12,
+   "end": 143.345,
+   "next": 144.345,
+   "text": "Ten minutes on a red ticking clock. In the movies, that's when someone starts cutting wires.",
+   "ru": "Десять минут на красных тикающих часах. В кино в этот момент кто-то начинает резать провода.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "the tick louder, a fuse fizz; silence after 'wires'",
+   "words": [
+    [
+     "Ten",
+     0.0,
+     0.28
+    ],
+    [
+     "minutes",
+     0.28,
+     0.64
+    ],
+    [
+     "on",
+     0.64,
+     0.96
+    ],
+    [
+     "a",
+     0.96,
+     1.14
+    ],
+    [
+     "red",
+     1.14,
+     1.36
+    ],
+    [
+     "ticking",
+     1.36,
+     1.88
+    ],
+    [
+     "clock.",
+     1.88,
+     2.32
+    ],
+    [
+     "In",
+     3.08,
+     3.16
+    ],
+    [
+     "the",
+     3.16,
+     3.28
+    ],
+    [
+     "movies,",
+     3.28,
+     3.68
+    ],
+    [
+     "that's",
+     4.14,
+     4.42
+    ],
+    [
+     "when",
+     4.42,
+     4.52
+    ],
+    [
+     "someone",
+     4.52,
+     4.86
+    ],
+    [
+     "starts",
+     4.86,
+     5.22
+    ],
+    [
+     "cutting",
+     5.22,
+     5.54
+    ],
+    [
+     "wires.",
+     5.54,
+     5.98
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "GPT ep04v2_g05_bomb -> Grok k5: the hold timer as a cartoon bomb clock, its fuse sparking (digits code-drawn on its blank face)",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    },
+    {
+     "picture": "code-drawn red wire and blue wire; a pair of scissors hovers between them, hesitating",
+     "tech": "T2 + noise wobble on the scissors",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Ten minutes on a red ticking clock. In the movies, that's when someone starts cutting wires.",
+   "diff": []
+  },
+  {
    "id": "A1.9",
    "act": "A1",
-   "start": 128.32,
-   "end": 137.18,
-   "next": 137.58,
+   "start": 144.345,
+   "end": 153.205,
+   "next": 153.605,
    "text": "8:16. Name. Email. Card number. Larry types the sixteen digits he knows by heart.",
    "ru": "20:16. Имя. Почта. Номер карты. Ларри вводит шестнадцать цифр, которые знает наизусть.",
    "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
@@ -1709,8 +1930,13 @@
    ],
    "shots": [
     {
-     "picture": "code-drawn card form fills field by field; 16 digits as dots (no hands, no real number)",
+     "picture": "code-drawn card form fills field by field as each is read: NAME · EMAIL · CARD (no hands, no real number)",
      "tech": "T1 caret stroke",
+     "source": "pipeline"
+    },
+    {
+     "picture": "close on the card-number field: sixteen digits typed as dots",
+     "tech": "T2 each dot springs in",
      "source": "pipeline"
     }
    ],
@@ -1721,9 +1947,9 @@
   {
    "id": "A1.10",
    "act": "A1",
-   "start": 137.58,
-   "end": 144.71,
-   "next": 145.21,
+   "start": 153.605,
+   "end": 160.735,
+   "next": 161.235,
    "text": "If you've ever bought a ticket online, you know every one of these screens. You've been on all of them.",
    "ru": "Если вы хоть раз покупали билет онлайн, вы знаете каждый из этих экранов. Вы побывали на всех.",
    "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
@@ -1849,97 +2075,205 @@
   {
    "id": "A1.11",
    "act": "A1",
-   "start": 145.21,
-   "end": 154.315,
-   "next": 155.215,
-   "text": "8:18. Next screen. Service fee: eight dollars. Facility fee: six. Processing: four.",
-   "ru": "20:18. Следующий экран. Сервисный сбор: восемь долларов. Сбор площадки: шесть. Обработка: четыре.",
+   "start": 161.235,
+   "end": 168.88,
+   "next": 169.78,
+   "text": "8:18. Next screen. Service fee: eight dollars — for the service of charging you a fee.",
+   "ru": "20:18. Следующий экран. Сервисный сбор: восемь долларов — за услугу по взиманию с вас сбора.",
    "note": "slower, each fee placed like a card on a table",
-   "sound": "HEARTBEAT starts",
+   "sound": "HEARTBEAT starts; a beat of silence after the joke",
    "words": [
     [
      "8:18.",
      0.0,
-     1.34
+     1.06
     ],
     [
      "Next",
-     2.16,
-     2.32
+     1.86,
+     2.02
     ],
     [
      "screen.",
-     2.32,
-     2.84
+     2.02,
+     2.52
     ],
     [
      "Service",
-     3.48,
-     3.78
+     3.3,
+     3.52
     ],
     [
      "fee:",
-     3.78,
-     4.08
+     3.52,
+     3.82
     ],
     [
      "eight",
-     4.08,
-     4.82
+     4.24,
+     4.62
     ],
     [
-     "dollars.",
-     4.08,
-     4.82
+     "dollars",
+     4.24,
+     4.62
     ],
     [
-     "Facility",
-     5.48,
-     6.1
+     "—",
+     4.62,
+     5.3
     ],
     [
-     "fee:",
-     6.1,
-     6.44
+     "for",
+     5.3,
+     5.6
     ],
     [
-     "six.",
-     6.44,
-     7.04
+     "the",
+     5.6,
+     5.78
     ],
     [
-     "Processing:",
-     7.76,
-     8.24
+     "service",
+     5.78,
+     6.16
     ],
     [
-     "four.",
-     8.24,
-     8.98
+     "of",
+     6.16,
+     6.38
+    ],
+    [
+     "charging",
+     6.38,
+     6.8
+    ],
+    [
+     "you",
+     6.8,
+     7.08
+    ],
+    [
+     "a",
+     7.08,
+     7.26
+    ],
+    [
+     "fee.",
+     7.26,
+     7.5
     ]
    ],
    "shots": [
     {
-     "picture": "code-drawn fee lines drop in one by one: SERVICE $8 · FACILITY $6 · PROCESSING $4",
-     "tech": "T2 stamp per line on the heartbeat",
+     "picture": "code-drawn fee lines: SERVICE FEE $8 drops in",
+     "tech": "T2 stamp",
      "source": "pipeline"
     },
     {
-     "picture": "slot ① ② ③ under $30 fill in with the three fees",
-     "tech": "T9 highlighter",
+     "picture": "closer on the line (new angle): under it the joke label is typed: FOR THE SERVICE OF CHARGING YOU A FEE",
+     "tech": "typed label",
      "source": "pipeline"
     }
    ],
-   "takes": 5,
-   "heard": "8 18. Next screen. Service fee $8. Facility fee $6. Processing $4.",
+   "takes": 1,
+   "heard": "818. Next screen. Service fee, $8. For the service of charging you a fee.",
+   "diff": []
+  },
+  {
+   "id": "A1.J3",
+   "act": "A1",
+   "start": 169.78,
+   "end": 176.055,
+   "next": 177.555,
+   "text": "Facility fee: six. Processing: four dollars — to process the other fees.",
+   "ru": "Сбор площадки: шесть. Обработка: четыре доллара — за обработку остальных сборов.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "heartbeat; a beat of silence after the joke",
+   "words": [
+    [
+     "Facility",
+     0.0,
+     0.48
+    ],
+    [
+     "fee:",
+     0.48,
+     0.82
+    ],
+    [
+     "six.",
+     0.82,
+     1.88
+    ],
+    [
+     "Processing:",
+     2.72,
+     3.16
+    ],
+    [
+     "four",
+     3.16,
+     3.9
+    ],
+    [
+     "dollars",
+     3.16,
+     3.9
+    ],
+    [
+     "—",
+     3.9,
+     3.9
+    ],
+    [
+     "to",
+     3.9,
+     4.86
+    ],
+    [
+     "process",
+     4.86,
+     5.28
+    ],
+    [
+     "the",
+     5.28,
+     5.52
+    ],
+    [
+     "other",
+     5.52,
+     5.7
+    ],
+    [
+     "fees.",
+     5.7,
+     6.06
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "closer on the fee lines (new angle): FACILITY FEE $6, PROCESSING $4 drop in; under PROCESSING the label is typed: TO PROCESS THE OTHER FEES",
+     "tech": "T2 + typed label",
+     "source": "pipeline"
+    },
+    {
+     "picture": "slots ① ② ③ under $30: +$8, +$6 in place, +$4 lands",
+     "tech": "T2 stamp",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 2,
+   "heard": "Facility fee 6. Processing $4 to process the other fees.",
    "diff": []
   },
   {
    "id": "A1.12",
    "act": "A1",
-   "start": 155.215,
-   "end": 158.665,
-   "next": 159.265,
+   "start": 177.555,
+   "end": 181.005,
+   "next": 181.605,
    "text": "Total: forty-eight dollars.",
    "ru": "Итого: сорок восемь долларов.",
    "note": "slow and heavy, after a held breath",
@@ -1975,9 +2309,9 @@
   {
    "id": "A1.13",
    "act": "A1",
-   "start": 159.265,
-   "end": 165.435,
-   "next": 165.835,
+   "start": 181.605,
+   "end": 187.775,
+   "next": 188.175,
    "text": "Larry's ticket just grew by sixty percent between the first screen and the last.",
    "ru": "Билет Ларри только что вырос на шестьдесят процентов между первым экраном и последним.",
    "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
@@ -2068,9 +2402,9 @@
   {
    "id": "A1.14",
    "act": "A1",
-   "start": 165.835,
-   "end": 172.455,
-   "next": 172.955,
+   "start": 188.175,
+   "end": 194.795,
+   "next": 195.295,
    "text": "It's now eight dollars more than the ticket he closed. And it leaves him two dollars until Friday.",
    "ru": "Теперь он на восемь долларов дороже билета, который он закрыл. И до пятницы у него останется два доллара.",
    "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
@@ -2186,9 +2520,9 @@
   {
    "id": "A1.15",
    "act": "A1",
-   "start": 172.955,
-   "end": 182.505,
-   "next": 183.805,
+   "start": 195.295,
+   "end": 204.845,
+   "next": 206.145,
    "text": "He looks at the clock. Six minutes left. He thinks about the seat he picked. The evening he has already imagined.",
    "ru": "Он смотрит на часы. Осталось шесть минут. Он думает о месте, которое выбрал. О вечере, который уже себе представил.",
    "note": "quieter, tense, unhurried",
@@ -2319,9 +2653,9 @@
   {
    "id": "A1.16",
    "act": "A1",
-   "start": 183.805,
-   "end": 187.55,
-   "next": 188.55,
+   "start": 206.145,
+   "end": 209.89,
+   "next": 210.89,
    "text": "8:19. Larry presses Pay.",
    "ru": "20:19. Ларри нажимает «Оплатить».",
    "note": "very quiet and flat, after the silence",
@@ -2362,9 +2696,9 @@
   {
    "id": "A1.17",
    "act": "A1",
-   "start": 188.55,
-   "end": 196.66,
-   "next": 197.26,
+   "start": 210.89,
+   "end": 219.0,
+   "next": 219.6,
    "text": "Seven minutes. Eighteen dollars. And here's the strange part: Larry saw the number. He chose it.",
    "ru": "Семь минут. Восемнадцать долларов. И вот что странно: Ларри видел это число. Он сам его выбрал.",
    "note": "low, wondering",
@@ -2470,9 +2804,9 @@
   {
    "id": "A1.18",
    "act": "A1",
-   "start": 197.26,
-   "end": 203.72,
-   "next": 204.32,
+   "start": 219.6,
+   "end": 226.06,
+   "next": 226.66,
    "text": "So why would a man who closed a forty-dollar ticket to save ten... pay forty-eight?",
    "ru": "Так почему человек, который закрыл билет за сорок, чтобы сэкономить десять… заплатил сорок восемь?",
    "note": "puzzled, a slight smile",
@@ -2568,9 +2902,9 @@
   {
    "id": "A1.19",
    "act": "A1",
-   "start": 204.32,
-   "end": 212.825,
-   "next": 217.025,
+   "start": 226.66,
+   "end": 235.165,
+   "next": 239.365,
    "text": "To answer that, we have to go where this job was planned. And rehearsed. On millions of people.",
    "ru": "Чтобы ответить, нам придётся отправиться туда, где это дело планировали. И репетировали. На миллионах людей.",
    "note": "low, conspiratorial, leaving it hanging",
@@ -2686,9 +3020,9 @@
   {
    "id": "A2.1",
    "act": "A2",
-   "start": 217.025,
-   "end": 223.03,
-   "next": 223.53,
+   "start": 239.365,
+   "end": 245.37,
+   "next": 245.87,
    "text": "Every good heist starts with a blueprint. This one was drawn in 1998.",
    "ru": "Каждое хорошее ограбление начинается с чертежа. Этот нарисовали в 1998 году.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -2779,9 +3113,9 @@
   {
    "id": "A2.2",
    "act": "A2",
-   "start": 223.53,
-   "end": 233.735,
-   "next": 234.135,
+   "start": 245.87,
+   "end": 256.075,
+   "next": 256.475,
    "text": "Three marketing researchers — Morwitz, Greenleaf and Johnson — took one price and cut it in two: a base price, and a surcharge.",
    "ru": "Три исследователя маркетинга — Морвиц, Гринлиф и Джонсон — взяли одну цену и разрезали её надвое: базовая цена и надбавка.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -2922,9 +3256,9 @@
   {
    "id": "A2.3",
    "act": "A2",
-   "start": 234.135,
-   "end": 236.875,
-   "next": 237.275,
+   "start": 256.475,
+   "end": 259.215,
+   "next": 259.615,
    "text": "Same total. Just served in pieces.",
    "ru": "Та же сумма. Просто подана по кусочкам.",
    "note": "dry",
@@ -2975,9 +3309,9 @@
   {
    "id": "A2.4",
    "act": "A2",
-   "start": 237.275,
-   "end": 243.585,
-   "next": 243.985,
+   "start": 259.615,
+   "end": 265.925,
+   "next": 266.325,
    "text": "And the people who saw it in pieces remembered paying less — and bought more.",
    "ru": "И те, кто видел её по кусочкам, запомнили, что заплатили меньше, — и купили больше.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -3073,9 +3407,9 @@
   {
    "id": "A2.5",
    "act": "A2",
-   "start": 243.985,
-   "end": 250.65,
-   "next": 251.25,
+   "start": 266.325,
+   "end": 272.99,
+   "next": 273.59,
    "text": "Your brain files the first number it sees. Everything after it is small print.",
    "ru": "Ваш мозг запоминает первое число, которое видит. Всё, что после, — мелкий шрифт.",
    "note": "plain and certain",
@@ -3166,9 +3500,9 @@
   {
    "id": "A2.6",
    "act": "A2",
-   "start": 251.25,
-   "end": 259.09,
-   "next": 259.59,
+   "start": 273.59,
+   "end": 281.43,
+   "next": 281.93,
    "text": "That was the blueprint. For a rehearsal, you need a stage. And an audience. A very big one.",
    "ru": "Это был чертёж. Для репетиции нужна сцена. И публика. Очень большая.",
    "note": "building anticipation",
@@ -3284,9 +3618,9 @@
   {
    "id": "A2.7",
    "act": "A2",
-   "start": 259.59,
-   "end": 266.605,
-   "next": 267.005,
+   "start": 281.93,
+   "end": 288.945,
+   "next": 289.345,
    "text": "August 2015. StubHub, the ticket resale site — owned by eBay back then.",
    "ru": "Август 2015-го. StubHub, сайт перепродажи билетов, — тогда он принадлежал eBay.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -3372,9 +3706,9 @@
   {
    "id": "A2.8",
    "act": "A2",
-   "start": 267.005,
-   "end": 274.775,
-   "next": 275.175,
+   "start": 289.345,
+   "end": 297.115,
+   "next": 297.515,
    "text": "For a couple of years, StubHub had shown every fee upfront. The price on the screen was the price you paid.",
    "ru": "Пару лет StubHub показывал все сборы сразу. Цена на экране была той, что вы платили.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -3505,9 +3839,9 @@
   {
    "id": "A2.9",
    "act": "A2",
-   "start": 275.175,
-   "end": 283.835,
-   "next": 284.235,
+   "start": 297.515,
+   "end": 306.175,
+   "next": 306.575,
    "text": "Then, for twelve days, it split its buyers in two. Same site. Same tickets. Two different checkouts.",
    "ru": "Потом на двенадцать дней он разделил покупателей надвое. Тот же сайт. Те же билеты. Две разные кассы.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -3616,11 +3950,144 @@
    "diff": []
   },
   {
+   "id": "A2.J4",
+   "act": "A2",
+   "start": 306.575,
+   "end": 314.995,
+   "next": 315.995,
+   "text": "Twelve days. Most of us can't keep a diet for twelve days. StubHub kept an experiment going on millions of people.",
+   "ru": "Двенадцать дней. Большинство из нас не может продержаться на диете двенадцать дней. А StubHub продержал эксперимент на миллионах людей.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "dry pizzicato",
+   "words": [
+    [
+     "Twelve",
+     0.0,
+     0.42
+    ],
+    [
+     "days.",
+     0.42,
+     1.02
+    ],
+    [
+     "Most",
+     1.7,
+     1.9
+    ],
+    [
+     "of",
+     1.9,
+     2.04
+    ],
+    [
+     "us",
+     2.04,
+     2.18
+    ],
+    [
+     "can't",
+     2.18,
+     2.5
+    ],
+    [
+     "keep",
+     2.5,
+     2.66
+    ],
+    [
+     "a",
+     2.66,
+     2.92
+    ],
+    [
+     "diet",
+     2.92,
+     3.18
+    ],
+    [
+     "for",
+     3.18,
+     3.46
+    ],
+    [
+     "twelve",
+     3.46,
+     3.7
+    ],
+    [
+     "days.",
+     3.7,
+     4.22
+    ],
+    [
+     "StubHub",
+     5.0,
+     5.48
+    ],
+    [
+     "kept",
+     5.48,
+     5.78
+    ],
+    [
+     "an",
+     5.78,
+     5.94
+    ],
+    [
+     "experiment",
+     5.94,
+     6.46
+    ],
+    [
+     "going",
+     6.46,
+     6.88
+    ],
+    [
+     "on",
+     6.88,
+     7.22
+    ],
+    [
+     "millions",
+     7.22,
+     7.68
+    ],
+    [
+     "of",
+     7.68,
+     8.04
+    ],
+    [
+     "people.",
+     8.04,
+     8.3
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "GPT ep04v2_g06_diet: a 1950s fridge with a blank diet calendar taped on it; our overlay writes the day numbers and crosses it out on day 3",
+     "tech": "slow push + T1 cross",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "cut back: code-drawn 12-DAY counter over the split queue (Ep.4 a5)",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Twelve days. Most of us can't keep a diet for twelve days. StubHub kept an experiment going on millions of people.",
+   "diff": []
+  },
+  {
    "id": "A2.10",
    "act": "A2",
-   "start": 284.235,
-   "end": 292.735,
-   "next": 293.135,
+   "start": 315.995,
+   "end": 324.495,
+   "next": 324.895,
    "text": "Half saw the full price from the start. The other half saw the ticket alone — with the fees waiting at checkout.",
    "ru": "Половина видела полную цену с самого начала. Другая половина — только билет, а сборы ждали на кассе.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -3756,9 +4223,9 @@
   {
    "id": "A2.11",
    "act": "A2",
-   "start": 293.135,
-   "end": 298.1,
-   "next": 298.6,
+   "start": 324.895,
+   "end": 329.86,
+   "next": 330.36,
    "text": "Same fees. The only thing that changed was the moment you saw them.",
    "ru": "Те же сборы. Изменился только момент, когда вы их видели.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -3844,9 +4311,9 @@
   {
    "id": "A2.12",
    "act": "A2",
-   "start": 298.6,
-   "end": 305.68,
-   "next": 306.08,
+   "start": 330.36,
+   "end": 337.44,
+   "next": 337.84,
    "text": "Here's what happened. The people who met the fees late were fourteen percent more likely to buy at all.",
    "ru": "И вот что вышло. Те, кто встречал сборы поздно, на четырнадцать процентов чаще вообще покупали.",
    "note": "steady, letting each number land",
@@ -3967,9 +4434,9 @@
   {
    "id": "A2.13",
    "act": "A2",
-   "start": 306.08,
-   "end": 313.49,
-   "next": 314.89,
+   "start": 337.84,
+   "end": 345.25,
+   "next": 346.65,
    "text": "They picked seats about five percent pricier — a seat looks cheaper when its fees are still offstage.",
    "ru": "Они выбирали места примерно на пять процентов дороже — место кажется дешевле, пока его сборы ещё за кулисами.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -4085,9 +4552,9 @@
   {
    "id": "A2.14",
    "act": "A2",
-   "start": 314.89,
-   "end": 323.855,
-   "next": 324.855,
+   "start": 346.65,
+   "end": 355.615,
+   "next": 356.615,
    "text": "And all together, they spent almost twenty-one percent more.",
    "ru": "А в сумме они потратили почти на двадцать один процент больше.",
    "note": "slow and heavy on 'twenty-one percent', after a silence",
@@ -4153,9 +4620,9 @@
   {
    "id": "A2.15",
    "act": "A2",
-   "start": 324.855,
-   "end": 330.965,
-   "next": 331.465,
+   "start": 356.615,
+   "end": 362.725,
+   "next": 363.225,
    "text": "Twenty-one percent. For the same tickets. Because of when the number showed up.",
    "ru": "Двадцать один процент. За те же билеты. Из-за того, когда появилось число.",
    "note": "quiet, emphatic",
@@ -4241,9 +4708,9 @@
   {
    "id": "A2.16",
    "act": "A2",
-   "start": 331.465,
-   "end": 338.265,
-   "next": 338.665,
+   "start": 363.225,
+   "end": 370.025,
+   "next": 370.425,
    "text": "So Larry isn't foolish. Larry isn't even unusual. Larry is the average.",
    "ru": "Так что Ларри не глупый. Ларри даже не необычный. Ларри — это среднее.",
    "note": "warm, reassuring, a smile on 'Larry is the average'",
@@ -4324,9 +4791,9 @@
   {
    "id": "A2.17",
    "act": "A2",
-   "start": 338.665,
-   "end": 346.655,
-   "next": 347.355,
+   "start": 370.425,
+   "end": 378.415,
+   "next": 379.115,
    "text": "And here's the part you might not like: you're the average too. You fall for this more often than you think.",
    "ru": "А вот что вам может не понравиться: вы тоже среднее. Вы попадаетесь на это чаще, чем думаете.",
    "note": "leaning in, a wry smile",
@@ -4457,9 +4924,9 @@
   {
    "id": "A2.18",
    "act": "A2",
-   "start": 347.355,
-   "end": 353.74,
-   "next": 354.24,
+   "start": 379.115,
+   "end": 385.5,
+   "next": 386.0,
    "text": "But why does it work? Why does a man who counts every dollar let eighteen of them walk out the door?",
    "ru": "Но почему это работает? Почему человек, который считает каждый доллар, отпускает восемнадцать из них за дверь?",
    "note": "curious, slower",
@@ -4590,9 +5057,9 @@
   {
    "id": "A2.19",
    "act": "A2",
-   "start": 354.24,
-   "end": 362.59,
-   "next": 363.09,
+   "start": 386.0,
+   "end": 394.35,
+   "next": 394.85,
    "text": "Because the safe in your head has four locks. And this heist picks every one of them.",
    "ru": "Потому что у сейфа в вашей голове четыре замка. И это ограбление вскрывает каждый.",
    "note": "intriguing, a little theatrical",
@@ -4703,9 +5170,9 @@
   {
    "id": "A2.20",
    "act": "A2",
-   "start": 363.09,
-   "end": 377.27,
-   "next": 377.87,
+   "start": 394.85,
+   "end": 409.03,
+   "next": 409.63,
    "text": "Lock one: the first number. Your brain grabs the first price it sees and treats it as the real one. Everything added later feels like a footnote — so you remember paying less than you did.",
    "ru": "Замок первый: первое число. Мозг хватает первую цену, которую видит, и считает её настоящей. Всё, что добавлено позже, ощущается как сноска, — поэтому вы помните, что заплатили меньше, чем на самом деле.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -4916,9 +5383,9 @@
   {
    "id": "A2.21",
    "act": "A2",
-   "start": 377.87,
-   "end": 390.72,
-   "next": 391.12,
+   "start": 409.63,
+   "end": 422.48,
+   "next": 422.88,
    "text": "Lock two: it's already yours. By 8:18, Larry has picked his seat. In his head, he's already sitting in it — and people hate giving up what feels like theirs.",
    "ru": "Замок второй: это уже ваше. К 20:18 Ларри выбрал место. В мыслях он уже сидит в нём, — а люди терпеть не могут отдавать то, что кажется своим.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -5094,9 +5561,9 @@
   {
    "id": "A2.22",
    "act": "A2",
-   "start": 391.12,
-   "end": 406.69,
-   "next": 407.29,
+   "start": 422.88,
+   "end": 438.45,
+   "next": 439.05,
    "text": "In a famous 1990 experiment, people who had just been handed a coffee mug wanted more than twice as much to sell it as others would pay to buy it. Same mug. It was just theirs.",
    "ru": "В знаменитом эксперименте 1990 года люди, которым только что дали кофейную кружку, хотели за неё при продаже больше чем вдвое больше, чем другие готовы были заплатить. Та же кружка. Просто она была их.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -5312,9 +5779,9 @@
   {
    "id": "A2.23",
    "act": "A2",
-   "start": 407.29,
-   "end": 423.98,
-   "next": 424.58,
+   "start": 439.05,
+   "end": 455.74,
+   "next": 456.34,
    "text": "Lock three: the effort. Ten minutes of searching, a seat, sixteen digits typed in. Closing the tab now means throwing all of that away and starting again. So eighteen dollars starts to look cheaper than starting over.",
    "ru": "Замок третий: усилия. Десять минут поисков, место, шестнадцать введённых цифр. Закрыть вкладку сейчас — значит выбросить всё это и начать заново. И восемнадцать долларов начинают казаться дешевле, чем начинать сначала.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -5530,9 +5997,9 @@
   {
    "id": "A2.24",
    "act": "A2",
-   "start": 424.58,
-   "end": 433.78,
-   "next": 434.18,
+   "start": 456.34,
+   "end": 465.54,
+   "next": 465.94,
    "text": "Lock four: small next to big. Eighteen dollars feels small when it lands on top of a purchase you've already decided to make.",
    "ru": "Замок четвёртый: мелкое рядом с крупным. Восемнадцать долларов кажутся мелочью, когда ложатся поверх покупки, которую вы уже решили сделать.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -5673,9 +6140,9 @@
   {
    "id": "A2.25",
    "act": "A2",
-   "start": 434.18,
-   "end": 455.87,
-   "next": 456.57,
+   "start": 465.94,
+   "end": 487.63,
+   "next": 488.33,
    "text": "Psychologists showed this back in 1981: most people would drive twenty minutes to save five dollars on a fifteen-dollar calculator — but far fewer would make the same drive to save the same five dollars on a hundred-and-twenty-five-dollar one. Five dollars is five dollars. Your brain doesn't think so.",
    "ru": "Психологи показали это ещё в 1981 году: большинство людей поедут за двадцать минут, чтобы сэкономить пять долларов на калькуляторе за пятнадцать, — но куда меньше поедут так же далеко, чтобы сэкономить те же пять долларов на калькуляторе за сто двадцать пять. Пять долларов — это пять долларов. Ваш мозг так не считает.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -5959,11 +6426,89 @@
    "diff": []
   },
   {
+   "id": "A2.J5",
+   "act": "A2",
+   "start": 488.33,
+   "end": 493.725,
+   "next": 494.725,
+   "text": "Your brain also thinks you're going to the gym on Monday.",
+   "ru": "А ещё ваш мозг думает, что в понедельник вы пойдёте в спортзал.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "dry beat",
+   "words": [
+    [
+     "Your",
+     0.0,
+     0.38
+    ],
+    [
+     "brain",
+     0.38,
+     0.78
+    ],
+    [
+     "also",
+     0.78,
+     1.28
+    ],
+    [
+     "thinks",
+     1.28,
+     1.74
+    ],
+    [
+     "you're",
+     1.74,
+     2.18
+    ],
+    [
+     "going",
+     2.18,
+     2.36
+    ],
+    [
+     "to",
+     2.36,
+     2.56
+    ],
+    [
+     "the",
+     2.56,
+     2.66
+    ],
+    [
+     "gym",
+     2.66,
+     2.96
+    ],
+    [
+     "on",
+     2.96,
+     3.28
+    ],
+    [
+     "Monday.",
+     3.28,
+     3.64
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn calendar page MONDAY; GYM written by hand, then crossed out",
+     "tech": "T1 handwriting + strike",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Your brain also thinks you're going to the gym on Monday.",
+   "diff": []
+  },
+  {
    "id": "A2.26",
    "act": "A2",
-   "start": 456.57,
-   "end": 466.145,
-   "next": 466.645,
+   "start": 494.725,
+   "end": 504.3,
+   "next": 504.8,
    "text": "And that little clock? It doesn't pick a lock. It's the lookout. Its only job is to make sure you don't stop and think.",
    "ru": "А те маленькие часы? Они не вскрывают замок. Они — на стрёме. Их единственная задача — чтобы вы не остановились подумать.",
    "note": "conspiratorial, a smile on 'It's the lookout'",
@@ -6109,9 +6654,9 @@
   {
    "id": "A2.27",
    "act": "A2",
-   "start": 466.645,
-   "end": 476.4,
-   "next": 477.0,
+   "start": 504.8,
+   "end": 514.555,
+   "next": 515.155,
    "text": "Four locks. One click. That isn't stupidity. That's how every human brain is built — and the people who design checkouts know it.",
    "ru": "Четыре замка. Один клик. Это не глупость. Так устроен каждый человеческий мозг, — и те, кто проектирует кассы, это знают.",
    "note": "firm and clear",
@@ -6252,9 +6797,9 @@
   {
    "id": "A2.28",
    "act": "A2",
-   "start": 477.0,
-   "end": 485.24,
-   "next": 485.64,
+   "start": 515.155,
+   "end": 523.395,
+   "next": 523.795,
    "text": "What did StubHub do with the result? On September the first, the whole site switched. Fees at the end. For everyone.",
    "ru": "Что StubHub сделал с результатом? Первого сентября весь сайт переключили. Сборы — в конце. Для всех.",
    "note": "measured and curious, a detective laying out evidence, clear on every number",
@@ -6385,9 +6930,9 @@
   {
    "id": "A2.29",
    "act": "A2",
-   "start": 485.64,
-   "end": 489.82,
-   "next": 490.42,
+   "start": 523.795,
+   "end": 527.975,
+   "next": 528.575,
    "text": "The rehearsal was over. The show had opened.",
    "ru": "Репетиция закончилась. Спектакль начался.",
    "note": "theatrical, quiet",
@@ -6448,9 +6993,9 @@
   {
    "id": "A2.30",
    "act": "A2",
-   "start": 490.42,
-   "end": 497.23,
-   "next": 497.63,
+   "start": 528.575,
+   "end": 535.385,
+   "next": 535.785,
    "text": "If you like catching prices in the act, subscribe. The Inspector has more files.",
    "ru": "Если вам нравится ловить цены с поличным — подпишитесь. У Инспектора ещё много дел.",
    "note": "friendly, light, quick",
@@ -6541,9 +7086,9 @@
   {
    "id": "A2.31",
    "act": "A2",
-   "start": 497.63,
-   "end": 503.035,
-   "next": 507.235,
+   "start": 535.785,
+   "end": 541.19,
+   "next": 545.39,
    "text": "Because when a trick works this well, it never stays in one theatre.",
    "ru": "Потому что когда трюк работает так хорошо, он никогда не остаётся в одном театре.",
    "note": "low, conspiratorial, leaving it hanging",
@@ -6629,9 +7174,9 @@
   {
    "id": "A3.1",
    "act": "A3",
-   "start": 507.235,
-   "end": 514.115,
-   "next": 514.615,
+   "start": 545.39,
+   "end": 552.27,
+   "next": 552.77,
    "text": "The concert is two hours away, so Larry needs a hotel. Downtown. Nowhere near a beach.",
    "ru": "Концерт в двух часах езды, так что Ларри нужен отель. В центре. Нигде рядом с пляжем.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -6737,9 +7282,9 @@
   {
    "id": "A3.2",
    "act": "A3",
-   "start": 514.615,
-   "end": 526.335,
-   "next": 526.835,
+   "start": 552.77,
+   "end": 564.49,
+   "next": 564.99,
    "text": "The room says ninety-nine dollars a night. Near the end of booking, a new line appears — under a heading that sounds official: \"Taxes and Fees.\"",
    "ru": "Номер стоит девяносто девять долларов за ночь. Ближе к концу бронирования появляется новая строка — под официально звучащим заголовком: «Налоги и сборы».",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -6895,9 +7440,9 @@
   {
    "id": "A3.3",
    "act": "A3",
-   "start": 526.835,
-   "end": 531.52,
-   "next": 531.92,
+   "start": 564.99,
+   "end": 569.675,
+   "next": 570.075,
    "text": "Inside it, next to the real taxes, sits a second member of the gang.",
    "ru": "Внутри неё, рядом с настоящими налогами, сидит второй член банды.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -6988,9 +7533,9 @@
   {
    "id": "A3.4",
    "act": "A3",
-   "start": 531.92,
-   "end": 537.93,
-   "next": 538.33,
+   "start": 570.075,
+   "end": 576.085,
+   "next": 576.485,
    "text": "Name: the resort fee. Aliases: amenity fee, destination fee.",
    "ru": "Имя: курортный сбор. Клички: сбор за удобства, сбор за местоположение.",
    "note": "mock-formal, reading a charge sheet",
@@ -7061,9 +7606,9 @@
   {
    "id": "A3.5",
    "act": "A3",
-   "start": 538.33,
-   "end": 551.88,
-   "next": 552.28,
+   "start": 576.485,
+   "end": 590.035,
+   "next": 590.435,
    "text": "Known associates: a pool Larry will never swim in, a gym he will never visit, Wi-Fi he already pays for at home, and a newspaper nobody has opened since 1998.",
    "ru": "Известные сообщники: бассейн, в котором Ларри никогда не поплавает, спортзал, куда он не зайдёт, вай-фай, за который он уже платит дома, и газета, которую никто не открывал с 1998 года.",
    "note": "mock-formal, dry, a smile on 'a newspaper nobody has opened since 1998'",
@@ -7247,11 +7792,84 @@
    "diff": []
   },
   {
+   "id": "A3.J6",
+   "act": "A3",
+   "start": 590.435,
+   "end": 594.795,
+   "next": 595.795,
+   "text": "The gym? That's your Monday plan, now with a fee.",
+   "ru": "Спортзал? Это ваш план на понедельник, теперь с доплатой.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "dry beat",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.2
+    ],
+    [
+     "gym?",
+     0.2,
+     0.54
+    ],
+    [
+     "That's",
+     1.4,
+     1.78
+    ],
+    [
+     "your",
+     1.78,
+     1.9
+    ],
+    [
+     "Monday",
+     1.9,
+     2.22
+    ],
+    [
+     "plan,",
+     2.22,
+     2.68
+    ],
+    [
+     "now",
+     3.28,
+     3.48
+    ],
+    [
+     "with",
+     3.48,
+     3.76
+    ],
+    [
+     "a",
+     3.76,
+     3.86
+    ],
+    [
+     "fee.",
+     3.86,
+     4.18
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_g02_gym with the MONDAY page from A2.J5 pinned on the wall (code-drawn, callback)",
+     "tech": "slow push + T2 pin",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "The gym? That's your Monday plan, now with a fee.",
+   "diff": []
+  },
+  {
    "id": "A3.6",
    "act": "A3",
-   "start": 552.28,
-   "end": 556.07,
-   "next": 556.67,
+   "start": 595.795,
+   "end": 599.585,
+   "next": 600.185,
    "text": "Larry will use none of it. Larry will pay for all of it.",
    "ru": "Ларри не воспользуется ничем из этого. Ларри заплатит за всё.",
    "note": "dry, a faint smile",
@@ -7337,9 +7955,9 @@
   {
    "id": "A3.7",
    "act": "A3",
-   "start": 556.67,
-   "end": 571.92,
-   "next": 572.32,
+   "start": 600.185,
+   "end": 615.435,
+   "next": 615.835,
    "text": "In 2019, the Attorney General for Washington, D.C. sued Marriott. The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees — from nine to ninety-five dollars, per room, per day.",
    "ru": "В 2019 году генеральный прокурор Вашингтона, округ Колумбия, подал в суд на Marriott. В иске говорится, что как минимум сто восемьдесят девять отелей Marriott брали эти сборы — от девяти до девяноста пяти долларов за номер в сутки.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -7545,9 +8163,9 @@
   {
    "id": "A3.8",
    "act": "A3",
-   "start": 572.32,
-   "end": 577.19,
-   "next": 577.69,
+   "start": 615.835,
+   "end": 620.705,
+   "next": 621.205,
    "text": "Resort fees aren't taxes. They just like to sit next to them.",
    "ru": "Курортные сборы — не налоги. Они просто любят сидеть рядом с ними.",
    "note": "dry, a smile on 'They just like to sit next to them'",
@@ -7628,9 +8246,9 @@
   {
    "id": "A3.9",
    "act": "A3",
-   "start": 577.69,
-   "end": 587.81,
-   "next": 588.31,
+   "start": 621.205,
+   "end": 631.325,
+   "next": 631.825,
    "text": "In 2023, Marriott agreed with Texas to show the total price most prominently. Same blueprint. Different building.",
    "ru": "В 2023 году Marriott договорился с Техасом показывать полную цену на самом видном месте. Тот же чертёж. Другое здание.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -7741,9 +8359,9 @@
   {
    "id": "A3.10",
    "act": "A3",
-   "start": 588.31,
-   "end": 591.41,
-   "next": 591.81,
+   "start": 631.825,
+   "end": 634.925,
+   "next": 635.325,
    "text": "Then there's the biggest name in tickets.",
    "ru": "А ещё есть самое громкое имя в билетах.",
    "note": "low, a slight menace",
@@ -7799,9 +8417,9 @@
   {
    "id": "A3.11",
    "act": "A3",
-   "start": 591.81,
-   "end": 600.92,
-   "next": 601.32,
+   "start": 635.325,
+   "end": 644.435,
+   "next": 644.835,
    "text": "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
    "ru": "В сентябре 2025 года Федеральная торговая комиссия США и семь штатов подали в суд на Live Nation и Ticketmaster.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -7897,9 +8515,9 @@
   {
    "id": "A3.12",
    "act": "A3",
-   "start": 601.32,
-   "end": 612.28,
-   "next": 612.68,
+   "start": 644.835,
+   "end": 655.795,
+   "next": 656.195,
    "text": "They allege the fees run from twenty-four to forty-four percent of the total price — and that fans paid over sixteen point four billion dollars in mandatory fees.",
    "ru": "Они утверждают, что сборы составляют от двадцати четырёх до сорока четырёх процентов полной цены — и что фанаты заплатили больше шестнадцати целых четырёх десятых миллиарда долларов обязательных сборов.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -8063,11 +8681,89 @@
    "diff": []
   },
   {
+   "id": "A3.J7",
+   "act": "A3",
+   "start": 656.195,
+   "end": 661.495,
+   "next": 662.495,
+   "text": "At eighteen dollars a time, that's an awful lot of Larrys.",
+   "ru": "По восемнадцать долларов за раз — это ужасно много Ларри.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "a rising pizzicato as the icons multiply",
+   "words": [
+    [
+     "At",
+     0.0,
+     0.2
+    ],
+    [
+     "eighteen",
+     0.2,
+     1.06
+    ],
+    [
+     "dollars",
+     0.2,
+     1.06
+    ],
+    [
+     "a",
+     1.06,
+     1.66
+    ],
+    [
+     "time,",
+     1.66,
+     2.2
+    ],
+    [
+     "that's",
+     2.62,
+     2.86
+    ],
+    [
+     "an",
+     2.86,
+     3.0
+    ],
+    [
+     "awful",
+     3.0,
+     3.52
+    ],
+    [
+     "lot",
+     3.52,
+     3.96
+    ],
+    [
+     "of",
+     3.96,
+     4.38
+    ],
+    [
+     "Larrys.",
+     4.38,
+     4.84
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn grid of tiny Larry icons doubling until they fill the frame; the ALLEGED plate stays",
+     "tech": "T4 eased build",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "At $18 a time, that's an awful lot of Larrys.",
+   "diff": []
+  },
+  {
    "id": "A3.13",
    "act": "A3",
-   "start": 612.68,
-   "end": 620.22,
-   "next": 620.72,
+   "start": 662.495,
+   "end": 670.035,
+   "next": 670.535,
    "text": "Larry's eighteen dollars? Thirty-seven and a half percent of what he paid. Right inside that range.",
    "ru": "Восемнадцать долларов Ларри? Тридцать семь с половиной процентов от того, что он заплатил. Прямо внутри этого диапазона.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -8168,9 +8864,9 @@
   {
    "id": "A3.14",
    "act": "A3",
-   "start": 620.72,
-   "end": 632.79,
-   "next": 633.39,
+   "start": 670.535,
+   "end": 682.605,
+   "next": 683.205,
    "text": "In September 2026, a judge refused to throw the case out. It goes on. Until a court decides, every word of it is an allegation.",
    "ru": "В сентябре 2026 года судья отказался закрыть дело. Оно продолжается. Пока суд не решит, каждое слово в нём — обвинение.",
    "note": "careful and neutral, precise on 'allegation'",
@@ -8321,9 +9017,9 @@
   {
    "id": "A3.15",
    "act": "A3",
-   "start": 633.39,
-   "end": 637.735,
-   "next": 638.235,
+   "start": 683.205,
+   "end": 687.55,
+   "next": 688.05,
    "text": "Now, the defence. Every accused deserves one.",
    "ru": "А теперь — защита. Она положена каждому обвиняемому.",
    "note": "fair, measured, a courtroom tone",
@@ -8379,9 +9075,9 @@
   {
    "id": "A3.16",
    "act": "A3",
-   "start": 638.235,
-   "end": 650.27,
-   "next": 650.67,
+   "start": 688.05,
+   "end": 700.085,
+   "next": 700.485,
    "text": "Here's StubHub's own story. In 2014, it says, it tried honesty. It moved to all-in prices — every fee shown upfront.",
    "ru": "Вот версия самого StubHub. В 2014 году, по его словам, он попробовал честность. Перешёл на цены «всё включено» — каждый сбор показан сразу.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -8512,9 +9208,9 @@
   {
    "id": "A3.17",
    "act": "A3",
-   "start": 650.67,
-   "end": 656.35,
-   "next": 656.75,
+   "start": 700.485,
+   "end": 706.165,
+   "next": 706.565,
    "text": "And it lost customers — to rivals who kept their fees for the last screen.",
    "ru": "И потерял покупателей — конкурентам, которые оставили свои сборы на последний экран.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -8610,9 +9306,9 @@
   {
    "id": "A3.18",
    "act": "A3",
-   "start": 656.75,
-   "end": 663.265,
-   "next": 663.865,
+   "start": 706.565,
+   "end": 713.08,
+   "next": 713.68,
    "text": "Think about that. The honest seller looked more expensive. The honest seller lost.",
    "ru": "Подумайте об этом. Честный продавец выглядел дороже. Честный продавец проиграл.",
    "note": "quieter, thoughtful",
@@ -8696,11 +9392,89 @@
    "diff": []
   },
   {
+   "id": "A3.J8",
+   "act": "A3",
+   "start": 713.68,
+   "end": 720.72,
+   "next": 721.72,
+   "text": "Which is why there are so few honest sellers. Mystery solved.",
+   "ru": "Вот почему честных продавцов так мало. Загадка раскрыта.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "heavy stamp thud on 'solved'",
+   "words": [
+    [
+     "Which",
+     0.0,
+     0.7
+    ],
+    [
+     "is",
+     0.7,
+     0.9
+    ],
+    [
+     "why",
+     0.9,
+     1.28
+    ],
+    [
+     "there",
+     1.28,
+     1.74
+    ],
+    [
+     "are",
+     1.74,
+     1.96
+    ],
+    [
+     "so",
+     1.96,
+     2.12
+    ],
+    [
+     "few",
+     2.12,
+     2.54
+    ],
+    [
+     "honest",
+     2.54,
+     2.98
+    ],
+    [
+     "sellers.",
+     2.98,
+     3.52
+    ],
+    [
+     "Mystery",
+     4.84,
+     5.28
+    ],
+    [
+     "solved.",
+     5.28,
+     5.78
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_a3_race: the empty honest shop; a CASE stamp SOLVED lands crooked on its blank sign",
+     "tech": "T2 large stamp",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Which is why there are so few honest sellers. Mystery solved.",
+   "diff": []
+  },
+  {
    "id": "A3.19",
    "act": "A3",
-   "start": 663.865,
-   "end": 673.035,
-   "next": 673.535,
+   "start": 721.72,
+   "end": 730.89,
+   "next": 731.39,
    "text": "So this isn't one villain. It's a race. And in this race, whoever tells you the truth first finishes last.",
    "ru": "Так что это не один злодей. Это гонка. И в этой гонке тот, кто первым говорит вам правду, приходит последним.",
    "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
@@ -8826,9 +9600,9 @@
   {
    "id": "A3.20",
    "act": "A3",
-   "start": 673.535,
-   "end": 678.855,
-   "next": 683.055,
+   "start": 731.39,
+   "end": 736.71,
+   "next": 740.91,
    "text": "So who stops a race that nobody can afford to quit?",
    "ru": "Так кто остановит гонку, из которой никто не может себе позволить выйти?",
    "note": "low, conspiratorial, leaving it hanging",
@@ -8904,9 +9678,9 @@
   {
    "id": "A4.1",
    "act": "A4",
-   "start": 683.055,
-   "end": 686.94,
-   "next": 687.34,
+   "start": 740.91,
+   "end": 744.795,
+   "next": 745.195,
    "text": "Funny thing is, America has caught this trick before.",
    "ru": "Забавно, что Америка уже ловила этот трюк.",
    "note": "light, wry",
@@ -8977,9 +9751,9 @@
   {
    "id": "A4.2",
    "act": "A4",
-   "start": 687.34,
-   "end": 698.665,
-   "next": 699.065,
+   "start": 745.195,
+   "end": 756.52,
+   "next": 756.92,
    "text": "In 1958, a law put a sticker on the window of every new car: the price, every option, the delivery charge — and the total.",
    "ru": "В 1958 году закон наклеил стикер на окно каждой новой машины: цена, каждая опция, доставка — и итог.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -9130,9 +9904,9 @@
   {
    "id": "A4.3",
    "act": "A4",
-   "start": 699.065,
-   "end": 703.07,
-   "next": 703.57,
+   "start": 756.92,
+   "end": 760.925,
+   "next": 761.425,
    "text": "Cars got the total sixty-seven years before concert tickets did.",
    "ru": "Машины получили итоговую цену на шестьдесят семь лет раньше, чем билеты на концерты.",
    "note": "dry, a smile",
@@ -9201,11 +9975,64 @@
    "diff": []
   },
   {
+   "id": "A4.J9",
+   "act": "A4",
+   "start": 761.425,
+   "end": 766.475,
+   "next": 767.475,
+   "text": "Somewhere, a 1958 sedan is laughing.",
+   "ru": "Где-то смеётся седан 1958 года.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "two short horn honks",
+   "words": [
+    [
+     "Somewhere,",
+     0.0,
+     0.5
+    ],
+    [
+     "a",
+     1.22,
+     1.3
+    ],
+    [
+     "1958",
+     1.3,
+     2.2
+    ],
+    [
+     "sedan",
+     2.2,
+     2.8
+    ],
+    [
+     "is",
+     2.8,
+     3.32
+    ],
+    [
+     "laughing.",
+     3.32,
+     3.74
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "GPT ep04v2_g07_car -> Grok k6: the cartoon 1958 sedan winks one headlight",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "Somewhere, a 1958 sedan is laughing.",
+   "diff": []
+  },
+  {
    "id": "A4.4",
    "act": "A4",
-   "start": 703.57,
-   "end": 709.575,
-   "next": 709.975,
+   "start": 767.475,
+   "end": 773.48,
+   "next": 773.88,
    "text": "Because in 2025, the cops finally showed up. On both sides of the ocean.",
    "ru": "Потому что в 2025 году копы наконец появились. По обе стороны океана.",
    "note": "a little lift, energetic",
@@ -9296,9 +10123,9 @@
   {
    "id": "A4.5",
    "act": "A4",
-   "start": 709.975,
-   "end": 716.75,
-   "next": 717.15,
+   "start": 773.88,
+   "end": 780.655,
+   "next": 781.055,
    "text": "Britain first. Since April 2025, the price must include every fee you can't avoid.",
    "ru": "Сначала Британия. С апреля 2025 года в цену должны входить все сборы, которых не избежать.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -9394,13 +10221,13 @@
   {
    "id": "A4.6",
    "act": "A4",
-   "start": 717.15,
-   "end": 730.74,
-   "next": 731.34,
-   "text": "A driving-school group hid a three-pound booking fee from over eighty thousand learner drivers. It paid a four point two million pound fine. Three pounds. Very expensive pounds.",
-   "ru": "Группа автошкол прятала трёхфунтовый сбор за бронирование от более чем восьмидесяти тысяч учеников. Она заплатила штраф четыре целых две десятых миллиона фунтов. Три фунта. Очень дорогие фунты.",
+   "start": 781.055,
+   "end": 792.225,
+   "next": 792.825,
+   "text": "A driving-school group hid a three-pound booking fee from over eighty thousand learner drivers. It paid a four point two million pound fine.",
+   "ru": "Группа автошкол прятала трёхфунтовый сбор за бронирование от более чем восьмидесяти тысяч учеников. Она заплатила штраф четыре целых две десятых миллиона фунтов.",
    "note": "steady, then dry and amused on 'Three pounds. Very expensive pounds'",
-   "sound": "wry beat on 'very expensive pounds'",
+   "sound": "hit on the fine",
    "words": [
     [
      "A",
@@ -9410,137 +10237,112 @@
     [
      "driving-school",
      0.16,
-     0.82
+     1.26
     ],
     [
      "group",
-     0.82,
-     1.2
+     1.26,
+     1.78
     ],
     [
      "hid",
-     1.2,
-     1.56
+     1.78,
+     2.24
     ],
     [
      "a",
-     1.56,
-     1.8
+     2.24,
+     2.54
     ],
     [
      "three-pound",
-     1.8,
-     2.16
+     2.54,
+     2.94
     ],
     [
      "booking",
-     2.16,
-     2.62
-    ],
-    [
-     "fee",
-     2.62,
-     3.0
-    ],
-    [
-     "from",
-     3.0,
+     2.94,
      3.44
     ],
     [
-     "over",
+     "fee",
      3.44,
-     3.72
+     3.82
     ],
     [
-     "eighty",
-     3.72,
-     4.08
+     "from",
+     3.82,
+     4.28
     ],
     [
-     "thousand",
-     4.08,
+     "over",
+     4.28,
      4.64
     ],
     [
-     "learner",
+     "eighty",
      4.64,
-     5.0
+     5.06
+    ],
+    [
+     "thousand",
+     5.06,
+     5.66
+    ],
+    [
+     "learner",
+     5.66,
+     6.08
     ],
     [
      "drivers.",
-     5.0,
-     5.4
+     6.08,
+     6.54
     ],
     [
      "It",
-     6.0,
-     6.1
+     7.5,
+     7.64
     ],
     [
      "paid",
-     6.1,
-     6.52
+     7.64,
+     8.1
     ],
     [
      "a",
-     6.52,
-     6.76
+     8.1,
+     8.58
     ],
     [
      "four",
-     6.76,
-     7.12
-    ],
-    [
-     "point",
-     7.12,
-     7.12
-    ],
-    [
-     "two",
-     7.12,
-     7.74
-    ],
-    [
-     "million",
-     7.74,
-     8.3
-    ],
-    [
-     "pound",
-     8.3,
-     8.3
-    ],
-    [
-     "fine.",
-     8.3,
+     8.58,
      9.0
     ],
     [
-     "Three",
-     9.94,
-     10.72
+     "point",
+     9.0,
+     9.0
     ],
     [
-     "pounds.",
-     9.94,
-     10.72
+     "two",
+     9.0,
+     9.62
     ],
     [
-     "Very",
-     11.74,
-     12.26
+     "million",
+     9.62,
+     10.26
     ],
     [
-     "expensive",
-     12.26,
-     12.82
+     "pound",
+     10.26,
+     10.26
     ],
     [
-     "pounds.",
-     12.82,
-     13.34
+     "fine.",
+     10.26,
+     10.96
     ]
    ],
    "shots": [
@@ -9560,16 +10362,132 @@
      "source": "pipeline"
     }
    ],
+   "takes": 5,
+   "heard": "A driving school group hid a £3 booking fee from over 80,000 learner drivers. It paid a £4.2 million fine.",
+   "diff": []
+  },
+  {
+   "id": "A4.J10",
+   "act": "A4",
+   "start": 792.825,
+   "end": 797.595,
+   "next": 798.595,
+   "text": "A driving school. You'd think they'd check their mirrors.",
+   "ru": "Автошкола. Казалось бы, уж они-то смотрят в зеркала.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "dry beat",
+   "words": [
+    [
+     "A",
+     0.0,
+     0.14
+    ],
+    [
+     "driving",
+     0.14,
+     0.74
+    ],
+    [
+     "school.",
+     0.74,
+     1.48
+    ],
+    [
+     "You'd",
+     2.52,
+     2.9
+    ],
+    [
+     "think",
+     2.9,
+     3.14
+    ],
+    [
+     "they'd",
+     3.14,
+     3.7
+    ],
+    [
+     "check",
+     3.7,
+     3.88
+    ],
+    [
+     "their",
+     3.88,
+     4.14
+    ],
+    [
+     "mirrors.",
+     4.14,
+     4.46
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "GPT ep04v2_g08_mirror: a rear-view mirror with a red police light reflected in it",
+     "tech": "slow push, the red light pulses",
+     "source": "GPT-still"
+    }
+   ],
    "takes": 1,
-   "heard": "A driving school group hid a £3 booking fee from over 80,000 learner drivers. It paid a £4.2 million fine. £3. Very expensive pounds.",
+   "heard": "A driving school. You'd think they'd check their mirrors.",
+   "diff": []
+  },
+  {
+   "id": "A4.6b",
+   "act": "A4",
+   "start": 798.595,
+   "end": 802.165,
+   "next": 802.965,
+   "text": "Three pounds. Very expensive pounds.",
+   "ru": "Три фунта. Очень дорогие фунты.",
+   "note": "dry and amused, deadpan",
+   "sound": "wry beat",
+   "words": [
+    [
+     "Three",
+     0.0,
+     0.4
+    ],
+    [
+     "pounds.",
+     0.4,
+     1.1
+    ],
+    [
+     "Very",
+     1.9,
+     2.14
+    ],
+    [
+     "expensive",
+     2.14,
+     2.76
+    ],
+    [
+     "pounds.",
+     2.76,
+     3.26
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn card: £3 -> £4.2M, the arrow drawn",
+     "tech": "T1 + T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Three pounds. Very expensive pounds.",
    "diff": []
   },
   {
    "id": "A4.7",
    "act": "A4",
-   "start": 731.34,
-   "end": 736.26,
-   "next": 736.66,
+   "start": 802.965,
+   "end": 807.885,
+   "next": 808.285,
    "text": "And in June 2026, StubHub's British arm was fined too.",
    "ru": "А в июне 2026 года оштрафовали и британское подразделение StubHub.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -9640,9 +10558,9 @@
   {
    "id": "A4.8",
    "act": "A4",
-   "start": 736.66,
-   "end": 747.315,
-   "next": 747.715,
+   "start": 808.285,
+   "end": 818.94,
+   "next": 819.34,
    "text": "Then America. Since May 2025, ticket sellers and short stays — from hotels to vacation rentals — must show the total price upfront.",
    "ru": "Затем Америка. С мая 2025 года продавцы билетов и краткосрочного жилья — от отелей до съёмных квартир — должны сразу показывать полную цену.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -9783,9 +10701,9 @@
   {
    "id": "A4.9",
    "act": "A4",
-   "start": 747.715,
-   "end": 755.485,
-   "next": 755.885,
+   "start": 819.34,
+   "end": 827.11,
+   "next": 827.51,
    "text": "And in April 2026, StubHub agreed to pay ten million dollars back to buyers over fees it showed too late.",
    "ru": "А в апреле 2026 года StubHub согласился вернуть покупателям десять миллионов долларов за сборы, которые показывал слишком поздно.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -9911,9 +10829,9 @@
   {
    "id": "A4.10",
    "act": "A4",
-   "start": 755.885,
-   "end": 760.32,
-   "next": 760.92,
+   "start": 827.51,
+   "end": 831.945,
+   "next": 832.545,
    "text": "The same company that ran the rehearsal in 2015.",
    "ru": "Та самая компания, которая устроила репетицию в 2015-м.",
    "note": "pointed, quiet",
@@ -9979,9 +10897,9 @@
   {
    "id": "A4.11",
    "act": "A4",
-   "start": 760.92,
-   "end": 773.01,
-   "next": 773.51,
+   "start": 832.545,
+   "end": 844.635,
+   "next": 845.135,
    "text": "Notice what the rules don't do. They ban no fee at all. Fees pay for real things — card payments, staff, the venue. The rules only want the total, upfront.",
    "ru": "Обратите внимание, чего правила не делают. Они не запрещают ни одного сбора. Сборы оплачивают реальные вещи — платежи по картам, персонал, площадку. Правила требуют только полную цену, сразу.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -10162,9 +11080,9 @@
   {
    "id": "A4.12",
    "act": "A4",
-   "start": 773.51,
-   "end": 781.86,
-   "next": 782.46,
+   "start": 845.135,
+   "end": 853.485,
+   "next": 854.085,
    "text": "But no law sits next to you at 8:19 p.m. So let's rewind Larry's Tuesday — and do it right.",
    "ru": "Но никакой закон не сидит рядом с вами в 20:19. Так что давайте перемотаем вторник Ларри — и сделаем всё правильно.",
    "note": "warm, encouraging, a lift on 'and do it right'",
@@ -10290,9 +11208,9 @@
   {
    "id": "A4.13",
    "act": "A4",
-   "start": 782.46,
-   "end": 795.53,
-   "next": 795.93,
+   "start": 854.085,
+   "end": 867.155,
+   "next": 867.555,
    "text": "8:12. Check one: look for the all-in switch. Some ticket sites can show prices with fees included. Larry turns it on — before he falls for a seat, not after.",
    "ru": "20:12. Проверка первая: ищите переключатель «всё включено». Некоторые сайты билетов умеют показывать цены сразу со сборами. Ларри включает его — до того, как влюбится в место, а не после.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -10473,9 +11391,9 @@
   {
    "id": "A4.14",
    "act": "A4",
-   "start": 795.93,
-   "end": 799.36,
-   "next": 799.96,
+   "start": 867.555,
+   "end": 870.985,
+   "next": 871.585,
    "text": "Suddenly, \"thirty\" says \"forty-eight\".",
    "ru": "И вдруг «тридцать» превращается в «сорок восемь».",
    "note": "a small surprise",
@@ -10516,9 +11434,9 @@
   {
    "id": "A4.15",
    "act": "A4",
-   "start": 799.96,
-   "end": 812.84,
-   "next": 813.24,
+   "start": 871.585,
+   "end": 884.465,
+   "next": 884.865,
    "text": "8:14. Check two: go to the last screen before you decide. The real price lives one click before Pay. No little clock can rush a man who already knows the total.",
    "ru": "20:14. Проверка вторая: дойдите до последнего экрана до того, как решите. Настоящая цена живёт за один клик до «Оплатить». Никакие маленькие часики не поторопят человека, который уже знает итог.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -10704,9 +11622,9 @@
   {
    "id": "A4.16",
    "act": "A4",
-   "start": 813.24,
-   "end": 822.755,
-   "next": 823.155,
+   "start": 884.865,
+   "end": 894.38,
+   "next": 894.78,
    "text": "8:15. Check three: compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.",
    "ru": "20:15. Проверка третья: сравнивайте итоги, а не заголовки. Билет за сорок без сборов лучше билета за тридцать плюс восемнадцать.",
    "note": "firm and steady, then warmer and lighter as the story resolves",
@@ -10827,9 +11745,9 @@
   {
    "id": "A4.17",
    "act": "A4",
-   "start": 823.155,
-   "end": 836.025,
-   "next": 836.725,
+   "start": 894.78,
+   "end": 907.65,
+   "next": 908.35,
    "text": "Larry reopens the first tab. Forty dollars. Done. Three minutes, and ten dollars still in his pocket on Friday. This time, Larry really is a genius.",
    "ru": "Ларри снова открывает первую вкладку. Сорок долларов. Готово. Три минуты — и в пятницу у него в кармане всё ещё десять долларов. На этот раз Ларри действительно гений.",
    "note": "warm, a real smile on 'This time, Larry really is a genius'",
@@ -10990,9 +11908,9 @@
   {
    "id": "A4.18",
    "act": "A4",
-   "start": 836.725,
-   "end": 842.405,
-   "next": 843.205,
+   "start": 908.35,
+   "end": 914.03,
+   "next": 914.83,
    "text": "Saturday night. Larry is in his seat. The band is worth every cent.",
    "ru": "Субботний вечер. Ларри на своём месте. Группа стоит каждого цента.",
    "note": "warm and glowing",
@@ -11081,11 +11999,129 @@
    "diff": []
   },
   {
+   "id": "A4.J11",
+   "act": "A4",
+   "start": 914.83,
+   "end": 922.59,
+   "next": 923.59,
+   "text": "He spent the ten dollars on a hot dog. Best hot dog of his life. All fees included.",
+   "ru": "Он потратил десять долларов на хот-дог. Лучший хот-дог в его жизни. Все сборы включены.",
+   "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence",
+   "sound": "warm; stamp on 'included'",
+   "words": [
+    [
+     "He",
+     0.0,
+     0.16
+    ],
+    [
+     "spent",
+     0.16,
+     0.58
+    ],
+    [
+     "the",
+     0.58,
+     0.88
+    ],
+    [
+     "ten",
+     0.88,
+     1.32
+    ],
+    [
+     "dollars",
+     0.88,
+     1.32
+    ],
+    [
+     "on",
+     1.32,
+     2.12
+    ],
+    [
+     "a",
+     2.12,
+     2.3
+    ],
+    [
+     "hot",
+     2.3,
+     2.5
+    ],
+    [
+     "dog.",
+     2.5,
+     2.8
+    ],
+    [
+     "Best",
+     3.64,
+     3.92
+    ],
+    [
+     "hot",
+     3.92,
+     4.24
+    ],
+    [
+     "dog",
+     4.24,
+     4.4
+    ],
+    [
+     "of",
+     4.4,
+     4.52
+    ],
+    [
+     "his",
+     4.52,
+     4.64
+    ],
+    [
+     "life.",
+     4.64,
+     5.0
+    ],
+    [
+     "All",
+     5.76,
+     5.98
+    ],
+    [
+     "fees",
+     5.98,
+     6.52
+    ],
+    [
+     "included.",
+     6.52,
+     7.44
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "GPT ep04v2_g09_hotdog: Larry at the concert with a hot dog, beaming",
+     "tech": "slow push",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "closer on the hot dog (new angle): stamp ALL FEES INCLUDED lands beside it (overlay)",
+     "tech": "push-in + T2 large stamp",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "He spent the $10 on a hot dog. Best hot dog of his life. All fees included.",
+   "diff": []
+  },
+  {
    "id": "A4.19",
    "act": "A4",
-   "start": 843.205,
-   "end": 858.555,
-   "next": 859.955,
+   "start": 923.59,
+   "end": 938.94,
+   "next": 940.34,
    "text": "So — why did Larry press Pay that first Tuesday? Because the first number had already done its job. By the last screen, the fee didn't arrive at a price. It arrived at a decision that was already made.",
    "ru": "Так почему же Ларри нажал «Оплатить» в тот первый вторник? Потому что первое число уже сделало своё дело. К последнему экрану сбор пришёл не к цене. Он пришёл к решению, которое уже было принято.",
    "note": "slow, reflective, the answer to the whole case",
@@ -11311,9 +12347,9 @@
   {
    "id": "A4.20",
    "act": "A4",
-   "start": 859.955,
-   "end": 861.405,
-   "next": 862.405,
+   "start": 940.34,
+   "end": 941.79,
+   "next": 942.79,
    "text": "Case closed.",
    "ru": "Дело закрыто.",
    "note": "firm, final, measured",
@@ -11344,9 +12380,9 @@
   {
    "id": "A4.21",
    "act": "A4",
-   "start": 862.405,
-   "end": 871.585,
-   "next": 872.185,
+   "start": 942.79,
+   "end": 951.97,
+   "next": 952.57,
    "text": "The verdict. Guilty: the fee at the end — and its cousin, the resort fee. Accomplice: the first number on the screen.",
    "ru": "Приговор. Виновен: сбор в конце — и его кузен, курортный сбор. Соучастник: первое число на экране.",
    "note": "measured, like a judge reading a verdict",
@@ -11487,9 +12523,9 @@
   {
    "id": "A4.22",
    "act": "A4",
-   "start": 872.185,
-   "end": 886.665,
-   "next": 887.165,
+   "start": 952.57,
+   "end": 967.05,
+   "next": 967.55,
    "text": "Next case: the screen that asks how much you'd like to tip — before you've even had your coffee. Seventy-two percent of Americans say tipping is now expected in more places than five years ago. We'll find out who decided that.",
    "ru": "Следующее дело: экран, который спрашивает, сколько вы хотите оставить на чай, — ещё до того, как вы выпили кофе. Семьдесят два процента американцев говорят, что чаевые теперь ждут в большем числе мест, чем пять лет назад. Мы выясним, кто это решил.",
    "note": "intriguing, a little playful",
@@ -11725,9 +12761,9 @@
   {
    "id": "A4.23",
    "act": "A4",
-   "start": 887.165,
-   "end": 890.135,
-   "next": 893.135,
+   "start": 967.55,
+   "end": 970.52,
+   "next": 973.52,
    "text": "Subscribe, so the next case file finds you.",
    "ru": "Подпишитесь, чтобы следующее дело нашло вас.",
    "note": "friendly, warm",
@@ -11794,51 +12830,41 @@
    "silence_from": 51.605
   },
   {
-   "at": 317.87,
+   "at": 349.63,
    "len": 0.9,
    "line": "A2.14",
-   "silence_from": 323.855
+   "silence_from": 355.615
   },
   {
-   "at": 859.955,
+   "at": 940.34,
    "len": 0.9,
    "line": "A4.20",
-   "silence_from": 861.405
+   "silence_from": 941.79
   }
  ],
  "breaks": [
   {
    "n": 1,
-   "at": 214.025,
+   "at": 236.365,
    "after": "A1.19",
    "line": "To answer that, we have to go where this job was planned. And rehearsed. On millions of people.",
    "ru": "Чтобы ответить, нам придётся отправиться туда, где это дело планировали. И репетировали. На миллионах людей."
   },
   {
    "n": 2,
-   "at": 504.235,
+   "at": 542.39,
    "after": "A2.31",
    "line": "Because when a trick works this well, it never stays in one theatre.",
    "ru": "Потому что когда трюк работает так хорошо, он никогда не остаётся в одном театре."
   },
   {
    "n": 3,
-   "at": 680.055,
+   "at": 737.91,
    "after": "A3.20",
    "line": "So who stops a race that nobody can afford to quit?",
    "ru": "Так кто остановит гонку, из которой никто не может себе позволить выйти?"
   }
  ],
  "act_card": 3.0,
- "hit_len": 0.9,
- "stt_known": [
-  {
-   "script": "Live Nation",
-   "heard": "Lyve Nation"
-  },
-  {
-   "script": "all together",
-   "heard": "altogether"
-  }
- ]
+ "hit_len": 0.9
 }

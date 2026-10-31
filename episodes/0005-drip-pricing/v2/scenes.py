@@ -167,7 +167,7 @@ ACTS.append(("A2", [
     ("Every good heist starts with a blueprint. This one was drawn in 1998.",
      "Каждое хорошее ограбление начинается с чертежа. Этот нарисовали в 1998 году.", 0.5, "Act 2 bed ub_mechanisms_of_action, pen scratch",
      [("ACT 2 · THE LAB title", "T5 kinetic title + T11", P),
-      ("GAP ep04v2_g01 blueprint table: blank blueprint sheet on a 1950s drafting table; the pen-line draws itself along the lines", "T1 true stroke", G)]),
+      ("GAP ep04v2_g01_blueprint: blank blueprint sheet on a 1950s drafting table; the pen-line draws itself along the lines", "T1 true stroke", G)]),
     ("Three marketing researchers — Morwitz, Greenleaf and Johnson — took one price and cut it in two: a base price, and a surcharge.",
      "Три исследователя маркетинга — Морвиц, Гринлиф и Джонсон — взяли одну цену и разрезали её надвое: базовая цена и надбавка.", 0.4, "pen",
      [("typed name card 'Morwitz · Greenleaf · Johnson · 1998' + paper card 'Divide and Prosper · Journal of Marketing Research 35(4)'", "T8 paper wobble + T2", P),
@@ -314,9 +314,9 @@ ACTS.append(("A3", [
     ("Known associates: a pool Larry will never swim in, a gym he will never visit, Wi-Fi he already pays for at home, and a newspaper nobody has opened since 1998.",
      "Известные сообщники: бассейн, в котором Ларри никогда не поплавает, спортзал, куда он не зайдёт, вай-фай, за который он уже платит дома, и газета, которую никто не открывал с 1998 года.", 0.4, "four camera flashes",
      [("Ep.4 m2b paddling pool in the hotel room — associate card POOL", "T2", G),
-      ("GAP ep04v2_g02 empty hotel gym — associate card GYM", "T2", G),
+      ("GAP ep04v2_g02_gym: empty hotel gym — associate card GYM", "T2", G),
       ("code-drawn Wi-Fi icon over Larry's home laptop (o4) — WI-FI", "T2", P),
-      ("GAP ep04v2_g03 an unopened yellowed newspaper at a hotel door — NEWSPAPER", "T2", G)]),
+      ("GAP ep04v2_g03_newspaper: an unopened yellowed newspaper at a hotel door — NEWSPAPER", "T2", G)]),
     ("The gym? That's your Monday plan, now with a fee.",
      "Спортзал? Это ваш план на понедельник, теперь с доплатой.", 1.0, "dry beat",
      [("ep04v2_g02_gym with the MONDAY page from A2.J5 pinned on the wall (code-drawn, callback)", "slow push + T2 pin", G)],
@@ -342,7 +342,8 @@ ACTS.append(("A3", [
      [("Ep.4 o1 code-drawn ticket, camera rises", "T12", P)]),
     ("In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
      "В сентябре 2025 года Федеральная торговая комиссия США и семь штатов подали в суд на Live Nation и Ticketmaster.", 0.4, "bed",
-     [("archive ftc_statue_1943 + date plate SEPT 2025 · FTC + 7 STATES", "T5 + slow push", A)]),
+     [("archive ftc_statue_1943 + date plate SEPT 2025 · FTC + 7 STATES", "T5 + slow push", A),
+      ("code-drawn case caption: FTC + 7 STATES v. LIVE NATION / TICKETMASTER · C.D. Cal. · ALLEGED", "T8 paper + T2", P)]),
     ("They allege the fees run from twenty-four to forty-four percent of the total price — and that fans paid over sixteen point four billion dollars in mandatory fees.",
      "Они утверждают, что сборы составляют от двадцати четырёх до сорока четырёх процентов полной цены — и что фанаты заплатили больше шестнадцати целых четырёх десятых миллиарда долларов обязательных сборов.", 0.4, "bed",
      [("Ep.4 b4 doc card FTC complaint ¶36", "T8 + T9", P),
@@ -353,7 +354,8 @@ ACTS.append(("A3", [
      {"id": "A3.J7", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Larry's eighteen dollars? Thirty-seven and a half percent of what he paid. Right inside that range.",
      "Восемнадцать долларов Ларри? Тридцать семь с половиной процентов от того, что он заплатил. Прямо внутри этого диапазона.", 0.5, "bed",
-     [("Ep.4 b6 chart: 24% · Larry 37.5% · 44%", "T4 eased chart build", P)]),
+     [("code-drawn: $18 out of $48, the fee slice of Larry's total highlighted", "T9 highlighter", P),
+      ("Ep.4 b6 chart: 24% · Larry 37.5% · 44%", "T4 eased chart build", P)]),
     ("In September 2026, a judge refused to throw the case out. It goes on. Until a court decides, every word of it is an allegation.",
      "В сентябре 2026 года судья отказался закрыть дело. Оно продолжается. Пока суд не решит, каждое слово в нём — обвинение.", 0.6, "bed",
      [("Ep.4 b9 doc card Order Sept 28, 2026 · Motion to dismiss DENIED", "T2 stamp DENIED", P),
@@ -373,7 +375,8 @@ ACTS.append(("A3", [
      [("two code-drawn price tags: HONEST $40 vs '$30' (+fees hidden) — the crowd goes to $30", "T4", P)]),
     ("Which is why there are so few honest sellers. Mystery solved.",
      "Вот почему честных продавцов так мало. Загадка раскрыта.", 1.0, "heavy stamp thud on 'solved'",
-     [("ep04v2_a3_race: the empty honest shop; a CASE stamp SOLVED lands crooked on its blank sign", "T2 large stamp", G)],
+     [("ep04v2_a3_race: the two shop fronts, the long queue at the right one", "slow push", G),
+      ("closer on the empty honest shop (new angle): a CASE stamp SOLVED lands crooked on its blank sign", "push-in + T2 large stamp", G)],
      {"id": "A3.J8", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("So this isn't one villain. It's a race. And in this race, whoever tells you the truth first finishes last.",
      "Так что это не один злодей. Это гонка. И в этой гонке тот, кто первым говорит вам правду, приходит последним.", 0.5, "race tension builds",
@@ -514,7 +517,9 @@ def beat_ids():
 
 CLIFF = {"A1": "To answer that", "A2": "Because when a trick", "A3": "So who stops"}
 STILLS = ["ep04v2_a1_wallet", "ep04v2_a1_glow", "ep04v2_a2_safe", "ep04v2_a2_mug", "ep04v2_a2_calculators",
-          "ep04v2_a2_lookout", "ep04v2_a3_lineup", "ep04v2_a3_courtroom", "ep04v2_a3_race", "ep04v2_a4_police", "ep04v2_a4_seat"]
+          "ep04v2_a2_lookout", "ep04v2_a3_lineup", "ep04v2_a3_courtroom", "ep04v2_a3_race", "ep04v2_a4_police", "ep04v2_a4_seat",
+          "ep04v2_g01_blueprint", "ep04v2_g02_gym", "ep04v2_g03_newspaper", "ep04v2_g04_daydream", "ep04v2_g05_bomb", "ep04v2_g06_diet",
+          "ep04v2_g07_car", "ep04v2_g08_mirror", "ep04v2_g09_hotdog"]
 
 
 def tc(s: float) -> str:
@@ -548,8 +553,14 @@ def main(out: str) -> int:
         for bb in beats:
             en, ru, pause, sound, shots = bb[:5]
             bid = ids[id(bb)]
-            if bid in real:  # the real voice: this line's start to the next line's start
-                t, d = real[bid]["start"], real[bid]["next"] - real[bid]["start"]
+            if bid in real:  # the real voice, cut like the exporter: pictures lead their line by 0.15 s, a picture
+                rb = real[bid]  # cuts on a brass hit, and the last picture of an act ends on the ad break
+                tjd = json.loads(tj.read_text())
+                hit = {h["line"]: h["at"] for h in tjd["hits"]}
+                brk = {x["after"]: x["at"] for x in tjd["breaks"]}
+                t = max(0.0, rb["start"] - 0.15)
+                z = brk.get(bid, hit.get(bid, rb["next"] - 0.15))
+                d = z - t
             else:
                 d = (len(en.split()) / WPS + pause) * scale
             per = d / len(shots)
@@ -573,13 +584,14 @@ def main(out: str) -> int:
     if over:
         return 1
     head = [
-        "# Ep.4 v2 · \"The Seven-Minute Heist\" · scene list (Stage 1)",
+        "# Ep.4 v2 · \"The Seven-Minute Heist\" · scene list (Stage 2: with the 11 jokes, real voice timing)",
         "",
         "Generated by `episodes/0005-drip-pricing/v2/scenes.py` — edit there, not here. r90 stays archived; nothing here touches it.",
         "",
-        f"**Estimated length:** {tcs(total)} ({total:.0f} s) · **shots:** {shots_n} · **longest shot:** {longest:.1f} s (limit 8 s) · "
-        f"timing = words at {WPS} w/s + designed pauses" + (f"; cold open = measured voice samples ({cold_len:.1f} s)" if cold_len else "") + ".",
-        "Final timecodes come from the render's `timings.json` (the ad-break table below is re-printed from it at Stage 2).",
+        f"**Length:** {tcs(total)} ({total:.0f} s) · **shots:** {shots_n} · **longest shot:** {longest:.1f} s (limit 8 s) · "
+        + ("timing = the real fable voice (timings.json: every line's start, pictures lead by 0.15 s, cut on brass hits and ad breaks)."
+         if real else f"timing = words at {WPS} w/s + designed pauses" + (f"; cold open = measured voice samples ({cold_len:.1f} s)" if cold_len else "") + "."),
+        "The render's exporter may move a cut inside a line so each word-cued event falls in its own shot (never under 1.4 s).",
         "",
         "**Format (permanent from Ep.4 v2):** mechanism → why we fall for it → prosecution + defence → how not to fall for it. "
         "Everything said is shown on screen.",
@@ -595,8 +607,8 @@ def main(out: str) -> int:
             "Place each mid-roll at the timecode (YouTube Studio → Content → the video → Monetization → Ad breaks → place manually). They sit in the silence after the cliffhanger and before the act title card.",
             "", "| Break | Timecode | Cliffhanger right before it (EN / RU) |", "|---|---|---|"]
     for i, (k, at, en, ru) in enumerate(breaks, 1):
-        tail.append(f"| {i} · end of {PALETTE[k][0]} | **{tcs(at)}** | {en}<br>*{ru}* |")
-    tail += ["", "## The 11 GPT stills — where each one goes", "", "| Still | Used in |", "|---|---|"]
+        tail.append(f"| {i} · end of {PALETTE[k][0]} | **{int(at // 60)}:{int(at % 60):02d}** | {en}<br>*{ru}* |")
+    tail += ["", "## The GPT stills — where each one goes", "", "| Still | Used in |", "|---|---|"]
     body = "\n".join(lines_md)
     for s in STILLS:
         where = sorted({ln.split("|")[1].strip() for ln in lines_md if s in ln})

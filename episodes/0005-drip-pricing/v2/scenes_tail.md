@@ -26,6 +26,55 @@ All in the Ep.4 look: 1950s, cream/pastel, flat warm light, **no text, no logos,
 
 Everything else in the list is code-drawn (Remotion layer) or already in the repo: Ep.4 stills o4, a4, a5, a10/a11, a12, b1, c1, c4, l1, l2, l8, m1b, m2, m2b, n4, o1, sub, x1, z0; Ep.4 clips a10, a12, x1, z0; archive (LoC FSA/OWI, no known restrictions) box_office_loews_capitol_1939, radio_city_crowd_1942, radio_city_ticket_booth_1942, concert_audience_chicago_1941, hotel_clerk_dover_1938, hotel_sign_cooperstown_1937, ftc_statue_1943, car_showroom_1942; next_tablet.png.
 
+### Joke gags (Klot's script update): 6 more GPT stills + 2 Grok clips
+
+Same rules as above: the 1950s look, and no text, numbers or logos inside any picture. Every extra word (day numbers, GYM, SOLVED, ALL FEES INCLUDED, prices) is written by our overlay.
+
+| File | Prompt | Used in |
+|---|---|---|
+| ep04v2_g04_daydream | Larry (same character as the reference sheet: red fedora, yellow check jacket, black moustache) at his kitchen table at night in laptop glow, chin on his hand, eyes half closed, smiling dreamily; above his head a big round white thought bubble with a juicy hot dog in a bun with mustard; 1950s print-advertising illustration, cream and pastel palette, flat warm light, no text, no letters, no numbers | A1.J1a, A1.J1b (the bubble pops) |
+| ep04v2_g05_bomb | a round black cartoon 1950s bomb with a short fuse on top and a round alarm-clock face on its front, the clock face plain cream and completely blank, a small spark at the tip of the fuse, on a plain cream tabletop, plain dark-blue background, 1950s print-advertising illustration, flat warm light, no text, no numbers | A1.J2a (Grok k5) |
+| ep04v2_g06_diet | a 1950s cream refrigerator in a pastel kitchen at night, a blank paper calendar taped to the fridge door (a plain grid of empty squares), a slice of cake on a plate on the counter beside it, 1950s print-advertising illustration, flat warm light, no text, no numbers, no letters | A2.J4a |
+| ep04v2_g07_car | a cheerful cartoon two-tone 1958 sedan in mint green and cream, front three-quarter view in a 1950s showroom, round headlights like friendly eyes and the chrome grille like a wide grin, 1950s print-advertising illustration, flat warm light, no text, no logos, no letters | A4.J9 (Grok k6) |
+| ep04v2_g08_mirror | close-up of a 1950s car's chrome rear-view mirror on the windscreen at night; in the mirror, the reflection of a police car's red rotating roof light glowing; a soft red glow on the chrome, the rest of the windscreen dark blue; 1950s print-advertising illustration, flat light, no text, no letters, no numbers | A4.J10 |
+| ep04v2_g09_hotdog | Larry (same character as the reference sheet) in a red velvet concert-hall seat under warm stage light, holding a hot dog in a bun with mustard, beaming with joy, the audience soft in the background; 1950s print-advertising illustration, cream and pastel palette, no text, no letters | A4.J11a, A4.J11b (stamp ALL FEES INCLUDED) |
+
+*Перевод промптов:* g04 — Ларри (как на референсе: красная шляпа, жёлтый пиджак в клетку, чёрные усы) ночью за кухонным столом в свете ноутбука, подбородок на руке, глаза прикрыты, мечтательная улыбка; над головой большое белое облачко мыслей с сочным хот-догом с горчицей. g05 — круглая чёрная мультяшная бомба 1950-х с коротким фитилём и круглым циферблатом будильника спереди, циферблат кремовый и совершенно пустой, искорка на кончике фитиля, кремовая столешница, тёмно-синий фон. g06 — кремовый холодильник 1950-х на пастельной кухне ночью, на дверце приклеен пустой бумажный календарь (сетка пустых клеточек), рядом на столе кусок торта на тарелке. g07 — весёлый мультяшный двухцветный седан 1958 года, мятный с кремовым, вид спереди в три четверти в автосалоне 1950-х, круглые фары как добрые глаза, хромированная решётка как широкая улыбка. g08 — крупно хромированное зеркало заднего вида 1950-х ночью; в зеркале отражается красный проблесковый маячок полицейской машины, мягкий красный отблеск на хроме, остальное стекло тёмно-синее. g09 — Ларри (как на референсе) в красном бархатном кресле концертного зала под тёплым светом сцены, с хот-догом с горчицей в руке, сияет от счастья, зрители размыты на фоне. Везде: стиль рекламной иллюстрации 1950-х, без текста, цифр и букв.
+
+Grok clips (image-to-video from the stills above; preservation block, one action, one camera move, one secondary move, sound; the clips are used muted under our own mix):
+
+| File | From | Prompt | Length |
+|---|---|---|---|
+| ep04v2_k5_bomb | ep04v2_g05_bomb | Keep the exact illustration: the round black cartoon bomb with its blank cream clock face, the plain dark-blue background, the 1950s print style and colours. The spark at the tip of the fuse fizzes and crawls slowly down the fuse. Slow push-in toward the clock face. Tiny orange sparks drift upward and fade. Sound: a soft crackling fuse hiss and a quiet clock tick; no music, no voice. | 8 s |
+| ep04v2_k6_car | ep04v2_g07_car | Keep the exact illustration: the mint-green and cream 1958 sedan, its round headlights as friendly eyes, the chrome grille grin, the showroom, the 1950s print style and colours. The left headlight dims and brightens once, like a slow wink. Slow push-in toward the front of the car. The chrome catches a soft sparkle of light. Sound: one short friendly horn toot and a quiet showroom room tone; no music, no voice. | 6 s |
+
+*Перевод:* k5 — сохранить иллюстрацию в точности (бомба, пустой кремовый циферблат, тёмно-синий фон, стиль и цвета 1950-х); искра на кончике фитиля шипит и медленно ползёт по фитилю; медленный наезд на циферблат; крошечные оранжевые искры поднимаются и гаснут; звук: тихое шипение фитиля и тиканье часов, без музыки и голоса. k6 — сохранить иллюстрацию в точности (мятно-кремовый седан 1958 года, фары-глаза, улыбка решётки, автосалон, стиль 1950-х); левая фара гаснет и снова загорается — медленное подмигивание; медленный наезд на перед машины; хром ловит мягкий блик; звук: один короткий дружелюбный гудок и тихий фон автосалона, без музыки и голоса.
+
+## The drawing hand (channel signature) · where it appears in the full render
+
+Rules: production rules 1–7, 10, 11, R37. A right hand with a plain white cuff (assets/hands/*_cuff.png) holds the pen to the right of and below the nib. The ink appears only behind the nib, one line at a time, one hand on screen at a time. The hand leaves after the last letter, and the scratch sound plays only while ink is being laid. Small stamps are pressed by the stamp hand; large stamps (CASE CLOSED, SOLVED, ALL FEES INCLUDED, +60%) drop in from above with a thud (rule 8). Typed text (case file, typed labels) and on-screen interface (the checkout's tick box, the PAY button) have no hand.
+
+Ink on Klot's pictures, written by the hand (and checked by the mark audit: on its object, in frame, never under the subtitles, never over a moving part of a clip):
+- A2.1b g01 blueprint: the pen line drawing along the blueprint
+- A2.8a Ep.4 a4: the all-in price written on the blank price board
+- A2.9a, A2.10a, A4.10 Ep.4 a5 queue: A / B, FULL PRICE / TICKET ONLY, AUG 2015 circled
+- A2.J4a g06 diet calendar: day numbers and the cross on day 3
+- A3.4b a3_lineup: the aliases on the height chart
+- A3.8 Ep.4 c4 hotel bill: the arrow from the fee line to TAX
+- A3.19a k2 shop fronts: ALL-IN and $30 on the two blank signs (written after the clip's moving parts pass, rule 25)
+- A4.15b Ep.4 m1b laptop: LAST SCREEN
+- A4.17c Ep.4 o4: the crown over Larry (well above his own hands, rule 10)
+
+Ink on our code-drawn cards is written by the same hand, so the signature runs through every act:
+- Act 1: A1.5 crown, A1.17a timeline, A1.17b $18 circled, A1.19a floor plan
+- Act 2: A2.2b the cut through the price tag, A2.20b, A2.21a LARRY on the seat, A2.25e $5 = $5, A2.J5 GYM and its strike-through, A2.27b the four locks marked, A2.30 SUBSCRIBE
+- Act 3: A3.J7 has no ink (the icons multiply)
+- Act 4: A4.2b TOTAL underlined, A4.6b the £3 → £4.2M arrow, A4.11b CARD PAYMENTS · STAFF · VENUE, A4.21a, A4.23
+
+Stamp hand (small stamps on paper): COLD.4a FICTIONAL, COLD.4b REAL, A3.4a SUSPECT. Drop-in (large): A1.13 +60%, A3.J8 SOLVED, A4.20 CASE CLOSED, A4.J11b ALL FEES INCLUDED.
+
+Status: PREVIEW 1 has no hand yet (its few strokes drew themselves on cards). The hand comes into the Remotion layer before the full render, from the engine the pilot already used (pilot/remotion Piece.tsx: true-stroke handwriting with the hand). It is shown first in the next preview, which is checked with the hand checks: hand_over_ink, one hand at a time, sfx_sync, mark audit.
+
 ## Researchers · name card + paper card on each name
 
 No AI face of a real person, ever. A real photo only where a free licence exists; the render step downloads it from Commons and writes the licence + author into `credits.json` and the description; if the licence on the file page is not free at download time, the shot falls back to the typed name card.
