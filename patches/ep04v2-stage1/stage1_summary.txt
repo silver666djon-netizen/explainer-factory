@@ -1,0 +1,25 @@
+Ep.4 v2 "The Seven-Minute Heist": Stage 1 (plan only, no full render). r90 untouched.
+
+1) Scene list: ep04v2_scenes.md (attached). 180 shots, about 14:38 estimated, longest shot 7.8 s. Act palettes. Each shot has its technique (the 13 from the study) and a source label: pipeline / archive / GPT-still / GROK-clip. Every narration line is translated into Russian.
+
+2) Your 11 GPT stills are all placed (table in the doc). Still needed: 3 more stills (blueprint table, empty hotel gym, unopened newspaper) and 4 Grok clips made from your stills (glow, race, police, seat). Prompts are in the doc.
+
+3) Researchers: a typed name card and a typeset paper card for each. Real photos only for Kahneman (CC BY-SA 2.0) and Thaler (CC BY 2.0), plus the CC0 Cornell mug. No AI faces.
+
+4) Voice: 3 cold-open samples (attached), with music bed, hit and 1 s of silence. A = OpenAI gpt-audio "fable" through OpenRouter (~$1-2 per episode, existing key). B = gpt-audio "ballad" (same). C = Chatterbox, free, MIT. The GEMINI_API_KEY secret in the repo is empty, so there is no Gemini sample. For Gemini or ElevenLabs, add the key as a GitHub secret (never in chat).
+
+5) Ad breaks (estimated; final from the render): 3:16 · 8:14 · 11:03, each right after its cliffhanger.
+
+6) 7 Shorts ideas, EN + RU, at the end of the doc.
+
+Your pick: A, B or C?
+
+---
+RU: Эп.4 v2 «Ограбление за семь минут» — этап 1 (только план, без полного рендера). r90 не тронут.
+1) Покадровый план ep04v2_scenes.md: 180 кадров, ~14:38 (оценка), самый длинный кадр 7,8 с, палитры актов, техника и источник на каждый кадр, русский перевод каждой реплики.
+2) Все 11 ваших GPT-кадров расставлены. Ещё нужно 3 кадра (чертёжный стол, пустой спортзал отеля, неоткрытая газета) и 4 клипа Grok из ваших кадров — промпты в документе.
+3) Учёные: печатная карточка имени + карточка статьи. Настоящие фото только Канемана (CC BY-SA 2.0), Талера (CC BY 2.0) и кружка CC0. Никаких ИИ-лиц.
+4) Голос: 3 пробы холодного открытия. A — gpt-audio «fable» через OpenRouter (~$1–2 за выпуск, ключ уже есть), B — «ballad», C — Chatterbox, бесплатно. Секрет GEMINI_API_KEY в репо пустой — пробы Gemini нет. Для Gemini или ElevenLabs добавьте ключ как секрет GitHub (не в чат).
+5) Рекламные паузы (оценка): 3:16 · 8:14 · 11:03 — сразу после клиффхэнгеров.
+6) 7 идей Shorts — в конце документа.
+Какой голос: A, B или C?

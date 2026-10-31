@@ -62,3 +62,19 @@ Not rendered. Each one ends on a line that runs straight back into its first lin
    *«В 2014 году сайт билетов попробовал полную честность» → показал все сборы сразу и потерял покупателей в пользу тех, кто не показывал → «Так кто осмелится быть честным первым?»*
 7. **Three very expensive pounds** — "A three-pound fee" → hidden from over 80,000 learner drivers, it ended in a £4.2 million fine → "Three pounds. Very expensive pounds."
    *«Сбор в три фунта» → его прятали от более чем 80 000 учеников автошкол, и всё закончилось штрафом £4,2 млн → «Три фунта. Очень дорогие фунты».*
+
+## Voice · three cold-open samples (pick by ear)
+
+All three read the same 9 lines with the same acting note per line (low and unhurried; dry beats; a smile on "and said thank you" and "Larry is made up"; slow and heavy on "and you paid anyway"; menace on "And it wasn't you"). They also share the same designed pauses and the same bed (ub_ticking_tension, −20 dB). Then come a short brass hit, **one real second of silence**, and the title line on the returning bed. Each take was heard back by speech-to-text and retaken until every word was there.
+
+| Sample | Provider · voice | Length | Hit at | STT words | Cost per episode (~10,000 characters, ~15 min) | Account / key needed |
+|---|---|---|---|---|---|---|
+| **A** cs_ep04v2_cold_open_A_openrouter_fable.mp3 | OpenRouter → OpenAI `gpt-audio`, voice **fable** (British-leaning, warm storyteller) | 63.9 s | 0:52 | 100% | ≈ $1–2 (audio out $64 per 1M tokens on OpenRouter; ≈20 tokens per second of speech, plus retakes) — estimate | **nothing new**: the OPENROUTER_API_KEY secret already in the repo; the cost comes off your OpenRouter credit |
+| **B** cs_ep04v2_cold_open_B_openrouter_ballad.mp3 | OpenRouter → OpenAI `gpt-audio`, voice **ballad** (lower, more theatrical) | 65.5 s | 0:53 | 99.1% (in the mix STT once heard "release file" for "Case file" at 0:55; the per-line check heard it right. Please listen there) | same as A | same as A |
+| **C** cs_ep04v2_cold_open_C_chatterbox.mp3 | **Chatterbox** (Resemble AI, MIT licence, runs free on the GitHub runner), timbre from Kokoro `bm_george` (British male), emotion set per line | 49.8 s | 0:38 | 100% | **$0**; CPU only: ~12 min per minute of voice, so a full episode is ~3 h of runner time (free for a public repo), split into chunks | **none** |
+
+Notes:
+- **Gemini TTS (voices Charon / Algenib) was planned, but the repo's GEMINI_API_KEY secret is empty.** Every run reports "GEMINI_API_KEY is empty", so A and B went through OpenRouter instead. If you want a Gemini voice too, create a key at Google AI Studio and save it as the GitHub secret **GEMINI_API_KEY** (Settings → Secrets and variables → Actions). Never paste it into the chat. Then I re-run the sample with no other change. Cost ≈ $0.2–0.5 per episode (research estimate, unverified). Output carries Google's inaudible SynthID watermark.
+- **ElevenLabs v3** (audio tags such as [whispers] or [sighs]) is not rendered: there is no key. It needs an elevenlabs.io account on a paid plan; commercial use comes with paid plans; Starter is about $6/month and an episode is ~10,000 characters. Save the key as the GitHub secret **ELEVENLABS_API_KEY** and I'll render sample D the same way. Prices are from the research pass; check them on the pricing page before you pay.
+- C is shorter because Chatterbox reads faster. Its pauses are the same designed pauses; the pace can be slowed per line.
+- Watermarks: Chatterbox output carries Resemble's inaudible Perth watermark; Gemini carries SynthID. I have not checked whether OpenAI audio is watermarked.

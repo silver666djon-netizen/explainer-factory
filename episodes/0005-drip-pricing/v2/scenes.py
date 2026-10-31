@@ -51,7 +51,8 @@ ACTS.append(("COLD", [
      [("three quick code-drawn crossed-out icons: mask · car · megaphone, on night blue", "T2 spring stamp ×3, a soft tick on each", P)]),
     ("The victim typed in his own card number, ticked the box, and said thank you.",
      "Жертва сама ввела номер своей карты, поставила галочку и сказала «спасибо».", 1.0, "bed, three soft UI clicks",
-     [("code-drawn card form on the glowing screen: digits appear as dots, the box ticks, a 'Thank you!' button presses (no hands)", "T1 tick drawn as a true stroke", P)]),
+     [("code-drawn card form on the glowing screen: digits appear as dots (no hands)", "T1 caret stroke", P),
+      ("the box ticks, a 'Thank you!' button presses", "T1 tick drawn as a true stroke", P)]),
     ("His name is Larry. Larry is made up. The fees are not.",
      "Его зовут Ларри. Ларри выдуман. А сборы — нет.", 0.9, "bed; a dry stamp on 'made up'",
      [("Ep.4 o4: Larry at the kitchen table in laptop glow; name card 'LARRY' + stamp FICTIONAL", "T2 stamp", G),
@@ -124,7 +125,7 @@ ACTS.append(("A1", [
     ("It's now eight dollars more than the ticket he closed. And it leaves him two dollars until Friday.",
      "Теперь он на восемь долларов дороже билета, который он закрыл. И до пятницы у него останется два доллара.", 0.5, "heartbeat",
      [("ghost of the closed tab $40 returns next to $48: '+$8'", "T9", P),
-      ("the wallet (a1_wallet) empties to $2; calendar strip TUE → FRI", "T4", G)]),
+      ("ep04v2_a1_wallet: the wallet empties to $2; calendar strip TUE → FRI", "T4", G)]),
     ("He looks at the clock. Six minutes left. He thinks about the seat he picked. The evening he has already imagined.",
      "Он смотрит на часы. Осталось шесть минут. Он думает о месте, которое выбрал. О вечере, который уже себе представил.", 0.3, "heartbeat speeds a touch",
      [("timer 6:00, close", "T3", P),
@@ -413,7 +414,7 @@ ACTS.append(("A4", [
     ("Larry reopens the first tab. Forty dollars. Done. Three minutes, and ten dollars still in his pocket on Friday. This time, Larry really is a genius.",
      "Ларри снова открывает первую вкладку. Сорок долларов. Готово. Три минуты — и в пятницу у него в кармане всё ещё десять долларов. На этот раз Ларри действительно гений.", 0.7, "warm major chord, the pizzicato from Act 1 returns resolved",
      [("tab 1 reopens: $40 ALL-IN, Pay pressed; corner clock 8:15", "T2", P),
-      ("wallet a1_wallet: $10 left, calendar TUE → FRI", "T4", G),
+      ("ep04v2_a1_wallet: $10 left, calendar TUE → FRI", "T4", G),
       ("o4 Larry, the hand-drawn crown again — now for real", "T1", G)]),
     ("Saturday night. Larry is in his seat. The band is worth every cent.",
      "Субботний вечер. Ларри на своём месте. Группа стоит каждого цента.", 0.8, "concert swell (Uppbeat, no vocals)",
@@ -456,7 +457,7 @@ def tcs(s: float) -> str:
 
 
 def main(out: str) -> int:
-    vs_json = ROOT / "vs" / "voice_samples.json"
+    vs_json = Path(__file__).with_name("voice_samples.json")
     cold_len = None
     if vs_json.exists():
         r = json.loads(vs_json.read_text())
@@ -513,7 +514,7 @@ def main(out: str) -> int:
         "Every line also gets T10 karaoke captions and passes the T13 pacing lint; they are not repeated in the rows.",
     ]
     tail = ["", "## Ad breaks · YouTube Studio mid-rolls", "",
-            "Place each mid-roll at the timecode (Studio → Monetisation → Ad breaks → Manual). They sit in the silence after the cliffhanger and before the act title card.",
+            "Place each mid-roll at the timecode (YouTube Studio → Content → the video → Monetization → Ad breaks → place manually). They sit in the silence after the cliffhanger and before the act title card.",
             "", "| Break | Timecode | Cliffhanger right before it (EN / RU) |", "|---|---|---|"]
     for i, (k, at, en, ru) in enumerate(breaks, 1):
         tail.append(f"| {i} · end of {PALETTE[k][0]} | **{tcs(at)}** | {en}<br>*{ru}* |")

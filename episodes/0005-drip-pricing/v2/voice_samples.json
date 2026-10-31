@@ -1,0 +1,25 @@
+{
+ "A_openrouter_fable": {
+  "file": "cs_ep04v2_cold_open_A_openrouter_fable.mp3",
+  "seconds": 62.8,
+  "hit_at": 51.97,
+  "engine": "OpenRouter openai/gpt-audio",
+  "voice": "fable",
+  "characters": 574
+ },
+ "B_openrouter_ballad": {
+  "file": "cs_ep04v2_cold_open_B_openrouter_ballad.mp3",
+  "seconds": 64.5,
+  "hit_at": 53.47,
+  "engine": "OpenRouter openai/gpt-audio",
+  "voice": "ballad",
+  "characters": 574
+ },
+ "C_chatterbox": {
+  "file": "cs_ep04v2_cold_open_C_chatterbox.mp3",
+  "seconds": 48.7,
+  "hit_at": 38.27,
+  "engine": "Chatterbox 0.1.x (MIT), CPU",
+  "voice": "timbre of Kokoro bm_george (Apache-2.0)"
+ }
+}
