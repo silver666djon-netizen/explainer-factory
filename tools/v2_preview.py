@@ -27,7 +27,7 @@ MISSING_OLD = {"ep04v2_a1_glow": "Klot's GPT still: dark room at night, a laptop
            "ep04v2_g04_daydream": "Klot's GPT still: Larry daydreaming of a hot dog in a thought bubble (the bubble pops on 'won't')",
            "ep04v2_g05_bomb": "Klot's GPT still: a cartoon bomb clock with a blank face (Grok clip k5: its fuse sparks)"}
 MISSING = {"ep04v2_a1_wallet": "an open wallet with $50 on a kitchen table at night", "ep04v2_g01_blueprint": "a blank blueprint on a drafting table",
-           "ep04v2_g04_daydream": "Larry daydreaming of a hot dog in a thought bubble", "ep04v2_g05_bomb": "a cartoon bomb clock with a blank face",
+           "ep04v2_g04_daydream": "Larry daydreaming of a hot dog in a thought bubble", "ep04v2_g05_bomb": "a cartoon bomb clock with red and blue wires",
            "ep04v2_s04_wall_clock": "a 1950s kitchen wall clock"}
 LOC_A2B = "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress"
 
@@ -66,7 +66,7 @@ S: dict[str, dict] = {
                  sfx=[{"kind": "paper", "on": "Case", "lead": 0.45}, {"kind": "type", "on": "Case"}, {"kind": "type", "on": "seven"}]),
     "A1.1a": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.02], [0.5, 0.5, 1.12]], title=["ACT 1", "THE MARK"]),
     "A1.1b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.15], [0.5, 0.48, 1.3]],
-                overs=[W_(t="calendar_strip", days=["TUE", "WED", "THU", "FRI"], amount="$50", write_on="fifty")]),
+                overs=[W_(t="calendar_strip", days=["TUE", "WED", "THU", "FRI"], amount="$50", write_on="fifty", cx=0.72, cy=0.27)]),
     "A1.2a": W_(base="a4_seat", cam=[[0.5, 0.55, 1.03], [0.5, 0.58, 1.15]], dream=True,
                 overs=[W_(t="plate", text="SATURDAY · 2 HOURS AWAY", at_on="Saturday", x=0.5, y=0.12)]),
     "A1.2b": W_(base="s06", cam=[[0.42, 0.45, 1.02], [0.36, 0.42, 1.14]]),
@@ -79,7 +79,7 @@ S: dict[str, dict] = {
                 sfx=[{"kind": "tap", "on": "closes"}, {"kind": "ding", "on": "Ten"}]),
     "A1.5b": W_(base="s06", cam=[[0.32, 0.36, 1.6], [0.32, 0.33, 1.8]], overs=[W_(t="crown", draw_on="genius", x=0.47, y=0.11, w=0.16)]),
     "A1.J1a": W_(base="g04", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]]),
-    "A1.J1b": W_(base="g04", cam=[[0.6, 0.35, 1.3], [0.62, 0.3, 1.5]], overs=[W_(t="pop", at_on="won't", x=0.5, y=0.35)],
+    "A1.J1b": W_(base="g04", cam=[[0.52, 0.4, 1.3], [0.52, 0.36, 1.5]], overs=[W_(t="pop", at_on="won't", x=0.5, y=0.28)],
                  sfx=[{"kind": "pop", "on": "won't"}]),
     "A1.6a": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.38, 0.42, 1.45]], screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30")], active=1, single=True)),
     "A1.6b": W_(base="s02", cam=[[0.45, 0.45, 1.05], [0.45, 0.45, 1.12]], screen=W_(mode="tabs", tabs=[W_(price="$30")], active=0),
@@ -90,7 +90,7 @@ S: dict[str, dict] = {
     "A1.8a": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.65, 0.3, 1.4]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
     "A1.8b": W_(base="s04", cam=[[0.45, 0.45, 1.02], [0.36, 0.33, 1.3]]),
     "A1.J2a": W_(base="g05", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
-    "A1.J2b": W_(base="g05", cam=[[0.5, 0.55, 1.25], [0.5, 0.55, 1.35]], overs=[W_(t="wires", snip_on="wires")],
+    "A1.J2b": W_(base="g05", cam=[[0.4, 0.55, 1.25], [0.4, 0.55, 1.32]], overs=[W_(t="wires", snip_on="wires", xa=0.12, xb=0.6, y=0.5)],
                  sfx=[{"kind": "snip", "on": "wires", "lead": -0.6}]),
     "A1.9a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.52, 0.42, 1.12]], screen=W_(mode="form", fillat_on=["Name", "Email", "Card"]),
                 sfx=[{"kind": "typing", "on": "Name", "dur": 0.6}, {"kind": "typing", "on": "Email", "dur": 0.6}, {"kind": "typing", "on": "Card", "dur": 0.9}]),

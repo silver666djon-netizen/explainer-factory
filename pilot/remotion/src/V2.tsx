@@ -1087,7 +1087,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			);
 		}
 		case 'calendar_strip': {
-			const w = 1000 * U, h = 200 * U, x = (SW - w) / 2, y = SH * 0.52;
+			const w = 1000 * U, h = 200 * U, x = o.cx != null ? SW * o.cx - w / 2 : (SW - w) / 2, y = SH * (o.cy ?? 0.52);
 			const k = sm((t - 0.2) / 0.35);
 			const n = o.days.length;
 			return (
@@ -1259,12 +1259,15 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			const y0 = SH * 0.62;
 			const wire = (dy: number) => `M ${SW * 0.5} ${SH * 0.45} C ${SW * 0.42} ${y0 + dy}, ${SW * 0.25} ${y0 + dy}, ${SW * 0.06} ${y0 + dy + 20 * U}`;
 			const hes = Math.sin(t * 5.2) * 0.5 + noise2D('sc', t * 0.7, 0) * 0.5;
-			const sx = SW * 0.3 + Math.sin(t * 1.7) * 20 * U, sy = y0 + hes * 50 * U;
+			// o.xa/o.xb/o.y: the still already has its own wires; the scissors only hesitate between them
+			const own = o.xa != null;
+			const sx = own ? SW * (o.xa + (o.xb - o.xa) * (0.5 - 0.5 * Math.cos(t * 1.4))) + hes * 14 * U : SW * 0.3 + Math.sin(t * 1.7) * 20 * U,
+				sy = own ? SH * o.y - 70 * U + hes * 30 * U : y0 + hes * 50 * U;
 			const open = 18 + 10 * Math.sin(t * 9);
 			return (
 				<svg width={SW} height={SH} style={{position: 'absolute', left: 0, top: 0, zIndex: 30}}>
-					<path d={wire(-40 * U)} fill="none" stroke={C.red} strokeWidth={18 * U} strokeLinecap="round" />
-					<path d={wire(40 * U)} fill="none" stroke="#3E7BD6" strokeWidth={18 * U} strokeLinecap="round" />
+					{own ? null : <path d={wire(-40 * U)} fill="none" stroke={C.red} strokeWidth={18 * U} strokeLinecap="round" />}
+					{own ? null : <path d={wire(40 * U)} fill="none" stroke="#3E7BD6" strokeWidth={18 * U} strokeLinecap="round" />}
 					<g transform={`translate(${sx} ${sy}) rotate(-90)`}>
 						<g transform={`rotate(${-open / 2})`}><path d={`M 0 0 L ${-12 * U} ${-150 * U} L ${12 * U} ${-150 * U} Z`} fill="#C9CED6" stroke={C.ink} strokeWidth={4 * U} /><circle cx={0} cy={52 * U} r={32 * U} fill="none" stroke={C.accent} strokeWidth={12 * U} /></g>
 						<g transform={`rotate(${open / 2})`}><path d={`M 0 0 L ${-12 * U} ${-150 * U} L ${12 * U} ${-150 * U} Z`} fill="#AEB4BE" stroke={C.ink} strokeWidth={4 * U} /><circle cx={0} cy={52 * U} r={32 * U} fill="none" stroke={C.accent} strokeWidth={12 * U} /></g>
