@@ -1,0 +1,21 @@
+Ep.4 v2: the whole English narration is voiced with A (gpt-audio "fable"), and the PREVIEW of cold open + Act 1 is ready. This is not a final.
+
+Voice: 102 lines, 14:53 in total. Every line was transcribed (whisper medium) and diffed against the script: 0 differences (voice_stt.md). "Live Nation" is spelled "Lyve Nation" in the TTS input only. A real 1 s of silence follows each brass hit (cold open, 21%, Case closed).
+
+Ad breaks for YouTube Studio (from timings.json): 3:34 · 8:24 · 11:20. Each one sits right after its cliffhanger.
+
+Preview (Remotion layer; only assets already in the repo):
+- 16:9: 0:00 to the first ad break (3:34), 42 shots, none over 8 s.
+- 9:16: the full cold open as a layout sample. It is 59 s, so it is not a Short (a Short must be 45 s or less).
+- Your 2 missing stills (ep04v2_a1_glow, ep04v2_a1_wallet) are held on labelled placeholder cards.
+- All 18 release checks pass, and each check caught its planted bug (qc_preview1.md).
+- Not tested here, because the preview has no drawing hand and no marks on pictures yet: hand and mark rules.
+
+Next: once your 14 stills are in, I put them in, then make the 4 Grok clip prompts.
+
+---
+RU: Эп.4 v2: весь английский текст озвучен голосом A («fable»), готово ПРЕВЬЮ холодного открытия и акта 1 (не финал).
+Голос: 102 реплики, 14:53. Каждая расшифрована и сверена со сценарием: 0 расхождений. «Live Nation» — «Lyve Nation» только во входе для TTS. После каждого удара меди — настоящая 1 с тишины.
+Рекламные паузы (из timings.json): 3:34 · 8:24 · 11:20, каждая сразу после клиффхэнгера.
+Превью: 16:9 от 0:00 до первой паузы (42 кадра, ни один не дольше 8 с) и 9:16 — образец вёрстки холодного открытия (59 с, это не Shorts). Два ваших недостающих кадра — на подписанных карточках-заглушках. Все 18 проверок пройдены, каждая ловит свою подложенную ошибку. Правила руки и пометок здесь не проверялись: в превью пока нет руки и пометок на картинках.
+Дальше: когда будут готовы ваши 14 кадров — вставляю их, затем промпты для 4 клипов Grok.
