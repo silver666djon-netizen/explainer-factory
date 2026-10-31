@@ -3,7 +3,12 @@ name: Ep.4 v2 preview (Remotion)
 # the Remotion layer from the scene list + the fable voice (draft ep04v2-preview1: timings.json, voice_24k.flac).
 # Masters, release checks + self-test (tools/v2_qc.py), contact sheets -> the same draft release. No Telegram here.
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      render:
+        description: "yes = render with Remotion; no = re-run the checks on the published preview files"
+        required: false
+        default: "yes"
 permissions:
   contents: write
 concurrency:
@@ -49,10 +54,17 @@ jobs:
           set -o pipefail
           python tools/v2_preview.py rel pilot/remotion/public pv 2>&1 | tee export.log \
             || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+      - name: Published preview files (checks only)
+        if: github.event.inputs.render == 'no'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/rel.sh download ep04v2-preview1 pv "cs_ep04v2_preview1_*.mp4"
       - name: Remotion install
+        if: github.event.inputs.render != 'no'
         working-directory: pilot/remotion
         run: npm install --no-audit --no-fund 2>&1 | tail -3
       - name: Render (timed)
+        if: github.event.inputs.render != 'no'
         working-directory: pilot/remotion
         run: |
           set -o pipefail
@@ -73,5 +85,6 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls pv/cs_ep04v2_preview1_*.mp4 pv/qc_preview1.md pv/sheet_*.png pv/render_time.txt 2>/dev/null || true)
+          files=$(ls pv/qc_preview1.md pv/sheet_*.png 2>/dev/null || true)
+          [ "${{ github.event.inputs.render }}" != "no" ] && files="$files $(ls pv/cs_ep04v2_preview1_*.mp4 pv/render_time.txt 2>/dev/null || true)"
           [ -n "$files" ] && tools/rel.sh upload ep04v2-preview1 $files

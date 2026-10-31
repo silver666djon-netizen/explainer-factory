@@ -258,50 +258,60 @@ def c_shorts_band(data=None, **_):
     return [] if data["band"][3] / data["H"] >= 0.5 else [f"band {data['band'][3] / data['H']:.0%} of the height"]
 
 
-def c_jitter(path=None, shots=None, **_):
-    """R28: camera moves on pictures are smooth: on every still/clip shot the frame-to-frame motion (ORB + affine) never
-    reverses by more than 0.25 px."""
-    if path is None:
-        return []
-    import cv2
+def _io(p):  # Remotion Easing.inOut(Easing.cubic)
+    p = min(1.0, max(0.0, p))
+    return 4 * p ** 3 if p < 0.5 else 1 - (-2 * p + 2) ** 3 / 2
+
+
+def cam_track(s, SW, SH, fps=30, per_frame_clamp=False):
+    """Screen position of four picture points, frame by frame, with V2.tsx's camera math (fitted ends, eased)."""
+    iw, ih = (s.get("iw"), s.get("ih")) if s["kind"] != "clip" else (1920, 1094)
+    base = max(SW / iw, SH / ih)
+
+    def fit(c):
+        sc = base * c[2]
+        hx, hy = SW / (iw * sc) / 2, SH / (ih * sc) / 2
+        return [min(max(c[0], hx), 1 - hx), min(max(c[1], hy), 1 - hy), c[2]]
+    a, b = (s["cam"] if per_frame_clamp else (fit(s["cam"][0]), fit(s["cam"][1])))
+    dur = s["end"] - s["start"]
+    pts = [(0.25, 0.25), (0.75, 0.25), (0.25, 0.75), (0.75, 0.75)]
     out = []
-    cap = cv2.VideoCapture(str(path))
-    fps = cap.get(cv2.CAP_PROP_FPS) or 30
-    orb = cv2.ORB_create(1500)
-    for s in shots:
-        if s["kind"] not in ("still", "archive"):
-            continue
-        a, b = s["start"] + 0.3, s["end"] - 0.3
-        fr = []
-        cap.set(cv2.CAP_PROP_POS_FRAMES, int(round(a * fps)))
-        for _k in range(max(0, int((b - a) * fps))):
-            ok, im = cap.read()
-            if not ok:
-                break
-            g = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-            fr.append(g[: int(g.shape[0] * 0.78)])  # above the subtitles
-        dx = []
-        for g0, g1 in zip(fr, fr[1:]):
-            k0, d0 = orb.detectAndCompute(g0, None)
-            k1, d1 = orb.detectAndCompute(g1, None)
-            if d0 is None or d1 is None or len(k0) < 20 or len(k1) < 20:
-                continue
-            m = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True).match(d0, d1)
-            if len(m) < 20:
-                continue
-            p0 = np.float32([k0[x.queryIdx].pt for x in m])
-            p1 = np.float32([k1[x.trainIdx].pt for x in m])
-            M, _ = cv2.estimateAffinePartial2D(p0, p1, method=cv2.RANSAC, ransacReprojThreshold=1.0)
-            if M is None:
-                continue
-            dx.append((M[0, 2], M[1, 2], float(np.hypot(M[0, 0], M[1, 0]))))
-        for k in range(2, len(dx)):
-            for ax in (0, 1):
-                prev = np.median([d[ax] for d in dx[max(0, k - 3):k]])
-                if abs(prev) > 0.5 and np.sign(dx[k][ax]) != np.sign(prev) and abs(dx[k][ax] - prev) > 0.25 + abs(prev) * 0.6:
-                    out.append(f"{s['id']}: motion reverses at {a + k / fps:.2f} s ({prev:.2f} -> {dx[k][ax]:.2f} px)")
-                    break
+    for k in range(int(dur * fps) + 1):
+        p = _io(k / fps / dur)
+        cx, cy, z = (a[i] + (b[i] - a[i]) * p for i in range(3))
+        sc = base * z
+        tx, ty = SW / 2 - cx * iw * sc, SH / 2 - cy * ih * sc
+        if per_frame_clamp:
+            tx, ty = min(max(tx, SW - iw * sc), 0), min(max(ty, SH - ih * sc), 0)
+        if s.get("_shake"):  # planted bug: a camera that shakes (integer crops, a wobbling track)
+            tx += s["_shake"] * ((k * 7919) % 3 - 1)
+        out.append([(tx + x * iw * sc, ty + y * ih * sc) for x, y in pts])
     return out
+
+
+def c_jitter(shots=None, data=None, per_frame_clamp=False, **_):
+    """R28 (as qc.jitter_check: from the plan, the exact camera the layer draws): on every picture shot, four picture
+    points move monotonically per axis; no reversal > 0.25 px frame to frame. Remotion draws the transform in float."""
+    b = data.get("band") or [0, 0, data["W"], data["H"]]
+    SW, SH = b[2], b[3]
+    out = []
+    for s in shots:
+        if s["kind"] not in ("still", "archive", "clip") or not s.get("cam"):
+            continue
+        tr = cam_track(s, SW, SH, per_frame_clamp=per_frame_clamp)
+        for j in range(4):
+            for ax in (0, 1):
+                v = [tr[k + 1][j][ax] - tr[k][j][ax] for k in range(len(tr) - 1)]
+                sgn = 0
+                for k, x in enumerate(v):
+                    if abs(x) < 1e-6:
+                        continue
+                    if sgn and (x > 0) != (sgn > 0) and abs(x) > 0.25:
+                        out.append(f"{s['id']}: point {j} {'xy'[ax]} reverses at {s['start'] + k / 30:.2f} s ({x:.2f} px)")
+                        break
+                    if abs(x) > 0.05:
+                        sgn = 1 if x > 0 else -1
+    return sorted(set(out))
 
 
 def c_decode(path=None, **_):
@@ -333,7 +343,7 @@ CHECKS = [
     ("count_up (R39)", c_count_up, "numbers appear whole"),
     ("captions (R23)", c_captions, "subtitle cards: no lone words, no dangling ends"),
     ("sfx_sync (R34)", c_sfx_sync, "scratch only while ink is laid"),
-    ("jitter (R28)", c_jitter, "no camera reversal > 0.25 px"),
+    ("jitter (R28)", c_jitter, "camera path: no reversal > 0.25 px (plan, as drawn)"),
     ("shorts_band (R38)", c_shorts_band, "9:16 picture band >= 50 %"),
 ]
 NOT_APPLICABLE = {
@@ -480,25 +490,12 @@ def selftest(ctx):
         c["path"] = bad
         return "truncated file"
     plant("decode", m_dec, c_decode)
-    rows.append(("jitter (R28)", "see jitter selftest below", "FAIL" if jitter_selftest() else "PASS"))
+    def m_jit(c):
+        c["shots"] = [{"id": "planted", "kind": "still", "iw": 2600, "ih": 1463, "start": 0.0, "end": 6.0,
+                       "cam": [[0.5, 0.5, 1.05], [0.6, 0.45, 1.35]], "_shake": 0.6}]
+        return "a push that shakes by 0.6 px frame to frame"
+    plant("jitter (R28)", m_jit, c_jitter)
     return rows
-
-
-def jitter_selftest() -> list[str]:
-    """A synthetic push with one frame shifted back 3 px must be caught."""
-    import cv2
-    rng = np.random.default_rng(3)
-    base = (rng.random((540, 960)) * 255).astype(np.uint8)
-    base = cv2.GaussianBlur(base, (0, 0), 2)
-    path = Path("/tmp/_jitter.mp4")
-    vw = cv2.VideoWriter(str(path), cv2.VideoWriter_fourcc(*"mp4v"), 30, (960, 540))
-    for k in range(90):
-        x = 2.0 * k - (6.0 if k == 50 else 0.0)
-        M = np.float32([[1, 0, -x], [0, 1, 0]])
-        im = cv2.warpAffine(base, M, (960, 540), borderMode=cv2.BORDER_REFLECT)
-        vw.write(cv2.cvtColor(im, cv2.COLOR_GRAY2BGR))
-    vw.release()
-    return c_jitter(path=path, shots=[{"id": "planted", "kind": "still", "start": 0.0, "end": 3.0}])
 
 
 def sheet(path: Path, out: Path, every: float = 1.5):
