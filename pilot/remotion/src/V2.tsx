@@ -669,7 +669,7 @@ const VersusView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 				{col(rx, s.right, s.right_tag, C.red)}
 				<div style={{position: 'absolute', left: SW / 2 - 2 * u, top: cy - 200 * u, width: 4 * u, height: 380 * u, background: '#2B4466'}} />
 				{s.left_cross ? <Stroke d={`M ${lx - 230 * u} ${cy + 60 * u} L ${lx + 230 * u} ${cy - 120 * u}`} t0={0.25} dur={0.35} t={t} w={18 * u} W={SW} H={SH} /> : null}
-				{s.badge_ !== undefined ? <Stamp text={s.badge} at={s.badge_} t={t} x={s.badge === '?' ? SW / 2 : rx + 250 * u} y={s.badge === '?' ? cy - 230 * u : cy - 210 * u} size={(s.badge === '?' ? 220 : 90) * u} rot={s.badge === '?' ? 6 : -10} color={s.badge === '?' ? C.accent : C.red} /> : null}
+				{s.badge_ !== undefined ? <Stamp text={s.badge} at={s.badge_} t={t} x={s.badge === '?' ? SW / 2 : rx + 250 * u} y={s.badge === '?' ? cy - 330 * u : cy - 210 * u} size={(s.badge === '?' ? 150 : 90) * u} rot={s.badge === '?' ? 6 : -10} color={s.badge === '?' ? C.accent : C.red} /> : null}
 			</AbsoluteFill>
 		</AbsoluteFill>
 	);
