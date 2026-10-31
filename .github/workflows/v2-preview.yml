@@ -1,0 +1,77 @@
+name: Ep.4 v2 preview (Remotion)
+# Klot Stage 2: PREVIEW 1 = cold open + Act 1 (to the first ad break) 16:9 + a 9:16 sample of the cold open, rendered by
+# the Remotion layer from the scene list + the fable voice (draft ep04v2-preview1: timings.json, voice_24k.flac).
+# Masters, release checks + self-test (tools/v2_qc.py), contact sheets -> the same draft release. No Telegram here.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: v2-preview
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-v1
+          restore-keys: kokoro-
+      - name: Python packages
+        run: pip install -q -r requirements.txt soundfile faster-whisper opencv-python-headless 2>&1 | tail -3
+      - name: Fonts
+        run: |
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf \
+                   ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
+      - name: Voice, timings, Ep.4 frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download ep04v2-preview1 rel timings.json voice_24k.flac
+          tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2b-*.png"
+          ls rel rel/frames
+      - name: Export the plan + audio mixes
+        run: |
+          set -o pipefail
+          python tools/v2_preview.py rel pilot/remotion/public pv 2>&1 | tee export.log \
+            || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+      - name: Remotion install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -3
+      - name: Render (timed)
+        working-directory: pilot/remotion
+        run: |
+          set -o pipefail
+          for n in long short; do
+            s0=$(date +%s)
+            npx remotion render src/index.ts V2 "../../pv/v2_${n}_silent.mp4" --props="{\"name\":\"v2_$n\"}" --concurrency=4 --muted --crf=22 --log=error 2>&1 | tail -30 > "../../pv/render_$n.log" \
+              || { tail -n 30 "../../pv/render_$n.log" | python3 -c 'import sys; print("::error title=render::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+            echo "$n: $(( $(date +%s) - s0 )) s" >> ../../pv/render_time.txt
+          done
+          cat ../../pv/render_time.txt
+      - name: Master + QC
+        run: |
+          set -o pipefail
+          python tools/v2_qc.py pv rel 2>&1 | tee qc.log || true
+          tail -n 60 qc.log | python3 -c 'import sys; print("::notice title=qc::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
+      - name: Publish into ep04v2-preview1
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls pv/cs_ep04v2_preview1_*.mp4 pv/qc_preview1.md pv/sheet_*.png pv/render_time.txt 2>/dev/null || true)
+          [ -n "$files" ] && tools/rel.sh upload ep04v2-preview1 $files
