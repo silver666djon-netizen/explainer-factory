@@ -37,14 +37,16 @@ GEMINI_MODELS = ["gemini-3.8-flash-tts", "gemini-3.1-flash-tts-preview", "gemini
 
 def gemini(text: str, note: str, voice: str, log: dict) -> np.ndarray:
     import requests
-    key = os.environ["GEMINI_API_KEY"]
+    key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if not key:
+        raise RuntimeError("GEMINI_API_KEY is empty in this run")
     prompt = (f"You are a British documentary narrator (Received Pronunciation, male, low voice). "
               f"Read the line below {note}. Read only the line.\n\n{text}")
     last = None
     for model in ([log["model"]] if log.get("model") else GEMINI_MODELS):
         for attempt in range(4):
             r = requests.post(f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent",
-                              params={"key": key}, timeout=180, json={
+                              headers={"x-goog-api-key": key}, timeout=180, json={
                                   "contents": [{"parts": [{"text": prompt}]}],
                                   "generationConfig": {"responseModalities": ["AUDIO"],
                                                        "speechConfig": {"voiceConfig": {"prebuiltVoiceConfig": {"voiceName": voice}}}}})
@@ -121,7 +123,7 @@ def assemble(clips: list[np.ndarray], out: Path, name: str) -> dict:
             t += 0.35
             marks["hit"] = t
             t += 1.0  # one second of silence, then the case folder
-    total = t + 1.2
+    total = t + 3.5  # the title line rides out on the returning bed
     voice = np.zeros(int(total * SR) + SR, np.float32)
     for at, c in parts:
         i = int(at * SR)
@@ -132,10 +134,16 @@ def assemble(clips: list[np.ndarray], out: Path, name: str) -> dict:
     music = ROOT / "assets" / "music" / "ub_ticking_tension.mp3"
     sting = ROOT / "assets" / "music" / "ub_sting_brass.mp3"
     # bed: in under the first line, -20 dB, out on the hit (the silence is silence); the stab lands on the hit
-    fc = (f"[1:a]atrim=0:{hit:.2f},asetpts=N/SR/TB,volume=-20dB,afade=t=in:d=1.5,afade=t=out:st={hit - 0.25:.2f}:d=0.25[bed];"
+    # bed: in under the first line, -20 dB, out on the hit; one second of silence; bed back under the title, faded out
+    back = hit + 1.0
+    fc = (f"[1:a]asplit=2[m1][m2];"
+          f"[m1]atrim=0:{hit:.2f},asetpts=N/SR/TB,volume=-20dB,afade=t=in:d=1.5,afade=t=out:st={hit - 0.25:.2f}:d=0.25[bed];"
+          f"[m2]atrim={hit:.2f}:{total:.2f},asetpts=N/SR/TB,volume=-20dB,afade=t=in:d=0.8,afade=t=out:st={total - back - 1.8:.2f}:d=1.8,"
+          f"adelay={int(back * 1000)}|{int(back * 1000)}[bed2];"
           f"[2:a]atrim=0:2.4,asetpts=N/SR/TB,volume=-7dB,afade=t=out:st=1.2:d=1.2,adelay={int(hit * 1000)}|{int(hit * 1000)}[hit];"
-          f"[0:a]aformat=channel_layouts=stereo[v];[bed]aformat=channel_layouts=stereo[b];[hit]aformat=channel_layouts=stereo[h];"
-          f"[v][b][h]amix=inputs=3:normalize=0:duration=first,loudnorm=I=-16:TP=-1.5:LRA=11[o]")
+          f"[0:a]aformat=channel_layouts=stereo[v];[bed]aformat=channel_layouts=stereo[b];[bed2]aformat=channel_layouts=stereo[b2];"
+          f"[hit]aformat=channel_layouts=stereo[h];"
+          f"[v][b][b2][h]amix=inputs=4:normalize=0:duration=first,loudnorm=I=-16:TP=-1.5:LRA=11[o]")
     mp3 = out / f"cs_ep04v2_cold_open_{name}.mp3"
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(vpath), "-i", str(music), "-i", str(sting), "-filter_complex", fc,
                     "-map", "[o]", "-ar", "48000", "-c:a", "libmp3lame", "-b:a", "192k", str(mp3)], check=True)
