@@ -99,7 +99,7 @@ S: dict[str, dict] = {
     # archive photos fill the frame (note 6): the original prints, cropped to the picture, a slow push
     "A1.10a": W_(base="arch_loews", cam=[[0.5, 0.5, 1.0], [0.56, 0.46, 1.1]], caption="Waiting in line at Loew's Capitol, Washington, 1939 · Library of Congress"),
     "A1.10b": W_(base="arch_briggs", cam=[[0.5, 0.5, 1.0], [0.62, 0.42, 1.16]], caption="Buying tickets, Briggs Stadium, Detroit, 1942 · Library of Congress"),
-    "A1.11a": W_(base="a1_glow", cam=[[0.5, 0.42, 1.08], [0.52, 0.4, 1.25]],  # a face between screens (note 8)
+    "A1.11a": W_(base="a1_glow", cam=[[0.45, 0.42, 1.1], [0.4, 0.38, 1.35]],  # a face between screens (note 8)
                  overs=[W_(t="tags", items=["+$8"], at_on=["Service"], x=0.78, y=0.2)], sfx=[{"kind": "kachunk", "on": "Service"}]),
     "A1.11b": W_(base="s03", cam=[[0.511, 0.52, 1.8], [0.5, 0.55, 2.1]],  # push in on the screen while the joke is spoken (note 5)
                  screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE", label_on="service#2")]),
