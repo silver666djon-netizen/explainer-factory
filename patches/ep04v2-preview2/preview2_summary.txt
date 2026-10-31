@@ -1,15 +1,14 @@
-PREVIEW 2 (update): cold open + Act 1, 0:00 to the first ad break (3:56), joke voice track (16:13 in total, the 11 jokes are in it). No full render.
+PREVIEW 2 (your 8 notes): cold open + Act 1, 0:00 to the first ad break (3:56). All your stills are in: no placeholders, no stand-ins.
 
-New in this version (your stills):
-- a1_wallet: Larry counting his bills. The "$50 until Friday" strip now sits beside him over the window, not over his face.
-- g01_blueprint: the blank blueprint; the hand draws the plan lines on it (cold open end and Act 1 end).
-- g04_daydream: the hot dog bubble; the camera pushes in on it and it pops on "won't".
-- g05_bomb: your bomb already has a red and a blue wire, so only the scissors are added, hesitating between them.
-- s03 redo: the same kitchen as s01/s02; all the app screens sit on its laptop.
-- s04 redo: night, blank face; the video paints the hands (8:14, then 8:19) with a ticking red second hand.
-
-No placeholders left in this part. Two tagged stand-ins remain until their stills come: a1_glow (a close crop of s01) and a4_seat (the Ep.4 hall).
-Checks: see qc_preview2.md.
+1. Blueprint: the plan is drawn IN the sheet's plane (mapped onto its 4 corners), white chalk pen in the hand. A heist floor plan of the checkout: rooms PRICE, SEAT, TIMER, CARD, FEES, PAY. At the end of Act 1 the hand draws the dashed route through the doors and an X on PAY.
+2. POP!: red letters, thick white outline, on a yellow comic starburst over the bubble's edge.
+3. REAL: stamped ON the screen, on the fee lines, -8 deg, inside the page. New rule R44 (stamps and marks on a screen stay inside the screen), checked automatically.
+4. "?": a big red question mark on a cream tag.
+5. Checkout text: order summary, fee lines and the two joke lines are at least 2.8 % of the frame tall (R45, checked); the camera pushes in on the screen while each joke is spoken.
+6. Archive: the original prints fill the whole frame with a slow push (Loew's 1939; Briggs Stadium 1942 with its price + tax = total sign).
+7. Tags: "$2 LEFT / UNTIL FRIDAY" and "$18" are bigger and well inside the frame; the hand leaves after writing (R47: the finished mark is seen at least 0.5 s before the cut).
+8. Face cuts: never more than two laptop screens in a row (R46): pushes on Larry (s01), a1_glow, s06, s05 between them.
+Also: the pen in the hand always has the ink's colour (black, red, white chalk, yellow).
 
 ---
-RU: ПРЕВЬЮ 2 (обновление): холодное открытие + акт 1, до первой рекламной паузы (3:56), голос с шутками. Новое: a1_wallet (Ларри считает купюры; полоска «$50 до пятницы» теперь сбоку, не на лице), g01 (чертёж, рука рисует план), g04 (мечта о хот-доге, пузырь лопается на «won't»), g05 (у бомбы уже свои провода — добавлены только ножницы, которые колеблются между ними), s03 (та же кухня), s04 (ночь, пустой циферблат — стрелки рисует видео: 20:14, потом 20:19, секундная тикает). Заглушек в этой части больше нет; две временные замены с пометкой: a1_glow и a4_seat. Проверки — в qc_preview2.md.
+RU: ПРЕВЬЮ 2 по вашим 8 замечаниям. Все ваши кадры на месте, заглушек и замен нет. 1) План на чертеже нарисован в плоскости листа (по 4 углам), белый мел в руке: план ограбления кассы — комнаты PRICE → SEAT → TIMER → CARD → FEES → PAY, в конце акта рука рисует пунктирный маршрут и крестик на PAY. 2) POP! — красные буквы с толстой белой обводкой на комиксной звезде у края пузыря. 3) Штамп REAL стоит на экране, на строках сборов, −8°, внутри страницы (новое правило R44, проверяется). 4) «?» — большой красный знак на кремовом ярлыке. 5) Текст кассы ≥ 2,8 % высоты кадра (R45), камера наезжает на экран во время шуток. 6) Архив во весь кадр с медленным наездом. 7) Ярлыки крупнее, ≥ 6 % от краёв, рука уходит после записи (R47). 8) Не больше двух экранов подряд без лица Ларри (R46). Цвет пера в руке = цвет чернил.
