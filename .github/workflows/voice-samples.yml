@@ -43,12 +43,19 @@ jobs:
           python tools/voice_samples.py vs 2>&1 | tee vs.log || true
           grep -E "^(A_|B_|C_|openrouter audio|GEMINI)" vs.log | python3 -c 'import sys; t=sys.stdin.read(); print("::notice title=voices::" + t.replace("%","%25").replace("\n","%0A"))'
           ls -la vs
+      - name: STT check of every sample (in the release + made now)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          pip install -q faster-whisper 2>&1 | tail -2
+          for f in $(tools/rel.sh assets ep04v2-stage1 | cut -f2 | grep '^cs_ep04v2_cold_open_.*mp3$'); do [ -f "vs/$f" ] || tools/rel.sh download ep04v2-stage1 vs "$f"; done
+          python tools/voice_samples.py stt vs 2>&1 | tail -5 | python3 -c 'import sys; print("::notice title=stt::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
       - name: Publish (draft release ep04v2-stage1)
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls vs/*.mp3 vs/voice_samples.json 2>/dev/null || true)  # only the samples made in this run are in vs/
+          files=$(ls vs/*.mp3 vs/voice_samples.json vs/stt_check.md 2>/dev/null || true)
           [ -n "$files" ] || exit 1
           if tools/rel.sh id ep04v2-stage1 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-stage1 $files
           else gh release create ep04v2-stage1 $files --title "CoinSense · EP04v2 · STAGE 1" --notes "Ep.4 v2 Stage 1 (draft, not for upload)." --prerelease --draft; fi

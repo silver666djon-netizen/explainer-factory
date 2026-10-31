@@ -262,5 +262,27 @@ def main(out_dir: str) -> int:
     return 0 if all("file" in v for v in report.values()) else 1
 
 
+def stt(out_dir: str) -> int:
+    """Every sample transcribed (faster-whisper small.en) and matched word by word against the cold open."""
+    import difflib
+    from faster_whisper import WhisperModel
+    out = Path(out_dir)
+    m = WhisperModel("small.en", device="cpu", compute_type="int8")
+    want = _words(" ".join(t for t, *_ in LINES))
+    rows = ["# Cold-open voice samples · STT check", "", "| Sample | Words matched | Transcript |", "|---|---|---|"]
+    bad = 0
+    for mp3 in sorted(out.glob("cs_ep04v2_cold_open_*.mp3")):
+        segs, _ = m.transcribe(str(mp3), beam_size=5)
+        said = " ".join(sg.text.strip() for sg in segs)
+        got = _words(said)
+        sm = difflib.SequenceMatcher(a=want, b=got, autojunk=False)
+        ratio = sum(b.size for b in sm.get_matching_blocks()) / len(want)
+        bad += ratio < 0.95
+        rows.append(f"| {mp3.name} | {ratio * 100:.1f}% | {said} |")
+        print(mp3.name, f"{ratio * 100:.1f}%", flush=True)
+    (out / "stt_check.md").write_text("\n".join(rows) + "\n")
+    return 1 if bad else 0
+
+
 if __name__ == "__main__":
-    sys.exit(main(sys.argv[1]))
+    sys.exit(stt(sys.argv[2]) if sys.argv[1] == "stt" else main(sys.argv[1]))
