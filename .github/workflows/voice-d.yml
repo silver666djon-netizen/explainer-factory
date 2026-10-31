@@ -1,0 +1,48 @@
+name: Voice sample D (ElevenLabs v3)
+# Klot: Ep.4 v2 cold open by ElevenLabs eleven_v3 in two British narrator voices (tools/voice_d.py), same build as A/B/C.
+# Account report + pronunciation dictionary. The key is a secret and is never printed. Files go into the draft ep04v2-stage1.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-whisper-v1
+          restore-keys: kokoro-
+      - run: pip install -q numpy requests soundfile faster-whisper 2>&1 | tail -2
+      - name: Voice D1 + D2
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          mkdir -p vs
+          tools/rel.sh download ep04v2-stage1 vs voice_samples.json
+          python tools/voice_d.py vs 2>&1 | tee vd.log || true
+          grep -E "^(account|D1_|D2_|  retake|dictionary|could not|library search|account British|library cand)" vd.log | cut -c1-700 \
+            | python3 -c 'import sys; print("::notice title=voice D::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+          test -f vs/voice_d_report.md && cat vs/voice_d_report.md
+      - name: STT check of every sample
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for f in $(tools/rel.sh assets ep04v2-stage1 | cut -f2 | grep '^cs_ep04v2_cold_open_.*mp3$'); do [ -f "vs/$f" ] || tools/rel.sh download ep04v2-stage1 vs "$f"; done
+          python tools/voice_samples.py stt vs 2>&1 | tail -6 | python3 -c 'import sys; print("::notice title=stt::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+      - name: Publish into ep04v2-stage1
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls vs/cs_ep04v2_cold_open_D*.mp3 vs/cs_ep04v2_probe_*.mp3 vs/voice_samples.json vs/voice_d_report.* vs/stt_check.md 2>/dev/null || true)
+          [ -n "$files" ] && tools/rel.sh upload ep04v2-stage1 $files
