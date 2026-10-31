@@ -31,6 +31,7 @@ LINES = [
     ("Why? Somebody spent years finding out exactly why. And it wasn't you.", "low, conspiratorial, a hint of menace on the last sentence", 0.0, 0.8),
     ("Case file number four. The seven-minute heist.", "a firm title read, measured, with weight", 1.6, 0.55),
 ]
+HIT_LEN = 0.9          # the brass hit is cut to 0.9 s so the second after it is silent
 HIT_AFTER = 7          # the brass hit + one second of silence come after this line (index)
 GEMINI_MODELS = ["gemini-3.8-flash-tts", "gemini-3.1-flash-tts-preview", "gemini-2.5-pro-preview-tts", "gemini-2.5-flash-preview-tts"]
 
@@ -192,7 +193,7 @@ def assemble(clips: list[np.ndarray], out: Path, name: str) -> dict:
         if i == HIT_AFTER:
             t += 0.35
             marks["hit"] = t
-            t += 1.0  # one second of silence, then the case folder
+            t += HIT_LEN + 1.0  # the short hit, then one real second of silence, then the case folder
     total = t + 3.5  # the title line rides out on the returning bed
     voice = np.zeros(int(total * SR) + SR, np.float32)
     for at, c in parts:
@@ -205,12 +206,12 @@ def assemble(clips: list[np.ndarray], out: Path, name: str) -> dict:
     sting = ROOT / "assets" / "music" / "ub_sting_brass.mp3"
     # bed: in under the first line, -20 dB, out on the hit (the silence is silence); the stab lands on the hit
     # bed: in under the first line, -20 dB, out on the hit; one second of silence; bed back under the title, faded out
-    back = hit + 1.0
+    back = hit + HIT_LEN + 1.0
     fc = (f"[1:a]asplit=2[m1][m2];"
           f"[m1]atrim=0:{hit:.2f},asetpts=N/SR/TB,volume=-20dB,afade=t=in:d=1.5,afade=t=out:st={hit - 0.25:.2f}:d=0.25[bed];"
           f"[m2]atrim={hit:.2f}:{total:.2f},asetpts=N/SR/TB,volume=-20dB,afade=t=in:d=0.8,afade=t=out:st={total - back - 1.8:.2f}:d=1.8,"
           f"adelay={int(back * 1000)}|{int(back * 1000)}[bed2];"
-          f"[2:a]atrim=0:2.4,asetpts=N/SR/TB,volume=-7dB,afade=t=out:st=1.2:d=1.2,adelay={int(hit * 1000)}|{int(hit * 1000)}[hit];"
+          f"[2:a]atrim=0:{HIT_LEN},asetpts=N/SR/TB,volume=-7dB,afade=t=out:st={HIT_LEN - 0.45}:d=0.45,adelay={int(hit * 1000)}|{int(hit * 1000)}[hit];"
           f"[0:a]aformat=channel_layouts=stereo[v];[bed]aformat=channel_layouts=stereo[b];[bed2]aformat=channel_layouts=stereo[b2];"
           f"[hit]aformat=channel_layouts=stereo[h];"
           f"[v][b][b2][h]amix=inputs=4:normalize=0:duration=first,loudnorm=I=-16:TP=-1.5:LRA=11[o]")
@@ -226,7 +227,8 @@ def main(out_dir: str) -> int:
     out.mkdir(parents=True, exist_ok=True)
     only = os.environ.get("ONLY", "ABC")
     old = out / "voice_samples.json"
-    report = json.loads(old.read_text()) if old.exists() else {}
+    report = json.loads(old.read_text()) if old.exists() and not all(c in only for c in "ABC") else {}
+    report = {k: v for k, v in report.items() if "file" in v}
     gem = bool(os.environ.get("GEMINI_API_KEY", "").strip())
     # Gemini TTS straight from Google when the key is set; otherwise the same idea through OpenRouter (key already a secret)
     pairs = ((("A_gemini_charon", "Charon"), ("B_gemini_algenib", "Algenib")) if gem else
