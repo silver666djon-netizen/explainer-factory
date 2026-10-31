@@ -1337,7 +1337,7 @@ const PicShot: React.FC<P & {short: boolean}> = ({s, t, dur, SW, SH, u, short}) 
 			{(s.overs || []).map((o: any, i: number) => <Overlay key={i} o={o} t={t} dur={dur} SW={SW} SH={SH} u={u} short={short} />)}
 			{s.standin ? (
 				<div style={{position: 'absolute', left: 16 * U, bottom: short ? 16 : SH * 0.2, background: 'rgba(30,27,24,0.82)', color: C.accent, fontFamily: fam(BODY), fontSize: 18 * Math.max(U, 0.8), padding: '4px 10px', borderRadius: 4, zIndex: 60}}>
-					STAND-IN for {s.standin.for} · Ep.4 {s.standin.src}
+					STAND-IN for {s.standin.for} · {s.standin.src.startsWith('s0') ? 'Klot ' : 'Ep.4 '}{s.standin.src}
 				</div>
 			) : null}
 			{s.title && t < 2.0 ? <ActTitle lines={s.title} k={titleK} SW={SW} SH={SH} u={u} t={t} /> : null}

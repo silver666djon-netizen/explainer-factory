@@ -369,8 +369,8 @@ CHECKS = [
     ("shorts_band (R38)", c_shorts_band, "9:16 picture band >= 50 %"),
 ]
 NOT_APPLICABLE = {
-    "hand_over_ink / writing hand (R37), one hand at a time (rules 1-5)": "no drawing hand in this layer yet: every stroke draws itself (no hand on screen)",
-    "mark_on_object (R29), mark_in_frame (R32), mark audit (rules 11, 15, 16, 25)": "no mark is written on a picture in this preview; all ink is on code-drawn cards",
+    "hand_over_ink (R37), one hand at a time (rules 1-5)": "the hand is in this preview (right hand, white cuff, 18 deg, ink only behind the nib, one hand at a time by construction); the automatic hand_over_ink check is not ported to the Remotion layer yet: checked by eye on the frames",
+    "mark_on_object (R29), mark_in_frame (R32), mark audit (rules 11, 15, 16, 25)": "Act 1 ink sits on our paper strips, tags and notes laid over the pictures (and the crown above Larry's hat); the mark audit is not ported yet: checked by eye",
     "Larry's tab / ledger (rule 31)": "not used in v2",
     "text_stability (R31)": "by construction: kinetic and typed text is laid out in its final place and only fades/types in place",
 }
@@ -569,7 +569,7 @@ def main(pvd: str, tdir: str) -> int:
     md += ["", "Self-test (R40: each check must FAIL on its planted bug):", "", "| check | planted bug | result |", "|---|---|---|"]
     md += [f"| {a} | {b} | {c}{'' if c == 'FAIL' else ' - BLIND'} |" for a, b, c in st]
     miss = sorted({s.get("missing") or s.get("file") for s in P["long"]["data"]["shots"] if s.get("base_kind") == "missing" or s["kind"] == "missing"})
-    sti = sorted({f"{s['standin']['for']} -> Ep.4 {s['standin']['src']}" for s in P["long"]["data"]["shots"] if s.get("standin")})
+    sti = sorted({f"{s['standin']['for']} -> {('Klot ' if s['standin']['src'].startswith('s0') else 'Ep.4 ') + s['standin']['src']}" for s in P["long"]["data"]["shots"] if s.get("standin")})
     md += ["", "Stand-ins (tagged on screen): " + ("; ".join(sti) or "none")]
     md += ["", "Placeholders (Klot's stills not in yet): " + ", ".join(f"{m}.png" for m in miss)]
     for kind in ("long", "short"):
