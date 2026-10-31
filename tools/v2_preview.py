@@ -37,7 +37,7 @@ S: dict[str, dict] = {
     "COLD.3b": {"kind": "screen", "mode": "form", "fill": [1, 1], "tick_on": "ticked", "thanks_on": "thank",
                 "sfx": [{"kind": "tap", "on": "ticked"}, {"kind": "tap", "on": "thank"}]},
     "COLD.4a": {"kind": "still", "src": "o4", "cam": [[0.5, 0.5, 1.03], [0.47, 0.42, 1.12]],
-                "namecard": {"name": "LARRY", "box": [0.03, 0.08, 0.27, 0.36], "stamp": "FICTIONAL", "stamp_on": "made"},
+                "namecard": {"name": "LARRY", "box": [0.03, 0.08, 0.27, 0.36], "box_short": [0.7, 0.04, 0.97, 0.3], "stamp": "FICTIONAL", "stamp_on": "made"},
                 "sfx": [{"kind": "stamp", "on": "made"}]},
     "COLD.4b": {"kind": "feecard", "lines": ["SERVICE FEE", "FACILITY FEE", "PROCESSING"], "amounts": None,
                 "stamp": "REAL", "stamp_on": "not", "sfx": [{"kind": "stamp", "on": "not"}]},

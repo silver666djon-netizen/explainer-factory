@@ -142,7 +142,7 @@ def plates(data, shots, captions):
             box = [48, H * 0.8 - h, 48 + w, H * 0.8] if not short else [(W - maxw) / 2, 150, (W + maxw) / 2, 150 + h]
             out.append(("archive caption", s["start"], s["end"], box))
         if s.get("namecard"):
-            x0, y0, x1, y1 = s["namecard"]["box"]
+            x0, y0, x1, y1 = s["namecard"]["box_short"] if short and s["namecard"].get("box_short") else s["namecard"]["box"]
             b = data.get("band") or [0, 0, W, H]
             out.append(("name card", s["start"], s["end"], [b[0] + x0 * b[2], b[1] + y0 * b[3], b[0] + x1 * b[2], b[1] + y1 * b[3]]))
     for c in captions:

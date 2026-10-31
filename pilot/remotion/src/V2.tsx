@@ -228,7 +228,7 @@ const ScreenView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 		}
 		body = <Page kind="form" u={u} w={B.w} h={B.h} t={t} s={{...st, tick: s.tick_, thanks: s.thanks_}} />;
 	} else if (s.mode === 'whip') {
-		const pi = s.page_.filter((x: number) => t >= x - 0.12).length - 1;
+		const pi = Math.max(0, s.page_.filter((x: number) => t >= x - 0.12).length - 1);
 		const k = pi >= 0 ? sm((t - (s.page_[pi] - 0.12)) / 0.28) : 0;
 		const pages = s.pages;
 		const cur = Math.max(0, pi);
@@ -274,16 +274,20 @@ const ScreenView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 			</AbsoluteFill>
 		);
 	} else if (s.mode === 'tabs') {
-		tabs = s.tabs.map((tb: any, i: number) => ({label: 'Concert tickets', dot: i === 0 ? C.green : C.red, on: tb.at ?? -1, closing: i === 0 && s.close_ !== undefined ? s.close_ : undefined}));
+		tabs = s.tabs.map((tb: any, i: number) => ({label: 'Concert tickets', dot: i === 0 ? C.green : C.red, on: tb.at === undefined ? -1 : 0.15, closing: i === 0 && s.close_ !== undefined ? s.close_ : undefined}));
 		active = s.active ?? 0;
 		const tb = s.tabs[active];
 		const at = tb.at ?? -1;
-		const k = at < 0 ? 1 : sm((t - at) / 0.3);
+		const pk = at < 0 ? 1 : clamp((t - at) / 0.2, 0, 1);
 		body = (
-			<AbsoluteFill style={{opacity: k}}>
+			<AbsoluteFill>
 				<div style={{position: 'absolute', left: 60 * u, top: 40 * u, fontFamily: fam(BODY), fontSize: 26 * u, color: C.mute}}>SATURDAY · 8 PM · THE CONCERT HALL</div>
 				{s.crown_ === undefined ? <div style={{position: 'absolute', left: 60 * u, top: 110 * u, fontFamily: fam(BODY), fontSize: 30 * u, color: C.ink}}>1 TICKET</div> : null}
-				<div style={{position: 'absolute', left: 56 * u, top: 150 * u, fontFamily: fam(HEAD), fontSize: 200 * u, lineHeight: 1.05, color: active === 0 ? C.green : C.red}}>{tb.price}</div>
+				{at < 0 || t >= at ? (
+					<div style={{position: 'absolute', left: 56 * u, top: 150 * u, fontFamily: fam(HEAD), fontSize: 200 * u, lineHeight: 1.05, color: active === 0 ? C.green : C.red, transform: `scale(${1.1 - 0.1 * pk})`, transformOrigin: '0% 50%'}}>{tb.price}</div>
+				) : (
+					<div style={{position: 'absolute', left: 60 * u, top: 210 * u, width: 300 * u, height: 120 * u, borderRadius: 12 * u, background: 'rgba(30,27,24,0.08)'}} />
+				)}
 				{tb.tag ? (
 					<div style={{position: 'absolute', left: 64 * u, top: 400 * u}}>
 						{s.hl_ !== undefined ? <div style={{position: 'absolute', left: -10 * u, top: 4 * u, height: 58 * u, width: 300 * u * sm((t - s.hl_) / 0.45), background: C.accent, borderRadius: 6 * u, transform: 'rotate(-1.2deg)'}} /> : null}
@@ -354,24 +358,30 @@ const ScreenView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 };
 
 // ------------------------------------------------------------------ pictures
-const camAt = (s: any, t: number, dur: number) => {
+// a camera end is moved inside the picture once (never clamped per frame: a clamp mid-move is a kink, R28)
+const fitEnd = (c: number[], iw: number, ih: number, SW: number, SH: number) => {
+	const sc = Math.max(SW / iw, SH / ih) * c[2];
+	const hx = SW / (iw * sc) / 2,
+		hy = SH / (ih * sc) / 2;
+	return [clamp(c[0], hx, 1 - hx), clamp(c[1], hy, 1 - hy), c[2]];
+};
+const camAt = (s: any, t: number, dur: number, iw = 1, ih = 1, SW = 1, SH = 1) => {
 	const p = io(clamp(t / Math.max(dur, 0.1), 0, 1));
-	const [a, b] = s.cam;
+	const a = fitEnd(s.cam[0], iw, ih, SW, SH),
+		b = fitEnd(s.cam[1], iw, ih, SW, SH);
 	return [a[0] + (b[0] - a[0]) * p, a[1] + (b[1] - a[1]) * p, a[2] + (b[2] - a[2]) * p];
 };
 const Pic: React.FC<{src?: string; video?: string; iw: number; ih: number; cam: number[]; SW: number; SH: number; filter?: string}> = ({src, video, iw, ih, cam, SW, SH, filter}) => {
 	const base = Math.max(SW / iw, SH / ih);
 	const sc = base * cam[2];
-	let tx = SW / 2 - cam[0] * iw * sc,
+	const tx = SW / 2 - cam[0] * iw * sc,
 		ty = SH / 2 - cam[1] * ih * sc;
-	tx = clamp(tx, SW - iw * sc, 0);
-	ty = clamp(ty, SH - ih * sc, 0);
 	const st: React.CSSProperties = {position: 'absolute', left: 0, top: 0, width: iw, height: ih, transformOrigin: '0 0', transform: `translate(${tx}px, ${ty}px) scale(${sc})`, filter};
 	return video ? <OffthreadVideo src={staticFile(video)} muted style={st} /> : <Img src={staticFile(src as string)} style={st} />;
 };
 
 const StillView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
-	const cam = camAt(s, t, dur);
+	const cam = camAt(s, t, dur, s.iw, s.ih, SW, SH);
 	const nc = s.namecard;
 	return (
 		<AbsoluteFill style={{overflow: 'hidden', background: C.ink}}>
@@ -385,7 +395,7 @@ const StillView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 };
 
 const NameCard: React.FC<{nc: any; t: number; SW: number; SH: number; u: number}> = ({nc, t, SW, SH, u}) => {
-	const [x0, y0, x1, y1] = nc.box;
+	const [x0, y0, x1, y1] = SH >= SW && nc.box_short ? nc.box_short : nc.box;
 	const w = (x1 - x0) * SW,
 		h = (y1 - y0) * SH;
 	const k = sm(t / 0.35);
@@ -402,7 +412,7 @@ const NameCard: React.FC<{nc: any; t: number; SW: number; SH: number; u: number}
 };
 
 const ArchiveView: React.FC<P & {short: boolean; band: any}> = ({s, t, dur, SW, SH, u}) => {
-	const cam = camAt(s, t, dur);
+	const cam = camAt(s, t, dur, s.iw, s.ih, SW, SH);
 	return (
 		<AbsoluteFill style={{overflow: 'hidden', background: C.ink}}>
 			<Pic src={s.img} iw={s.iw} ih={s.ih} cam={cam} SW={SW} SH={SH} />
@@ -411,7 +421,7 @@ const ArchiveView: React.FC<P & {short: boolean; band: any}> = ({s, t, dur, SW, 
 };
 
 const ClipView: React.FC<P> = ({s, t, dur, SW, SH}) => {
-	const cam = camAt(s, t, dur);
+	const cam = camAt(s, t, dur, 1920, 1094, SW, SH);
 	return (
 		<AbsoluteFill style={{overflow: 'hidden', background: C.ink}}>
 			<Pic video={s.video} iw={1920} ih={1094} cam={cam} SW={SW} SH={SH} />
@@ -574,8 +584,9 @@ const RouteView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 		bx = SW * 0.78,
 		by = SH * 0.3;
 	const d = `M ${ax} ${ay} C ${SW * 0.38} ${SH * 0.2}, ${SW * 0.58} ${SH * 0.72}, ${bx} ${by}`;
-	const at = s.draw_ ?? 0.3;
-	const p = clamp((t - at) / 1.5, 0, 1);
+	const at = 0.3;
+	const p = clamp((t - at) / 1.8, 0, 1);
+	const lab = s.draw_ === undefined ? sm((p - 0.6) / 0.2) : sm((t - s.draw_) / 0.25);
 	const ev = evolvePath(io(p), d);
 	return (
 		<AbsoluteFill>
@@ -593,7 +604,7 @@ const RouteView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 			</svg>
 			<div style={{position: 'absolute', left: ax - 200 * u, top: ay + 40 * u, width: 400 * u, textAlign: 'center', fontFamily: fam(BODY), fontSize: 34 * u, color: C.paper}}>{s.from}</div>
 			<div style={{position: 'absolute', left: bx - 260 * u, top: by - 100 * u, width: 520 * u, textAlign: 'center', fontFamily: fam(BODY), fontSize: 34 * u, color: C.paper, opacity: sm((p - 0.85) / 0.15)}}>{s.to}</div>
-			<div style={{position: 'absolute', left: SW * 0.44, top: SH * 0.5, fontFamily: fam(HEAD), fontSize: 80 * u, color: C.accent, opacity: sm((p - 0.6) / 0.2)}}>{s.label}</div>
+			<div style={{position: 'absolute', left: SW * 0.44, top: SH * 0.5, fontFamily: fam(HEAD), fontSize: 80 * u, color: C.accent, opacity: lab}}>{s.label}</div>
 			<div style={{position: 'absolute', left: 80 * u, top: 70 * u, fontFamily: fam(BODY), fontSize: 36 * u, color: C.glow, letterSpacing: 6 * u}}>{s.day}</div>
 		</AbsoluteFill>
 	);
@@ -939,7 +950,7 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 		SW = short ? band[2] : W,
 		SH = short ? band[3] : H;
 	// the 9:16 band is square: the code-drawn objects are drawn larger there so they read on a phone
-	const u = short ? Math.min(SW / 1300, SH / 760) : Math.min(SW / 1920, SH / 1080);
+	const u = short ? Math.min(SW / 1400, SH / 800) : Math.min(SW / 1920, SH / 1080);
 	const t = f / fps;
 	const wipeAt = new Set((data.wipes || []).map((x: number) => Math.round(x * fps)));
 	const shots = data.shots;
