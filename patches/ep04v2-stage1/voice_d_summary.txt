@@ -1,0 +1,15 @@
+Voice D: ElevenLabs v3 (eleven_v3). The cold open is built exactly like A/B/C: same lines, the same designed pauses, the bed (ub_ticking_tension −20 dB), the brass hit, then 1 s of real silence before the title. Tags are sparse: [low] · [dry] on "and said thank you" · [smiling] on "Larry is made up" · [slow] on "and you paid anyway" · [whispers] on "And it wasn't you".
+
+Account: Creator plan (active). 87,587 of 161,000 characters left; resets 20 Nov 2026. Commercial use: yes (paid plan).
+Per full episode: EN ≈ 13,400 characters, RU review copy ≈ 13,900 (tags and ~25% retakes included). Both fit this month.
+
+D1 = Eldrin (a professional voice already in your account). Deep, resonant and warm, with a gentle rasp and a patient cadence. Closest to "low and unhurried".
+D2 = George, Warm Captivating Storyteller (ElevenLabs premade). A British storyteller; a premade voice can't be withdrawn by an owner, so it is the safest choice for a long series.
+
+Library voices were not tried: your key lacks the "Voices: Write" permission, so the script could not add voices from the library. If you enable it, D3/D4 could be: Cedric M (Engaging Documentary Narrator), Oliver (Warm British Narrator), Grant Gravitas (Rich, warm, cinematic).
+
+Pronunciation dictionary "coinsense-names" (Live Nation → "Lyve Nation") is on in every render. The probe file is attached: please listen for "lyve".
+STT check: D1 100%. D2: all 9 lines were heard right one by one. In the full mix, speech-to-text skipped the last line, but the voice is there at 0:46.
+Sending order: D1, D2, probe, then A, B, C again for comparison. Fallback: B.
+
+RU: Голос D — ElevenLabs v3, сборка как у A/B/C (те же паузы, подложка, удар и 1 с тишины). Тариф Creator: осталось 87 587 из 161 000 символов (сброс 20 ноября), коммерческое использование — да. Выпуск EN ≈ 13 400 символов, RU-копия ≈ 13 900. D1 — Eldrin (глубокий, тёплый, с лёгкой хрипотцой, неторопливый), D2 — George (стандартный голос ElevenLabs, рассказчик; его не отзовут). Голоса из библиотеки не взяты: у ключа нет права «Voices: Write»; если включить, можно попробовать Cedric M, Oliver, Grant Gravitas. Словарь «Live Nation» → «лайв» включён — послушайте пробный файл. Какой голос: A, B, C, D1 или D2?
