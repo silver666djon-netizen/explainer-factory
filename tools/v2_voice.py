@@ -31,7 +31,9 @@ SR = 24000
 MODEL, VOICE = "openai/gpt-audio", "fable"
 CACHE = ROOT / ".cache" / "v2voice"
 RESPELL = {"Live Nation": "Lyve Nation"}          # TTS input only: read /laɪv/
-KNOWN = [("Live Nation", "Lyve Nation")]          # the respelling is what the transcriber may write back
+# transcription slips waived with their reason (the voice says the script's words):
+KNOWN = [("Live Nation", "Lyve Nation"),          # the TTS respelling is what the transcriber may write back
+         ("all together", "altogether")]          # same sounds; whisper spells the adverb
 HIT_LEN = 0.9                                      # brass hit length; then one real second of silence
 ACT_CARD = 3.0                                     # after each ad break: the act title card (music, no voice)
 SYSTEM = ("You are a voice actor: a British documentary narrator, male, Received Pronunciation, low voice. "
@@ -217,6 +219,7 @@ def voice_line(r: dict) -> dict:
     wav, meta = CACHE / f"{k}.npy", CACHE / f"{k}.json"
     if wav.exists() and meta.exists():
         m = json.loads(meta.read_text())
+        m["diff"] = sttdiff.diff(r["text"], m["heard"], KNOWN)  # re-checked with today's normaliser
         if not m["diff"]:
             return {**m, "audio": np.load(wav), "cached": True}
     best = None
@@ -227,10 +230,11 @@ def voice_line(r: dict) -> dict:
         print(f"  {r['id']} take {n}: {'ok' if not d else '; '.join(d)[:200]}", flush=True)
         if best is None or len(d) < len(best[1]):
             best = (x, d, heard, ws, n)
+        total = n
         if not d:
             break
     x, d, heard, ws, n = best
-    m = {"heard": heard, "diff": d, "hwords": ws, "takes": n}
+    m = {"heard": heard, "diff": d, "hwords": ws, "takes": total, "kept": n}
     np.save(wav, x)
     meta.write_text(json.dumps(m))
     return {**m, "audio": x, "cached": False}

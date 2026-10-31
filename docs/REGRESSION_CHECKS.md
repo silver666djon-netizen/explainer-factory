@@ -110,3 +110,4 @@ check (release_checks.py / CI qc_checks.md) · **STILL** = build max-still warni
 
 Add a line here for every new bug, in the round it is found, with the check that now catches it (write the check if
 there is none and the bug is measurable).
+| Ep.4 v2 voice (fable) | false FAILs: clock times written "813" / "8.14" ("eight hundred and thirteen"); "$15" read as the digit run "one five" because the script also says "one. Five"; "a $125" read "a one hundred" | sttdiff._times (a 3-4 digit number or h.mm whose clock reading is in the script), digit runs skipped when the script says the whole number, "a one hundred" = "a hundred"; a wrong number ("seat 812" for "seat 12") still fails |

@@ -108,9 +108,27 @@ def words(text: str) -> list[str]:
             w = w[:-1]
         w = SPELLING.get(w, w)
         out.append(w)
+    # "a hundred and twenty-five" said, "$125" written: "a one hundred" is "a hundred"
+    out = [w for k, w in enumerate(out) if not (w == "one" and 0 < k < len(out) - 1 and out[k - 1] == "a"
+                                                 and out[k + 1] in ("hundred", "thousand"))]
     # "September the first" / "September first" (whisper writes both "September 1st"): the date's "the" is dropped
     return [w for k, w in enumerate(out) if not (w == "the" and 0 < k < len(out) - 1 and out[k - 1] in MONTHS
                                                   and (out[k + 1] in ORD_WORDS))]
+
+
+def _times(script_words: list[str], heard: str) -> str:
+    """Clock times: whisper writes "8:13" as "813" or "8.13". A heard 3-4 digit number (or h.mm) whose clock reading
+    ("eight thirteen") is in the script is written back as that time."""
+    sw = " " + " ".join(script_words) + " "
+
+    def sub(m):
+        h, mm = int(m.group(1)), int(m.group(2))
+        if not (1 <= h <= 12 and 0 <= mm <= 59):
+            return m.group(0)
+        spoken = f"{_lt100(h)} {('oh ' + ONES[mm]) if mm < 10 else _lt100(mm)}".replace("-", " ")
+        return f" {h}:{mm:02d} " if " " + spoken + " " in sw else m.group(0)
+    heard = re.sub(r"(?<![\d$£€.,:])(\d{1,2})[.:](\d{2})(?![\d%]|,\d)", sub, heard)
+    return re.sub(r"(?<![\d$£€.,:])(\d{1,2})(\d{2})(?!\d|[.,]\d|%)", sub, heard)
 
 
 def _digit_runs(script_words: list[str], heard: str) -> str:
@@ -122,6 +140,8 @@ def _digit_runs(script_words: list[str], heard: str) -> str:
         d = m.group(2)
         if len(d) < 2:
             return m.group(0)
+        if " " + cardinal(int(d)).replace("-", " ") + " " in sw:
+            return m.group(0)  # the script says the whole number ("fifteen-dollar"): not a run of single digits
         spoken = " ".join(ONES[int(c)] for c in d)
         return " " + spoken + " " if " " + spoken + " " in sw else m.group(0)
     return re.sub(r"([$£€]?)(?<![\d.,])(\d{2,4})(?![\d.,]\d)", sub, heard)
@@ -134,7 +154,7 @@ def diff(script: str, heard: str, known=()) -> list[str]:
     difference; a currency word the script has and the voice drops still is."""
     a = words(script)
     a = [w[len(SYM):] if w.startswith(SYM) else w for w in a]
-    b0 = words(_digit_runs(a, heard))
+    b0 = words(_digit_runs(a, _times(a, heard)))
     sym = [w.startswith(SYM) for w in b0]
     b = [w[len(SYM):] if w.startswith(SYM) else w for w in b0]
     kn = {(" ".join(words(k[0])), " ".join(words(k[1]))) for k in known}

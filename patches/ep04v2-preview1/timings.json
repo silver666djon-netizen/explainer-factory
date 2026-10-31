@@ -1,0 +1,11844 @@
+{
+ "episode": "0005-drip-pricing",
+ "version": "v2",
+ "voice": {
+  "provider": "OpenRouter",
+  "model": "openai/gpt-audio",
+  "voice": "fable",
+  "respell": {
+   "Live Nation": "Lyve Nation"
+  }
+ },
+ "sr": 24000,
+ "total": 893.135,
+ "acts": [
+  {
+   "act": "COLD",
+   "start": 0.6,
+   "name": "Cold open",
+   "palette": "night blue #0E1A2B + screen glow #9FD8FF"
+  },
+  {
+   "act": "A1",
+   "start": 58.25,
+   "name": "Act 1 · The Mark",
+   "palette": "night blue #0E1A2B + screen glow #9FD8FF, ticking clock corner"
+  },
+  {
+   "act": "A2",
+   "start": 217.025,
+   "name": "Act 2 · The Lab",
+   "palette": "lab green #2F5D50 + cream #F2EAD3, blueprint paper"
+  },
+  {
+   "act": "A3",
+   "start": 507.235,
+   "name": "Act 3 · The Gang",
+   "palette": "warm hotel amber #C8862E + walnut #3B2416"
+  },
+  {
+   "act": "A4",
+   "start": 683.055,
+   "name": "Act 4 · The Cops and the Escape",
+   "palette": "red #B3262E + gold #D9A93A"
+  }
+ ],
+ "beats": [
+  {
+   "id": "COLD.1",
+   "act": "COLD",
+   "start": 0.6,
+   "end": 6.125,
+   "next": 6.925,
+   "text": "This is the story of a robbery that took seven minutes.",
+   "ru": "Это история ограбления, которое заняло семь минут.",
+   "note": "low and unhurried, drawing the listener in, a storyteller at night",
+   "sound": "low pulse bed ub_ticking_tension −20 dB, keyboard clicks",
+   "words": [
+    [
+     "This",
+     0.0,
+     0.44
+    ],
+    [
+     "is",
+     0.44,
+     0.92
+    ],
+    [
+     "the",
+     0.92,
+     1.08
+    ],
+    [
+     "story",
+     1.08,
+     1.58
+    ],
+    [
+     "of",
+     1.58,
+     2.18
+    ],
+    [
+     "a",
+     2.18,
+     2.32
+    ],
+    [
+     "robbery",
+     2.32,
+     2.82
+    ],
+    [
+     "that",
+     2.82,
+     3.58
+    ],
+    [
+     "took",
+     3.58,
+     3.96
+    ],
+    [
+     "seven",
+     3.96,
+     4.82
+    ],
+    [
+     "minutes.",
+     4.82,
+     5.26
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_a1_glow: dark room, laptop glow (Grok move of the still: slow push)",
+     "tech": "T3 vignette breathing, slow push",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "This is the story of a robbery that took seven minutes.",
+   "diff": []
+  },
+  {
+   "id": "COLD.2",
+   "act": "COLD",
+   "start": 6.925,
+   "end": 12.67,
+   "next": 13.37,
+   "text": "No masks. No getaway car. Nobody even raised their voice.",
+   "ru": "Без масок. Без машины для побега. Никто даже голос не повысил.",
+   "note": "dry, three short beats with a small pause between them",
+   "sound": "bed",
+   "words": [
+    [
+     "No",
+     0.0,
+     0.24
+    ],
+    [
+     "masks.",
+     0.24,
+     0.68
+    ],
+    [
+     "No",
+     1.98,
+     2.18
+    ],
+    [
+     "getaway",
+     2.18,
+     2.54
+    ],
+    [
+     "car.",
+     2.54,
+     2.9
+    ],
+    [
+     "Nobody",
+     4.06,
+     4.32
+    ],
+    [
+     "even",
+     4.32,
+     4.72
+    ],
+    [
+     "raised",
+     4.72,
+     5.06
+    ],
+    [
+     "their",
+     5.06,
+     5.26
+    ],
+    [
+     "voice.",
+     5.26,
+     5.52
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "three quick code-drawn crossed-out icons: mask · car · megaphone, on night blue",
+     "tech": "T2 spring stamp ×3, a soft tick on each",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "No masks. No getaway car. Nobody even raised their voice.",
+   "diff": []
+  },
+  {
+   "id": "COLD.3",
+   "act": "COLD",
+   "start": 13.37,
+   "end": 19.265,
+   "next": 20.265,
+   "text": "The victim typed in his own card number, ticked the box, and said thank you.",
+   "ru": "Жертва сама ввела номер своей карты, поставила галочку и сказала «спасибо».",
+   "note": "deadpan, a faint smile on 'and said thank you'",
+   "sound": "bed, three soft UI clicks",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.18
+    ],
+    [
+     "victim",
+     0.18,
+     0.58
+    ],
+    [
+     "typed",
+     0.58,
+     1.06
+    ],
+    [
+     "in",
+     1.06,
+     1.3
+    ],
+    [
+     "his",
+     1.3,
+     1.48
+    ],
+    [
+     "own",
+     1.48,
+     1.86
+    ],
+    [
+     "card",
+     1.86,
+     2.28
+    ],
+    [
+     "number,",
+     2.28,
+     2.7
+    ],
+    [
+     "ticked",
+     3.16,
+     3.58
+    ],
+    [
+     "the",
+     3.58,
+     3.66
+    ],
+    [
+     "box,",
+     3.66,
+     4.04
+    ],
+    [
+     "and",
+     4.54,
+     4.72
+    ],
+    [
+     "said",
+     4.72,
+     4.96
+    ],
+    [
+     "thank",
+     4.96,
+     5.46
+    ],
+    [
+     "you.",
+     5.46,
+     5.76
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn card form on the glowing screen: digits appear as dots (no hands)",
+     "tech": "T1 caret stroke",
+     "source": "pipeline"
+    },
+    {
+     "picture": "the box ticks, a 'Thank you!' button presses",
+     "tech": "T1 tick drawn as a true stroke",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 2,
+   "heard": "The victim typed in his own card number, ticked the box, and said thank you.",
+   "diff": []
+  },
+  {
+   "id": "COLD.4",
+   "act": "COLD",
+   "start": 20.265,
+   "end": 24.145,
+   "next": 25.045,
+   "text": "His name is Larry. Larry is made up. The fees are not.",
+   "ru": "Его зовут Ларри. Ларри выдуман. А сборы — нет.",
+   "note": "light and wry, then firm and serious on 'The fees are not'",
+   "sound": "bed; a dry stamp on 'made up'",
+   "words": [
+    [
+     "His",
+     0.0,
+     0.16
+    ],
+    [
+     "name",
+     0.16,
+     0.36
+    ],
+    [
+     "is",
+     0.36,
+     0.56
+    ],
+    [
+     "Larry.",
+     0.56,
+     0.86
+    ],
+    [
+     "Larry",
+     1.46,
+     1.72
+    ],
+    [
+     "is",
+     1.72,
+     1.88
+    ],
+    [
+     "made",
+     1.88,
+     2.06
+    ],
+    [
+     "up.",
+     2.06,
+     2.36
+    ],
+    [
+     "The",
+     2.8,
+     2.88
+    ],
+    [
+     "fees",
+     2.88,
+     3.24
+    ],
+    [
+     "are",
+     3.24,
+     3.5
+    ],
+    [
+     "not.",
+     3.5,
+     3.7
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 o4: Larry at the kitchen table in laptop glow; name card 'LARRY' + stamp FICTIONAL",
+     "tech": "T2 stamp",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn fee lines slide in under the name card: SERVICE · FACILITY · PROCESSING, stamp REAL",
+     "tech": "T9 highlighter on REAL",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "His name is Larry. Larry is made up. The fees are not.",
+   "diff": []
+  },
+  {
+   "id": "COLD.5",
+   "act": "COLD",
+   "start": 25.045,
+   "end": 30.265,
+   "next": 30.865,
+   "text": "And before you feel sorry for him, know this... you've done it too.",
+   "ru": "И прежде чем его жалеть, знайте: вы тоже так делали.",
+   "note": "leaning in, quieter, confidential",
+   "sound": "bed thins",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.16
+    ],
+    [
+     "before",
+     0.16,
+     0.58
+    ],
+    [
+     "you",
+     0.58,
+     0.88
+    ],
+    [
+     "feel",
+     0.88,
+     1.12
+    ],
+    [
+     "sorry",
+     1.12,
+     1.48
+    ],
+    [
+     "for",
+     1.48,
+     1.76
+    ],
+    [
+     "him,",
+     1.76,
+     2.02
+    ],
+    [
+     "know",
+     2.68,
+     2.82
+    ],
+    [
+     "this...",
+     2.82,
+     3.2
+    ],
+    [
+     "you've",
+     4.12,
+     4.54
+    ],
+    [
+     "done",
+     4.54,
+     4.62
+    ],
+    [
+     "it",
+     4.62,
+     4.8
+    ],
+    [
+     "too.",
+     4.8,
+     5.12
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "slow pull back from o4 until the laptop screen fills the frame and reflects the viewer's side of the room (dark)",
+     "tech": "T12 motion blur on the pull",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "And before you feel sorry for him, know this, you've done it too.",
+   "diff": []
+  },
+  {
+   "id": "COLD.6",
+   "act": "COLD",
+   "start": 30.865,
+   "end": 36.865,
+   "next": 37.265,
+   "text": "You found the cheaper ticket. You picked a seat. You typed in your card.",
+   "ru": "Вы нашли билет подешевле. Вы выбрали место. Вы ввели карту.",
+   "note": "steady rhythm, each sentence a step",
+   "sound": "bed, one click per sentence",
+   "words": [
+    [
+     "You",
+     0.0,
+     0.18
+    ],
+    [
+     "found",
+     0.18,
+     0.62
+    ],
+    [
+     "the",
+     0.62,
+     0.94
+    ],
+    [
+     "cheaper",
+     0.94,
+     1.26
+    ],
+    [
+     "ticket.",
+     1.26,
+     1.72
+    ],
+    [
+     "You",
+     2.54,
+     2.6
+    ],
+    [
+     "picked",
+     2.6,
+     2.98
+    ],
+    [
+     "a",
+     2.98,
+     3.28
+    ],
+    [
+     "seat.",
+     3.28,
+     3.58
+    ],
+    [
+     "You",
+     4.44,
+     4.5
+    ],
+    [
+     "typed",
+     4.5,
+     4.9
+    ],
+    [
+     "in",
+     4.9,
+     5.22
+    ],
+    [
+     "your",
+     5.22,
+     5.38
+    ],
+    [
+     "card.",
+     5.38,
+     5.82
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "three code-drawn checkout screens flick past, each a step: price list · seat map · card form",
+     "tech": "T12 motion blur whip between screens",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "You found the cheaper ticket. You picked a seat. You typed in your card.",
+   "diff": []
+  },
+  {
+   "id": "COLD.7",
+   "act": "COLD",
+   "start": 37.265,
+   "end": 43.215,
+   "next": 44.015,
+   "text": "Then the last screen showed a number you didn't expect... and you paid anyway.",
+   "ru": "А потом последний экран показал число, которого вы не ждали… и вы всё равно заплатили.",
+   "note": "growing tension, slow and heavy on 'and you paid anyway'",
+   "sound": "bed rises, then drops out under 'paid anyway'",
+   "words": [
+    [
+     "Then",
+     0.0,
+     0.22
+    ],
+    [
+     "the",
+     0.22,
+     0.52
+    ],
+    [
+     "last",
+     0.52,
+     0.8
+    ],
+    [
+     "screen",
+     0.8,
+     1.24
+    ],
+    [
+     "showed",
+     1.24,
+     1.64
+    ],
+    [
+     "a",
+     1.64,
+     1.92
+    ],
+    [
+     "number",
+     1.92,
+     2.26
+    ],
+    [
+     "you",
+     2.26,
+     2.7
+    ],
+    [
+     "didn't",
+     2.7,
+     3.18
+    ],
+    [
+     "expect...",
+     3.18,
+     3.66
+    ],
+    [
+     "and",
+     4.38,
+     4.54
+    ],
+    [
+     "you",
+     4.54,
+     4.68
+    ],
+    [
+     "paid",
+     4.68,
+     5.18
+    ],
+    [
+     "anyway.",
+     5.18,
+     5.76
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the last code-drawn screen: TOTAL $48 grows into frame, the Pay button lights",
+     "tech": "T4 eased number build + T3",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Then the last screen showed a number you didn't expect, and you paid anyway.",
+   "diff": []
+  },
+  {
+   "id": "COLD.8",
+   "act": "COLD",
+   "start": 44.015,
+   "end": 50.355,
+   "next": 52.605,
+   "text": "Why? Somebody spent years finding out exactly why. And it wasn't you.",
+   "ru": "Почему? Кто-то потратил годы, чтобы выяснить, почему именно. И это были не вы.",
+   "note": "low, conspiratorial, a hint of menace on the last sentence",
+   "sound": "bed fades on the hit; brass hit ub_sting_brass; ONE SECOND OF SILENCE",
+   "words": [
+    [
+     "Why?",
+     0.0,
+     0.4
+    ],
+    [
+     "Somebody",
+     1.36,
+     1.66
+    ],
+    [
+     "spent",
+     1.66,
+     2.02
+    ],
+    [
+     "years",
+     2.02,
+     2.52
+    ],
+    [
+     "finding",
+     2.52,
+     3.0
+    ],
+    [
+     "out",
+     3.0,
+     3.32
+    ],
+    [
+     "exactly",
+     3.32,
+     3.82
+    ],
+    [
+     "why.",
+     3.82,
+     4.28
+    ],
+    [
+     "And",
+     5.02,
+     5.2
+    ],
+    [
+     "it",
+     5.2,
+     5.36
+    ],
+    [
+     "wasn't",
+     5.36,
+     5.86
+    ],
+    [
+     "you.",
+     5.86,
+     6.16
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "blueprint lines start drawing themselves over the dark screen (Act 2 teaser), cut to black on the hit",
+     "tech": "T1 true-stroke lines, hard cut",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Why? Somebody spent years finding out exactly why. And it wasn't you.",
+   "diff": []
+  },
+  {
+   "id": "COLD.9",
+   "act": "COLD",
+   "start": 52.605,
+   "end": 56.65,
+   "next": 58.25,
+   "text": "Case file number four. The seven-minute heist.",
+   "ru": "Дело номер четыре. Ограбление за семь минут.",
+   "note": "a firm title read, measured, with weight",
+   "sound": "case folder slide (paper whoosh), bed back for the title",
+   "words": [
+    [
+     "Case",
+     0.0,
+     0.3
+    ],
+    [
+     "file",
+     0.3,
+     0.84
+    ],
+    [
+     "number",
+     0.84,
+     1.12
+    ],
+    [
+     "four.",
+     1.12,
+     1.6
+    ],
+    [
+     "The",
+     2.34,
+     2.44
+    ],
+    [
+     "seven-minute",
+     2.44,
+     3.26
+    ],
+    [
+     "heist.",
+     3.26,
+     3.96
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 cf1 case folder slides in, typed: CASE FILE 004 · THE SEVEN-MINUTE HEIST",
+     "tech": "T5 kinetic title + T8 paper wobble",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Case file number four, the seven minute heist.",
+   "diff": []
+  },
+  {
+   "id": "A1.1",
+   "act": "A1",
+   "start": 58.25,
+   "end": 66.49,
+   "next": 67.09,
+   "text": "Tuesday. 8:12 p.m. Larry has fifty dollars, and it has to last him until Friday.",
+   "ru": "Вторник. 20:12. У Ларри пятьдесят долларов, и их должно хватить до пятницы.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "Act 1 bed ub_night_spot, clock tick",
+   "words": [
+    [
+     "Tuesday.",
+     0.0,
+     0.5
+    ],
+    [
+     "8:12",
+     1.38,
+     1.58
+    ],
+    [
+     "p.m.",
+     1.58,
+     3.5
+    ],
+    [
+     "Larry",
+     3.5,
+     3.86
+    ],
+    [
+     "has",
+     3.86,
+     4.2
+    ],
+    [
+     "fifty",
+     4.2,
+     4.72
+    ],
+    [
+     "dollars,",
+     4.2,
+     4.72
+    ],
+    [
+     "and",
+     4.72,
+     5.68
+    ],
+    [
+     "it",
+     5.68,
+     5.84
+    ],
+    [
+     "has",
+     5.84,
+     6.0
+    ],
+    [
+     "to",
+     6.0,
+     6.24
+    ],
+    [
+     "last",
+     6.24,
+     6.52
+    ],
+    [
+     "him",
+     6.52,
+     6.84
+    ],
+    [
+     "until",
+     6.84,
+     7.56
+    ],
+    [
+     "Friday.",
+     7.56,
+     8.06
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ACT 1 · THE MARK title, then ep04v2_a1_wallet: an open wallet with $50 on the table",
+     "tech": "T11 ink wipe in, T5 title; corner clock 8:12",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn calendar strip TUE → FRI, the $50 shrinks along it",
+     "tech": "T4 eased bar",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Tuesday, 8.12pm. Larry has $50 and it has to last him until Friday.",
+   "diff": []
+  },
+  {
+   "id": "A1.2",
+   "act": "A1",
+   "start": 67.09,
+   "end": 73.89,
+   "next": 74.39,
+   "text": "His favourite band plays on Saturday night, two hours away. And Larry has a plan.",
+   "ru": "Его любимая группа играет в субботу вечером, в двух часах езды. И у Ларри есть план.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "bed",
+   "words": [
+    [
+     "His",
+     0.0,
+     0.2
+    ],
+    [
+     "favourite",
+     0.2,
+     0.64
+    ],
+    [
+     "band",
+     0.64,
+     1.18
+    ],
+    [
+     "plays",
+     1.18,
+     1.66
+    ],
+    [
+     "on",
+     1.66,
+     1.88
+    ],
+    [
+     "Saturday",
+     1.88,
+     2.3
+    ],
+    [
+     "night,",
+     2.3,
+     2.74
+    ],
+    [
+     "two",
+     3.2,
+     3.46
+    ],
+    [
+     "hours",
+     3.46,
+     3.78
+    ],
+    [
+     "away.",
+     3.78,
+     4.22
+    ],
+    [
+     "And",
+     5.02,
+     5.3
+    ],
+    [
+     "Larry",
+     5.3,
+     5.72
+    ],
+    [
+     "has",
+     5.72,
+     6.14
+    ],
+    [
+     "a",
+     6.14,
+     6.32
+    ],
+    [
+     "plan.",
+     6.32,
+     6.62
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn small route: Larry's flat → the city hall, '2 h' (night map)",
+     "tech": "T6 animated route",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 o4 push-in on Larry: a little smile",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "His favourite band plays on Saturday night, two hours away, and Larry has a plan.",
+   "diff": []
+  },
+  {
+   "id": "A1.3",
+   "act": "A1",
+   "start": 74.39,
+   "end": 80.94,
+   "next": 81.24,
+   "text": "Two websites. On the first one, a ticket costs forty dollars. Everything included.",
+   "ru": "Два сайта. На первом билет стоит сорок долларов. Всё включено.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "UI click",
+   "words": [
+    [
+     "Two",
+     0.0,
+     0.36
+    ],
+    [
+     "websites.",
+     0.36,
+     1.06
+    ],
+    [
+     "On",
+     1.92,
+     2.02
+    ],
+    [
+     "the",
+     2.02,
+     2.16
+    ],
+    [
+     "first",
+     2.16,
+     2.46
+    ],
+    [
+     "one,",
+     2.46,
+     2.82
+    ],
+    [
+     "a",
+     3.2,
+     3.34
+    ],
+    [
+     "ticket",
+     3.34,
+     3.62
+    ],
+    [
+     "costs",
+     3.62,
+     4.08
+    ],
+    [
+     "forty",
+     4.08,
+     4.62
+    ],
+    [
+     "dollars.",
+     4.08,
+     4.62
+    ],
+    [
+     "Everything",
+     5.38,
+     5.86
+    ],
+    [
+     "included.",
+     5.86,
+     6.36
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn browser, tab 1: $40 · ALL-IN (green tick)",
+     "tech": "T9 highlighter on 'ALL-IN'",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Two websites. On the first one, a ticket costs $40, everything included.",
+   "diff": []
+  },
+  {
+   "id": "A1.4",
+   "act": "A1",
+   "start": 81.24,
+   "end": 86.615,
+   "next": 87.015,
+   "text": "On the second one — same concert, same hall — thirty.",
+   "ru": "На втором — тот же концерт, тот же зал — тридцать.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "UI click",
+   "words": [
+    [
+     "On",
+     0.0,
+     0.2
+    ],
+    [
+     "the",
+     0.2,
+     0.36
+    ],
+    [
+     "second",
+     0.36,
+     0.66
+    ],
+    [
+     "one",
+     0.66,
+     1.04
+    ],
+    [
+     "—",
+     1.04,
+     1.86
+    ],
+    [
+     "same",
+     1.86,
+     2.22
+    ],
+    [
+     "concert,",
+     2.22,
+     2.78
+    ],
+    [
+     "same",
+     3.36,
+     3.58
+    ],
+    [
+     "hall",
+     3.58,
+     3.98
+    ],
+    [
+     "—",
+     3.98,
+     4.74
+    ],
+    [
+     "thirty.",
+     4.74,
+     5.16
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "tab 2 opens beside it: $30 (fees not shown)",
+     "tech": "T2 spring on $30",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "On the second one, same concert, same hall, 30.",
+   "diff": []
+  },
+  {
+   "id": "A1.5",
+   "act": "A1",
+   "start": 87.015,
+   "end": 92.685,
+   "next": 93.485,
+   "text": "Larry closes the first tab. Ten dollars saved. Larry is a genius.",
+   "ru": "Ларри закрывает первую вкладку. Десять долларов сэкономлены. Ларри — гений.",
+   "note": "light and wry, a faint smile on 'Larry is a genius'",
+   "sound": "tab-close click; a wry little pizzicato",
+   "words": [
+    [
+     "Larry",
+     0.0,
+     0.36
+    ],
+    [
+     "closes",
+     0.36,
+     1.04
+    ],
+    [
+     "the",
+     1.04,
+     1.3
+    ],
+    [
+     "first",
+     1.3,
+     1.54
+    ],
+    [
+     "tab.",
+     1.54,
+     1.98
+    ],
+    [
+     "Ten",
+     2.62,
+     2.84
+    ],
+    [
+     "dollars",
+     2.62,
+     2.84
+    ],
+    [
+     "saved.",
+     2.84,
+     3.46
+    ],
+    [
+     "Larry",
+     4.2,
+     4.44
+    ],
+    [
+     "is",
+     4.44,
+     4.9
+    ],
+    [
+     "a",
+     4.9,
+     5.04
+    ],
+    [
+     "genius.",
+     5.04,
+     5.38
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "tab 1 closes with a small whoosh; '+$10' floats up; a hand-drawn crown over Larry (o4)",
+     "tech": "T1 handwriting crown, ironic",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Larry closes the first tab. $10 saved. Larry is a genius.",
+   "diff": []
+  },
+  {
+   "id": "A1.6",
+   "act": "A1",
+   "start": 93.485,
+   "end": 106.195,
+   "next": 106.795,
+   "text": "Remember that number. Thirty. Hold on to it — because over the next seven minutes it's going to change, quietly, three times.",
+   "ru": "Запомните это число. Тридцать. Держитесь за него — потому что за следующие семь минут оно тихо изменится трижды.",
+   "note": "slower, leaning in, a quiet warning",
+   "sound": "bed thins, clock louder",
+   "words": [
+    [
+     "Remember",
+     0.0,
+     0.64
+    ],
+    [
+     "that",
+     0.64,
+     1.24
+    ],
+    [
+     "number.",
+     1.24,
+     1.8
+    ],
+    [
+     "Thirty.",
+     2.88,
+     3.24
+    ],
+    [
+     "Hold",
+     4.42,
+     4.66
+    ],
+    [
+     "on",
+     4.66,
+     4.81
+    ],
+    [
+     "to",
+     4.81,
+     4.96
+    ],
+    [
+     "it",
+     4.96,
+     5.32
+    ],
+    [
+     "—",
+     5.32,
+     6.4
+    ],
+    [
+     "because",
+     6.4,
+     6.62
+    ],
+    [
+     "over",
+     6.62,
+     6.92
+    ],
+    [
+     "the",
+     6.92,
+     7.1
+    ],
+    [
+     "next",
+     7.1,
+     7.34
+    ],
+    [
+     "seven",
+     7.34,
+     7.7
+    ],
+    [
+     "minutes",
+     7.7,
+     8.16
+    ],
+    [
+     "it's",
+     8.66,
+     8.86
+    ],
+    [
+     "going",
+     8.86,
+     9.0
+    ],
+    [
+     "to",
+     9.0,
+     9.38
+    ],
+    [
+     "change,",
+     9.38,
+     9.76
+    ],
+    [
+     "quietly,",
+     10.5,
+     10.92
+    ],
+    [
+     "three",
+     11.8,
+     11.98
+    ],
+    [
+     "times.",
+     11.98,
+     12.58
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "$30 big in the centre, the ink of the number slowly breathing",
+     "tech": "T8 ink bleed + T3",
+     "source": "pipeline"
+    },
+    {
+     "picture": "three empty slots appear under $30: ①②③ (the coming changes)",
+     "tech": "T2 three soft stamps",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Remember that number. 30. Hold onto it. Because over the next seven minutes, it's going to change, quietly, three times.",
+   "diff": []
+  },
+  {
+   "id": "A1.7",
+   "act": "A1",
+   "start": 106.795,
+   "end": 115.255,
+   "next": 115.755,
+   "text": "8:13. The seat map. Row G, seat 12. Larry can already hear the band.",
+   "ru": "20:13. Схема зала. Ряд G, место 12. Ларри уже слышит группу.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "faint muffled concert sound under the bed",
+   "words": [
+    [
+     "8:13.",
+     0.0,
+     0.92
+    ],
+    [
+     "The",
+     1.74,
+     1.82
+    ],
+    [
+     "seat",
+     1.82,
+     2.12
+    ],
+    [
+     "map.",
+     2.12,
+     2.48
+    ],
+    [
+     "Row",
+     3.28,
+     3.4
+    ],
+    [
+     "G,",
+     3.4,
+     3.84
+    ],
+    [
+     "seat",
+     4.32,
+     4.64
+    ],
+    [
+     "12.",
+     4.64,
+     5.08
+    ],
+    [
+     "Larry",
+     6.06,
+     6.3
+    ],
+    [
+     "can",
+     6.3,
+     6.58
+    ],
+    [
+     "already",
+     6.58,
+     7.24
+    ],
+    [
+     "hear",
+     7.24,
+     7.72
+    ],
+    [
+     "the",
+     7.72,
+     7.94
+    ],
+    [
+     "band.",
+     7.94,
+     8.28
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn seat map, the camera flies to Row G seat 12, it lights",
+     "tech": "T12 motion blur fly-in, corner clock 8:13",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 a10 Grok clip: the empty 1950s hall, front rows lit",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "813. The Seat Map. Row G, Seat 12. Larry can already hear the band.",
+   "diff": []
+  },
+  {
+   "id": "A1.8",
+   "act": "A1",
+   "start": 115.755,
+   "end": 127.62,
+   "next": 128.32,
+   "text": "8:14. A little clock appears. \"Your ticket is held for ten minutes.\" Nobody is rushing Larry. The clock is just... there.",
+   "ru": "20:14. Появляются маленькие часы. «Ваш билет забронирован на десять минут». Никто Ларри не торопит. Часы просто… есть.",
+   "note": "calm, then a small dry pause before 'there'",
+   "sound": "the tick moves to the foreground",
+   "words": [
+    [
+     "8:14.",
+     0.0,
+     0.92
+    ],
+    [
+     "A",
+     1.9,
+     2.14
+    ],
+    [
+     "little",
+     2.14,
+     2.36
+    ],
+    [
+     "clock",
+     2.36,
+     2.78
+    ],
+    [
+     "appears.",
+     2.78,
+     3.26
+    ],
+    [
+     "\"Your",
+     4.2,
+     4.32
+    ],
+    [
+     "ticket",
+     4.32,
+     4.62
+    ],
+    [
+     "is",
+     4.62,
+     4.9
+    ],
+    [
+     "held",
+     4.9,
+     5.16
+    ],
+    [
+     "for",
+     5.16,
+     5.44
+    ],
+    [
+     "ten",
+     5.44,
+     5.66
+    ],
+    [
+     "minutes.\"",
+     5.66,
+     6.08
+    ],
+    [
+     "Nobody",
+     7.22,
+     7.56
+    ],
+    [
+     "is",
+     7.56,
+     7.9
+    ],
+    [
+     "rushing",
+     7.9,
+     8.3
+    ],
+    [
+     "Larry.",
+     8.3,
+     8.72
+    ],
+    [
+     "The",
+     9.64,
+     9.76
+    ],
+    [
+     "clock",
+     9.76,
+     10.08
+    ],
+    [
+     "is",
+     10.08,
+     10.38
+    ],
+    [
+     "just...",
+     10.38,
+     10.8
+    ],
+    [
+     "there.",
+     10.8,
+     11.68
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn hold timer 10:00 slides into the screen corner and starts",
+     "tech": "T2 spring in",
+     "source": "pipeline"
+    },
+    {
+     "picture": "close on the timer, digits ticking 9:59 · 9:58",
+     "tech": "T3 breathing vignette",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "8.14. A little clock appears. Your ticket is held for ten minutes. Nobody is rushing Larry. The clock is just there.",
+   "diff": []
+  },
+  {
+   "id": "A1.9",
+   "act": "A1",
+   "start": 128.32,
+   "end": 137.18,
+   "next": 137.58,
+   "text": "8:16. Name. Email. Card number. Larry types the sixteen digits he knows by heart.",
+   "ru": "20:16. Имя. Почта. Номер карты. Ларри вводит шестнадцать цифр, которые знает наизусть.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "typing clicks, sixteen of them",
+   "words": [
+    [
+     "8:16.",
+     0.0,
+     1.44
+    ],
+    [
+     "Name.",
+     2.44,
+     2.64
+    ],
+    [
+     "Email.",
+     3.46,
+     3.84
+    ],
+    [
+     "Card",
+     4.56,
+     4.76
+    ],
+    [
+     "number.",
+     4.76,
+     5.18
+    ],
+    [
+     "Larry",
+     5.86,
+     6.08
+    ],
+    [
+     "types",
+     6.08,
+     6.48
+    ],
+    [
+     "the",
+     6.48,
+     6.76
+    ],
+    [
+     "sixteen",
+     6.76,
+     7.14
+    ],
+    [
+     "digits",
+     7.14,
+     7.56
+    ],
+    [
+     "he",
+     7.56,
+     7.84
+    ],
+    [
+     "knows",
+     7.84,
+     8.1
+    ],
+    [
+     "by",
+     8.1,
+     8.34
+    ],
+    [
+     "heart.",
+     8.34,
+     8.7
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn card form fills field by field; 16 digits as dots (no hands, no real number)",
+     "tech": "T1 caret stroke",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "8, 16. Name, email, card number. Larry types the 16 digits he knows by heart.",
+   "diff": []
+  },
+  {
+   "id": "A1.10",
+   "act": "A1",
+   "start": 137.58,
+   "end": 144.71,
+   "next": 145.21,
+   "text": "If you've ever bought a ticket online, you know every one of these screens. You've been on all of them.",
+   "ru": "Если вы хоть раз покупали билет онлайн, вы знаете каждый из этих экранов. Вы побывали на всех.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "bed",
+   "words": [
+    [
+     "If",
+     0.0,
+     0.16
+    ],
+    [
+     "you've",
+     0.16,
+     0.5
+    ],
+    [
+     "ever",
+     0.5,
+     0.68
+    ],
+    [
+     "bought",
+     0.68,
+     1.0
+    ],
+    [
+     "a",
+     1.0,
+     1.18
+    ],
+    [
+     "ticket",
+     1.18,
+     1.48
+    ],
+    [
+     "online,",
+     1.48,
+     2.14
+    ],
+    [
+     "you",
+     2.68,
+     2.8
+    ],
+    [
+     "know",
+     2.8,
+     3.04
+    ],
+    [
+     "every",
+     3.04,
+     3.52
+    ],
+    [
+     "one",
+     3.52,
+     3.8
+    ],
+    [
+     "of",
+     3.8,
+     3.98
+    ],
+    [
+     "these",
+     3.98,
+     4.16
+    ],
+    [
+     "screens.",
+     4.16,
+     4.64
+    ],
+    [
+     "You've",
+     5.38,
+     5.72
+    ],
+    [
+     "been",
+     5.72,
+     5.94
+    ],
+    [
+     "on",
+     5.94,
+     6.32
+    ],
+    [
+     "all",
+     6.32,
+     6.66
+    ],
+    [
+     "of",
+     6.66,
+     6.84
+    ],
+    [
+     "them.",
+     6.84,
+     7.02
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the four screens so far fan out like cards: tabs · seat map · timer · card form",
+     "tech": "T12 blur on the fan",
+     "source": "pipeline"
+    },
+    {
+     "picture": "archive radio_city_ticket_booth_1942: people at a ticket window, every era buys this way",
+     "tech": "slow push",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "If you've ever bought a ticket online, you know every one of these screens. You've been on all of them.",
+   "diff": []
+  },
+  {
+   "id": "A1.11",
+   "act": "A1",
+   "start": 145.21,
+   "end": 154.315,
+   "next": 155.215,
+   "text": "8:18. Next screen. Service fee: eight dollars. Facility fee: six. Processing: four.",
+   "ru": "20:18. Следующий экран. Сервисный сбор: восемь долларов. Сбор площадки: шесть. Обработка: четыре.",
+   "note": "slower, each fee placed like a card on a table",
+   "sound": "HEARTBEAT starts",
+   "words": [
+    [
+     "8:18.",
+     0.0,
+     1.34
+    ],
+    [
+     "Next",
+     2.16,
+     2.32
+    ],
+    [
+     "screen.",
+     2.32,
+     2.84
+    ],
+    [
+     "Service",
+     3.48,
+     3.78
+    ],
+    [
+     "fee:",
+     3.78,
+     4.08
+    ],
+    [
+     "eight",
+     4.08,
+     4.82
+    ],
+    [
+     "dollars.",
+     4.08,
+     4.82
+    ],
+    [
+     "Facility",
+     5.48,
+     6.1
+    ],
+    [
+     "fee:",
+     6.1,
+     6.44
+    ],
+    [
+     "six.",
+     6.44,
+     7.04
+    ],
+    [
+     "Processing:",
+     7.76,
+     8.24
+    ],
+    [
+     "four.",
+     8.24,
+     8.98
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn fee lines drop in one by one: SERVICE $8 · FACILITY $6 · PROCESSING $4",
+     "tech": "T2 stamp per line on the heartbeat",
+     "source": "pipeline"
+    },
+    {
+     "picture": "slot ① ② ③ under $30 fill in with the three fees",
+     "tech": "T9 highlighter",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 5,
+   "heard": "8 18. Next screen. Service fee $8. Facility fee $6. Processing $4.",
+   "diff": []
+  },
+  {
+   "id": "A1.12",
+   "act": "A1",
+   "start": 155.215,
+   "end": 158.665,
+   "next": 159.265,
+   "text": "Total: forty-eight dollars.",
+   "ru": "Итого: сорок восемь долларов.",
+   "note": "slow and heavy, after a held breath",
+   "sound": "heartbeat",
+   "words": [
+    [
+     "Total:",
+     0.0,
+     0.54
+    ],
+    [
+     "forty-eight",
+     1.32,
+     2.28
+    ],
+    [
+     "dollars.",
+     1.32,
+     2.28
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "TOTAL $48 builds up from $30",
+     "tech": "T4 eased number build",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Total, $48.",
+   "diff": []
+  },
+  {
+   "id": "A1.13",
+   "act": "A1",
+   "start": 159.265,
+   "end": 165.435,
+   "next": 165.835,
+   "text": "Larry's ticket just grew by sixty percent between the first screen and the last.",
+   "ru": "Билет Ларри только что вырос на шестьдесят процентов между первым экраном и последним.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "heartbeat",
+   "words": [
+    [
+     "Larry's",
+     0.0,
+     0.9
+    ],
+    [
+     "ticket",
+     0.9,
+     1.2
+    ],
+    [
+     "just",
+     1.2,
+     2.04
+    ],
+    [
+     "grew",
+     2.04,
+     2.44
+    ],
+    [
+     "by",
+     2.44,
+     2.68
+    ],
+    [
+     "sixty",
+     2.68,
+     3.2
+    ],
+    [
+     "percent",
+     3.2,
+     3.64
+    ],
+    [
+     "between",
+     3.64,
+     4.0
+    ],
+    [
+     "the",
+     4.0,
+     4.22
+    ],
+    [
+     "first",
+     4.22,
+     4.46
+    ],
+    [
+     "screen",
+     4.46,
+     4.86
+    ],
+    [
+     "and",
+     4.86,
+     5.46
+    ],
+    [
+     "the",
+     5.46,
+     5.58
+    ],
+    [
+     "last.",
+     5.58,
+     5.92
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn bar: $30 → $48, '+60%' stamp",
+     "tech": "T4 chart + T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 2,
+   "heard": "Larry's Ticket just grew by 60% between the first screen and the last.",
+   "diff": []
+  },
+  {
+   "id": "A1.14",
+   "act": "A1",
+   "start": 165.835,
+   "end": 172.455,
+   "next": 172.955,
+   "text": "It's now eight dollars more than the ticket he closed. And it leaves him two dollars until Friday.",
+   "ru": "Теперь он на восемь долларов дороже билета, который он закрыл. И до пятницы у него останется два доллара.",
+   "note": "low and unhurried, a story told at night, gently wry about Larry, never mocking",
+   "sound": "heartbeat",
+   "words": [
+    [
+     "It's",
+     0.0,
+     0.4
+    ],
+    [
+     "now",
+     0.4,
+     0.7
+    ],
+    [
+     "eight",
+     0.7,
+     1.26
+    ],
+    [
+     "dollars",
+     0.7,
+     1.26
+    ],
+    [
+     "more",
+     1.26,
+     1.84
+    ],
+    [
+     "than",
+     1.84,
+     2.08
+    ],
+    [
+     "the",
+     2.08,
+     2.24
+    ],
+    [
+     "ticket",
+     2.24,
+     2.48
+    ],
+    [
+     "he",
+     2.48,
+     2.68
+    ],
+    [
+     "closed.",
+     2.68,
+     3.26
+    ],
+    [
+     "And",
+     3.84,
+     4.12
+    ],
+    [
+     "it",
+     4.12,
+     4.26
+    ],
+    [
+     "leaves",
+     4.26,
+     4.58
+    ],
+    [
+     "him",
+     4.58,
+     4.8
+    ],
+    [
+     "two",
+     4.8,
+     5.46
+    ],
+    [
+     "dollars",
+     4.8,
+     5.46
+    ],
+    [
+     "until",
+     5.46,
+     5.98
+    ],
+    [
+     "Friday.",
+     5.98,
+     6.44
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ghost of the closed tab $40 returns next to $48: '+$8'",
+     "tech": "T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a1_wallet: the wallet empties to $2; calendar strip TUE → FRI",
+     "tech": "T4",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "It's now $8 more than the ticket he closed. And it leaves him $2 until Friday.",
+   "diff": []
+  },
+  {
+   "id": "A1.15",
+   "act": "A1",
+   "start": 172.955,
+   "end": 182.505,
+   "next": 183.805,
+   "text": "He looks at the clock. Six minutes left. He thinks about the seat he picked. The evening he has already imagined.",
+   "ru": "Он смотрит на часы. Осталось шесть минут. Он думает о месте, которое выбрал. О вечере, который уже себе представил.",
+   "note": "quieter, tense, unhurried",
+   "sound": "heartbeat speeds a touch",
+   "words": [
+    [
+     "He",
+     0.0,
+     0.16
+    ],
+    [
+     "looks",
+     0.16,
+     0.44
+    ],
+    [
+     "at",
+     0.44,
+     0.78
+    ],
+    [
+     "the",
+     0.78,
+     0.9
+    ],
+    [
+     "clock.",
+     0.9,
+     1.32
+    ],
+    [
+     "Six",
+     2.16,
+     2.34
+    ],
+    [
+     "minutes",
+     2.34,
+     2.66
+    ],
+    [
+     "left.",
+     2.66,
+     3.28
+    ],
+    [
+     "He",
+     4.42,
+     4.56
+    ],
+    [
+     "thinks",
+     4.56,
+     4.88
+    ],
+    [
+     "about",
+     4.88,
+     5.14
+    ],
+    [
+     "the",
+     5.14,
+     5.36
+    ],
+    [
+     "seat",
+     5.36,
+     5.58
+    ],
+    [
+     "he",
+     5.58,
+     5.8
+    ],
+    [
+     "picked.",
+     5.8,
+     6.14
+    ],
+    [
+     "The",
+     7.14,
+     7.3
+    ],
+    [
+     "evening",
+     7.3,
+     7.72
+    ],
+    [
+     "he",
+     7.72,
+     8.28
+    ],
+    [
+     "has",
+     8.28,
+     8.42
+    ],
+    [
+     "already",
+     8.42,
+     8.82
+    ],
+    [
+     "imagined.",
+     8.82,
+     9.34
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "timer 6:00, close",
+     "tech": "T3",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 a11 (hall, seat lit), soft dreamy glow",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "He looks at the clock. Six minutes left. He thinks about the seat he picked. The evening he has already imagined.",
+   "diff": []
+  },
+  {
+   "id": "A1.16",
+   "act": "A1",
+   "start": 183.805,
+   "end": 187.55,
+   "next": 188.55,
+   "text": "8:19. Larry presses Pay.",
+   "ru": "20:19. Ларри нажимает «Оплатить».",
+   "note": "very quiet and flat, after the silence",
+   "sound": "heartbeat STOPS. Silence. One click.",
+   "words": [
+    [
+     "8:19.",
+     0.0,
+     1.12
+    ],
+    [
+     "Larry",
+     1.94,
+     2.26
+    ],
+    [
+     "presses",
+     2.26,
+     2.88
+    ],
+    [
+     "Pay.",
+     2.88,
+     3.56
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the Pay button presses, screen flashes white once; corner clock 8:19",
+     "tech": "T2 hit on the click",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "819. Larry presses pay.",
+   "diff": []
+  },
+  {
+   "id": "A1.17",
+   "act": "A1",
+   "start": 188.55,
+   "end": 196.66,
+   "next": 197.26,
+   "text": "Seven minutes. Eighteen dollars. And here's the strange part: Larry saw the number. He chose it.",
+   "ru": "Семь минут. Восемнадцать долларов. И вот что странно: Ларри видел это число. Он сам его выбрал.",
+   "note": "low, wondering",
+   "sound": "bed back, low",
+   "words": [
+    [
+     "Seven",
+     0.0,
+     0.38
+    ],
+    [
+     "minutes.",
+     0.38,
+     0.76
+    ],
+    [
+     "Eighteen",
+     1.4,
+     1.82
+    ],
+    [
+     "dollars.",
+     1.4,
+     1.82
+    ],
+    [
+     "And",
+     3.08,
+     3.36
+    ],
+    [
+     "here's",
+     3.36,
+     3.72
+    ],
+    [
+     "the",
+     3.72,
+     3.84
+    ],
+    [
+     "strange",
+     3.84,
+     4.22
+    ],
+    [
+     "part:",
+     4.22,
+     4.66
+    ],
+    [
+     "Larry",
+     5.36,
+     5.74
+    ],
+    [
+     "saw",
+     5.74,
+     6.1
+    ],
+    [
+     "the",
+     6.1,
+     6.32
+    ],
+    [
+     "number.",
+     6.32,
+     6.6
+    ],
+    [
+     "He",
+     7.28,
+     7.38
+    ],
+    [
+     "chose",
+     7.38,
+     7.66
+    ],
+    [
+     "it.",
+     7.66,
+     8.0
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the timeline 8:12 → 8:19 drawn as a line with the six steps",
+     "tech": "T1 true stroke",
+     "source": "pipeline"
+    },
+    {
+     "picture": "'$18' circled by hand",
+     "tech": "T1",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "7 minutes, $18. And here's the strange part. Larry saw the number. He chose it.",
+   "diff": []
+  },
+  {
+   "id": "A1.18",
+   "act": "A1",
+   "start": 197.26,
+   "end": 203.72,
+   "next": 204.32,
+   "text": "So why would a man who closed a forty-dollar ticket to save ten... pay forty-eight?",
+   "ru": "Так почему человек, который закрыл билет за сорок, чтобы сэкономить десять… заплатил сорок восемь?",
+   "note": "puzzled, a slight smile",
+   "sound": "bed",
+   "words": [
+    [
+     "So",
+     0.0,
+     0.3
+    ],
+    [
+     "why",
+     0.3,
+     0.74
+    ],
+    [
+     "would",
+     0.74,
+     0.96
+    ],
+    [
+     "a",
+     0.96,
+     1.1
+    ],
+    [
+     "man",
+     1.1,
+     1.5
+    ],
+    [
+     "who",
+     1.5,
+     1.96
+    ],
+    [
+     "closed",
+     1.96,
+     2.36
+    ],
+    [
+     "a",
+     2.36,
+     2.56
+    ],
+    [
+     "forty-dollar",
+     2.56,
+     3.06
+    ],
+    [
+     "ticket",
+     3.06,
+     3.5
+    ],
+    [
+     "to",
+     3.5,
+     3.84
+    ],
+    [
+     "save",
+     3.84,
+     4.1
+    ],
+    [
+     "ten...",
+     4.1,
+     4.6
+    ],
+    [
+     "pay",
+     4.6,
+     5.46
+    ],
+    [
+     "forty-eight?",
+     5.46,
+     6.14
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "split screen: $40 (closed, crossed) | $48 (paid) with a big '?'",
+     "tech": "T2 '?' stamp",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "So why would a man who closed a $40 ticket to save $10 pay $48?",
+   "diff": []
+  },
+  {
+   "id": "A1.19",
+   "act": "A1",
+   "start": 204.32,
+   "end": 212.825,
+   "next": 217.025,
+   "text": "To answer that, we have to go where this job was planned. And rehearsed. On millions of people.",
+   "ru": "Чтобы ответить, нам придётся отправиться туда, где это дело планировали. И репетировали. На миллионах людей.",
+   "note": "low, conspiratorial, leaving it hanging",
+   "sound": "bed swells, cut on 'people' → AD BREAK",
+   "words": [
+    [
+     "To",
+     0.0,
+     0.2
+    ],
+    [
+     "answer",
+     0.2,
+     0.62
+    ],
+    [
+     "that,",
+     0.62,
+     1.1
+    ],
+    [
+     "we",
+     1.74,
+     1.96
+    ],
+    [
+     "have",
+     1.96,
+     2.14
+    ],
+    [
+     "to",
+     2.14,
+     2.34
+    ],
+    [
+     "go",
+     2.34,
+     2.58
+    ],
+    [
+     "where",
+     2.58,
+     2.86
+    ],
+    [
+     "this",
+     2.86,
+     3.08
+    ],
+    [
+     "job",
+     3.08,
+     3.36
+    ],
+    [
+     "was",
+     3.36,
+     3.6
+    ],
+    [
+     "planned.",
+     3.6,
+     4.22
+    ],
+    [
+     "And",
+     4.22,
+     5.16
+    ],
+    [
+     "rehearsed.",
+     5.16,
+     6.56
+    ],
+    [
+     "On",
+     6.56,
+     6.96
+    ],
+    [
+     "millions",
+     6.96,
+     7.58
+    ],
+    [
+     "of",
+     7.58,
+     8.02
+    ],
+    [
+     "people.",
+     8.02,
+     8.38
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the screen dissolves into blueprint lines (pen draws a floor plan)",
+     "tech": "T1 true stroke",
+     "source": "pipeline"
+    },
+    {
+     "picture": "the camera pulls out over a crowd of tiny figures (Ep.4 a5 queue), green creeps in",
+     "tech": "T11 ink wipe to green",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "To answer that, we have to go where this job was planned and rehearsed on millions of people.",
+   "diff": []
+  },
+  {
+   "id": "A2.1",
+   "act": "A2",
+   "start": 217.025,
+   "end": 223.03,
+   "next": 223.53,
+   "text": "Every good heist starts with a blueprint. This one was drawn in 1998.",
+   "ru": "Каждое хорошее ограбление начинается с чертежа. Этот нарисовали в 1998 году.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "Act 2 bed ub_mechanisms_of_action, pen scratch",
+   "words": [
+    [
+     "Every",
+     0.0,
+     0.3
+    ],
+    [
+     "good",
+     0.3,
+     0.54
+    ],
+    [
+     "heist",
+     0.54,
+     1.06
+    ],
+    [
+     "starts",
+     1.06,
+     1.54
+    ],
+    [
+     "with",
+     1.54,
+     1.72
+    ],
+    [
+     "a",
+     1.72,
+     1.84
+    ],
+    [
+     "blueprint.",
+     1.84,
+     2.2
+    ],
+    [
+     "This",
+     3.14,
+     3.32
+    ],
+    [
+     "one",
+     3.32,
+     3.62
+    ],
+    [
+     "was",
+     3.62,
+     4.1
+    ],
+    [
+     "drawn",
+     4.1,
+     4.46
+    ],
+    [
+     "in",
+     4.46,
+     4.74
+    ],
+    [
+     "1998.",
+     4.74,
+     5.54
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ACT 2 · THE LAB title",
+     "tech": "T5 kinetic title + T11",
+     "source": "pipeline"
+    },
+    {
+     "picture": "GAP ep04v2_g01 blueprint table: blank blueprint sheet on a 1950s drafting table; the pen-line draws itself along the lines",
+     "tech": "T1 true stroke",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Every good heist starts with a blueprint. This one was drawn in 1998.",
+   "diff": []
+  },
+  {
+   "id": "A2.2",
+   "act": "A2",
+   "start": 223.53,
+   "end": 233.735,
+   "next": 234.135,
+   "text": "Three marketing researchers — Morwitz, Greenleaf and Johnson — took one price and cut it in two: a base price, and a surcharge.",
+   "ru": "Три исследователя маркетинга — Морвиц, Гринлиф и Джонсон — взяли одну цену и разрезали её надвое: базовая цена и надбавка.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "pen",
+   "words": [
+    [
+     "Three",
+     0.0,
+     0.48
+    ],
+    [
+     "marketing",
+     0.48,
+     1.16
+    ],
+    [
+     "researchers",
+     1.16,
+     1.84
+    ],
+    [
+     "—",
+     1.84,
+     2.46
+    ],
+    [
+     "Morwitz,",
+     2.46,
+     2.86
+    ],
+    [
+     "Greenleaf",
+     3.3,
+     3.68
+    ],
+    [
+     "and",
+     3.68,
+     4.08
+    ],
+    [
+     "Johnson",
+     4.08,
+     4.52
+    ],
+    [
+     "—",
+     4.52,
+     5.06
+    ],
+    [
+     "took",
+     5.06,
+     5.18
+    ],
+    [
+     "one",
+     5.18,
+     5.5
+    ],
+    [
+     "price",
+     5.5,
+     5.9
+    ],
+    [
+     "and",
+     5.9,
+     6.36
+    ],
+    [
+     "cut",
+     6.36,
+     6.64
+    ],
+    [
+     "it",
+     6.64,
+     6.92
+    ],
+    [
+     "in",
+     6.92,
+     7.16
+    ],
+    [
+     "two:",
+     7.16,
+     7.42
+    ],
+    [
+     "a",
+     7.94,
+     8.02
+    ],
+    [
+     "base",
+     8.02,
+     8.32
+    ],
+    [
+     "price,",
+     8.32,
+     8.7
+    ],
+    [
+     "and",
+     8.7,
+     9.3
+    ],
+    [
+     "a",
+     9.3,
+     9.5
+    ],
+    [
+     "surcharge.",
+     9.5,
+     9.9
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "typed name card 'Morwitz · Greenleaf · Johnson · 1998' + paper card 'Divide and Prosper · Journal of Marketing Research 35(4)'",
+     "tech": "T8 paper wobble + T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "a code-drawn price tag cut in two by a drawn line: BASE + SURCHARGE",
+     "tech": "T1 the cut is a true stroke",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Three marketing researchers, Morwitz, Greenleaf and Johnson, took one price and cut it in two, a base price and a surcharge.",
+   "diff": []
+  },
+  {
+   "id": "A2.3",
+   "act": "A2",
+   "start": 234.135,
+   "end": 236.875,
+   "next": 237.275,
+   "text": "Same total. Just served in pieces.",
+   "ru": "Та же сумма. Просто подана по кусочкам.",
+   "note": "dry",
+   "sound": "bed",
+   "words": [
+    [
+     "Same",
+     0.0,
+     0.3
+    ],
+    [
+     "total.",
+     0.3,
+     0.76
+    ],
+    [
+     "Just",
+     1.36,
+     1.54
+    ],
+    [
+     "served",
+     1.54,
+     1.96
+    ],
+    [
+     "in",
+     1.96,
+     2.18
+    ],
+    [
+     "pieces.",
+     2.18,
+     2.5
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the two halves slide apart, '=' sign stays between",
+     "tech": "spring",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 2,
+   "heard": "Same total, just served in pieces.",
+   "diff": []
+  },
+  {
+   "id": "A2.4",
+   "act": "A2",
+   "start": 237.275,
+   "end": 243.585,
+   "next": 243.985,
+   "text": "And the people who saw it in pieces remembered paying less — and bought more.",
+   "ru": "И те, кто видел её по кусочкам, запомнили, что заплатили меньше, — и купили больше.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.34
+    ],
+    [
+     "the",
+     0.34,
+     0.52
+    ],
+    [
+     "people",
+     0.52,
+     0.94
+    ],
+    [
+     "who",
+     0.94,
+     1.2
+    ],
+    [
+     "saw",
+     1.2,
+     1.54
+    ],
+    [
+     "it",
+     1.54,
+     1.72
+    ],
+    [
+     "in",
+     1.72,
+     1.92
+    ],
+    [
+     "pieces",
+     1.92,
+     2.5
+    ],
+    [
+     "remembered",
+     2.5,
+     3.5
+    ],
+    [
+     "paying",
+     3.5,
+     3.92
+    ],
+    [
+     "less",
+     3.92,
+     4.4
+    ],
+    [
+     "—",
+     4.4,
+     4.4
+    ],
+    [
+     "and",
+     4.4,
+     5.12
+    ],
+    [
+     "bought",
+     5.12,
+     5.56
+    ],
+    [
+     "more.",
+     5.56,
+     6.12
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn memory bubble shows the smaller number; a basket fills",
+     "tech": "T4",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "and the people who saw it in pieces remembered paying less and bought more.",
+   "diff": []
+  },
+  {
+   "id": "A2.5",
+   "act": "A2",
+   "start": 243.985,
+   "end": 250.65,
+   "next": 251.25,
+   "text": "Your brain files the first number it sees. Everything after it is small print.",
+   "ru": "Ваш мозг запоминает первое число, которое видит. Всё, что после, — мелкий шрифт.",
+   "note": "plain and certain",
+   "sound": "bed",
+   "words": [
+    [
+     "Your",
+     0.0,
+     0.3
+    ],
+    [
+     "brain",
+     0.3,
+     0.78
+    ],
+    [
+     "files",
+     0.78,
+     1.54
+    ],
+    [
+     "the",
+     1.54,
+     1.78
+    ],
+    [
+     "first",
+     1.78,
+     2.24
+    ],
+    [
+     "number",
+     2.24,
+     2.7
+    ],
+    [
+     "it",
+     2.7,
+     3.02
+    ],
+    [
+     "sees.",
+     3.02,
+     3.48
+    ],
+    [
+     "Everything",
+     4.26,
+     4.62
+    ],
+    [
+     "after",
+     4.62,
+     4.98
+    ],
+    [
+     "it",
+     4.98,
+     5.28
+    ],
+    [
+     "is",
+     5.28,
+     5.68
+    ],
+    [
+     "small",
+     5.68,
+     6.1
+    ],
+    [
+     "print.",
+     6.1,
+     6.4
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "a filing drawer (Ep.4 n4) takes the first number; the rest shrinks to small print",
+     "tech": "T8 + T9",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Your brain files the first number it sees. Everything after it is small print.",
+   "diff": []
+  },
+  {
+   "id": "A2.6",
+   "act": "A2",
+   "start": 251.25,
+   "end": 259.09,
+   "next": 259.59,
+   "text": "That was the blueprint. For a rehearsal, you need a stage. And an audience. A very big one.",
+   "ru": "Это был чертёж. Для репетиции нужна сцена. И публика. Очень большая.",
+   "note": "building anticipation",
+   "sound": "bed",
+   "words": [
+    [
+     "That",
+     0.0,
+     0.34
+    ],
+    [
+     "was",
+     0.34,
+     0.68
+    ],
+    [
+     "the",
+     0.68,
+     0.88
+    ],
+    [
+     "blueprint.",
+     0.88,
+     1.32
+    ],
+    [
+     "For",
+     2.1,
+     2.24
+    ],
+    [
+     "a",
+     2.24,
+     2.4
+    ],
+    [
+     "rehearsal,",
+     2.4,
+     2.88
+    ],
+    [
+     "you",
+     3.38,
+     3.56
+    ],
+    [
+     "need",
+     3.56,
+     3.76
+    ],
+    [
+     "a",
+     3.76,
+     3.98
+    ],
+    [
+     "stage.",
+     3.98,
+     4.44
+    ],
+    [
+     "And",
+     4.96,
+     5.28
+    ],
+    [
+     "an",
+     5.28,
+     5.56
+    ],
+    [
+     "audience.",
+     5.56,
+     6.02
+    ],
+    [
+     "A",
+     6.7,
+     6.94
+    ],
+    [
+     "very",
+     6.94,
+     7.2
+    ],
+    [
+     "big",
+     7.2,
+     7.48
+    ],
+    [
+     "one.",
+     7.48,
+     7.76
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a10 Grok clip: the hall from the stage",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    },
+    {
+     "picture": "archive radio_city_crowd_1942: a huge crowd",
+     "tech": "T12 push with blur",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "That was the blueprint. For a rehearsal, you need a stage. And an audience. A very big one.",
+   "diff": []
+  },
+  {
+   "id": "A2.7",
+   "act": "A2",
+   "start": 259.59,
+   "end": 266.605,
+   "next": 267.005,
+   "text": "August 2015. StubHub, the ticket resale site — owned by eBay back then.",
+   "ru": "Август 2015-го. StubHub, сайт перепродажи билетов, — тогда он принадлежал eBay.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "August",
+     0.0,
+     0.46
+    ],
+    [
+     "2015.",
+     0.46,
+     1.62
+    ],
+    [
+     "StubHub,",
+     2.48,
+     2.94
+    ],
+    [
+     "the",
+     3.4,
+     3.5
+    ],
+    [
+     "ticket",
+     3.5,
+     3.8
+    ],
+    [
+     "resale",
+     3.8,
+     4.38
+    ],
+    [
+     "site",
+     4.38,
+     4.78
+    ],
+    [
+     "—",
+     4.78,
+     5.28
+    ],
+    [
+     "owned",
+     5.28,
+     5.58
+    ],
+    [
+     "by",
+     5.58,
+     5.86
+    ],
+    [
+     "eBay",
+     5.86,
+     6.26
+    ],
+    [
+     "back",
+     6.26,
+     6.56
+    ],
+    [
+     "then.",
+     6.56,
+     6.92
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "archive box_office_loews_capitol_1939 + typed date plate AUGUST 2015 · STUBHUB (owned by eBay)",
+     "tech": "T5 + T8",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "August 2015, StubHub, the ticket resale site, owned by eBay back then.",
+   "diff": []
+  },
+  {
+   "id": "A2.8",
+   "act": "A2",
+   "start": 267.005,
+   "end": 274.775,
+   "next": 275.175,
+   "text": "For a couple of years, StubHub had shown every fee upfront. The price on the screen was the price you paid.",
+   "ru": "Пару лет StubHub показывал все сборы сразу. Цена на экране была той, что вы платили.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "For",
+     0.0,
+     0.2
+    ],
+    [
+     "a",
+     0.2,
+     0.38
+    ],
+    [
+     "couple",
+     0.38,
+     0.62
+    ],
+    [
+     "of",
+     0.62,
+     0.88
+    ],
+    [
+     "years,",
+     0.88,
+     1.3
+    ],
+    [
+     "StubHub",
+     1.68,
+     2.14
+    ],
+    [
+     "had",
+     2.14,
+     2.42
+    ],
+    [
+     "shown",
+     2.42,
+     2.66
+    ],
+    [
+     "every",
+     2.66,
+     3.16
+    ],
+    [
+     "fee",
+     3.16,
+     3.56
+    ],
+    [
+     "upfront.",
+     3.56,
+     4.94
+    ],
+    [
+     "The",
+     4.94,
+     5.06
+    ],
+    [
+     "price",
+     5.06,
+     5.3
+    ],
+    [
+     "on",
+     5.3,
+     5.48
+    ],
+    [
+     "the",
+     5.48,
+     5.64
+    ],
+    [
+     "screen",
+     5.64,
+     6.0
+    ],
+    [
+     "was",
+     6.0,
+     6.58
+    ],
+    [
+     "the",
+     6.58,
+     6.76
+    ],
+    [
+     "price",
+     6.76,
+     7.06
+    ],
+    [
+     "you",
+     7.06,
+     7.26
+    ],
+    [
+     "paid.",
+     7.26,
+     7.58
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a4 ticket window, the price board shows one all-in price",
+     "tech": "T1 the price written by hand",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "hand mark '= YOU PAY' under it",
+     "tech": "T9",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "For a couple of years, StubHub had shown every fee up front. The price on the screen was the price you paid.",
+   "diff": []
+  },
+  {
+   "id": "A2.9",
+   "act": "A2",
+   "start": 275.175,
+   "end": 283.835,
+   "next": 284.235,
+   "text": "Then, for twelve days, it split its buyers in two. Same site. Same tickets. Two different checkouts.",
+   "ru": "Потом на двенадцать дней он разделил покупателей надвое. Тот же сайт. Те же билеты. Две разные кассы.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "Then,",
+     0.0,
+     0.3
+    ],
+    [
+     "for",
+     0.68,
+     0.74
+    ],
+    [
+     "twelve",
+     0.74,
+     1.16
+    ],
+    [
+     "days,",
+     1.16,
+     1.62
+    ],
+    [
+     "it",
+     2.1,
+     2.18
+    ],
+    [
+     "split",
+     2.18,
+     2.6
+    ],
+    [
+     "its",
+     2.6,
+     2.76
+    ],
+    [
+     "buyers",
+     2.76,
+     3.2
+    ],
+    [
+     "in",
+     3.2,
+     3.6
+    ],
+    [
+     "two.",
+     3.6,
+     4.06
+    ],
+    [
+     "Same",
+     4.78,
+     4.94
+    ],
+    [
+     "site.",
+     4.94,
+     5.32
+    ],
+    [
+     "Same",
+     5.84,
+     6.12
+    ],
+    [
+     "tickets.",
+     6.12,
+     6.56
+    ],
+    [
+     "Two",
+     7.26,
+     7.44
+    ],
+    [
+     "different",
+     7.44,
+     7.88
+    ],
+    [
+     "checkouts.",
+     7.88,
+     8.48
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a5 queue split by a velvet rope; 'A' / 'B' written",
+     "tech": "T1",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn two checkouts side by side, '12 DAYS' counter ticks",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Then, for 12 days, it split its buyers in two. Same site, same tickets, two different checkouts.",
+   "diff": []
+  },
+  {
+   "id": "A2.10",
+   "act": "A2",
+   "start": 284.235,
+   "end": 292.735,
+   "next": 293.135,
+   "text": "Half saw the full price from the start. The other half saw the ticket alone — with the fees waiting at checkout.",
+   "ru": "Половина видела полную цену с самого начала. Другая половина — только билет, а сборы ждали на кассе.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "Half",
+     0.0,
+     0.44
+    ],
+    [
+     "saw",
+     0.44,
+     1.22
+    ],
+    [
+     "the",
+     1.22,
+     1.4
+    ],
+    [
+     "full",
+     1.4,
+     1.66
+    ],
+    [
+     "price",
+     1.66,
+     2.1
+    ],
+    [
+     "from",
+     2.1,
+     2.38
+    ],
+    [
+     "the",
+     2.38,
+     2.54
+    ],
+    [
+     "start.",
+     2.54,
+     2.92
+    ],
+    [
+     "The",
+     3.64,
+     3.8
+    ],
+    [
+     "other",
+     3.8,
+     4.02
+    ],
+    [
+     "half",
+     4.02,
+     4.44
+    ],
+    [
+     "saw",
+     4.44,
+     4.98
+    ],
+    [
+     "the",
+     4.98,
+     5.18
+    ],
+    [
+     "ticket",
+     5.18,
+     5.42
+    ],
+    [
+     "alone",
+     5.42,
+     5.86
+    ],
+    [
+     "—",
+     5.86,
+     6.36
+    ],
+    [
+     "with",
+     6.36,
+     6.58
+    ],
+    [
+     "the",
+     6.58,
+     6.7
+    ],
+    [
+     "fees",
+     6.7,
+     7.1
+    ],
+    [
+     "waiting",
+     7.1,
+     7.68
+    ],
+    [
+     "at",
+     7.68,
+     7.98
+    ],
+    [
+     "checkout.",
+     7.98,
+     8.22
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a6/a7 marks: A = FULL PRICE, B = TICKET ONLY",
+     "tech": "T1",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "Ep.4 a12 Grok clip: the three fee slips walking onto the stage, late",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "Half saw the full price from the start. The other half saw the ticket alone, with the fees waiting at checkout.",
+   "diff": []
+  },
+  {
+   "id": "A2.11",
+   "act": "A2",
+   "start": 293.135,
+   "end": 298.1,
+   "next": 298.6,
+   "text": "Same fees. The only thing that changed was the moment you saw them.",
+   "ru": "Те же сборы. Изменился только момент, когда вы их видели.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "Same",
+     0.0,
+     0.46
+    ],
+    [
+     "fees.",
+     0.46,
+     1.02
+    ],
+    [
+     "The",
+     1.76,
+     1.92
+    ],
+    [
+     "only",
+     1.92,
+     2.18
+    ],
+    [
+     "thing",
+     2.18,
+     2.46
+    ],
+    [
+     "that",
+     2.46,
+     2.62
+    ],
+    [
+     "changed",
+     2.62,
+     3.16
+    ],
+    [
+     "was",
+     3.16,
+     3.58
+    ],
+    [
+     "the",
+     3.58,
+     3.76
+    ],
+    [
+     "moment",
+     3.76,
+     4.06
+    ],
+    [
+     "you",
+     4.06,
+     4.32
+    ],
+    [
+     "saw",
+     4.32,
+     4.62
+    ],
+    [
+     "them.",
+     4.62,
+     4.86
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn timeline: the same fee badge sits at START for A, at END for B",
+     "tech": "T6 the badge travels",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Same fees. The only thing that changed was the moment you saw them.",
+   "diff": []
+  },
+  {
+   "id": "A2.12",
+   "act": "A2",
+   "start": 298.6,
+   "end": 305.68,
+   "next": 306.08,
+   "text": "Here's what happened. The people who met the fees late were fourteen percent more likely to buy at all.",
+   "ru": "И вот что вышло. Те, кто встречал сборы поздно, на четырнадцать процентов чаще вообще покупали.",
+   "note": "steady, letting each number land",
+   "sound": "bed",
+   "words": [
+    [
+     "Here's",
+     0.0,
+     0.42
+    ],
+    [
+     "what",
+     0.42,
+     0.54
+    ],
+    [
+     "happened.",
+     0.54,
+     1.04
+    ],
+    [
+     "The",
+     1.72,
+     1.88
+    ],
+    [
+     "people",
+     1.88,
+     2.22
+    ],
+    [
+     "who",
+     2.22,
+     2.46
+    ],
+    [
+     "met",
+     2.46,
+     2.72
+    ],
+    [
+     "the",
+     2.72,
+     2.94
+    ],
+    [
+     "fees",
+     2.94,
+     3.2
+    ],
+    [
+     "late",
+     3.2,
+     3.58
+    ],
+    [
+     "were",
+     3.58,
+     4.08
+    ],
+    [
+     "fourteen",
+     4.08,
+     4.62
+    ],
+    [
+     "percent",
+     4.62,
+     4.98
+    ],
+    [
+     "more",
+     4.98,
+     5.42
+    ],
+    [
+     "likely",
+     5.42,
+     5.84
+    ],
+    [
+     "to",
+     5.84,
+     6.14
+    ],
+    [
+     "buy",
+     6.14,
+     6.46
+    ],
+    [
+     "at",
+     6.46,
+     6.7
+    ],
+    [
+     "all.",
+     6.7,
+     6.98
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "group B queue (a5) moves faster to the window",
+     "tech": "T12",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "Ep.4 a9 stat 14.1% · NBER w25186",
+     "tech": "T2 stamp + T4",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Here's what happened. The people who met the fees late were 14% more likely to buy at all.",
+   "diff": []
+  },
+  {
+   "id": "A2.13",
+   "act": "A2",
+   "start": 306.08,
+   "end": 313.49,
+   "next": 314.89,
+   "text": "They picked seats about five percent pricier — a seat looks cheaper when its fees are still offstage.",
+   "ru": "Они выбирали места примерно на пять процентов дороже — место кажется дешевле, пока его сборы ещё за кулисами.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "bed",
+   "words": [
+    [
+     "They",
+     0.0,
+     0.26
+    ],
+    [
+     "picked",
+     0.26,
+     0.6
+    ],
+    [
+     "seats",
+     0.6,
+     1.04
+    ],
+    [
+     "about",
+     1.04,
+     1.38
+    ],
+    [
+     "five",
+     1.38,
+     1.84
+    ],
+    [
+     "percent",
+     1.84,
+     2.3
+    ],
+    [
+     "pricier",
+     2.3,
+     2.82
+    ],
+    [
+     "—",
+     2.82,
+     3.32
+    ],
+    [
+     "a",
+     3.32,
+     3.48
+    ],
+    [
+     "seat",
+     3.48,
+     3.74
+    ],
+    [
+     "looks",
+     3.74,
+     4.12
+    ],
+    [
+     "cheaper",
+     4.12,
+     4.6
+    ],
+    [
+     "when",
+     4.6,
+     5.1
+    ],
+    [
+     "its",
+     5.1,
+     5.28
+    ],
+    [
+     "fees",
+     5.28,
+     5.68
+    ],
+    [
+     "are",
+     5.68,
+     6.02
+    ],
+    [
+     "still",
+     6.02,
+     6.36
+    ],
+    [
+     "offstage.",
+     6.36,
+     7.41
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "seat map: the chosen seat jumps one row forward, '+5%'",
+     "tech": "T12",
+     "source": "pipeline"
+    },
+    {
+     "picture": "fee slips waiting in the wings (a12 frame), curtain",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "They picked seats about 5% pricier. A seat looks cheaper when its fees are still off stage.",
+   "diff": []
+  },
+  {
+   "id": "A2.14",
+   "act": "A2",
+   "start": 314.89,
+   "end": 323.855,
+   "next": 324.855,
+   "text": "And all together, they spent almost twenty-one percent more.",
+   "ru": "А в сумме они потратили почти на двадцать один процент больше.",
+   "note": "slow and heavy on 'twenty-one percent', after a silence",
+   "sound": "SILENCE, then a brass hit on the number",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.26
+    ],
+    [
+     "all",
+     0.26,
+     0.98
+    ],
+    [
+     "together,",
+     0.98,
+     1.7
+    ],
+    [
+     "they",
+     1.7,
+     1.78
+    ],
+    [
+     "spent",
+     1.78,
+     2.18
+    ],
+    [
+     "almost",
+     2.18,
+     2.98
+    ],
+    [
+     "twenty-one",
+     2.98,
+     5.64
+    ],
+    [
+     "percent",
+     5.64,
+     7.48
+    ],
+    [
+     "more.",
+     7.48,
+     8.8
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a8 stat ≈21% lands with the hit",
+     "tech": "T2 spring stamp + synced hit",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "And altogether, they spent almost 21% more.",
+   "diff": []
+  },
+  {
+   "id": "A2.15",
+   "act": "A2",
+   "start": 324.855,
+   "end": 330.965,
+   "next": 331.465,
+   "text": "Twenty-one percent. For the same tickets. Because of when the number showed up.",
+   "ru": "Двадцать один процент. За те же билеты. Из-за того, когда появилось число.",
+   "note": "quiet, emphatic",
+   "sound": "bed",
+   "words": [
+    [
+     "Twenty-one",
+     0.0,
+     0.94
+    ],
+    [
+     "percent.",
+     0.94,
+     1.64
+    ],
+    [
+     "For",
+     1.64,
+     2.46
+    ],
+    [
+     "the",
+     2.46,
+     2.7
+    ],
+    [
+     "same",
+     2.7,
+     2.88
+    ],
+    [
+     "tickets.",
+     2.88,
+     3.4
+    ],
+    [
+     "Because",
+     3.4,
+     4.4
+    ],
+    [
+     "of",
+     4.4,
+     4.62
+    ],
+    [
+     "when",
+     4.62,
+     4.78
+    ],
+    [
+     "the",
+     4.78,
+     4.9
+    ],
+    [
+     "number",
+     4.9,
+     5.32
+    ],
+    [
+     "showed",
+     5.32,
+     5.7
+    ],
+    [
+     "up.",
+     5.7,
+     6.06
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a3 evidence card NBER w25186 · Blake, Moshary, Sweeney & Tadelis · 'Price Salience and Product Choice'",
+     "tech": "T8 + T9 highlight '21%'",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "21% for the same tickets because of when the number showed up.",
+   "diff": []
+  },
+  {
+   "id": "A2.16",
+   "act": "A2",
+   "start": 331.465,
+   "end": 338.265,
+   "next": 338.665,
+   "text": "So Larry isn't foolish. Larry isn't even unusual. Larry is the average.",
+   "ru": "Так что Ларри не глупый. Ларри даже не необычный. Ларри — это среднее.",
+   "note": "warm, reassuring, a smile on 'Larry is the average'",
+   "sound": "wry pizzicato",
+   "words": [
+    [
+     "So",
+     0.0,
+     0.36
+    ],
+    [
+     "Larry",
+     0.78,
+     1.02
+    ],
+    [
+     "isn't",
+     1.02,
+     1.48
+    ],
+    [
+     "foolish.",
+     1.48,
+     1.82
+    ],
+    [
+     "Larry",
+     2.56,
+     2.82
+    ],
+    [
+     "isn't",
+     2.82,
+     3.24
+    ],
+    [
+     "even",
+     3.24,
+     3.44
+    ],
+    [
+     "unusual.",
+     3.44,
+     4.04
+    ],
+    [
+     "Larry",
+     4.7,
+     5.08
+    ],
+    [
+     "is",
+     5.08,
+     5.44
+    ],
+    [
+     "the",
+     5.44,
+     5.7
+    ],
+    [
+     "average.",
+     5.7,
+     6.0
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn bell curve, a tiny Larry icon drops onto the peak",
+     "tech": "T4 eased curve",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "So, Larry isn't foolish. Larry isn't even unusual. Larry is the average.",
+   "diff": []
+  },
+  {
+   "id": "A2.17",
+   "act": "A2",
+   "start": 338.665,
+   "end": 346.655,
+   "next": 347.355,
+   "text": "And here's the part you might not like: you're the average too. You fall for this more often than you think.",
+   "ru": "А вот что вам может не понравиться: вы тоже среднее. Вы попадаетесь на это чаще, чем думаете.",
+   "note": "leaning in, a wry smile",
+   "sound": "bed",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.26
+    ],
+    [
+     "here's",
+     0.26,
+     0.82
+    ],
+    [
+     "the",
+     0.82,
+     0.98
+    ],
+    [
+     "part",
+     0.98,
+     1.32
+    ],
+    [
+     "you",
+     1.32,
+     1.64
+    ],
+    [
+     "might",
+     1.64,
+     1.88
+    ],
+    [
+     "not",
+     1.88,
+     2.14
+    ],
+    [
+     "like:",
+     2.14,
+     2.6
+    ],
+    [
+     "you're",
+     3.34,
+     3.64
+    ],
+    [
+     "the",
+     3.64,
+     3.78
+    ],
+    [
+     "average",
+     3.78,
+     4.08
+    ],
+    [
+     "too.",
+     4.08,
+     4.52
+    ],
+    [
+     "You",
+     5.28,
+     5.46
+    ],
+    [
+     "fall",
+     5.46,
+     5.78
+    ],
+    [
+     "for",
+     5.78,
+     5.98
+    ],
+    [
+     "this",
+     5.98,
+     6.28
+    ],
+    [
+     "more",
+     6.28,
+     6.8
+    ],
+    [
+     "often",
+     6.8,
+     7.16
+    ],
+    [
+     "than",
+     7.16,
+     7.38
+    ],
+    [
+     "you",
+     7.38,
+     7.54
+    ],
+    [
+     "think.",
+     7.54,
+     7.82
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "a second icon labelled YOU drops next to Larry",
+     "tech": "T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "archive concert_audience_chicago_1941: faces in a crowd",
+     "tech": "slow push",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "And here's the part you might not like. You're the average too. You fall for this more often than you think.",
+   "diff": []
+  },
+  {
+   "id": "A2.18",
+   "act": "A2",
+   "start": 347.355,
+   "end": 353.74,
+   "next": 354.24,
+   "text": "But why does it work? Why does a man who counts every dollar let eighteen of them walk out the door?",
+   "ru": "Но почему это работает? Почему человек, который считает каждый доллар, отпускает восемнадцать из них за дверь?",
+   "note": "curious, slower",
+   "sound": "safe-room ambience",
+   "words": [
+    [
+     "But",
+     0.0,
+     0.24
+    ],
+    [
+     "why",
+     0.24,
+     0.64
+    ],
+    [
+     "does",
+     0.64,
+     0.86
+    ],
+    [
+     "it",
+     0.86,
+     1.0
+    ],
+    [
+     "work?",
+     1.0,
+     1.38
+    ],
+    [
+     "Why",
+     2.06,
+     2.22
+    ],
+    [
+     "does",
+     2.22,
+     2.38
+    ],
+    [
+     "a",
+     2.38,
+     2.48
+    ],
+    [
+     "man",
+     2.48,
+     2.78
+    ],
+    [
+     "who",
+     2.78,
+     3.0
+    ],
+    [
+     "counts",
+     3.0,
+     3.26
+    ],
+    [
+     "every",
+     3.26,
+     3.66
+    ],
+    [
+     "dollar",
+     3.66,
+     4.04
+    ],
+    [
+     "let",
+     4.04,
+     4.62
+    ],
+    [
+     "eighteen",
+     4.62,
+     5.12
+    ],
+    [
+     "of",
+     5.12,
+     5.3
+    ],
+    [
+     "them",
+     5.3,
+     5.44
+    ],
+    [
+     "walk",
+     5.44,
+     5.66
+    ],
+    [
+     "out",
+     5.66,
+     5.86
+    ],
+    [
+     "the",
+     5.86,
+     6.0
+    ],
+    [
+     "door?",
+     6.0,
+     6.26
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "title card HOW THE LOCK WAS PICKED",
+     "tech": "T5 kinetic title",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a2_safe: the 1950s safe with four dials",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "But why does it work? Why does a man who counts every dollar let 18 of them walk out the door?",
+   "diff": []
+  },
+  {
+   "id": "A2.19",
+   "act": "A2",
+   "start": 354.24,
+   "end": 362.59,
+   "next": 363.09,
+   "text": "Because the safe in your head has four locks. And this heist picks every one of them.",
+   "ru": "Потому что у сейфа в вашей голове четыре замка. И это ограбление вскрывает каждый.",
+   "note": "intriguing, a little theatrical",
+   "sound": "four soft dial ticks",
+   "words": [
+    [
+     "Because",
+     0.0,
+     0.6
+    ],
+    [
+     "the",
+     0.6,
+     1.3
+    ],
+    [
+     "safe",
+     1.3,
+     1.74
+    ],
+    [
+     "in",
+     1.74,
+     1.96
+    ],
+    [
+     "your",
+     1.96,
+     2.14
+    ],
+    [
+     "head",
+     2.14,
+     2.62
+    ],
+    [
+     "has",
+     2.62,
+     3.26
+    ],
+    [
+     "four",
+     3.26,
+     3.78
+    ],
+    [
+     "locks.",
+     3.78,
+     4.3
+    ],
+    [
+     "And",
+     4.3,
+     5.22
+    ],
+    [
+     "this",
+     5.22,
+     5.58
+    ],
+    [
+     "heist",
+     5.58,
+     6.42
+    ],
+    [
+     "picks",
+     6.42,
+     6.9
+    ],
+    [
+     "every",
+     6.9,
+     7.52
+    ],
+    [
+     "one",
+     7.52,
+     7.88
+    ],
+    [
+     "of",
+     7.88,
+     8.04
+    ],
+    [
+     "them.",
+     8.04,
+     8.24
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn four dials over the safe, numbered 1–4",
+     "tech": "T2 each dial springs in",
+     "source": "pipeline"
+    },
+    {
+     "picture": "close on dial 1, the camera settles",
+     "tech": "T3",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Because the safe in your head has four locks and this heist picks every one of them",
+   "diff": []
+  },
+  {
+   "id": "A2.20",
+   "act": "A2",
+   "start": 363.09,
+   "end": 377.27,
+   "next": 377.87,
+   "text": "Lock one: the first number. Your brain grabs the first price it sees and treats it as the real one. Everything added later feels like a footnote — so you remember paying less than you did.",
+   "ru": "Замок первый: первое число. Мозг хватает первую цену, которую видит, и считает её настоящей. Всё, что добавлено позже, ощущается как сноска, — поэтому вы помните, что заплатили меньше, чем на самом деле.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "dial turns, CLICK on 'paying less'",
+   "words": [
+    [
+     "Lock",
+     0.0,
+     0.3
+    ],
+    [
+     "one:",
+     0.3,
+     0.74
+    ],
+    [
+     "the",
+     1.52,
+     1.62
+    ],
+    [
+     "first",
+     1.62,
+     2.0
+    ],
+    [
+     "number.",
+     2.0,
+     2.46
+    ],
+    [
+     "Your",
+     3.28,
+     3.42
+    ],
+    [
+     "brain",
+     3.42,
+     3.74
+    ],
+    [
+     "grabs",
+     3.74,
+     4.2
+    ],
+    [
+     "the",
+     4.2,
+     4.44
+    ],
+    [
+     "first",
+     4.44,
+     4.78
+    ],
+    [
+     "price",
+     4.78,
+     5.08
+    ],
+    [
+     "it",
+     5.08,
+     5.26
+    ],
+    [
+     "sees",
+     5.26,
+     5.64
+    ],
+    [
+     "and",
+     5.64,
+     6.14
+    ],
+    [
+     "treats",
+     6.14,
+     6.44
+    ],
+    [
+     "it",
+     6.44,
+     6.7
+    ],
+    [
+     "as",
+     6.7,
+     6.92
+    ],
+    [
+     "the",
+     6.92,
+     7.08
+    ],
+    [
+     "real",
+     7.08,
+     7.32
+    ],
+    [
+     "one.",
+     7.32,
+     7.66
+    ],
+    [
+     "Everything",
+     8.56,
+     8.88
+    ],
+    [
+     "added",
+     8.88,
+     9.18
+    ],
+    [
+     "later",
+     9.18,
+     9.66
+    ],
+    [
+     "feels",
+     9.66,
+     10.28
+    ],
+    [
+     "like",
+     10.28,
+     10.52
+    ],
+    [
+     "a",
+     10.52,
+     10.68
+    ],
+    [
+     "footnote",
+     10.68,
+     11.0
+    ],
+    [
+     "—",
+     11.0,
+     11.78
+    ],
+    [
+     "so",
+     11.78,
+     11.94
+    ],
+    [
+     "you",
+     11.94,
+     12.12
+    ],
+    [
+     "remember",
+     12.12,
+     12.48
+    ],
+    [
+     "paying",
+     12.48,
+     12.84
+    ],
+    [
+     "less",
+     12.84,
+     13.2
+    ],
+    [
+     "than",
+     13.2,
+     13.62
+    ],
+    [
+     "you",
+     13.62,
+     13.78
+    ],
+    [
+     "did.",
+     13.78,
+     14.04
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "dial 1 turns; '$30' appears big, the fees as a tiny footnote",
+     "tech": "T9 + T8",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Larry's memory bubble: '$30'; the receipt says $48",
+     "tech": "T1",
+     "source": "pipeline"
+    },
+    {
+     "picture": "dial 1 clicks open (green)",
+     "tech": "T2 synced click",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Lock 1. The first number. Your brain grabs the first price it sees and treats it as the real one. Everything added later feels like a footnote, so you remember paying less than you did.",
+   "diff": []
+  },
+  {
+   "id": "A2.21",
+   "act": "A2",
+   "start": 377.87,
+   "end": 390.72,
+   "next": 391.12,
+   "text": "Lock two: it's already yours. By 8:18, Larry has picked his seat. In his head, he's already sitting in it — and people hate giving up what feels like theirs.",
+   "ru": "Замок второй: это уже ваше. К 20:18 Ларри выбрал место. В мыслях он уже сидит в нём, — а люди терпеть не могут отдавать то, что кажется своим.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "dial 2 turns",
+   "words": [
+    [
+     "Lock",
+     0.0,
+     0.36
+    ],
+    [
+     "two:",
+     0.36,
+     0.9
+    ],
+    [
+     "it's",
+     1.46,
+     1.7
+    ],
+    [
+     "already",
+     1.7,
+     2.02
+    ],
+    [
+     "yours.",
+     2.02,
+     2.5
+    ],
+    [
+     "By",
+     3.28,
+     3.42
+    ],
+    [
+     "8:18,",
+     3.42,
+     4.3
+    ],
+    [
+     "Larry",
+     4.96,
+     5.18
+    ],
+    [
+     "has",
+     5.18,
+     5.42
+    ],
+    [
+     "picked",
+     5.42,
+     5.72
+    ],
+    [
+     "his",
+     5.72,
+     5.96
+    ],
+    [
+     "seat.",
+     5.96,
+     6.28
+    ],
+    [
+     "In",
+     6.98,
+     7.12
+    ],
+    [
+     "his",
+     7.12,
+     7.28
+    ],
+    [
+     "head,",
+     7.28,
+     7.6
+    ],
+    [
+     "he's",
+     8.04,
+     8.26
+    ],
+    [
+     "already",
+     8.26,
+     8.56
+    ],
+    [
+     "sitting",
+     8.56,
+     8.9
+    ],
+    [
+     "in",
+     8.9,
+     9.06
+    ],
+    [
+     "it",
+     9.06,
+     9.32
+    ],
+    [
+     "—",
+     9.32,
+     9.88
+    ],
+    [
+     "and",
+     9.88,
+     10.06
+    ],
+    [
+     "people",
+     10.06,
+     10.42
+    ],
+    [
+     "hate",
+     10.42,
+     10.74
+    ],
+    [
+     "giving",
+     10.74,
+     11.06
+    ],
+    [
+     "up",
+     11.06,
+     11.36
+    ],
+    [
+     "what",
+     11.36,
+     11.6
+    ],
+    [
+     "feels",
+     11.6,
+     11.98
+    ],
+    [
+     "like",
+     11.98,
+     12.28
+    ],
+    [
+     "theirs.",
+     12.28,
+     12.6
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "dial 2 turns; seat G12 with 'LARRY' written on it",
+     "tech": "T1",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a4_seat (glimpse, dreamlike, desaturated): Larry in the seat in his head",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Lock 2. It's already yours. By 8.18, Larry has picked his seat. In his head, he's already sitting in it. And people hate giving up what feels like theirs.",
+   "diff": []
+  },
+  {
+   "id": "A2.22",
+   "act": "A2",
+   "start": 391.12,
+   "end": 406.69,
+   "next": 407.29,
+   "text": "In a famous 1990 experiment, people who had just been handed a coffee mug wanted more than twice as much to sell it as others would pay to buy it. Same mug. It was just theirs.",
+   "ru": "В знаменитом эксперименте 1990 года люди, которым только что дали кофейную кружку, хотели за неё при продаже больше чем вдвое больше, чем другие готовы были заплатить. Та же кружка. Просто она была их.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "dial 2 CLICK on 'theirs'",
+   "words": [
+    [
+     "In",
+     0.0,
+     0.14
+    ],
+    [
+     "a",
+     0.14,
+     0.3
+    ],
+    [
+     "famous",
+     0.3,
+     0.82
+    ],
+    [
+     "1990",
+     0.82,
+     1.7
+    ],
+    [
+     "experiment,",
+     1.7,
+     2.58
+    ],
+    [
+     "people",
+     3.24,
+     3.52
+    ],
+    [
+     "who",
+     3.52,
+     3.8
+    ],
+    [
+     "had",
+     3.8,
+     3.98
+    ],
+    [
+     "just",
+     3.98,
+     4.3
+    ],
+    [
+     "been",
+     4.3,
+     4.54
+    ],
+    [
+     "handed",
+     4.54,
+     4.92
+    ],
+    [
+     "a",
+     4.92,
+     5.18
+    ],
+    [
+     "coffee",
+     5.18,
+     5.42
+    ],
+    [
+     "mug",
+     5.42,
+     5.72
+    ],
+    [
+     "wanted",
+     5.72,
+     6.64
+    ],
+    [
+     "more",
+     6.64,
+     7.26
+    ],
+    [
+     "than",
+     7.26,
+     7.52
+    ],
+    [
+     "twice",
+     7.52,
+     7.92
+    ],
+    [
+     "as",
+     7.92,
+     8.22
+    ],
+    [
+     "much",
+     8.22,
+     8.42
+    ],
+    [
+     "to",
+     8.42,
+     8.68
+    ],
+    [
+     "sell",
+     8.68,
+     8.94
+    ],
+    [
+     "it",
+     8.94,
+     9.44
+    ],
+    [
+     "as",
+     9.44,
+     9.72
+    ],
+    [
+     "others",
+     9.72,
+     10.16
+    ],
+    [
+     "would",
+     10.16,
+     10.58
+    ],
+    [
+     "pay",
+     10.58,
+     10.86
+    ],
+    [
+     "to",
+     10.86,
+     11.08
+    ],
+    [
+     "buy",
+     11.08,
+     11.26
+    ],
+    [
+     "it.",
+     11.26,
+     11.84
+    ],
+    [
+     "Same",
+     12.48,
+     12.74
+    ],
+    [
+     "mug.",
+     12.74,
+     13.12
+    ],
+    [
+     "It",
+     13.88,
+     14.02
+    ],
+    [
+     "was",
+     14.02,
+     14.22
+    ],
+    [
+     "just",
+     14.22,
+     14.64
+    ],
+    [
+     "theirs.",
+     14.64,
+     15.28
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "name card 'Kahneman, Knetsch & Thaler · 1990' + paper card 'Experimental Tests of the Endowment Effect and the Coase Theorem · J. Political Economy 98(6)'",
+     "tech": "T8 + T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a2_mug: one mug, two price tags",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn tags: SELL $7.12 vs BUY $2.87 (medians)",
+     "tech": "T4 two bars",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Commons: the Cornell mug from Thaler's Nobel display (CC0) + licensed photos of Kahneman (CC BY-SA 2.0) and Thaler (CC BY 2.0); dial 2 opens",
+     "tech": "T2 click",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "In a famous 1990 experiment, people who had just been handed a coffee mug wanted more than twice as much to sell it as others would pay to buy it. Same mug. It was just theirs.",
+   "diff": []
+  },
+  {
+   "id": "A2.23",
+   "act": "A2",
+   "start": 407.29,
+   "end": 423.98,
+   "next": 424.58,
+   "text": "Lock three: the effort. Ten minutes of searching, a seat, sixteen digits typed in. Closing the tab now means throwing all of that away and starting again. So eighteen dollars starts to look cheaper than starting over.",
+   "ru": "Замок третий: усилия. Десять минут поисков, место, шестнадцать введённых цифр. Закрыть вкладку сейчас — значит выбросить всё это и начать заново. И восемнадцать долларов начинают казаться дешевле, чем начинать сначала.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "dial 3 turns, CLICK on 'starting over'",
+   "words": [
+    [
+     "Lock",
+     0.0,
+     0.26
+    ],
+    [
+     "three:",
+     0.26,
+     0.68
+    ],
+    [
+     "the",
+     1.36,
+     1.46
+    ],
+    [
+     "effort.",
+     1.46,
+     2.36
+    ],
+    [
+     "Ten",
+     2.72,
+     2.88
+    ],
+    [
+     "minutes",
+     2.88,
+     3.18
+    ],
+    [
+     "of",
+     3.18,
+     3.52
+    ],
+    [
+     "searching,",
+     3.52,
+     3.86
+    ],
+    [
+     "a",
+     4.5,
+     4.62
+    ],
+    [
+     "seat,",
+     4.62,
+     4.9
+    ],
+    [
+     "sixteen",
+     5.36,
+     5.8
+    ],
+    [
+     "digits",
+     5.8,
+     6.3
+    ],
+    [
+     "typed",
+     6.3,
+     6.64
+    ],
+    [
+     "in.",
+     6.64,
+     7.06
+    ],
+    [
+     "Closing",
+     7.76,
+     8.04
+    ],
+    [
+     "the",
+     8.04,
+     8.28
+    ],
+    [
+     "tab",
+     8.28,
+     8.5
+    ],
+    [
+     "now",
+     8.5,
+     8.9
+    ],
+    [
+     "means",
+     8.9,
+     9.22
+    ],
+    [
+     "throwing",
+     9.22,
+     9.62
+    ],
+    [
+     "all",
+     9.62,
+     9.96
+    ],
+    [
+     "of",
+     9.96,
+     10.12
+    ],
+    [
+     "that",
+     10.12,
+     10.28
+    ],
+    [
+     "away",
+     10.28,
+     10.64
+    ],
+    [
+     "and",
+     10.64,
+     11.04
+    ],
+    [
+     "starting",
+     11.04,
+     11.44
+    ],
+    [
+     "again.",
+     11.44,
+     11.86
+    ],
+    [
+     "So",
+     12.74,
+     12.84
+    ],
+    [
+     "eighteen",
+     12.84,
+     13.44
+    ],
+    [
+     "dollars",
+     12.84,
+     13.44
+    ],
+    [
+     "starts",
+     13.44,
+     14.46
+    ],
+    [
+     "to",
+     14.46,
+     14.72
+    ],
+    [
+     "look",
+     14.72,
+     14.84
+    ],
+    [
+     "cheaper",
+     14.84,
+     15.3
+    ],
+    [
+     "than",
+     15.3,
+     15.82
+    ],
+    [
+     "starting",
+     15.82,
+     16.24
+    ],
+    [
+     "over.",
+     16.24,
+     16.58
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "dial 3 turns; the four screens stack up as a pile of effort",
+     "tech": "T12",
+     "source": "pipeline"
+    },
+    {
+     "picture": "a scale: '$18' vs the stack 'START OVER' — the scale tips to $18",
+     "tech": "T4 eased tilt",
+     "source": "pipeline"
+    },
+    {
+     "picture": "dial 3 clicks open",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 3,
+   "heard": "Lock 3. The Effort. 10 minutes of searching. A seat, 16 digits typed in. Closing the tab now means throwing all of that away and starting again. So $18 starts to look cheaper than starting over.",
+   "diff": []
+  },
+  {
+   "id": "A2.24",
+   "act": "A2",
+   "start": 424.58,
+   "end": 433.78,
+   "next": 434.18,
+   "text": "Lock four: small next to big. Eighteen dollars feels small when it lands on top of a purchase you've already decided to make.",
+   "ru": "Замок четвёртый: мелкое рядом с крупным. Восемнадцать долларов кажутся мелочью, когда ложатся поверх покупки, которую вы уже решили сделать.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "dial 4 turns",
+   "words": [
+    [
+     "Lock",
+     0.0,
+     0.22
+    ],
+    [
+     "four:",
+     0.22,
+     0.66
+    ],
+    [
+     "small",
+     1.3,
+     1.68
+    ],
+    [
+     "next",
+     1.68,
+     2.12
+    ],
+    [
+     "to",
+     2.12,
+     2.34
+    ],
+    [
+     "big.",
+     2.34,
+     2.56
+    ],
+    [
+     "Eighteen",
+     3.34,
+     3.82
+    ],
+    [
+     "dollars",
+     3.34,
+     3.82
+    ],
+    [
+     "feels",
+     3.82,
+     4.62
+    ],
+    [
+     "small",
+     4.62,
+     5.16
+    ],
+    [
+     "when",
+     5.16,
+     5.64
+    ],
+    [
+     "it",
+     5.64,
+     5.8
+    ],
+    [
+     "lands",
+     5.8,
+     6.12
+    ],
+    [
+     "on",
+     6.12,
+     6.3
+    ],
+    [
+     "top",
+     6.3,
+     6.46
+    ],
+    [
+     "of",
+     6.46,
+     6.62
+    ],
+    [
+     "a",
+     6.62,
+     6.76
+    ],
+    [
+     "purchase",
+     6.76,
+     7.12
+    ],
+    [
+     "you've",
+     7.12,
+     7.76
+    ],
+    [
+     "already",
+     7.76,
+     8.1
+    ],
+    [
+     "decided",
+     8.1,
+     8.56
+    ],
+    [
+     "to",
+     8.56,
+     8.78
+    ],
+    [
+     "make.",
+     8.78,
+     9.02
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "dial 4 turns",
+     "tech": "T3",
+     "source": "pipeline"
+    },
+    {
+     "picture": "a small '$18' block lands on a big 'DECIDED' block",
+     "tech": "T2 spring",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Lock 4. Small next to big. $18 feels small when it lands on top of a purchase you've already decided to make.",
+   "diff": []
+  },
+  {
+   "id": "A2.25",
+   "act": "A2",
+   "start": 434.18,
+   "end": 455.87,
+   "next": 456.57,
+   "text": "Psychologists showed this back in 1981: most people would drive twenty minutes to save five dollars on a fifteen-dollar calculator — but far fewer would make the same drive to save the same five dollars on a hundred-and-twenty-five-dollar one. Five dollars is five dollars. Your brain doesn't think so.",
+   "ru": "Психологи показали это ещё в 1981 году: большинство людей поедут за двадцать минут, чтобы сэкономить пять долларов на калькуляторе за пятнадцать, — но куда меньше поедут так же далеко, чтобы сэкономить те же пять долларов на калькуляторе за сто двадцать пять. Пять долларов — это пять долларов. Ваш мозг так не считает.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "dial 4 CLICK on 'doesn't think so'",
+   "words": [
+    [
+     "Psychologists",
+     0.0,
+     0.86
+    ],
+    [
+     "showed",
+     0.86,
+     1.24
+    ],
+    [
+     "this",
+     1.24,
+     1.52
+    ],
+    [
+     "back",
+     1.52,
+     1.78
+    ],
+    [
+     "in",
+     1.78,
+     2.02
+    ],
+    [
+     "1981:",
+     2.02,
+     2.78
+    ],
+    [
+     "most",
+     3.82,
+     4.0
+    ],
+    [
+     "people",
+     4.0,
+     4.32
+    ],
+    [
+     "would",
+     4.32,
+     4.6
+    ],
+    [
+     "drive",
+     4.6,
+     4.86
+    ],
+    [
+     "twenty",
+     4.86,
+     5.28
+    ],
+    [
+     "minutes",
+     5.28,
+     5.6
+    ],
+    [
+     "to",
+     5.6,
+     6.0
+    ],
+    [
+     "save",
+     6.0,
+     6.24
+    ],
+    [
+     "five",
+     6.24,
+     6.74
+    ],
+    [
+     "dollars",
+     6.24,
+     6.74
+    ],
+    [
+     "on",
+     6.74,
+     7.46
+    ],
+    [
+     "a",
+     7.46,
+     7.64
+    ],
+    [
+     "fifteen-dollar",
+     7.64,
+     8.1
+    ],
+    [
+     "calculator",
+     8.1,
+     8.82
+    ],
+    [
+     "—",
+     8.82,
+     9.48
+    ],
+    [
+     "but",
+     9.48,
+     9.72
+    ],
+    [
+     "far",
+     9.72,
+     10.04
+    ],
+    [
+     "fewer",
+     10.04,
+     10.42
+    ],
+    [
+     "would",
+     10.42,
+     10.9
+    ],
+    [
+     "make",
+     10.9,
+     11.1
+    ],
+    [
+     "the",
+     11.1,
+     11.32
+    ],
+    [
+     "same",
+     11.32,
+     11.62
+    ],
+    [
+     "drive",
+     11.62,
+     12.04
+    ],
+    [
+     "to",
+     12.04,
+     12.46
+    ],
+    [
+     "save",
+     12.46,
+     12.7
+    ],
+    [
+     "the",
+     12.7,
+     12.88
+    ],
+    [
+     "same",
+     12.88,
+     13.18
+    ],
+    [
+     "five",
+     13.18,
+     13.78
+    ],
+    [
+     "dollars",
+     13.18,
+     13.78
+    ],
+    [
+     "on",
+     13.78,
+     14.56
+    ],
+    [
+     "a",
+     14.56,
+     14.72
+    ],
+    [
+     "hundred-and-twenty-five-dollar",
+     14.72,
+     15.6
+    ],
+    [
+     "one.",
+     15.6,
+     16.22
+    ],
+    [
+     "Five",
+     17.18,
+     17.58
+    ],
+    [
+     "dollars",
+     17.18,
+     17.58
+    ],
+    [
+     "is",
+     17.58,
+     18.42
+    ],
+    [
+     "five",
+     18.42,
+     19.08
+    ],
+    [
+     "dollars.",
+     18.42,
+     19.08
+    ],
+    [
+     "Your",
+     19.82,
+     20.08
+    ],
+    [
+     "brain",
+     20.08,
+     20.5
+    ],
+    [
+     "doesn't",
+     20.5,
+     21.14
+    ],
+    [
+     "think",
+     21.14,
+     21.32
+    ],
+    [
+     "so.",
+     21.32,
+     21.62
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "name card 'Tversky & Kahneman · 1981' + paper card 'The Framing of Decisions and the Psychology of Choice · Science 211'",
+     "tech": "T8 + T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a2_calculators: two calculators side by side",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn tags $15 → $10 and $125 → $120, a '20 MIN' route between",
+     "tech": "T6 route + T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "bars: 68% would drive vs 29% would drive",
+     "tech": "T4 eased chart",
+     "source": "pipeline"
+    },
+    {
+     "picture": "'$5 = $5' written, then dial 4 clicks open",
+     "tech": "T1 + T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Psychologists showed this back in 1981. Most people would drive 20 minutes to save $5 on a $15 calculator, but far fewer would make the same drive to save the same $5 on a $125 one. $5 is $5. Your brain doesn't think so.",
+   "diff": []
+  },
+  {
+   "id": "A2.26",
+   "act": "A2",
+   "start": 456.57,
+   "end": 466.145,
+   "next": 466.645,
+   "text": "And that little clock? It doesn't pick a lock. It's the lookout. Its only job is to make sure you don't stop and think.",
+   "ru": "А те маленькие часы? Они не вскрывают замок. Они — на стрёме. Их единственная задача — чтобы вы не остановились подумать.",
+   "note": "conspiratorial, a smile on 'It's the lookout'",
+   "sound": "the Act 1 tick returns",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.4
+    ],
+    [
+     "that",
+     0.4,
+     0.76
+    ],
+    [
+     "little",
+     0.76,
+     1.22
+    ],
+    [
+     "clock?",
+     1.22,
+     1.74
+    ],
+    [
+     "It",
+     1.94,
+     2.48
+    ],
+    [
+     "doesn't",
+     2.48,
+     2.92
+    ],
+    [
+     "pick",
+     2.92,
+     3.14
+    ],
+    [
+     "a",
+     3.14,
+     3.32
+    ],
+    [
+     "lock.",
+     3.32,
+     3.58
+    ],
+    [
+     "It's",
+     4.26,
+     4.52
+    ],
+    [
+     "the",
+     4.52,
+     4.66
+    ],
+    [
+     "lookout.",
+     4.66,
+     5.0
+    ],
+    [
+     "Its",
+     5.66,
+     5.78
+    ],
+    [
+     "only",
+     5.78,
+     6.22
+    ],
+    [
+     "job",
+     6.22,
+     6.66
+    ],
+    [
+     "is",
+     6.66,
+     7.08
+    ],
+    [
+     "to",
+     7.08,
+     7.24
+    ],
+    [
+     "make",
+     7.24,
+     7.4
+    ],
+    [
+     "sure",
+     7.4,
+     7.72
+    ],
+    [
+     "you",
+     7.72,
+     7.92
+    ],
+    [
+     "don't",
+     7.92,
+     8.36
+    ],
+    [
+     "stop",
+     8.36,
+     8.6
+    ],
+    [
+     "and",
+     8.6,
+     9.08
+    ],
+    [
+     "think.",
+     9.08,
+     9.38
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_a2_lookout: a lookout figure at a corner under a street lamp",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "the hold timer as the lookout's pocket watch",
+     "tech": "T3",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 2,
+   "heard": "And that little clock? It doesn't pick a lock. It's the lookout. Its only job is to make sure you don't stop and think.",
+   "diff": []
+  },
+  {
+   "id": "A2.27",
+   "act": "A2",
+   "start": 466.645,
+   "end": 476.4,
+   "next": 477.0,
+   "text": "Four locks. One click. That isn't stupidity. That's how every human brain is built — and the people who design checkouts know it.",
+   "ru": "Четыре замка. Один клик. Это не глупость. Так устроен каждый человеческий мозг, — и те, кто проектирует кассы, это знают.",
+   "note": "firm and clear",
+   "sound": "the safe door swings open (low creak), bed",
+   "words": [
+    [
+     "Four",
+     0.0,
+     0.34
+    ],
+    [
+     "locks.",
+     0.34,
+     0.78
+    ],
+    [
+     "One",
+     1.42,
+     1.62
+    ],
+    [
+     "click.",
+     1.62,
+     2.08
+    ],
+    [
+     "That",
+     2.8,
+     2.92
+    ],
+    [
+     "isn't",
+     2.92,
+     3.26
+    ],
+    [
+     "stupidity.",
+     3.26,
+     3.8
+    ],
+    [
+     "That's",
+     4.5,
+     4.88
+    ],
+    [
+     "how",
+     4.88,
+     5.02
+    ],
+    [
+     "every",
+     5.02,
+     5.28
+    ],
+    [
+     "human",
+     5.28,
+     5.66
+    ],
+    [
+     "brain",
+     5.66,
+     5.94
+    ],
+    [
+     "is",
+     5.94,
+     6.16
+    ],
+    [
+     "built",
+     6.16,
+     6.5
+    ],
+    [
+     "—",
+     6.5,
+     7.16
+    ],
+    [
+     "and",
+     7.16,
+     7.3
+    ],
+    [
+     "the",
+     7.3,
+     7.44
+    ],
+    [
+     "people",
+     7.44,
+     7.68
+    ],
+    [
+     "who",
+     7.68,
+     7.88
+    ],
+    [
+     "design",
+     7.88,
+     8.22
+    ],
+    [
+     "checkouts",
+     8.22,
+     8.9
+    ],
+    [
+     "know",
+     8.9,
+     9.4
+    ],
+    [
+     "it.",
+     9.4,
+     9.64
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "all four dials open, the safe door swings",
+     "tech": "T2 + T12",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "blueprint of a checkout page with the four locks marked on it",
+     "tech": "T1",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Four locks, one click. That isn't stupidity. That's how every human brain is built. And the people who design checkouts know it.",
+   "diff": []
+  },
+  {
+   "id": "A2.28",
+   "act": "A2",
+   "start": 477.0,
+   "end": 485.24,
+   "next": 485.64,
+   "text": "What did StubHub do with the result? On September the first, the whole site switched. Fees at the end. For everyone.",
+   "ru": "Что StubHub сделал с результатом? Первого сентября весь сайт переключили. Сборы — в конце. Для всех.",
+   "note": "measured and curious, a detective laying out evidence, clear on every number",
+   "sound": "a big switch clunk",
+   "words": [
+    [
+     "What",
+     0.0,
+     0.2
+    ],
+    [
+     "did",
+     0.2,
+     0.52
+    ],
+    [
+     "StubHub",
+     0.52,
+     1.08
+    ],
+    [
+     "do",
+     1.08,
+     1.38
+    ],
+    [
+     "with",
+     1.38,
+     1.56
+    ],
+    [
+     "the",
+     1.56,
+     1.7
+    ],
+    [
+     "result?",
+     1.7,
+     2.04
+    ],
+    [
+     "On",
+     2.78,
+     2.78
+    ],
+    [
+     "September",
+     2.78,
+     3.18
+    ],
+    [
+     "the",
+     3.18,
+     3.32
+    ],
+    [
+     "first,",
+     3.32,
+     4.04
+    ],
+    [
+     "the",
+     4.18,
+     4.3
+    ],
+    [
+     "whole",
+     4.3,
+     4.64
+    ],
+    [
+     "site",
+     4.64,
+     5.02
+    ],
+    [
+     "switched.",
+     5.02,
+     5.52
+    ],
+    [
+     "Fees",
+     6.16,
+     6.34
+    ],
+    [
+     "at",
+     6.34,
+     6.56
+    ],
+    [
+     "the",
+     6.56,
+     6.7
+    ],
+    [
+     "end.",
+     6.7,
+     6.98
+    ],
+    [
+     "For",
+     7.5,
+     7.66
+    ],
+    [
+     "everyone.",
+     7.66,
+     8.04
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 x1 toggle switch flips (Grok clip x1)",
+     "tech": "synced clunk",
+     "source": "GROK-clip"
+    },
+    {
+     "picture": "Ep.4 d3 evidence card NBER p.27 'the switch to back-end fees'",
+     "tech": "T8 + T9",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "What did StubHub do with the result? On September the 1st, the whole site switched. Fees at the end. For everyone.",
+   "diff": []
+  },
+  {
+   "id": "A2.29",
+   "act": "A2",
+   "start": 485.64,
+   "end": 489.82,
+   "next": 490.42,
+   "text": "The rehearsal was over. The show had opened.",
+   "ru": "Репетиция закончилась. Спектакль начался.",
+   "note": "theatrical, quiet",
+   "sound": "curtain whoosh",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.16
+    ],
+    [
+     "rehearsal",
+     0.16,
+     0.7
+    ],
+    [
+     "was",
+     0.7,
+     1.12
+    ],
+    [
+     "over.",
+     1.12,
+     1.58
+    ],
+    [
+     "The",
+     2.36,
+     2.48
+    ],
+    [
+     "show",
+     2.48,
+     2.9
+    ],
+    [
+     "had",
+     2.9,
+     3.52
+    ],
+    [
+     "opened.",
+     3.52,
+     3.94
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 a10 hall: curtain opens, the fee slips on stage (a12 last frame)",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "The rehearsal was over. The show had opened.",
+   "diff": []
+  },
+  {
+   "id": "A2.30",
+   "act": "A2",
+   "start": 490.42,
+   "end": 497.23,
+   "next": 497.63,
+   "text": "If you like catching prices in the act, subscribe. The Inspector has more files.",
+   "ru": "Если вам нравится ловить цены с поличным — подпишитесь. У Инспектора ещё много дел.",
+   "note": "friendly, light, quick",
+   "sound": "bed",
+   "words": [
+    [
+     "If",
+     0.0,
+     0.22
+    ],
+    [
+     "you",
+     0.22,
+     0.5
+    ],
+    [
+     "like",
+     0.5,
+     0.9
+    ],
+    [
+     "catching",
+     0.9,
+     1.48
+    ],
+    [
+     "prices",
+     1.48,
+     2.12
+    ],
+    [
+     "in",
+     2.12,
+     2.54
+    ],
+    [
+     "the",
+     2.54,
+     2.7
+    ],
+    [
+     "act,",
+     2.7,
+     3.06
+    ],
+    [
+     "subscribe.",
+     3.52,
+     3.94
+    ],
+    [
+     "The",
+     4.62,
+     4.74
+    ],
+    [
+     "Inspector",
+     4.74,
+     5.28
+    ],
+    [
+     "has",
+     5.28,
+     5.64
+    ],
+    [
+     "more",
+     5.64,
+     6.04
+    ],
+    [
+     "files.",
+     6.04,
+     6.54
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 sub case-file stack, SUBSCRIBE written by hand",
+     "tech": "T1",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "If you like catching prices in the act, subscribe. The inspector has more files.",
+   "diff": []
+  },
+  {
+   "id": "A2.31",
+   "act": "A2",
+   "start": 497.63,
+   "end": 503.035,
+   "next": 507.235,
+   "text": "Because when a trick works this well, it never stays in one theatre.",
+   "ru": "Потому что когда трюк работает так хорошо, он никогда не остаётся в одном театре.",
+   "note": "low, conspiratorial, leaving it hanging",
+   "sound": "bed swells, cut → AD BREAK",
+   "words": [
+    [
+     "Because",
+     0.0,
+     0.6
+    ],
+    [
+     "when",
+     0.6,
+     0.92
+    ],
+    [
+     "a",
+     0.92,
+     1.06
+    ],
+    [
+     "trick",
+     1.06,
+     1.34
+    ],
+    [
+     "works",
+     1.34,
+     1.8
+    ],
+    [
+     "this",
+     1.8,
+     2.06
+    ],
+    [
+     "well,",
+     2.06,
+     2.46
+    ],
+    [
+     "it",
+     2.96,
+     3.1
+    ],
+    [
+     "never",
+     3.1,
+     3.58
+    ],
+    [
+     "stays",
+     3.58,
+     4.16
+    ],
+    [
+     "in",
+     4.16,
+     4.46
+    ],
+    [
+     "one",
+     4.46,
+     4.72
+    ],
+    [
+     "theatre.",
+     4.72,
+     5.16
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "archive hotel_sign_cooperstown_1937: the camera swings to a hotel sign (Act 3 teaser)",
+     "tech": "T11 ink wipe to amber",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "Because when a trick works this well, it never stays in one theatre.",
+   "diff": []
+  },
+  {
+   "id": "A3.1",
+   "act": "A3",
+   "start": 507.235,
+   "end": 514.115,
+   "next": 514.615,
+   "text": "The concert is two hours away, so Larry needs a hotel. Downtown. Nowhere near a beach.",
+   "ru": "Концерт в двух часах езды, так что Ларри нужен отель. В центре. Нигде рядом с пляжем.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "Act 3 bed ub_usual_suspects, lobby ambience",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.18
+    ],
+    [
+     "concert",
+     0.18,
+     0.54
+    ],
+    [
+     "is",
+     0.54,
+     0.8
+    ],
+    [
+     "two",
+     0.8,
+     1.06
+    ],
+    [
+     "hours",
+     1.06,
+     1.32
+    ],
+    [
+     "away,",
+     1.32,
+     1.82
+    ],
+    [
+     "so",
+     2.36,
+     2.44
+    ],
+    [
+     "Larry",
+     2.44,
+     2.8
+    ],
+    [
+     "needs",
+     2.8,
+     3.14
+    ],
+    [
+     "a",
+     3.14,
+     3.32
+    ],
+    [
+     "hotel.",
+     3.32,
+     3.82
+    ],
+    [
+     "Downtown.",
+     4.44,
+     4.9
+    ],
+    [
+     "Nowhere",
+     5.64,
+     5.9
+    ],
+    [
+     "near",
+     5.9,
+     6.22
+    ],
+    [
+     "a",
+     6.22,
+     6.38
+    ],
+    [
+     "beach.",
+     6.38,
+     6.66
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ACT 3 · THE GANG title",
+     "tech": "T5 + T11",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 c1 Larry in the downtown lobby, beach poster",
+     "tech": "T7 parallax (grows about his feet)",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "The concert is two hours away, so Larry needs a hotel. Downtown, nowhere near a beach.",
+   "diff": []
+  },
+  {
+   "id": "A3.2",
+   "act": "A3",
+   "start": 514.615,
+   "end": 526.335,
+   "next": 526.835,
+   "text": "The room says ninety-nine dollars a night. Near the end of booking, a new line appears — under a heading that sounds official: \"Taxes and Fees.\"",
+   "ru": "Номер стоит девяносто девять долларов за ночь. Ближе к концу бронирования появляется новая строка — под официально звучащим заголовком: «Налоги и сборы».",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "UI click",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.18
+    ],
+    [
+     "room",
+     0.18,
+     0.6
+    ],
+    [
+     "says",
+     0.6,
+     1.24
+    ],
+    [
+     "ninety-nine",
+     1.24,
+     1.96
+    ],
+    [
+     "dollars",
+     1.24,
+     1.96
+    ],
+    [
+     "a",
+     1.96,
+     2.48
+    ],
+    [
+     "night.",
+     2.48,
+     3.04
+    ],
+    [
+     "Near",
+     3.68,
+     3.94
+    ],
+    [
+     "the",
+     3.94,
+     4.24
+    ],
+    [
+     "end",
+     4.24,
+     4.48
+    ],
+    [
+     "of",
+     4.48,
+     4.66
+    ],
+    [
+     "booking,",
+     4.66,
+     4.94
+    ],
+    [
+     "a",
+     5.5,
+     5.6
+    ],
+    [
+     "new",
+     5.6,
+     5.86
+    ],
+    [
+     "line",
+     5.86,
+     6.18
+    ],
+    [
+     "appears",
+     6.18,
+     6.68
+    ],
+    [
+     "—",
+     6.68,
+     7.2
+    ],
+    [
+     "under",
+     7.2,
+     7.46
+    ],
+    [
+     "a",
+     7.46,
+     7.7
+    ],
+    [
+     "heading",
+     7.7,
+     7.94
+    ],
+    [
+     "that",
+     7.94,
+     8.2
+    ],
+    [
+     "sounds",
+     8.2,
+     8.56
+    ],
+    [
+     "official:",
+     8.56,
+     9.1
+    ],
+    [
+     "\"Taxes",
+     10.14,
+     10.48
+    ],
+    [
+     "and",
+     10.48,
+     11.1
+    ],
+    [
+     "Fees.\"",
+     11.1,
+     11.42
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn booking screen: ROOM $99 / NIGHT",
+     "tech": "T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "a new line slides in at the bottom: TAXES AND FEES",
+     "tech": "T9 highlighter",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "The room says $99 a night. Near the end of booking, a new line appears, under a heading that sounds official. Taxes and fees.",
+   "diff": []
+  },
+  {
+   "id": "A3.3",
+   "act": "A3",
+   "start": 526.835,
+   "end": 531.52,
+   "next": 531.92,
+   "text": "Inside it, next to the real taxes, sits a second member of the gang.",
+   "ru": "Внутри неё, рядом с настоящими налогами, сидит второй член банды.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "low brass",
+   "words": [
+    [
+     "Inside",
+     0.0,
+     0.4
+    ],
+    [
+     "it,",
+     0.4,
+     0.72
+    ],
+    [
+     "next",
+     1.12,
+     1.26
+    ],
+    [
+     "to",
+     1.26,
+     1.46
+    ],
+    [
+     "the",
+     1.46,
+     1.56
+    ],
+    [
+     "real",
+     1.56,
+     1.82
+    ],
+    [
+     "taxes,",
+     1.82,
+     2.32
+    ],
+    [
+     "sits",
+     2.82,
+     3.06
+    ],
+    [
+     "a",
+     3.06,
+     3.3
+    ],
+    [
+     "second",
+     3.3,
+     3.66
+    ],
+    [
+     "member",
+     3.66,
+     4.0
+    ],
+    [
+     "of",
+     4.0,
+     4.22
+    ],
+    [
+     "the",
+     4.22,
+     4.32
+    ],
+    [
+     "gang.",
+     4.32,
+     4.54
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the line opens: CITY TAX · STATE TAX · RESORT FEE — the last one in shadow",
+     "tech": "T3",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Inside it, next to the real taxes, sits a second member of the gang.",
+   "diff": []
+  },
+  {
+   "id": "A3.4",
+   "act": "A3",
+   "start": 531.92,
+   "end": 537.93,
+   "next": 538.33,
+   "text": "Name: the resort fee. Aliases: amenity fee, destination fee.",
+   "ru": "Имя: курортный сбор. Клички: сбор за удобства, сбор за местоположение.",
+   "note": "mock-formal, reading a charge sheet",
+   "sound": "camera flash, stamp",
+   "words": [
+    [
+     "Name:",
+     0.0,
+     0.4
+    ],
+    [
+     "the",
+     0.9,
+     0.96
+    ],
+    [
+     "resort",
+     0.96,
+     1.32
+    ],
+    [
+     "fee.",
+     1.32,
+     1.72
+    ],
+    [
+     "Aliases:",
+     2.44,
+     2.9
+    ],
+    [
+     "amenity",
+     3.54,
+     3.94
+    ],
+    [
+     "fee,",
+     3.94,
+     4.26
+    ],
+    [
+     "destination",
+     4.92,
+     5.32
+    ],
+    [
+     "fee.",
+     5.32,
+     5.92
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 m2 mugshot (hotel key fob) + plate RESORT FEE, stamp SUSPECT",
+     "tech": "T2 spring stamp + flash",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "ep04v2_a3_lineup: the lineup wall, aliases written on the height chart",
+     "tech": "T1",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 3,
+   "heard": "Name, the resort fee, aliases, amenity fee, destination fee.",
+   "diff": []
+  },
+  {
+   "id": "A3.5",
+   "act": "A3",
+   "start": 538.33,
+   "end": 551.88,
+   "next": 552.28,
+   "text": "Known associates: a pool Larry will never swim in, a gym he will never visit, Wi-Fi he already pays for at home, and a newspaper nobody has opened since 1998.",
+   "ru": "Известные сообщники: бассейн, в котором Ларри никогда не поплавает, спортзал, куда он не зайдёт, вай-фай, за который он уже платит дома, и газета, которую никто не открывал с 1998 года.",
+   "note": "mock-formal, dry, a smile on 'a newspaper nobody has opened since 1998'",
+   "sound": "four camera flashes",
+   "words": [
+    [
+     "Known",
+     0.0,
+     0.42
+    ],
+    [
+     "associates:",
+     0.42,
+     1.16
+    ],
+    [
+     "a",
+     1.92,
+     1.96
+    ],
+    [
+     "pool",
+     1.96,
+     2.26
+    ],
+    [
+     "Larry",
+     2.26,
+     2.84
+    ],
+    [
+     "will",
+     2.84,
+     3.1
+    ],
+    [
+     "never",
+     3.1,
+     3.46
+    ],
+    [
+     "swim",
+     3.46,
+     3.74
+    ],
+    [
+     "in,",
+     3.74,
+     3.98
+    ],
+    [
+     "a",
+     4.42,
+     4.44
+    ],
+    [
+     "gym",
+     4.44,
+     4.8
+    ],
+    [
+     "he",
+     4.8,
+     5.12
+    ],
+    [
+     "will",
+     5.12,
+     5.28
+    ],
+    [
+     "never",
+     5.28,
+     5.62
+    ],
+    [
+     "visit,",
+     5.62,
+     6.04
+    ],
+    [
+     "Wi-Fi",
+     6.64,
+     6.96
+    ],
+    [
+     "he",
+     6.96,
+     7.24
+    ],
+    [
+     "already",
+     7.24,
+     7.64
+    ],
+    [
+     "pays",
+     7.64,
+     7.96
+    ],
+    [
+     "for",
+     7.96,
+     8.22
+    ],
+    [
+     "at",
+     8.22,
+     8.38
+    ],
+    [
+     "home,",
+     8.38,
+     8.64
+    ],
+    [
+     "and",
+     9.24,
+     9.38
+    ],
+    [
+     "a",
+     9.38,
+     9.52
+    ],
+    [
+     "newspaper",
+     9.52,
+     10.06
+    ],
+    [
+     "nobody",
+     10.06,
+     10.8
+    ],
+    [
+     "has",
+     10.8,
+     11.04
+    ],
+    [
+     "opened",
+     11.04,
+     11.42
+    ],
+    [
+     "since",
+     11.42,
+     11.98
+    ],
+    [
+     "1998.",
+     11.98,
+     12.96
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 m2b paddling pool in the hotel room — associate card POOL",
+     "tech": "T2",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "GAP ep04v2_g02 empty hotel gym — associate card GYM",
+     "tech": "T2",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn Wi-Fi icon over Larry's home laptop (o4) — WI-FI",
+     "tech": "T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "GAP ep04v2_g03 an unopened yellowed newspaper at a hotel door — NEWSPAPER",
+     "tech": "T2",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Known associates, a pool Larry will never swim in, a gym he will never visit, Wi-Fi he already pays for at home, and a newspaper nobody has opened since 1998.",
+   "diff": []
+  },
+  {
+   "id": "A3.6",
+   "act": "A3",
+   "start": 552.28,
+   "end": 556.07,
+   "next": 556.67,
+   "text": "Larry will use none of it. Larry will pay for all of it.",
+   "ru": "Ларри не воспользуется ничем из этого. Ларри заплатит за всё.",
+   "note": "dry, a faint smile",
+   "sound": "wry beat",
+   "words": [
+    [
+     "Larry",
+     0.0,
+     0.38
+    ],
+    [
+     "will",
+     0.38,
+     0.72
+    ],
+    [
+     "use",
+     0.72,
+     1.06
+    ],
+    [
+     "none",
+     1.06,
+     1.38
+    ],
+    [
+     "of",
+     1.38,
+     1.52
+    ],
+    [
+     "it.",
+     1.52,
+     1.72
+    ],
+    [
+     "Larry",
+     2.16,
+     2.4
+    ],
+    [
+     "will",
+     2.4,
+     2.62
+    ],
+    [
+     "pay",
+     2.62,
+     2.9
+    ],
+    [
+     "for",
+     2.9,
+     3.18
+    ],
+    [
+     "all",
+     3.18,
+     3.38
+    ],
+    [
+     "of",
+     3.38,
+     3.5
+    ],
+    [
+     "it.",
+     3.5,
+     3.68
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the four associate cards: USED 0 / PAID 4",
+     "tech": "T4",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Larry will use none of it. Larry will pay for all of it.",
+   "diff": []
+  },
+  {
+   "id": "A3.7",
+   "act": "A3",
+   "start": 556.67,
+   "end": 571.92,
+   "next": 572.32,
+   "text": "In 2019, the Attorney General for Washington, D.C. sued Marriott. The lawsuit says at least one hundred and eighty-nine Marriott hotels charged these fees — from nine to ninety-five dollars, per room, per day.",
+   "ru": "В 2019 году генеральный прокурор Вашингтона, округ Колумбия, подал в суд на Marriott. В иске говорится, что как минимум сто восемьдесят девять отелей Marriott брали эти сборы — от девяти до девяноста пяти долларов за номер в сутки.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "In",
+     0.0,
+     0.18
+    ],
+    [
+     "2019,",
+     0.18,
+     0.94
+    ],
+    [
+     "the",
+     1.58,
+     1.68
+    ],
+    [
+     "Attorney",
+     1.68,
+     2.04
+    ],
+    [
+     "General",
+     2.04,
+     2.48
+    ],
+    [
+     "for",
+     2.48,
+     2.68
+    ],
+    [
+     "Washington,",
+     2.68,
+     3.16
+    ],
+    [
+     "D.C.",
+     3.16,
+     3.6
+    ],
+    [
+     "sued",
+     3.6,
+     4.28
+    ],
+    [
+     "Marriott.",
+     4.28,
+     4.72
+    ],
+    [
+     "The",
+     5.46,
+     5.64
+    ],
+    [
+     "lawsuit",
+     5.64,
+     5.98
+    ],
+    [
+     "says",
+     5.98,
+     6.42
+    ],
+    [
+     "at",
+     6.42,
+     6.84
+    ],
+    [
+     "least",
+     6.84,
+     7.16
+    ],
+    [
+     "one",
+     7.16,
+     8.24
+    ],
+    [
+     "hundred",
+     7.16,
+     8.24
+    ],
+    [
+     "and",
+     7.16,
+     8.24
+    ],
+    [
+     "eighty-nine",
+     7.16,
+     8.24
+    ],
+    [
+     "Marriott",
+     8.24,
+     9.04
+    ],
+    [
+     "hotels",
+     9.04,
+     9.56
+    ],
+    [
+     "charged",
+     9.56,
+     10.34
+    ],
+    [
+     "these",
+     10.34,
+     10.6
+    ],
+    [
+     "fees",
+     10.6,
+     11.0
+    ],
+    [
+     "—",
+     11.0,
+     11.56
+    ],
+    [
+     "from",
+     11.56,
+     11.74
+    ],
+    [
+     "nine",
+     11.74,
+     12.14
+    ],
+    [
+     "to",
+     12.14,
+     12.46
+    ],
+    [
+     "ninety-five",
+     12.46,
+     13.16
+    ],
+    [
+     "dollars,",
+     12.46,
+     13.16
+    ],
+    [
+     "per",
+     13.16,
+     13.96
+    ],
+    [
+     "room,",
+     13.96,
+     14.34
+    ],
+    [
+     "per",
+     14.64,
+     14.82
+    ],
+    [
+     "day.",
+     14.82,
+     15.14
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "archive hotel_clerk_dover_1938",
+     "tech": "slow push",
+     "source": "archive"
+    },
+    {
+     "picture": "Ep.4 c6 doc card DC AG press release July 9, 2019",
+     "tech": "T8 + T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 c3 stat 189 hotels · ALLEGED",
+     "tech": "T2 + T4",
+     "source": "pipeline"
+    },
+    {
+     "picture": "code-drawn range bar $9 —— $95 per room, per day",
+     "tech": "T4",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "In 2019, the Attorney General for Washington DC sued Marriott. The lawsuit says at least 189 Marriott hotels charged these fees, from $9 to $95 per room, per day.",
+   "diff": []
+  },
+  {
+   "id": "A3.8",
+   "act": "A3",
+   "start": 572.32,
+   "end": 577.19,
+   "next": 577.69,
+   "text": "Resort fees aren't taxes. They just like to sit next to them.",
+   "ru": "Курортные сборы — не налоги. Они просто любят сидеть рядом с ними.",
+   "note": "dry, a smile on 'They just like to sit next to them'",
+   "sound": "wry pizzicato",
+   "words": [
+    [
+     "Resort",
+     0.0,
+     0.4
+    ],
+    [
+     "fees",
+     0.4,
+     0.98
+    ],
+    [
+     "aren't",
+     0.98,
+     1.74
+    ],
+    [
+     "taxes.",
+     1.74,
+     2.18
+    ],
+    [
+     "They",
+     2.82,
+     3.08
+    ],
+    [
+     "just",
+     3.08,
+     3.36
+    ],
+    [
+     "like",
+     3.36,
+     3.54
+    ],
+    [
+     "to",
+     3.54,
+     3.72
+    ],
+    [
+     "sit",
+     3.72,
+     3.96
+    ],
+    [
+     "next",
+     3.96,
+     4.34
+    ],
+    [
+     "to",
+     4.34,
+     4.58
+    ],
+    [
+     "them.",
+     4.58,
+     4.76
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 c4/c5 hotel bill, the fee line nudges closer to TAX",
+     "tech": "T1 arrow",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Resort fees aren't taxes. They just like to sit next to them.",
+   "diff": []
+  },
+  {
+   "id": "A3.9",
+   "act": "A3",
+   "start": 577.69,
+   "end": 587.81,
+   "next": 588.31,
+   "text": "In 2023, Marriott agreed with Texas to show the total price most prominently. Same blueprint. Different building.",
+   "ru": "В 2023 году Marriott договорился с Техасом показывать полную цену на самом видном месте. Тот же чертёж. Другое здание.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "In",
+     0.0,
+     0.2
+    ],
+    [
+     "2023,",
+     0.2,
+     1.38
+    ],
+    [
+     "Marriott",
+     2.08,
+     2.58
+    ],
+    [
+     "agreed",
+     2.58,
+     3.04
+    ],
+    [
+     "with",
+     3.04,
+     3.24
+    ],
+    [
+     "Texas",
+     3.24,
+     3.7
+    ],
+    [
+     "to",
+     3.7,
+     4.36
+    ],
+    [
+     "show",
+     4.36,
+     4.66
+    ],
+    [
+     "the",
+     4.66,
+     4.86
+    ],
+    [
+     "total",
+     4.86,
+     5.22
+    ],
+    [
+     "price",
+     5.22,
+     5.6
+    ],
+    [
+     "most",
+     5.6,
+     6.04
+    ],
+    [
+     "prominently.",
+     6.04,
+     6.64
+    ],
+    [
+     "Same",
+     7.74,
+     8.1
+    ],
+    [
+     "blueprint.",
+     8.1,
+     8.54
+    ],
+    [
+     "Different",
+     9.28,
+     9.52
+    ],
+    [
+     "building.",
+     9.52,
+     9.96
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "doc card Texas AG / Marriott 2023 'total price … most prominently'",
+     "tech": "T8 + T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "the Act 2 blueprint laid over the hotel sign",
+     "tech": "T11 wipe",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "In 2023, Marriott agreed with Texas to show the total price most prominently. Same blueprint, different building.",
+   "diff": []
+  },
+  {
+   "id": "A3.10",
+   "act": "A3",
+   "start": 588.31,
+   "end": 591.41,
+   "next": 591.81,
+   "text": "Then there's the biggest name in tickets.",
+   "ru": "А ещё есть самое громкое имя в билетах.",
+   "note": "low, a slight menace",
+   "sound": "low brass",
+   "words": [
+    [
+     "Then",
+     0.0,
+     0.4
+    ],
+    [
+     "there's",
+     0.4,
+     0.84
+    ],
+    [
+     "the",
+     0.84,
+     0.96
+    ],
+    [
+     "biggest",
+     0.96,
+     1.34
+    ],
+    [
+     "name",
+     1.34,
+     1.9
+    ],
+    [
+     "in",
+     1.9,
+     2.32
+    ],
+    [
+     "tickets.",
+     2.32,
+     2.8
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 o1 code-drawn ticket, camera rises",
+     "tech": "T12",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Then there's the biggest name in tickets.",
+   "diff": []
+  },
+  {
+   "id": "A3.11",
+   "act": "A3",
+   "start": 591.81,
+   "end": 600.92,
+   "next": 601.32,
+   "text": "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
+   "ru": "В сентябре 2025 года Федеральная торговая комиссия США и семь штатов подали в суд на Live Nation и Ticketmaster.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "In",
+     0.0,
+     0.28
+    ],
+    [
+     "September",
+     0.28,
+     0.94
+    ],
+    [
+     "2025,",
+     0.94,
+     2.12
+    ],
+    [
+     "America's",
+     2.72,
+     3.38
+    ],
+    [
+     "Federal",
+     3.38,
+     3.66
+    ],
+    [
+     "Trade",
+     3.66,
+     4.04
+    ],
+    [
+     "Commission",
+     4.04,
+     4.5
+    ],
+    [
+     "and",
+     4.5,
+     5.02
+    ],
+    [
+     "seven",
+     5.02,
+     5.42
+    ],
+    [
+     "states",
+     5.42,
+     5.98
+    ],
+    [
+     "sued",
+     5.98,
+     6.72
+    ],
+    [
+     "Live",
+     6.72,
+     7.24
+    ],
+    [
+     "Nation",
+     7.24,
+     7.68
+    ],
+    [
+     "and",
+     7.68,
+     8.32
+    ],
+    [
+     "Ticketmaster.",
+     8.32,
+     8.94
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "archive ftc_statue_1943 + date plate SEPT 2025 · FTC + 7 STATES",
+     "tech": "T5 + slow push",
+     "source": "archive"
+    }
+   ],
+   "takes": 1,
+   "heard": "In September 2025, America's Federal Trade Commission and seven states sued Live Nation and Ticketmaster.",
+   "diff": []
+  },
+  {
+   "id": "A3.12",
+   "act": "A3",
+   "start": 601.32,
+   "end": 612.28,
+   "next": 612.68,
+   "text": "They allege the fees run from twenty-four to forty-four percent of the total price — and that fans paid over sixteen point four billion dollars in mandatory fees.",
+   "ru": "Они утверждают, что сборы составляют от двадцати четырёх до сорока четырёх процентов полной цены — и что фанаты заплатили больше шестнадцати целых четырёх десятых миллиарда долларов обязательных сборов.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "They",
+     0.0,
+     0.24
+    ],
+    [
+     "allege",
+     0.24,
+     0.6
+    ],
+    [
+     "the",
+     0.6,
+     0.88
+    ],
+    [
+     "fees",
+     0.88,
+     1.26
+    ],
+    [
+     "run",
+     1.26,
+     1.58
+    ],
+    [
+     "from",
+     1.58,
+     1.92
+    ],
+    [
+     "twenty-four",
+     1.92,
+     2.56
+    ],
+    [
+     "to",
+     2.56,
+     2.86
+    ],
+    [
+     "forty-four",
+     2.86,
+     3.5
+    ],
+    [
+     "percent",
+     3.5,
+     3.88
+    ],
+    [
+     "of",
+     3.88,
+     4.12
+    ],
+    [
+     "the",
+     4.12,
+     4.28
+    ],
+    [
+     "total",
+     4.28,
+     4.54
+    ],
+    [
+     "price",
+     4.54,
+     5.02
+    ],
+    [
+     "—",
+     5.02,
+     5.46
+    ],
+    [
+     "and",
+     5.46,
+     5.7
+    ],
+    [
+     "that",
+     5.7,
+     5.86
+    ],
+    [
+     "fans",
+     5.86,
+     6.28
+    ],
+    [
+     "paid",
+     6.28,
+     6.7
+    ],
+    [
+     "over",
+     6.7,
+     7.0
+    ],
+    [
+     "sixteen",
+     7.0,
+     7.54
+    ],
+    [
+     "point",
+     7.54,
+     7.54
+    ],
+    [
+     "four",
+     7.54,
+     8.24
+    ],
+    [
+     "billion",
+     8.24,
+     8.76
+    ],
+    [
+     "dollars",
+     8.76,
+     8.76
+    ],
+    [
+     "in",
+     8.76,
+     9.72
+    ],
+    [
+     "mandatory",
+     9.72,
+     10.26
+    ],
+    [
+     "fees.",
+     10.26,
+     10.72
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 b4 doc card FTC complaint ¶36",
+     "tech": "T8 + T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 b5 stat $16.4bn · ALLEGED",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "They allege the fees run from 24 to 44 percent of the total price, and that fans paid over $16.4 billion in mandatory fees.",
+   "diff": []
+  },
+  {
+   "id": "A3.13",
+   "act": "A3",
+   "start": 612.68,
+   "end": 620.22,
+   "next": 620.72,
+   "text": "Larry's eighteen dollars? Thirty-seven and a half percent of what he paid. Right inside that range.",
+   "ru": "Восемнадцать долларов Ларри? Тридцать семь с половиной процентов от того, что он заплатил. Прямо внутри этого диапазона.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "Larry's",
+     0.0,
+     0.7
+    ],
+    [
+     "eighteen",
+     0.7,
+     1.32
+    ],
+    [
+     "dollars?",
+     0.7,
+     1.32
+    ],
+    [
+     "Thirty-seven",
+     1.32,
+     2.92
+    ],
+    [
+     "and",
+     2.92,
+     3.16
+    ],
+    [
+     "a",
+     3.16,
+     3.3
+    ],
+    [
+     "half",
+     3.3,
+     3.56
+    ],
+    [
+     "percent",
+     3.56,
+     3.96
+    ],
+    [
+     "of",
+     3.96,
+     4.2
+    ],
+    [
+     "what",
+     4.2,
+     4.38
+    ],
+    [
+     "he",
+     4.38,
+     4.54
+    ],
+    [
+     "paid.",
+     4.54,
+     4.96
+    ],
+    [
+     "Right",
+     4.96,
+     6.0
+    ],
+    [
+     "inside",
+     6.0,
+     6.58
+    ],
+    [
+     "that",
+     6.58,
+     6.94
+    ],
+    [
+     "range.",
+     6.94,
+     7.36
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 b6 chart: 24% · Larry 37.5% · 44%",
+     "tech": "T4 eased chart build",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Larry's $18 37 and a half percent of what he paid right inside that range.",
+   "diff": []
+  },
+  {
+   "id": "A3.14",
+   "act": "A3",
+   "start": 620.72,
+   "end": 632.79,
+   "next": 633.39,
+   "text": "In September 2026, a judge refused to throw the case out. It goes on. Until a court decides, every word of it is an allegation.",
+   "ru": "В сентябре 2026 года судья отказался закрыть дело. Оно продолжается. Пока суд не решит, каждое слово в нём — обвинение.",
+   "note": "careful and neutral, precise on 'allegation'",
+   "sound": "bed",
+   "words": [
+    [
+     "In",
+     0.0,
+     0.26
+    ],
+    [
+     "September",
+     0.26,
+     0.88
+    ],
+    [
+     "2026,",
+     0.88,
+     2.12
+    ],
+    [
+     "a",
+     2.68,
+     2.76
+    ],
+    [
+     "judge",
+     2.76,
+     3.16
+    ],
+    [
+     "refused",
+     3.16,
+     3.82
+    ],
+    [
+     "to",
+     3.82,
+     4.24
+    ],
+    [
+     "throw",
+     4.24,
+     4.52
+    ],
+    [
+     "the",
+     4.52,
+     4.7
+    ],
+    [
+     "case",
+     4.7,
+     4.92
+    ],
+    [
+     "out.",
+     4.92,
+     5.32
+    ],
+    [
+     "It",
+     5.9,
+     6.06
+    ],
+    [
+     "goes",
+     6.06,
+     6.34
+    ],
+    [
+     "on.",
+     6.34,
+     6.78
+    ],
+    [
+     "Until",
+     6.78,
+     7.92
+    ],
+    [
+     "a",
+     7.92,
+     8.14
+    ],
+    [
+     "court",
+     8.14,
+     8.38
+    ],
+    [
+     "decides,",
+     8.38,
+     8.98
+    ],
+    [
+     "every",
+     8.98,
+     9.84
+    ],
+    [
+     "word",
+     9.84,
+     10.16
+    ],
+    [
+     "of",
+     10.16,
+     10.3
+    ],
+    [
+     "it",
+     10.3,
+     10.58
+    ],
+    [
+     "is",
+     10.58,
+     11.06
+    ],
+    [
+     "an",
+     11.06,
+     11.3
+    ],
+    [
+     "allegation.",
+     11.3,
+     11.84
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 b9 doc card Order Sept 28, 2026 · Motion to dismiss DENIED",
+     "tech": "T2 stamp DENIED",
+     "source": "pipeline"
+    },
+    {
+     "picture": "plate ALLEGED stays in the corner",
+     "tech": "T3",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "In September 2026, a judge refused to throw the case out. It goes on until a court decides every word of it is an allegation.",
+   "diff": []
+  },
+  {
+   "id": "A3.15",
+   "act": "A3",
+   "start": 633.39,
+   "end": 637.735,
+   "next": 638.235,
+   "text": "Now, the defence. Every accused deserves one.",
+   "ru": "А теперь — защита. Она положена каждому обвиняемому.",
+   "note": "fair, measured, a courtroom tone",
+   "sound": "GAVEL",
+   "words": [
+    [
+     "Now,",
+     0.0,
+     0.46
+    ],
+    [
+     "the",
+     1.02,
+     1.14
+    ],
+    [
+     "defence.",
+     1.14,
+     1.64
+    ],
+    [
+     "Every",
+     2.48,
+     2.72
+    ],
+    [
+     "accused",
+     2.72,
+     3.4
+    ],
+    [
+     "deserves",
+     3.4,
+     3.88
+    ],
+    [
+     "one.",
+     3.88,
+     4.22
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_a3_courtroom + title card IN DEFENCE OF THE ACCUSED",
+     "tech": "T5 + T2 synced gavel",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Now, the defence. Every accused deserves one.",
+   "diff": []
+  },
+  {
+   "id": "A3.16",
+   "act": "A3",
+   "start": 638.235,
+   "end": 650.27,
+   "next": 650.67,
+   "text": "Here's StubHub's own story. In 2014, it says, it tried honesty. It moved to all-in prices — every fee shown upfront.",
+   "ru": "Вот версия самого StubHub. В 2014 году, по его словам, он попробовал честность. Перешёл на цены «всё включено» — каждый сбор показан сразу.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "Here's",
+     0.0,
+     0.94
+    ],
+    [
+     "StubHub's",
+     0.94,
+     1.84
+    ],
+    [
+     "own",
+     1.84,
+     2.1
+    ],
+    [
+     "story.",
+     2.1,
+     2.7
+    ],
+    [
+     "In",
+     3.32,
+     3.42
+    ],
+    [
+     "2014,",
+     3.42,
+     4.22
+    ],
+    [
+     "it",
+     4.22,
+     4.54
+    ],
+    [
+     "says,",
+     4.54,
+     4.9
+    ],
+    [
+     "it",
+     4.9,
+     5.42
+    ],
+    [
+     "tried",
+     5.42,
+     5.84
+    ],
+    [
+     "honesty.",
+     5.84,
+     6.42
+    ],
+    [
+     "It",
+     7.12,
+     7.16
+    ],
+    [
+     "moved",
+     7.16,
+     7.72
+    ],
+    [
+     "to",
+     7.72,
+     8.1
+    ],
+    [
+     "all-in",
+     8.1,
+     8.74
+    ],
+    [
+     "prices",
+     8.74,
+     9.24
+    ],
+    [
+     "—",
+     9.24,
+     9.84
+    ],
+    [
+     "every",
+     9.84,
+     10.18
+    ],
+    [
+     "fee",
+     10.18,
+     10.64
+    ],
+    [
+     "shown",
+     10.64,
+     11.22
+    ],
+    [
+     "upfront.",
+     11.22,
+     12.035
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 d2 doc card StubHub statement, White House event, March 2023",
+     "tech": "T8 + T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 a4 ticket window, the all-in price",
+     "tech": "slow push",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Here's StubHub's own story. In 2014 it says it tried honesty. It moved to all-in prices, every fee shown up front.",
+   "diff": []
+  },
+  {
+   "id": "A3.17",
+   "act": "A3",
+   "start": 650.67,
+   "end": 656.35,
+   "next": 656.75,
+   "text": "And it lost customers — to rivals who kept their fees for the last screen.",
+   "ru": "И потерял покупателей — конкурентам, которые оставили свои сборы на последний экран.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "bed",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.18
+    ],
+    [
+     "it",
+     0.18,
+     0.34
+    ],
+    [
+     "lost",
+     0.34,
+     0.7
+    ],
+    [
+     "customers",
+     0.7,
+     1.34
+    ],
+    [
+     "—",
+     1.34,
+     1.34
+    ],
+    [
+     "to",
+     1.34,
+     2.04
+    ],
+    [
+     "rivals",
+     2.04,
+     2.58
+    ],
+    [
+     "who",
+     2.58,
+     2.84
+    ],
+    [
+     "kept",
+     2.84,
+     3.14
+    ],
+    [
+     "their",
+     3.14,
+     3.36
+    ],
+    [
+     "fees",
+     3.36,
+     3.74
+    ],
+    [
+     "for",
+     3.74,
+     4.0
+    ],
+    [
+     "the",
+     4.0,
+     4.18
+    ],
+    [
+     "last",
+     4.18,
+     4.5
+    ],
+    [
+     "screen.",
+     4.5,
+     5.04
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 d1 queue: line A walks across to line B",
+     "tech": "T12",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 2,
+   "heard": "And it lost customers to rivals who kept their fees for the last screen.",
+   "diff": []
+  },
+  {
+   "id": "A3.18",
+   "act": "A3",
+   "start": 656.75,
+   "end": 663.265,
+   "next": 663.865,
+   "text": "Think about that. The honest seller looked more expensive. The honest seller lost.",
+   "ru": "Подумайте об этом. Честный продавец выглядел дороже. Честный продавец проиграл.",
+   "note": "quieter, thoughtful",
+   "sound": "bed thins",
+   "words": [
+    [
+     "Think",
+     0.0,
+     0.22
+    ],
+    [
+     "about",
+     0.22,
+     0.48
+    ],
+    [
+     "that.",
+     0.48,
+     0.82
+    ],
+    [
+     "The",
+     1.62,
+     1.76
+    ],
+    [
+     "honest",
+     1.76,
+     2.16
+    ],
+    [
+     "seller",
+     2.16,
+     2.52
+    ],
+    [
+     "looked",
+     2.52,
+     2.84
+    ],
+    [
+     "more",
+     2.84,
+     3.16
+    ],
+    [
+     "expensive.",
+     3.16,
+     3.78
+    ],
+    [
+     "The",
+     4.7,
+     4.78
+    ],
+    [
+     "honest",
+     4.78,
+     5.16
+    ],
+    [
+     "seller",
+     5.16,
+     5.64
+    ],
+    [
+     "lost.",
+     5.64,
+     6.2
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "two code-drawn price tags: HONEST $40 vs '$30' (+fees hidden) — the crowd goes to $30",
+     "tech": "T4",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Think about that. The honest seller looked more expensive. The honest seller lost.",
+   "diff": []
+  },
+  {
+   "id": "A3.19",
+   "act": "A3",
+   "start": 663.865,
+   "end": 673.035,
+   "next": 673.535,
+   "text": "So this isn't one villain. It's a race. And in this race, whoever tells you the truth first finishes last.",
+   "ru": "Так что это не один злодей. Это гонка. И в этой гонке тот, кто первым говорит вам правду, приходит последним.",
+   "note": "warm and dry, a touch of mock-formality, like reading a charge sheet",
+   "sound": "race tension builds",
+   "words": [
+    [
+     "So",
+     0.0,
+     0.36
+    ],
+    [
+     "this",
+     0.92,
+     1.14
+    ],
+    [
+     "isn't",
+     1.14,
+     1.72
+    ],
+    [
+     "one",
+     1.72,
+     1.98
+    ],
+    [
+     "villain.",
+     1.98,
+     2.38
+    ],
+    [
+     "It's",
+     2.92,
+     3.14
+    ],
+    [
+     "a",
+     3.14,
+     3.36
+    ],
+    [
+     "race.",
+     3.36,
+     3.64
+    ],
+    [
+     "And",
+     4.26,
+     4.44
+    ],
+    [
+     "in",
+     4.44,
+     4.64
+    ],
+    [
+     "this",
+     4.64,
+     4.88
+    ],
+    [
+     "race,",
+     4.88,
+     5.52
+    ],
+    [
+     "whoever",
+     5.76,
+     6.0
+    ],
+    [
+     "tells",
+     6.0,
+     6.38
+    ],
+    [
+     "you",
+     6.38,
+     6.6
+    ],
+    [
+     "the",
+     6.6,
+     6.76
+    ],
+    [
+     "truth",
+     6.76,
+     7.06
+    ],
+    [
+     "first",
+     7.06,
+     7.62
+    ],
+    [
+     "finishes",
+     8.14,
+     8.4
+    ],
+    [
+     "last.",
+     8.4,
+     8.92
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_a3_race via Grok k2: two 1950s shop fronts; slow push-in on the empty honest shop (left) while the long queue at the right shop shuffles",
+     "tech": "slow push; overlay writes ALL-IN on the left sign, $30 on the right sign",
+     "source": "GROK-clip"
+    },
+    {
+     "picture": "hold on the empty left doorway; code-drawn tally under each shop: LEFT 0 · RIGHT a long count",
+     "tech": "T4 eased count",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "So, this isn't one villain, it's a race. And in this race, whoever tells you the truth first, finishes last.",
+   "diff": []
+  },
+  {
+   "id": "A3.20",
+   "act": "A3",
+   "start": 673.535,
+   "end": 678.855,
+   "next": 683.055,
+   "text": "So who stops a race that nobody can afford to quit?",
+   "ru": "Так кто остановит гонку, из которой никто не может себе позволить выйти?",
+   "note": "low, conspiratorial, leaving it hanging",
+   "sound": "a distant siren rises, cut → AD BREAK",
+   "words": [
+    [
+     "So",
+     0.0,
+     0.42
+    ],
+    [
+     "who",
+     1.24,
+     1.42
+    ],
+    [
+     "stops",
+     1.42,
+     1.82
+    ],
+    [
+     "a",
+     1.82,
+     2.08
+    ],
+    [
+     "race",
+     2.08,
+     2.42
+    ],
+    [
+     "that",
+     2.42,
+     3.12
+    ],
+    [
+     "nobody",
+     3.12,
+     3.58
+    ],
+    [
+     "can",
+     3.58,
+     3.88
+    ],
+    [
+     "afford",
+     3.88,
+     4.32
+    ],
+    [
+     "to",
+     4.32,
+     4.86
+    ],
+    [
+     "quit?",
+     4.86,
+     5.12
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "last frame of k2 (both shop fronts, ALL-IN and $30 signs), red light sweeps across the frame (Act 4 teaser)",
+     "tech": "T11 ink wipe to red",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "So, who stops a race that nobody can afford to quit?",
+   "diff": []
+  },
+  {
+   "id": "A4.1",
+   "act": "A4",
+   "start": 683.055,
+   "end": 686.94,
+   "next": 687.34,
+   "text": "Funny thing is, America has caught this trick before.",
+   "ru": "Забавно, что Америка уже ловила этот трюк.",
+   "note": "light, wry",
+   "sound": "Act 4 bed ub_clock_is_ticking, sirens in the music",
+   "words": [
+    [
+     "Funny",
+     0.0,
+     0.24
+    ],
+    [
+     "thing",
+     0.24,
+     0.44
+    ],
+    [
+     "is,",
+     0.44,
+     0.84
+    ],
+    [
+     "America",
+     1.34,
+     1.74
+    ],
+    [
+     "has",
+     1.74,
+     2.02
+    ],
+    [
+     "caught",
+     2.02,
+     2.3
+    ],
+    [
+     "this",
+     2.3,
+     2.54
+    ],
+    [
+     "trick",
+     2.54,
+     2.96
+    ],
+    [
+     "before.",
+     2.96,
+     3.54
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ACT 4 · THE COPS AND THE ESCAPE title",
+     "tech": "T5 + T11",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a4_police: 1950s patrol car, red and gold light (Grok clip of the still)",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "Funny thing is, America has caught this trick before.",
+   "diff": []
+  },
+  {
+   "id": "A4.2",
+   "act": "A4",
+   "start": 687.34,
+   "end": 698.665,
+   "next": 699.065,
+   "text": "In 1958, a law put a sticker on the window of every new car: the price, every option, the delivery charge — and the total.",
+   "ru": "В 1958 году закон наклеил стикер на окно каждой новой машины: цена, каждая опция, доставка — и итог.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "bed",
+   "words": [
+    [
+     "In",
+     0.0,
+     0.22
+    ],
+    [
+     "1958,",
+     0.22,
+     1.26
+    ],
+    [
+     "a",
+     1.8,
+     1.9
+    ],
+    [
+     "law",
+     1.9,
+     2.2
+    ],
+    [
+     "put",
+     2.2,
+     2.6
+    ],
+    [
+     "a",
+     2.6,
+     2.8
+    ],
+    [
+     "sticker",
+     2.8,
+     3.08
+    ],
+    [
+     "on",
+     3.08,
+     3.46
+    ],
+    [
+     "the",
+     3.46,
+     3.6
+    ],
+    [
+     "window",
+     3.6,
+     3.86
+    ],
+    [
+     "of",
+     3.86,
+     4.14
+    ],
+    [
+     "every",
+     4.14,
+     4.42
+    ],
+    [
+     "new",
+     4.42,
+     4.74
+    ],
+    [
+     "car:",
+     4.74,
+     5.06
+    ],
+    [
+     "the",
+     5.84,
+     5.98
+    ],
+    [
+     "price,",
+     5.98,
+     6.3
+    ],
+    [
+     "every",
+     7.04,
+     7.32
+    ],
+    [
+     "option,",
+     7.32,
+     7.68
+    ],
+    [
+     "the",
+     8.44,
+     8.54
+    ],
+    [
+     "delivery",
+     8.54,
+     8.9
+    ],
+    [
+     "charge",
+     8.9,
+     9.42
+    ],
+    [
+     "—",
+     9.42,
+     9.94
+    ],
+    [
+     "and",
+     9.94,
+     10.38
+    ],
+    [
+     "the",
+     10.38,
+     10.86
+    ],
+    [
+     "total.",
+     10.86,
+     11.22
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "archive car_showroom_1942",
+     "tech": "T12 push with blur",
+     "source": "archive"
+    },
+    {
+     "picture": "code-drawn window sticker fills line by line: PRICE · OPTIONS · DELIVERY · TOTAL",
+     "tech": "T1 + T9 on TOTAL",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "In 1958, a law put a sticker on the window of every new car, the price, every option, the delivery charge, and the total.",
+   "diff": []
+  },
+  {
+   "id": "A4.3",
+   "act": "A4",
+   "start": 699.065,
+   "end": 703.07,
+   "next": 703.57,
+   "text": "Cars got the total sixty-seven years before concert tickets did.",
+   "ru": "Машины получили итоговую цену на шестьдесят семь лет раньше, чем билеты на концерты.",
+   "note": "dry, a smile",
+   "sound": "wry beat",
+   "words": [
+    [
+     "Cars",
+     0.0,
+     0.46
+    ],
+    [
+     "got",
+     0.46,
+     0.74
+    ],
+    [
+     "the",
+     0.74,
+     0.92
+    ],
+    [
+     "total",
+     0.92,
+     1.32
+    ],
+    [
+     "sixty-seven",
+     1.32,
+     1.92
+    ],
+    [
+     "years",
+     1.92,
+     2.52
+    ],
+    [
+     "before",
+     2.52,
+     2.86
+    ],
+    [
+     "concert",
+     2.86,
+     3.26
+    ],
+    [
+     "tickets",
+     3.26,
+     3.6
+    ],
+    [
+     "did.",
+     3.6,
+     3.9
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "code-drawn timeline 1958 —— 67 YEARS —— 2025",
+     "tech": "T6 the line draws",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Cars got the total 67 years before concert tickets did.",
+   "diff": []
+  },
+  {
+   "id": "A4.4",
+   "act": "A4",
+   "start": 703.57,
+   "end": 709.575,
+   "next": 709.975,
+   "text": "Because in 2025, the cops finally showed up. On both sides of the ocean.",
+   "ru": "Потому что в 2025 году копы наконец появились. По обе стороны океана.",
+   "note": "a little lift, energetic",
+   "sound": "siren swell",
+   "words": [
+    [
+     "Because",
+     0.0,
+     0.34
+    ],
+    [
+     "in",
+     0.34,
+     0.56
+    ],
+    [
+     "2025,",
+     0.56,
+     1.6
+    ],
+    [
+     "the",
+     2.24,
+     2.28
+    ],
+    [
+     "cops",
+     2.28,
+     2.66
+    ],
+    [
+     "finally",
+     2.66,
+     3.18
+    ],
+    [
+     "showed",
+     3.18,
+     3.5
+    ],
+    [
+     "up.",
+     3.5,
+     4.04
+    ],
+    [
+     "On",
+     4.12,
+     4.56
+    ],
+    [
+     "both",
+     4.56,
+     4.84
+    ],
+    [
+     "sides",
+     4.84,
+     5.26
+    ],
+    [
+     "of",
+     5.26,
+     5.44
+    ],
+    [
+     "the",
+     5.44,
+     5.54
+    ],
+    [
+     "ocean.",
+     5.54,
+     5.86
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "night map, two flags/stamps flash: UK · USA (no real logos)",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Because in 2025, the cops finally showed up, on both sides of the ocean.",
+   "diff": []
+  },
+  {
+   "id": "A4.5",
+   "act": "A4",
+   "start": 709.975,
+   "end": 716.75,
+   "next": 717.15,
+   "text": "Britain first. Since April 2025, the price must include every fee you can't avoid.",
+   "ru": "Сначала Британия. С апреля 2025 года в цену должны входить все сборы, которых не избежать.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "stamp",
+   "words": [
+    [
+     "Britain",
+     0.0,
+     0.34
+    ],
+    [
+     "first.",
+     0.34,
+     0.96
+    ],
+    [
+     "Since",
+     1.78,
+     1.94
+    ],
+    [
+     "April",
+     1.94,
+     2.36
+    ],
+    [
+     "2025,",
+     2.36,
+     3.26
+    ],
+    [
+     "the",
+     4.04,
+     4.1
+    ],
+    [
+     "price",
+     4.1,
+     4.38
+    ],
+    [
+     "must",
+     4.38,
+     4.64
+    ],
+    [
+     "include",
+     4.64,
+     5.04
+    ],
+    [
+     "every",
+     5.04,
+     5.52
+    ],
+    [
+     "fee",
+     5.52,
+     5.86
+    ],
+    [
+     "you",
+     5.86,
+     6.08
+    ],
+    [
+     "can't",
+     6.08,
+     6.38
+    ],
+    [
+     "avoid.",
+     6.38,
+     6.66
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 l1 customs desk + the ticket travels to the UK stop on the route",
+     "tech": "T6 animated route",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "stamp UK · ALL UNAVOIDABLE FEES · APRIL 2025",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Britain First. Since April 2025, the price must include every fee you can't avoid.",
+   "diff": []
+  },
+  {
+   "id": "A4.6",
+   "act": "A4",
+   "start": 717.15,
+   "end": 730.74,
+   "next": 731.34,
+   "text": "A driving-school group hid a three-pound booking fee from over eighty thousand learner drivers. It paid a four point two million pound fine. Three pounds. Very expensive pounds.",
+   "ru": "Группа автошкол прятала трёхфунтовый сбор за бронирование от более чем восьмидесяти тысяч учеников. Она заплатила штраф четыре целых две десятых миллиона фунтов. Три фунта. Очень дорогие фунты.",
+   "note": "steady, then dry and amused on 'Three pounds. Very expensive pounds'",
+   "sound": "wry beat on 'very expensive pounds'",
+   "words": [
+    [
+     "A",
+     0.0,
+     0.16
+    ],
+    [
+     "driving-school",
+     0.16,
+     0.82
+    ],
+    [
+     "group",
+     0.82,
+     1.2
+    ],
+    [
+     "hid",
+     1.2,
+     1.56
+    ],
+    [
+     "a",
+     1.56,
+     1.8
+    ],
+    [
+     "three-pound",
+     1.8,
+     2.16
+    ],
+    [
+     "booking",
+     2.16,
+     2.62
+    ],
+    [
+     "fee",
+     2.62,
+     3.0
+    ],
+    [
+     "from",
+     3.0,
+     3.44
+    ],
+    [
+     "over",
+     3.44,
+     3.72
+    ],
+    [
+     "eighty",
+     3.72,
+     4.08
+    ],
+    [
+     "thousand",
+     4.08,
+     4.64
+    ],
+    [
+     "learner",
+     4.64,
+     5.0
+    ],
+    [
+     "drivers.",
+     5.0,
+     5.4
+    ],
+    [
+     "It",
+     6.0,
+     6.1
+    ],
+    [
+     "paid",
+     6.1,
+     6.52
+    ],
+    [
+     "a",
+     6.52,
+     6.76
+    ],
+    [
+     "four",
+     6.76,
+     7.12
+    ],
+    [
+     "point",
+     7.12,
+     7.12
+    ],
+    [
+     "two",
+     7.12,
+     7.74
+    ],
+    [
+     "million",
+     7.74,
+     8.3
+    ],
+    [
+     "pound",
+     8.3,
+     8.3
+    ],
+    [
+     "fine.",
+     8.3,
+     9.0
+    ],
+    [
+     "Three",
+     9.94,
+     10.72
+    ],
+    [
+     "pounds.",
+     9.94,
+     10.72
+    ],
+    [
+     "Very",
+     11.74,
+     12.26
+    ],
+    [
+     "expensive",
+     12.26,
+     12.82
+    ],
+    [
+     "pounds.",
+     12.82,
+     13.34
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 l8 small British car with the blank L-plate area",
+     "tech": "T7 parallax",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "code-drawn '£3' tag × 80,000 tiles",
+     "tech": "T4",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 l9 stat £4.2m fine · CMA",
+     "tech": "T2 + hit",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "A driving school group hid a £3 booking fee from over 80,000 learner drivers. It paid a £4.2 million fine. £3. Very expensive pounds.",
+   "diff": []
+  },
+  {
+   "id": "A4.7",
+   "act": "A4",
+   "start": 731.34,
+   "end": 736.26,
+   "next": 736.66,
+   "text": "And in June 2026, StubHub's British arm was fined too.",
+   "ru": "А в июне 2026 года оштрафовали и британское подразделение StubHub.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "stamp",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.22
+    ],
+    [
+     "in",
+     0.22,
+     0.42
+    ],
+    [
+     "June",
+     0.42,
+     0.76
+    ],
+    [
+     "2026,",
+     0.76,
+     1.94
+    ],
+    [
+     "StubHub's",
+     2.5,
+     2.96
+    ],
+    [
+     "British",
+     2.96,
+     3.32
+    ],
+    [
+     "arm",
+     3.32,
+     3.7
+    ],
+    [
+     "was",
+     3.7,
+     4.06
+    ],
+    [
+     "fined",
+     4.06,
+     4.38
+    ],
+    [
+     "too.",
+     4.38,
+     4.84
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "route stop UK: second stamp STUBHUB UK · FINED · JUNE 2026",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "And in June 2026, StubHub's British arm was fined too.",
+   "diff": []
+  },
+  {
+   "id": "A4.8",
+   "act": "A4",
+   "start": 736.66,
+   "end": 747.315,
+   "next": 747.715,
+   "text": "Then America. Since May 2025, ticket sellers and short stays — from hotels to vacation rentals — must show the total price upfront.",
+   "ru": "Затем Америка. С мая 2025 года продавцы билетов и краткосрочного жилья — от отелей до съёмных квартир — должны сразу показывать полную цену.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "stamp",
+   "words": [
+    [
+     "Then",
+     0.0,
+     0.34
+    ],
+    [
+     "America.",
+     0.34,
+     0.98
+    ],
+    [
+     "Since",
+     1.82,
+     2.02
+    ],
+    [
+     "May",
+     2.02,
+     2.32
+    ],
+    [
+     "2025,",
+     2.32,
+     3.24
+    ],
+    [
+     "ticket",
+     3.92,
+     4.08
+    ],
+    [
+     "sellers",
+     4.08,
+     4.42
+    ],
+    [
+     "and",
+     4.42,
+     4.74
+    ],
+    [
+     "short",
+     4.74,
+     4.96
+    ],
+    [
+     "stays",
+     4.96,
+     5.3
+    ],
+    [
+     "—",
+     5.3,
+     5.3
+    ],
+    [
+     "from",
+     5.3,
+     5.9
+    ],
+    [
+     "hotels",
+     5.9,
+     6.44
+    ],
+    [
+     "to",
+     6.44,
+     6.82
+    ],
+    [
+     "vacation",
+     6.82,
+     7.26
+    ],
+    [
+     "rentals",
+     7.26,
+     7.76
+    ],
+    [
+     "—",
+     7.76,
+     7.76
+    ],
+    [
+     "must",
+     7.76,
+     8.46
+    ],
+    [
+     "show",
+     8.46,
+     8.82
+    ],
+    [
+     "the",
+     8.82,
+     9.02
+    ],
+    [
+     "total",
+     9.02,
+     9.32
+    ],
+    [
+     "price",
+     9.32,
+     9.74
+    ],
+    [
+     "upfront.",
+     9.74,
+     10.655
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the ticket flies over the ocean to the USA stop",
+     "tech": "T6 + T12",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 l2/l12 stamp USA · TOTAL UPFRONT · MAY 2025",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Then America. Since May 2025, ticket sellers and short stays from hotels to vacation rentals must show the total price up front.",
+   "diff": []
+  },
+  {
+   "id": "A4.9",
+   "act": "A4",
+   "start": 747.715,
+   "end": 755.485,
+   "next": 755.885,
+   "text": "And in April 2026, StubHub agreed to pay ten million dollars back to buyers over fees it showed too late.",
+   "ru": "А в апреле 2026 года StubHub согласился вернуть покупателям десять миллионов долларов за сборы, которые показывал слишком поздно.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "hit",
+   "words": [
+    [
+     "And",
+     0.0,
+     0.2
+    ],
+    [
+     "in",
+     0.2,
+     0.38
+    ],
+    [
+     "April",
+     0.38,
+     0.8
+    ],
+    [
+     "2026,",
+     0.8,
+     1.94
+    ],
+    [
+     "StubHub",
+     2.48,
+     2.86
+    ],
+    [
+     "agreed",
+     2.86,
+     3.24
+    ],
+    [
+     "to",
+     3.24,
+     3.5
+    ],
+    [
+     "pay",
+     3.5,
+     3.68
+    ],
+    [
+     "ten",
+     3.68,
+     4.1
+    ],
+    [
+     "million",
+     4.1,
+     4.54
+    ],
+    [
+     "dollars",
+     4.54,
+     4.54
+    ],
+    [
+     "back",
+     4.54,
+     5.14
+    ],
+    [
+     "to",
+     5.14,
+     5.38
+    ],
+    [
+     "buyers",
+     5.38,
+     5.72
+    ],
+    [
+     "over",
+     5.72,
+     6.06
+    ],
+    [
+     "fees",
+     6.06,
+     6.5
+    ],
+    [
+     "it",
+     6.5,
+     6.74
+    ],
+    [
+     "showed",
+     6.74,
+     7.04
+    ],
+    [
+     "too",
+     7.04,
+     7.36
+    ],
+    [
+     "late.",
+     7.36,
+     7.62
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 l3 stat $10m · FTC · April 2026",
+     "tech": "T2 + T4",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 l3b queue push, money flowing back to line B",
+     "tech": "T7",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "And in April 2026, StubHub agreed to pay $10 million back to buyers over fees it showed too late.",
+   "diff": []
+  },
+  {
+   "id": "A4.10",
+   "act": "A4",
+   "start": 755.885,
+   "end": 760.32,
+   "next": 760.92,
+   "text": "The same company that ran the rehearsal in 2015.",
+   "ru": "Та самая компания, которая устроила репетицию в 2015-м.",
+   "note": "pointed, quiet",
+   "sound": "Act 2 motif, short",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.18
+    ],
+    [
+     "same",
+     0.18,
+     0.62
+    ],
+    [
+     "company",
+     0.62,
+     1.18
+    ],
+    [
+     "that",
+     1.18,
+     1.68
+    ],
+    [
+     "ran",
+     1.68,
+     1.96
+    ],
+    [
+     "the",
+     1.96,
+     2.18
+    ],
+    [
+     "rehearsal",
+     2.18,
+     2.68
+    ],
+    [
+     "in",
+     2.68,
+     3.2
+    ],
+    [
+     "2015.",
+     3.2,
+     3.9
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "flashback: Act 2 split queue (a5) in lab green, 'AUG 2015' circled",
+     "tech": "T11 wipe + T1",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "The same company that ran the rehearsal in 2015.",
+   "diff": []
+  },
+  {
+   "id": "A4.11",
+   "act": "A4",
+   "start": 760.92,
+   "end": 773.01,
+   "next": 773.51,
+   "text": "Notice what the rules don't do. They ban no fee at all. Fees pay for real things — card payments, staff, the venue. The rules only want the total, upfront.",
+   "ru": "Обратите внимание, чего правила не делают. Они не запрещают ни одного сбора. Сборы оплачивают реальные вещи — платежи по картам, персонал, площадку. Правила требуют только полную цену, сразу.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "bed",
+   "words": [
+    [
+     "Notice",
+     0.0,
+     0.42
+    ],
+    [
+     "what",
+     0.42,
+     0.72
+    ],
+    [
+     "the",
+     0.72,
+     0.92
+    ],
+    [
+     "rules",
+     0.92,
+     1.2
+    ],
+    [
+     "don't",
+     1.2,
+     1.62
+    ],
+    [
+     "do.",
+     1.62,
+     1.92
+    ],
+    [
+     "They",
+     2.5,
+     2.58
+    ],
+    [
+     "ban",
+     2.58,
+     2.92
+    ],
+    [
+     "no",
+     2.92,
+     3.22
+    ],
+    [
+     "fee",
+     3.22,
+     3.5
+    ],
+    [
+     "at",
+     3.5,
+     3.68
+    ],
+    [
+     "all.",
+     3.68,
+     4.06
+    ],
+    [
+     "Fees",
+     4.56,
+     4.78
+    ],
+    [
+     "pay",
+     4.78,
+     5.04
+    ],
+    [
+     "for",
+     5.04,
+     5.26
+    ],
+    [
+     "real",
+     5.26,
+     5.46
+    ],
+    [
+     "things",
+     5.46,
+     5.92
+    ],
+    [
+     "—",
+     5.92,
+     6.44
+    ],
+    [
+     "card",
+     6.44,
+     6.62
+    ],
+    [
+     "payments,",
+     6.62,
+     6.98
+    ],
+    [
+     "staff,",
+     7.44,
+     7.76
+    ],
+    [
+     "the",
+     8.28,
+     8.34
+    ],
+    [
+     "venue.",
+     8.34,
+     8.68
+    ],
+    [
+     "The",
+     9.3,
+     9.44
+    ],
+    [
+     "rules",
+     9.44,
+     9.8
+    ],
+    [
+     "only",
+     9.8,
+     10.24
+    ],
+    [
+     "want",
+     10.24,
+     10.5
+    ],
+    [
+     "the",
+     10.5,
+     10.68
+    ],
+    [
+     "total,",
+     10.68,
+     11.06
+    ],
+    [
+     "upfront.",
+     11.06,
+     12.09
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "fee lines return: SERVICE · FACILITY · PROCESSING, none crossed out",
+     "tech": "T9",
+     "source": "pipeline"
+    },
+    {
+     "picture": "each fee gets a label: CARD PAYMENTS · STAFF · VENUE",
+     "tech": "T1",
+     "source": "pipeline"
+    },
+    {
+     "picture": "all of it folds into one line: TOTAL, UPFRONT",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Notice what the rules don't do. They ban no fee at all. Fees pay for real things. Card payments, staff, the venue. The rules only want the total, up front.",
+   "diff": []
+  },
+  {
+   "id": "A4.12",
+   "act": "A4",
+   "start": 773.51,
+   "end": 781.86,
+   "next": 782.46,
+   "text": "But no law sits next to you at 8:19 p.m. So let's rewind Larry's Tuesday — and do it right.",
+   "ru": "Но никакой закон не сидит рядом с вами в 20:19. Так что давайте перемотаем вторник Ларри — и сделаем всё правильно.",
+   "note": "warm, encouraging, a lift on 'and do it right'",
+   "sound": "REWIND sound",
+   "words": [
+    [
+     "But",
+     0.0,
+     0.18
+    ],
+    [
+     "no",
+     0.18,
+     0.6
+    ],
+    [
+     "law",
+     0.6,
+     1.0
+    ],
+    [
+     "sits",
+     1.0,
+     1.36
+    ],
+    [
+     "next",
+     1.36,
+     1.7
+    ],
+    [
+     "to",
+     1.7,
+     1.9
+    ],
+    [
+     "you",
+     1.9,
+     2.1
+    ],
+    [
+     "at",
+     2.1,
+     2.42
+    ],
+    [
+     "8:19",
+     2.42,
+     2.7
+    ],
+    [
+     "p.m.",
+     2.7,
+     4.7
+    ],
+    [
+     "So",
+     4.7,
+     4.92
+    ],
+    [
+     "let's",
+     4.92,
+     5.28
+    ],
+    [
+     "rewind",
+     5.28,
+     5.74
+    ],
+    [
+     "Larry's",
+     5.74,
+     6.24
+    ],
+    [
+     "Tuesday",
+     6.24,
+     6.6
+    ],
+    [
+     "—",
+     6.6,
+     6.6
+    ],
+    [
+     "and",
+     6.6,
+     7.46
+    ],
+    [
+     "do",
+     7.46,
+     7.72
+    ],
+    [
+     "it",
+     7.72,
+     7.92
+    ],
+    [
+     "right.",
+     7.92,
+     8.18
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "o4 Larry at the laptop, corner clock 8:19",
+     "tech": "T3",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "REWIND: the whole Act 1 runs backwards fast, clock spins to 8:12",
+     "tech": "T12 motion blur + scan lines",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "But no law sits next to you at 8.19pm, so let's rewind Larry's Tuesday and do it right.",
+   "diff": []
+  },
+  {
+   "id": "A4.13",
+   "act": "A4",
+   "start": 782.46,
+   "end": 795.53,
+   "next": 795.93,
+   "text": "8:12. Check one: look for the all-in switch. Some ticket sites can show prices with fees included. Larry turns it on — before he falls for a seat, not after.",
+   "ru": "20:12. Проверка первая: ищите переключатель «всё включено». Некоторые сайты билетов умеют показывать цены сразу со сборами. Ларри включает его — до того, как влюбится в место, а не после.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "switch clunk",
+   "words": [
+    [
+     "8:12.",
+     0.0,
+     0.7
+    ],
+    [
+     "Check",
+     1.28,
+     1.44
+    ],
+    [
+     "one:",
+     1.44,
+     1.76
+    ],
+    [
+     "look",
+     2.24,
+     2.38
+    ],
+    [
+     "for",
+     2.38,
+     2.6
+    ],
+    [
+     "the",
+     2.6,
+     2.76
+    ],
+    [
+     "all-in",
+     2.76,
+     3.26
+    ],
+    [
+     "switch.",
+     3.26,
+     3.66
+    ],
+    [
+     "Some",
+     4.54,
+     4.72
+    ],
+    [
+     "ticket",
+     4.72,
+     5.0
+    ],
+    [
+     "sites",
+     5.0,
+     5.38
+    ],
+    [
+     "can",
+     5.38,
+     5.62
+    ],
+    [
+     "show",
+     5.62,
+     5.86
+    ],
+    [
+     "prices",
+     5.86,
+     6.32
+    ],
+    [
+     "with",
+     6.32,
+     6.6
+    ],
+    [
+     "fees",
+     6.6,
+     6.98
+    ],
+    [
+     "included.",
+     6.98,
+     7.54
+    ],
+    [
+     "Larry",
+     8.6,
+     8.84
+    ],
+    [
+     "turns",
+     8.84,
+     9.22
+    ],
+    [
+     "it",
+     9.22,
+     9.38
+    ],
+    [
+     "on",
+     9.38,
+     9.68
+    ],
+    [
+     "—",
+     9.68,
+     10.24
+    ],
+    [
+     "before",
+     10.24,
+     10.6
+    ],
+    [
+     "he",
+     10.6,
+     10.86
+    ],
+    [
+     "falls",
+     10.86,
+     11.2
+    ],
+    [
+     "for",
+     11.2,
+     11.4
+    ],
+    [
+     "a",
+     11.4,
+     11.58
+    ],
+    [
+     "seat,",
+     11.58,
+     11.8
+    ],
+    [
+     "not",
+     12.3,
+     12.56
+    ],
+    [
+     "after.",
+     12.56,
+     12.92
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "CHECK 1 card",
+     "tech": "T5",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 x1/x2 toggle switch flips to ALL-IN (Grok clip x1)",
+     "tech": "synced clunk",
+     "source": "GROK-clip"
+    },
+    {
+     "picture": "code-drawn browser: a 'show prices with fees' switch turns on",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "8-12. Check one. Look for the all-in switch. Some ticket sites can show prices with fees included. Larry turns it on. Before he falls for a seat. Not after.",
+   "diff": []
+  },
+  {
+   "id": "A4.14",
+   "act": "A4",
+   "start": 795.93,
+   "end": 799.36,
+   "next": 799.96,
+   "text": "Suddenly, \"thirty\" says \"forty-eight\".",
+   "ru": "И вдруг «тридцать» превращается в «сорок восемь».",
+   "note": "a small surprise",
+   "sound": "a soft hit",
+   "words": [
+    [
+     "Suddenly,",
+     0.0,
+     0.52
+    ],
+    [
+     "\"thirty\"",
+     1.16,
+     1.48
+    ],
+    [
+     "says",
+     1.48,
+     2.08
+    ],
+    [
+     "\"forty-eight\".",
+     2.08,
+     2.98
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "$30 morphs to $48 on tab 2",
+     "tech": "T4 eased number",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Suddenly, 30 says 48.",
+   "diff": []
+  },
+  {
+   "id": "A4.15",
+   "act": "A4",
+   "start": 799.96,
+   "end": 812.84,
+   "next": 813.24,
+   "text": "8:14. Check two: go to the last screen before you decide. The real price lives one click before Pay. No little clock can rush a man who already knows the total.",
+   "ru": "20:14. Проверка вторая: дойдите до последнего экрана до того, как решите. Настоящая цена живёт за один клик до «Оплатить». Никакие маленькие часики не поторопят человека, который уже знает итог.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "the tick, then it stops",
+   "words": [
+    [
+     "8:14.",
+     0.0,
+     0.72
+    ],
+    [
+     "Check",
+     1.5,
+     1.64
+    ],
+    [
+     "two:",
+     1.64,
+     2.0
+    ],
+    [
+     "go",
+     2.62,
+     2.78
+    ],
+    [
+     "to",
+     2.78,
+     2.94
+    ],
+    [
+     "the",
+     2.94,
+     3.08
+    ],
+    [
+     "last",
+     3.08,
+     3.32
+    ],
+    [
+     "screen",
+     3.32,
+     3.72
+    ],
+    [
+     "before",
+     3.72,
+     4.04
+    ],
+    [
+     "you",
+     4.04,
+     4.24
+    ],
+    [
+     "decide.",
+     4.24,
+     4.64
+    ],
+    [
+     "The",
+     5.24,
+     5.4
+    ],
+    [
+     "real",
+     5.4,
+     5.6
+    ],
+    [
+     "price",
+     5.6,
+     5.98
+    ],
+    [
+     "lives",
+     5.98,
+     6.4
+    ],
+    [
+     "one",
+     6.4,
+     6.9
+    ],
+    [
+     "click",
+     6.9,
+     7.24
+    ],
+    [
+     "before",
+     7.24,
+     7.7
+    ],
+    [
+     "Pay.",
+     7.7,
+     8.08
+    ],
+    [
+     "No",
+     8.86,
+     9.16
+    ],
+    [
+     "little",
+     9.16,
+     9.42
+    ],
+    [
+     "clock",
+     9.42,
+     9.84
+    ],
+    [
+     "can",
+     9.84,
+     10.32
+    ],
+    [
+     "rush",
+     10.32,
+     10.56
+    ],
+    [
+     "a",
+     10.56,
+     10.74
+    ],
+    [
+     "man",
+     10.74,
+     11.04
+    ],
+    [
+     "who",
+     11.04,
+     11.38
+    ],
+    [
+     "already",
+     11.38,
+     11.82
+    ],
+    [
+     "knows",
+     11.82,
+     12.2
+    ],
+    [
+     "the",
+     12.2,
+     12.44
+    ],
+    [
+     "total.",
+     12.44,
+     12.74
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "CHECK 2 card",
+     "tech": "T5",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 m1b laptop, LAST SCREEN written by hand",
+     "tech": "T1",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "the hold timer appears, Larry ignores it; it fades",
+     "tech": "T3",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "8.14. Check 2. Go to the last screen before you decide. The real price lives one click before pay. No little clock can rush a man who already knows the total.",
+   "diff": []
+  },
+  {
+   "id": "A4.16",
+   "act": "A4",
+   "start": 813.24,
+   "end": 822.755,
+   "next": 823.155,
+   "text": "8:15. Check three: compare totals, not headlines. A forty-dollar ticket with no fees beats a thirty-dollar ticket with eighteen.",
+   "ru": "20:15. Проверка третья: сравнивайте итоги, а не заголовки. Билет за сорок без сборов лучше билета за тридцать плюс восемнадцать.",
+   "note": "firm and steady, then warmer and lighter as the story resolves",
+   "sound": "bed",
+   "words": [
+    [
+     "8:15.",
+     0.0,
+     0.62
+    ],
+    [
+     "Check",
+     1.22,
+     1.36
+    ],
+    [
+     "three:",
+     1.36,
+     1.7
+    ],
+    [
+     "compare",
+     2.34,
+     2.66
+    ],
+    [
+     "totals,",
+     2.66,
+     3.22
+    ],
+    [
+     "not",
+     3.58,
+     3.74
+    ],
+    [
+     "headlines.",
+     3.74,
+     4.22
+    ],
+    [
+     "A",
+     5.0,
+     5.1
+    ],
+    [
+     "forty-dollar",
+     5.1,
+     5.58
+    ],
+    [
+     "ticket",
+     5.58,
+     6.0
+    ],
+    [
+     "with",
+     6.0,
+     6.28
+    ],
+    [
+     "no",
+     6.28,
+     6.52
+    ],
+    [
+     "fees",
+     6.52,
+     6.94
+    ],
+    [
+     "beats",
+     6.94,
+     7.54
+    ],
+    [
+     "a",
+     7.54,
+     7.72
+    ],
+    [
+     "thirty-dollar",
+     7.72,
+     8.18
+    ],
+    [
+     "ticket",
+     8.18,
+     8.64
+    ],
+    [
+     "with",
+     8.64,
+     8.98
+    ],
+    [
+     "eighteen.",
+     8.98,
+     9.32
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "CHECK 3 card",
+     "tech": "T5",
+     "source": "pipeline"
+    },
+    {
+     "picture": "Ep.4 x4 chart: $40 no fees vs $30 + $18 = $48",
+     "tech": "T4 eased chart build",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "815. Check 3. Compare totals, not headlines. A $40 ticket with no fees beats a $30 ticket with $18.",
+   "diff": []
+  },
+  {
+   "id": "A4.17",
+   "act": "A4",
+   "start": 823.155,
+   "end": 836.025,
+   "next": 836.725,
+   "text": "Larry reopens the first tab. Forty dollars. Done. Three minutes, and ten dollars still in his pocket on Friday. This time, Larry really is a genius.",
+   "ru": "Ларри снова открывает первую вкладку. Сорок долларов. Готово. Три минуты — и в пятницу у него в кармане всё ещё десять долларов. На этот раз Ларри действительно гений.",
+   "note": "warm, a real smile on 'This time, Larry really is a genius'",
+   "sound": "warm major chord, the pizzicato from Act 1 returns resolved",
+   "words": [
+    [
+     "Larry",
+     0.0,
+     0.46
+    ],
+    [
+     "reopens",
+     0.46,
+     1.24
+    ],
+    [
+     "the",
+     1.24,
+     1.54
+    ],
+    [
+     "first",
+     1.54,
+     1.94
+    ],
+    [
+     "tab.",
+     1.94,
+     2.44
+    ],
+    [
+     "Forty",
+     2.98,
+     3.2
+    ],
+    [
+     "dollars.",
+     3.2,
+     3.54
+    ],
+    [
+     "Done.",
+     4.18,
+     4.34
+    ],
+    [
+     "Three",
+     5.2,
+     5.32
+    ],
+    [
+     "minutes,",
+     5.32,
+     5.62
+    ],
+    [
+     "and",
+     5.62,
+     6.06
+    ],
+    [
+     "ten",
+     6.06,
+     6.3
+    ],
+    [
+     "dollars",
+     6.3,
+     6.66
+    ],
+    [
+     "still",
+     6.66,
+     7.02
+    ],
+    [
+     "in",
+     7.02,
+     7.16
+    ],
+    [
+     "his",
+     7.16,
+     7.36
+    ],
+    [
+     "pocket",
+     7.36,
+     7.62
+    ],
+    [
+     "on",
+     7.62,
+     7.88
+    ],
+    [
+     "Friday.",
+     7.88,
+     8.3
+    ],
+    [
+     "This",
+     9.3,
+     9.48
+    ],
+    [
+     "time,",
+     9.48,
+     9.88
+    ],
+    [
+     "Larry",
+     10.46,
+     10.72
+    ],
+    [
+     "really",
+     10.72,
+     11.22
+    ],
+    [
+     "is",
+     11.22,
+     11.74
+    ],
+    [
+     "a",
+     11.74,
+     12.2
+    ],
+    [
+     "genius.",
+     12.2,
+     12.5
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "tab 1 reopens: $40 ALL-IN, Pay pressed; corner clock 8:15",
+     "tech": "T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ep04v2_a1_wallet: $10 left, calendar TUE → FRI",
+     "tech": "T4",
+     "source": "GPT-still"
+    },
+    {
+     "picture": "o4 Larry, the hand-drawn crown again — now for real",
+     "tech": "T1",
+     "source": "GPT-still"
+    }
+   ],
+   "takes": 1,
+   "heard": "Larry reopens the first tab. Forty dollars. Done. Three minutes and ten dollars still in his pocket on Friday. This time, Larry really is a genius.",
+   "diff": []
+  },
+  {
+   "id": "A4.18",
+   "act": "A4",
+   "start": 836.725,
+   "end": 842.405,
+   "next": 843.205,
+   "text": "Saturday night. Larry is in his seat. The band is worth every cent.",
+   "ru": "Субботний вечер. Ларри на своём месте. Группа стоит каждого цента.",
+   "note": "warm and glowing",
+   "sound": "concert swell (Uppbeat, no vocals)",
+   "words": [
+    [
+     "Saturday",
+     0.0,
+     0.42
+    ],
+    [
+     "night.",
+     0.42,
+     0.86
+    ],
+    [
+     "Larry",
+     1.38,
+     1.78
+    ],
+    [
+     "is",
+     1.78,
+     2.06
+    ],
+    [
+     "in",
+     2.06,
+     2.2
+    ],
+    [
+     "his",
+     2.2,
+     2.36
+    ],
+    [
+     "seat.",
+     2.36,
+     2.7
+    ],
+    [
+     "The",
+     3.3,
+     3.38
+    ],
+    [
+     "band",
+     3.38,
+     3.8
+    ],
+    [
+     "is",
+     3.8,
+     4.34
+    ],
+    [
+     "worth",
+     4.34,
+     4.58
+    ],
+    [
+     "every",
+     4.58,
+     5.08
+    ],
+    [
+     "cent.",
+     5.08,
+     5.5
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "ep04v2_a4_seat: Larry in his seat, warm lights, smiling (Grok clip of the still)",
+     "tech": "slow push",
+     "source": "GROK-clip"
+    },
+    {
+     "picture": "Ep.4 z0 Grok clip: Larry happy in the crowd",
+     "tech": "T7",
+     "source": "GROK-clip"
+    }
+   ],
+   "takes": 1,
+   "heard": "Saturday night. Larry is in his seat. The band is worth every cent.",
+   "diff": []
+  },
+  {
+   "id": "A4.19",
+   "act": "A4",
+   "start": 843.205,
+   "end": 858.555,
+   "next": 859.955,
+   "text": "So — why did Larry press Pay that first Tuesday? Because the first number had already done its job. By the last screen, the fee didn't arrive at a price. It arrived at a decision that was already made.",
+   "ru": "Так почему же Ларри нажал «Оплатить» в тот первый вторник? Потому что первое число уже сделало своё дело. К последнему экрану сбор пришёл не к цене. Он пришёл к решению, которое уже было принято.",
+   "note": "slow, reflective, the answer to the whole case",
+   "sound": "bed low, music drops out before 'already made'",
+   "words": [
+    [
+     "So",
+     0.0,
+     0.36
+    ],
+    [
+     "—",
+     0.36,
+     1.1
+    ],
+    [
+     "why",
+     1.1,
+     1.46
+    ],
+    [
+     "did",
+     1.46,
+     1.72
+    ],
+    [
+     "Larry",
+     1.72,
+     2.08
+    ],
+    [
+     "press",
+     2.08,
+     2.44
+    ],
+    [
+     "Pay",
+     2.44,
+     2.86
+    ],
+    [
+     "that",
+     2.86,
+     3.18
+    ],
+    [
+     "first",
+     3.18,
+     3.56
+    ],
+    [
+     "Tuesday?",
+     3.56,
+     4.02
+    ],
+    [
+     "Because",
+     5.0,
+     5.22
+    ],
+    [
+     "the",
+     5.22,
+     5.42
+    ],
+    [
+     "first",
+     5.42,
+     5.68
+    ],
+    [
+     "number",
+     5.68,
+     6.06
+    ],
+    [
+     "had",
+     6.06,
+     6.46
+    ],
+    [
+     "already",
+     6.46,
+     6.9
+    ],
+    [
+     "done",
+     6.9,
+     7.16
+    ],
+    [
+     "its",
+     7.16,
+     7.34
+    ],
+    [
+     "job.",
+     7.34,
+     7.68
+    ],
+    [
+     "By",
+     8.34,
+     8.46
+    ],
+    [
+     "the",
+     8.46,
+     8.64
+    ],
+    [
+     "last",
+     8.64,
+     8.84
+    ],
+    [
+     "screen,",
+     8.84,
+     9.26
+    ],
+    [
+     "the",
+     9.76,
+     9.84
+    ],
+    [
+     "fee",
+     9.84,
+     10.08
+    ],
+    [
+     "didn't",
+     10.08,
+     10.48
+    ],
+    [
+     "arrive",
+     10.48,
+     10.76
+    ],
+    [
+     "at",
+     10.76,
+     10.98
+    ],
+    [
+     "a",
+     10.98,
+     11.16
+    ],
+    [
+     "price.",
+     11.16,
+     11.46
+    ],
+    [
+     "It",
+     12.24,
+     12.36
+    ],
+    [
+     "arrived",
+     12.36,
+     12.84
+    ],
+    [
+     "at",
+     12.84,
+     13.1
+    ],
+    [
+     "a",
+     13.1,
+     13.24
+    ],
+    [
+     "decision",
+     13.24,
+     13.62
+    ],
+    [
+     "that",
+     13.62,
+     14.14
+    ],
+    [
+     "was",
+     14.14,
+     14.3
+    ],
+    [
+     "already",
+     14.3,
+     14.84
+    ],
+    [
+     "made.",
+     14.84,
+     15.24
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "the four dials again, all open",
+     "tech": "T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "$30 on the first screen, glowing",
+     "tech": "T8",
+     "source": "pipeline"
+    },
+    {
+     "picture": "the fee arrives at a stamped card DECISION: MADE",
+     "tech": "T2 stamp",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "So, why did Larry Press pay that first Tuesday? Because the first number had already done its job. By the last screen, the fee didn't arrive at a price. It arrived at a decision that was already made.",
+   "diff": []
+  },
+  {
+   "id": "A4.20",
+   "act": "A4",
+   "start": 859.955,
+   "end": 861.405,
+   "next": 862.405,
+   "text": "Case closed.",
+   "ru": "Дело закрыто.",
+   "note": "firm, final, measured",
+   "sound": "stamp + brass sting",
+   "words": [
+    [
+     "Case",
+     0.0,
+     0.32
+    ],
+    [
+     "closed.",
+     0.32,
+     1.12
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 z1 endscreen: CASE CLOSED stamp",
+     "tech": "T2 spring stamp + synced hit",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Case closed.",
+   "diff": []
+  },
+  {
+   "id": "A4.21",
+   "act": "A4",
+   "start": 862.405,
+   "end": 871.585,
+   "next": 872.185,
+   "text": "The verdict. Guilty: the fee at the end — and its cousin, the resort fee. Accomplice: the first number on the screen.",
+   "ru": "Приговор. Виновен: сбор в конце — и его кузен, курортный сбор. Соучастник: первое число на экране.",
+   "note": "measured, like a judge reading a verdict",
+   "sound": "bed",
+   "words": [
+    [
+     "The",
+     0.0,
+     0.22
+    ],
+    [
+     "verdict.",
+     0.22,
+     0.66
+    ],
+    [
+     "Guilty:",
+     1.44,
+     1.9
+    ],
+    [
+     "the",
+     2.52,
+     2.62
+    ],
+    [
+     "fee",
+     2.62,
+     2.78
+    ],
+    [
+     "at",
+     2.78,
+     2.92
+    ],
+    [
+     "the",
+     2.92,
+     3.06
+    ],
+    [
+     "end",
+     3.06,
+     3.38
+    ],
+    [
+     "—",
+     3.38,
+     3.84
+    ],
+    [
+     "and",
+     3.84,
+     3.98
+    ],
+    [
+     "its",
+     3.98,
+     4.12
+    ],
+    [
+     "cousin,",
+     4.12,
+     4.48
+    ],
+    [
+     "the",
+     4.86,
+     4.92
+    ],
+    [
+     "resort",
+     4.92,
+     5.18
+    ],
+    [
+     "fee.",
+     5.18,
+     5.52
+    ],
+    [
+     "Accomplice:",
+     6.2,
+     6.82
+    ],
+    [
+     "the",
+     7.34,
+     7.46
+    ],
+    [
+     "first",
+     7.46,
+     7.78
+    ],
+    [
+     "number",
+     7.78,
+     8.16
+    ],
+    [
+     "on",
+     8.16,
+     8.6
+    ],
+    [
+     "the",
+     8.6,
+     8.72
+    ],
+    [
+     "screen.",
+     8.72,
+     9.04
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "verdict typed: GUILTY · THE FEE AT THE END",
+     "tech": "T1 + T8",
+     "source": "pipeline"
+    },
+    {
+     "picture": "GUILTY · ITS COUSIN, THE RESORT FEE (m2 mugshot thumbnail)",
+     "tech": "T2",
+     "source": "pipeline"
+    },
+    {
+     "picture": "ACCOMPLICE · THE FIRST NUMBER ($30 thumbnail)",
+     "tech": "T2",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "The verdict. Guilty. The fee at the end, and its cousin, the resort fee. Accomplice. The first number on the screen.",
+   "diff": []
+  },
+  {
+   "id": "A4.22",
+   "act": "A4",
+   "start": 872.185,
+   "end": 886.665,
+   "next": 887.165,
+   "text": "Next case: the screen that asks how much you'd like to tip — before you've even had your coffee. Seventy-two percent of Americans say tipping is now expected in more places than five years ago. We'll find out who decided that.",
+   "ru": "Следующее дело: экран, который спрашивает, сколько вы хотите оставить на чай, — ещё до того, как вы выпили кофе. Семьдесят два процента американцев говорят, что чаевые теперь ждут в большем числе мест, чем пять лет назад. Мы выясним, кто это решил.",
+   "note": "intriguing, a little playful",
+   "sound": "Act 1 tick motif returns, teasing",
+   "words": [
+    [
+     "Next",
+     0.0,
+     0.38
+    ],
+    [
+     "case:",
+     0.38,
+     0.8
+    ],
+    [
+     "the",
+     1.64,
+     1.64
+    ],
+    [
+     "screen",
+     1.64,
+     2.08
+    ],
+    [
+     "that",
+     2.08,
+     2.32
+    ],
+    [
+     "asks",
+     2.32,
+     2.7
+    ],
+    [
+     "how",
+     2.7,
+     3.0
+    ],
+    [
+     "much",
+     3.0,
+     3.24
+    ],
+    [
+     "you'd",
+     3.24,
+     3.48
+    ],
+    [
+     "like",
+     3.48,
+     3.58
+    ],
+    [
+     "to",
+     3.58,
+     3.78
+    ],
+    [
+     "tip",
+     3.78,
+     4.02
+    ],
+    [
+     "—",
+     4.02,
+     4.02
+    ],
+    [
+     "before",
+     4.02,
+     4.46
+    ],
+    [
+     "you've",
+     4.46,
+     4.72
+    ],
+    [
+     "even",
+     4.72,
+     4.86
+    ],
+    [
+     "had",
+     4.86,
+     5.04
+    ],
+    [
+     "your",
+     5.04,
+     5.18
+    ],
+    [
+     "coffee.",
+     5.18,
+     5.56
+    ],
+    [
+     "Seventy-two",
+     6.42,
+     6.86
+    ],
+    [
+     "percent",
+     6.86,
+     7.22
+    ],
+    [
+     "of",
+     7.22,
+     7.46
+    ],
+    [
+     "Americans",
+     7.46,
+     7.88
+    ],
+    [
+     "say",
+     7.88,
+     8.22
+    ],
+    [
+     "tipping",
+     8.22,
+     8.64
+    ],
+    [
+     "is",
+     8.64,
+     8.86
+    ],
+    [
+     "now",
+     8.86,
+     9.06
+    ],
+    [
+     "expected",
+     9.06,
+     9.6
+    ],
+    [
+     "in",
+     9.6,
+     9.8
+    ],
+    [
+     "more",
+     9.8,
+     10.04
+    ],
+    [
+     "places",
+     10.04,
+     10.5
+    ],
+    [
+     "than",
+     10.5,
+     10.92
+    ],
+    [
+     "five",
+     10.92,
+     11.3
+    ],
+    [
+     "years",
+     11.3,
+     11.54
+    ],
+    [
+     "ago.",
+     11.54,
+     11.88
+    ],
+    [
+     "We'll",
+     12.72,
+     12.96
+    ],
+    [
+     "find",
+     12.96,
+     13.14
+    ],
+    [
+     "out",
+     13.14,
+     13.38
+    ],
+    [
+     "who",
+     13.38,
+     13.6
+    ],
+    [
+     "decided",
+     13.6,
+     14.04
+    ],
+    [
+     "that.",
+     14.04,
+     14.34
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "next_tablet.png: the tip screen",
+     "tech": "T7 parallax",
+     "source": "pipeline"
+    },
+    {
+     "picture": "stat 72% · Pew Research Center, Nov 2023",
+     "tech": "T2 + T4",
+     "source": "pipeline"
+    },
+    {
+     "picture": "case file 005 slides in, half-open",
+     "tech": "T8",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Next case. The screen that asks how much you'd like to tip before you've even had your coffee. 72% of Americans say tipping is now expected in more places than five years ago. We'll find out who decided that.",
+   "diff": []
+  },
+  {
+   "id": "A4.23",
+   "act": "A4",
+   "start": 887.165,
+   "end": 890.135,
+   "next": 893.135,
+   "text": "Subscribe, so the next case file finds you.",
+   "ru": "Подпишитесь, чтобы следующее дело нашло вас.",
+   "note": "friendly, warm",
+   "sound": "end sting",
+   "words": [
+    [
+     "Subscribe,",
+     0.0,
+     0.56
+    ],
+    [
+     "so",
+     1.06,
+     1.24
+    ],
+    [
+     "the",
+     1.24,
+     1.4
+    ],
+    [
+     "next",
+     1.4,
+     1.66
+    ],
+    [
+     "case",
+     1.66,
+     1.94
+    ],
+    [
+     "file",
+     1.94,
+     2.28
+    ],
+    [
+     "finds",
+     2.28,
+     2.68
+    ],
+    [
+     "you.",
+     2.68,
+     2.92
+    ]
+   ],
+   "shots": [
+    {
+     "picture": "Ep.4 sub stack + end cards; sources plate (all 15 sources)",
+     "tech": "T1",
+     "source": "pipeline"
+    }
+   ],
+   "takes": 1,
+   "heard": "Subscribe, so the next case file finds you.",
+   "diff": []
+  }
+ ],
+ "hits": [
+  {
+   "at": 50.705,
+   "len": 0.9,
+   "line": "COLD.8",
+   "silence_from": 51.605
+  },
+  {
+   "at": 317.87,
+   "len": 0.9,
+   "line": "A2.14",
+   "silence_from": 323.855
+  },
+  {
+   "at": 859.955,
+   "len": 0.9,
+   "line": "A4.20",
+   "silence_from": 861.405
+  }
+ ],
+ "breaks": [
+  {
+   "n": 1,
+   "at": 214.025,
+   "after": "A1.19",
+   "line": "To answer that, we have to go where this job was planned. And rehearsed. On millions of people.",
+   "ru": "Чтобы ответить, нам придётся отправиться туда, где это дело планировали. И репетировали. На миллионах людей."
+  },
+  {
+   "n": 2,
+   "at": 504.235,
+   "after": "A2.31",
+   "line": "Because when a trick works this well, it never stays in one theatre.",
+   "ru": "Потому что когда трюк работает так хорошо, он никогда не остаётся в одном театре."
+  },
+  {
+   "n": 3,
+   "at": 680.055,
+   "after": "A3.20",
+   "line": "So who stops a race that nobody can afford to quit?",
+   "ru": "Так кто остановит гонку, из которой никто не может себе позволить выйти?"
+  }
+ ],
+ "act_card": 3.0,
+ "hit_len": 0.9,
+ "stt_known": [
+  {
+   "script": "Live Nation",
+   "heard": "Lyve Nation"
+  },
+  {
+   "script": "all together",
+   "heard": "altogether"
+  }
+ ]
+}
