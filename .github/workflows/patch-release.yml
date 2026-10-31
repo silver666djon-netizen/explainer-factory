@@ -7,6 +7,10 @@ on:
       tag:
         description: "release tag, e.g. 0003-same-basket-r49"
         required: true
+      new_tag:
+        description: "optional: give the release this tag (repairs a draft whose tag was lost); files come from patches/<new_tag>/"
+        required: false
+        default: ""
 permissions:
   contents: write
 jobs:
@@ -19,6 +23,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           t="${{ github.event.inputs.tag }}"
-          test -d "patches/$t"
-          tools/rel.sh upload "$t" patches/$t/*
-          if [ -f "patches/$t/description.txt" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$(tools/rel.sh id "$t")" -F "body=@patches/$t/description.txt" >/dev/null; fi
+          n="${{ github.event.inputs.new_tag }}"; n="${n:-$t}"
+          test -d "patches/$n"
+          id=$(tools/rel.sh id "$t")
+          tools/rel.sh upload "$t" patches/$n/*
+          # tag_name is sent every time: a PATCH without it turns an untagged draft's tag into "untagged-…"
+          if [ -f "patches/$n/description.txt" ]; then gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$id" -f "tag_name=$n" -F "body=@patches/$n/description.txt" >/dev/null
+          else gh api -X PATCH "repos/$GITHUB_REPOSITORY/releases/$id" -f "tag_name=$n" >/dev/null; fi
+          gh api "repos/$GITHUB_REPOSITORY/releases/$id" -q ".tag_name"
