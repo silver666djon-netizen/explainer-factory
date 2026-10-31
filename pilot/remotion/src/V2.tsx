@@ -534,7 +534,7 @@ const BigNumView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 				const k = s.slots_ !== undefined ? spring({frame: (t - at) * 30, fps: 30, config: {damping: 14, stiffness: 180}}) : 1;
 				if (s.slots_ !== undefined && t < at) return null;
 				const fv = s.filled ? s.filled[i] : null;
-				const fat = s.fill_at ? s.fill_at[i] * dur : 0;
+				const fat = s.fill3_ !== undefined ? [0.05, 0.25, s.fill3_][i] : s.fill_at ? s.fill_at[i] * dur : 0;
 				const fk = fv ? clamp((t - fat) / 0.2, 0, 1) : 0;
 				return (
 					<div key={i} style={{position: 'absolute', left: x0 + i * (slotW + gap), top: SH * 0.6, width: slotW, height: 140 * u, border: `${4 * u}px dashed ${C.glow}`, borderRadius: 14 * u, transform: `scale(${0.8 + 0.2 * k})`, opacity: clamp(k, 0, 1),
@@ -792,6 +792,31 @@ const FanView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	);
 };
 
+// the card-number field, close: sixteen digits typed as dots (no real number, no hands)
+const DigitsView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
+	const w = 1500 * u,
+		h = 190 * u;
+	const x = (SW - w) / 2,
+		y = SH * 0.42 - h / 2;
+	const at = s.digits_ ?? 0.3;
+	const n = clamp(Math.floor((t - at) / (1.8 / 16)) + 1, 0, 16);
+	return (
+		<AbsoluteFill>
+			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
+			<AbsoluteFill style={{transform: `scale(${1.02 + 0.04 * t / dur})`}}>
+				<div style={{position: 'absolute', left: x, top: y - 70 * u, fontFamily: fam(BODY), fontSize: 40 * u, color: C.glow, letterSpacing: 4 * u}}>CARD NUMBER</div>
+				<div style={{position: 'absolute', left: x, top: y, width: w, height: h, background: '#FBF6EA', border: `${5 * u}px solid ${C.ink}`, borderRadius: 18 * u, boxShadow: `0 0 ${80 * u}px rgba(159,216,255,0.3)`}}>
+					{Array.from({length: 16}).map((_, i) => {
+						const k = i < n ? spring({frame: (t - at - (i * 1.8) / 16) * 30, fps: 30, config: {damping: 14, stiffness: 220}}) : 0;
+						const gx = 80 * u + i * 80 * u + Math.floor(i / 4) * 50 * u;
+						return <div key={i} style={{position: 'absolute', left: gx, top: h / 2 - 22 * u, width: 44 * u, height: 44 * u, borderRadius: 22 * u, background: C.ink, transform: `scale(${k})`}} />;
+					})}
+				</div>
+			</AbsoluteFill>
+		</AbsoluteFill>
+	);
+};
+
 // ------------------------------------------------------------------ overlays: archive caption, the in-world clock, subtitles, vignette
 const CaptionPlate: React.FC<{text: string; W: number; H: number; short: boolean; t: number}> = ({text, W, H, short, t}) => {
 	const fs0 = short ? 34 : 30;
@@ -888,6 +913,7 @@ const ShotBody: React.FC<{s: any; SW: number; SH: number; u: number; dur: number
 		case 'blueprint': return <BlueprintView {...p} />;
 		case 'casefolder': return <CaseFolderView {...p} />;
 		case 'fan': return <FanView {...p} />;
+		case 'digits': return <DigitsView {...p} />;
 		default: return null;
 	}
 };

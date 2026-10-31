@@ -70,15 +70,16 @@ S: dict[str, dict] = {
     "A1.8a": {"kind": "screen", "mode": "timer", "timer_on": "clock", "from": 600, "note": "Your ticket is held for 10 minutes",
               "sfx": [{"kind": "pop", "on": "clock"}]},
     "A1.8b": {"kind": "timer", "from": 596},
-    "A1.9": {"kind": "screen", "mode": "form", "fillat_on": ["Name", "Email", "Card"], "digits_on": "sixteen",
-             "sfx": [{"kind": "typing", "on": "Name", "dur": 0.6}, {"kind": "typing", "on": "Email", "dur": 0.6},
-                     {"kind": "typing", "on": "sixteen", "dur": 2.0}]},
+    "A1.9a": {"kind": "screen", "mode": "form", "fillat_on": ["Name", "Email", "Card"],
+              "sfx": [{"kind": "typing", "on": "Name", "dur": 0.6}, {"kind": "typing", "on": "Email", "dur": 0.6},
+                      {"kind": "typing", "on": "Card", "dur": 0.9}]},
+    "A1.9b": {"kind": "digits", "digits_on": "sixteen", "sfx": [{"kind": "typing", "on": "sixteen", "dur": 1.9}]},
     "A1.10a": {"kind": "fan", "pages": ["tabs", "seat", "timer", "form"]},
     "A1.10b": {"kind": "archive", "src": "archive-a2b", "caption": LOC_A2B, "cam": [[0.5, 0.5, 1.02], [0.5, 0.45, 1.12]]},
-    "A1.11a": {"kind": "screen", "mode": "fees", "fees": [["SERVICE FEE", "$8", "Service"], ["FACILITY FEE", "$6", "Facility"],
-                                                         ["PROCESSING", "$4", "Processing"]],
-               "sfx": [{"kind": "kachunk", "on": "Service"}, {"kind": "kachunk", "on": "Facility"}, {"kind": "kachunk", "on": "Processing"}]},
-    "A1.11b": {"kind": "bignum", "text": "$30", "slots": 3, "filled": ["+$8", "+$6", "+$4"], "fill_at": [0.02, 0.14, 0.26]},
+    "A1.11a": {"kind": "screen", "mode": "fees", "fees": [["SERVICE FEE", "$8", "Service"], ["FACILITY FEE", "$6", "Facility"]],
+               "sfx": [{"kind": "kachunk", "on": "Service"}, {"kind": "kachunk", "on": "Facility"}]},
+    "A1.11b": {"kind": "bignum", "text": "$30", "slots": 3, "filled": ["+$8", "+$6", "+$4"], "fill3_on": "four",
+               "sfx": [{"kind": "kachunk", "on": "four"}]},
     "A1.12": {"kind": "screen", "mode": "total", "total": "$48", "total_on": "Total", "fees_shown": True,
               "sfx": [{"kind": "stab", "on": "Total"}]},
     "A1.13": {"kind": "bars", "bars": [["FIRST SCREEN", 30, "$30"], ["LAST SCREEN", 48, "$48"]], "stamp": "+60%", "stamp_on": "sixty",
@@ -134,7 +135,10 @@ def word_time(beat: dict, prefix: str) -> float:
 
 
 def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], list[dict]]:
-    beats = [b for b in T["beats"] if b["act"] in acts]
+    sys.path.insert(0, str(EP / "v2"))
+    import scenes  # the shots come from today's scene list (timings.json only carries the voice)
+    cur = {f"{k}.{i}": [{"picture": p, "tech": t, "source": s} for p, t, s in bb[4]] for k, bs in scenes.ACTS for i, bb in enumerate(bs, 1)}
+    beats = [{**b, "shots": cur[b["id"]]} for b in T["beats"] if b["act"] in acts]
     hit = {h["line"]: h for h in T["hits"]}
     vis = []
     for i, b in enumerate(beats):
