@@ -83,5 +83,26 @@
    ],
    "r": 355
   }
+ },
+ "_sheet_note": "paper sheets lying in a picture (blueprint): TL, TR, BR, BL corners in px of the original",
+ "sheets": {
+  "ep04v2_g01_blueprint": [
+   [
+    592,
+    508
+   ],
+   [
+    3383,
+    356
+   ],
+   [
+    3852,
+    1930
+   ],
+   [
+    315,
+    2122
+   ]
+  ]
  }
 }

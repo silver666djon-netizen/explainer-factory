@@ -348,6 +348,104 @@ def c_picture_first(shots=None, data=None, **_):
     return out
 
 
+CAP = {"os": 0.688, "row": 0.688, "fee": 0.688, "lab": 0.689, "tot": 0.688}  # cap height / em of the fonts used for them
+READ_MIN = 0.028  # Klot note 5: any line we want read is >= 2.8 % of the frame tall (cap height)
+
+
+def _frame_quad(s, SW, SH, end):
+    """The screen quad in frame px at the start (end=0) or end (end=1) of the shot, with V2.tsx's camera math."""
+    iw, ih = s["iw"], s["ih"]
+    base = max(SW / iw, SH / ih)
+    c = s["cam"][end]
+    sc = base * c[2]
+    hx, hy = SW / (iw * sc) / 2, SH / (ih * sc) / 2
+    cx, cy = min(max(c[0], hx), 1 - hx), min(max(c[1], hy), 1 - hy)
+    tx, ty = SW / 2 - cx * iw * sc, SH / 2 - cy * ih * sc
+    return [(tx + x * sc, ty + y * sc) for x, y in s["quad"]], sc
+
+
+def c_read_size(shots=None, data=None, **_):
+    """R45 (Klot note 5): on checkout screens with lines we want read (order summary, fee lines, the joke lines), every such
+    line's cap height >= 2.8 % of the frame height, at the shot's widest framing. Sizes come from the plan (screen.fs)."""
+    if data["H"] > data["W"]:
+        return []  # judged on the 16:9 film (the 9:16 file is a layout sample of the cold open)
+    out = []
+    for s in shots:
+        sc_ = s.get("screen") or {}
+        if sc_.get("mode") not in ("fees", "total", "pay") or not s.get("quad"):
+            continue
+        fs = sc_.get("fs") or {"os": 24, "row": 30, "fee": 34, "lab": 30, "tot": 38}
+        keys = ["os", "row"] + (["fee"] if sc_["mode"] == "fees" else ["tot"]) + (["lab"] if any(f.get("label") for f in sc_.get("fees", [])) else [])
+        cap_u = min(fs[k] * CAP[k] for k in keys)
+        worst = None
+        for e in (0, 1):
+            q, _sc = _frame_quad(s, data["W"], data["H"], e)
+            unit = (q[1][0] - q[0][0]) / 1240  # frame px per screen unit along the top edge (the narrowest)
+            px = cap_u * unit
+            worst = px if worst is None else min(worst, px)
+        if worst < READ_MIN * data["H"]:
+            out.append(f"{s['id']}: smallest read line {worst:.1f} px cap height < {READ_MIN * data['H']:.1f} px (2.8 %)")
+    return out
+
+
+def c_screen_marks(shots=None, data=None, **_):
+    """R44 (Klot note 3): stamps and marks on a screen stay inside the screen: a stamp over a laptop screen is drawn in screen
+    space and its box sits inside the page with >= 30 units of margin; no frame-space stamp may overlap a screen."""
+    out = []
+    W, H = data["W"], data["H"]
+    for s in shots:
+        sc_ = s.get("screen") or {}
+        st = sc_.get("stamp")
+        if st:
+            size = st["size"]
+            w = _tw(st["text"], "Anton-Regular.ttf", size) + 0.6 * size + 0.18 * size
+            h = size * 1.28 + 0.18 * size
+            import math
+            a = math.radians(abs(st.get("rot", -8)))
+            bw, bh = w * math.cos(a) + h * math.sin(a), w * math.sin(a) + h * math.cos(a)
+            x0, x1, y0, y1 = st["x"] - bw * 0.55, st["x"] + bw * 0.55, st["y"] - bh * 0.55, st["y"] + bh * 0.55  # 1.1 x: the drop-in
+            if x0 < 30 or y0 < 30 or x1 > 1240 - 30 or y1 > 642 - 30:
+                out.append(f"{s['id']}: stamp {st['text']!r} box {x0:.0f}..{x1:.0f} x {y0:.0f}..{y1:.0f} leaves the screen (1240 x 642, margin 30)")
+        if s.get("quad") and sc_:
+            for o in s.get("overs", []):
+                if o.get("t") != "stamp":
+                    continue
+                for e in (0, 1):
+                    q, _ = _frame_quad(s, W, H, e)
+                    xs, ys = [p[0] for p in q], [p[1] for p in q]
+                    r = o["size"] * min(W / 1920, H / 1080)
+                    if min(xs) - r * 2 < o["x"] * W < max(xs) + r * 2 and min(ys) - r < o["y"] * H < max(ys) + r:
+                        out.append(f"{s['id']}: frame-space stamp {o['text']!r} over the laptop screen (draw it in screen space)")
+                        break
+    return out
+
+
+def c_face_cut(shots=None, **_):
+    """R46 (Klot note 8): no more than two laptop-screen shots without a cut to Larry's face in between."""
+    out, run = [], []
+    for s in shots:
+        if s.get("screen"):
+            run.append(s["id"])
+            if len(run) > 2:
+                out.append(f"{', '.join(run)}: {len(run)} screens without a face cut")
+        elif s.get("face"):
+            run = []
+    return out
+
+
+def c_ink_hold(shots=None, **_):
+    """R47 (Klot note 7): the hand leaves after writing and the finished mark is seen clean for >= 0.5 s before the cut."""
+    out = []
+    for s in shots:
+        ink = s.get("_ink") or []
+        if not ink:
+            continue
+        free = s["end"] - (max(b for _a, b in ink) + 0.4)
+        if free < 0.5:
+            out.append(f"{s['id']}: the mark is seen without the hand for {free:.2f} s before the cut (< 0.5 s)")
+    return out
+
+
 CHECKS = [
     ("picture_first (R41)", c_picture_first, "picture base >= 85% of screen time, <= 4 key numbers"),
     ("decode", c_decode, "file decodes end to end without an error"),
@@ -367,9 +465,13 @@ CHECKS = [
     ("sfx_sync (R34)", c_sfx_sync, "scratch only while ink is laid"),
     ("jitter (R28)", c_jitter, "camera path: no reversal > 0.25 px (plan, as drawn)"),
     ("shorts_band (R38)", c_shorts_band, "9:16 picture band >= 50 %"),
+    ("read_size (R45)", c_read_size, "checkout lines we want read: cap height >= 2.8 % of the frame (16:9)"),
+    ("screen_marks (R44)", c_screen_marks, "stamps on a screen stay inside the screen (screen space, 30-unit margin)"),
+    ("face_cut (R46)", c_face_cut, "no more than 2 laptop screens in a row without Larry's face"),
+    ("ink_hold (R47)", c_ink_hold, "the hand leaves; the finished mark is seen >= 0.5 s before the cut"),
 ]
 NOT_APPLICABLE = {
-    "hand_over_ink (R37), one hand at a time (rules 1-5)": "the hand is in this preview (right hand, white cuff, 18 deg, ink only behind the nib, one hand at a time by construction); the automatic hand_over_ink check is not ported to the Remotion layer yet: checked by eye on the frames",
+    "hand_over_ink (R37), one hand at a time (rules 1-5)": "the hand is in this preview (right hand, white cuff, 18 deg, the pen has the ink's colour: black, red, white chalk, yellow; ink only behind the nib, one hand at a time by construction); the automatic hand_over_ink check is not ported to the Remotion layer yet: checked by eye on the frames",
     "mark_on_object (R29), mark_in_frame (R32), mark audit (rules 11, 15, 16, 25)": "Act 1 ink sits on our paper strips, tags and notes laid over the pictures (and the crown above Larry's hat); the mark audit is not ported yet: checked by eye",
     "Larry's tab / ledger (rule 31)": "not used in v2",
     "text_stability (R31)": "by construction: kinetic and typed text is laid out in its final place and only fades/types in place",
@@ -522,6 +624,29 @@ def selftest(ctx):
                        "cam": [[0.5, 0.5, 1.05], [0.6, 0.45, 1.35]], "_shake": 0.6}]
         return "a push that shakes by 0.6 px frame to frame"
     plant("jitter (R28)", m_jit, c_jitter)
+
+    def scr(c):
+        return next(s for s in c["shots"] if (s.get("screen") or {}).get("mode") in ("fees", "total", "pay"))
+    def m_read(c):
+        s = scr(c)
+        s["screen"]["fs"] = {"os": 24, "row": 30, "fee": 34, "lab": 30, "tot": 38}
+        return f"{s['id']} with PREVIEW 2's old checkout sizes (24 / 30 / 34)"
+    plant("read_size (R45)", m_read, c_read_size)
+    def m_mark(c):
+        s = scr(c)
+        s["screen"]["stamp"] = {"text": "REAL", "x": 1180, "y": 300, "size": 150, "rot": -9}
+        return "the REAL stamp at the screen's right edge (over the bezel)"
+    plant("screen_marks (R44)", m_mark, c_screen_marks)
+    def m_face(c):
+        ss = [s for s in c["shots"] if s.get("screen")][:3]
+        c["shots"] = [dict(x, face=False) for x in ss]
+        return "three screen shots back to back"
+    plant("face_cut (R46)", m_face, c_face_cut)
+    def m_hold(c):
+        s = next(x for x in c["shots"] if x.get("_ink"))
+        s["end"] = max(b for _a, b in s["_ink"]) + 0.2
+        return f"{s['id']} cut 0.2 s after the last stroke (hand still on it)"
+    plant("ink_hold (R47)", m_hold, c_ink_hold)
     return rows
 
 
@@ -540,8 +665,8 @@ def main(pvd: str, tdir: str) -> int:
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
     md = ["# Ep.4 v2 · PREVIEW 2 · QC (picture-first)", "",
-          "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open. Remotion layer; only assets already "
-          "in the repo; Klot's missing stills held on labelled placeholder cards.", ""]
+          "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open. Remotion layer; Klot's stills, "
+          "Ep.4 pictures and archive prints; any still not in yet is held on a labelled placeholder card or a tagged stand-in.", ""]
     allres, ctxs = {}, {}
     for kind in ("long", "short"):
         res, ctx = run(kind, P, pv, td, cfg)
@@ -553,7 +678,9 @@ def main(pvd: str, tdir: str) -> int:
         cells = []
         for kind in ("long", "short"):
             r = allres[kind].get(name)
-            if name == "shorts_length" and kind == "short" and r:
+            if name == "read_size (R45)" and kind == "short":
+                cells.append("n/a: judged on the 16:9 film; the 9:16 file is a layout sample")
+            elif name == "shorts_length" and kind == "short" and r:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
             elif r is None:
                 cells.append("same as 16:9")

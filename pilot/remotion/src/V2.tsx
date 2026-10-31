@@ -249,12 +249,13 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 	} else if (s.mode === 'total' || s.mode === 'pay') {
 		const rows: [string, string][] = [['TICKET · ROW G, SEAT 12', '$30']];
 		if (s.fees_shown) rows.push(['SERVICE FEE', '$8'], ['FACILITY FEE', '$6'], ['PROCESSING', '$4']);
-		const tot = s.mode === 'pay' ? -1 : s.total_;
+		const fs = {os: 24, row: 30, tot: 38, big: 120, ...(s.fs || {})};
+		const totTop = s.fs ? 30 + fs.os * 1.5 + rows.length * (fs.row * 1.25 + 24) + 18 : s.fees_shown ? 300 : 150;
 		body = (
-			<AbsoluteFill style={{padding: `${34 * u}px ${60 * u}px`}}>
-				<div style={{fontFamily: fam(BODY), fontSize: 24 * u, color: C.mute, letterSpacing: 1.5 * u}}>ORDER SUMMARY</div>
+			<AbsoluteFill style={{padding: `${(s.fs ? 30 : 34) * u}px ${(s.fs ? 50 : 60) * u}px`}}>
+				<div style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>ORDER SUMMARY</div>
 				{rows.map(([a, b], i) => (
-					<div key={i} style={{display: 'flex', justifyContent: 'space-between', marginTop: 14 * u, fontFamily: fam(BODY), fontSize: 30 * u, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u}}>
+					<div key={i} style={{display: 'flex', justifyContent: 'space-between', marginTop: 14 * u, fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.25, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u}}>
 						<span>{a}</span>
 						<span>{b}</span>
 					</div>
@@ -264,9 +265,9 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 					if (at === undefined || t < at) return null;
 					const k = clamp((t - at) / 0.2, 0, 1);
 					return (
-						<div style={{position: 'absolute', left: 60 * u, top: (s.fees_shown ? 300 : 150) * u, display: 'flex', alignItems: 'baseline', gap: 26 * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
-							<span style={{fontFamily: fam(BODY), fontSize: 38 * u, color: C.ink}}>TOTAL</span>
-							<span style={{fontFamily: fam(HEAD), fontSize: 120 * u, color: C.red, lineHeight: 1}}>{s.mode === 'pay' ? '$48' : s.total}</span>
+						<div style={{position: 'absolute', left: (s.fs ? 50 : 60) * u, top: totTop * u, display: 'flex', alignItems: 'baseline', gap: 26 * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
+							<span style={{fontFamily: fam(BODY), fontSize: fs.tot * u, color: C.ink}}>TOTAL</span>
+							<span style={{fontFamily: fam(HEAD), fontSize: fs.big * u, color: C.red, lineHeight: 1}}>{s.mode === 'pay' ? '$48' : s.total}</span>
 						</div>
 					);
 				})()}
@@ -322,10 +323,11 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 			</AbsoluteFill>
 		);
 	} else if (s.mode === 'fees') {
+		const fs = {os: 24, row: 30, fee: 34, lab: 30, ...(s.fs || {})};
 		body = (
-			<AbsoluteFill style={{padding: `${34 * u}px ${60 * u}px`}}>
-				<div style={{fontFamily: fam(BODY), fontSize: 24 * u, color: C.mute, letterSpacing: 1.5 * u}}>ORDER SUMMARY</div>
-				<div style={{display: 'flex', justifyContent: 'space-between', marginTop: 14 * u, fontFamily: fam(BODY), fontSize: 30 * u, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u}}>
+			<AbsoluteFill style={{padding: `${(s.fs ? 26 : 34) * u}px ${(s.fs ? 50 : 60) * u}px`}}>
+				<div style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>ORDER SUMMARY</div>
+				<div style={{display: 'flex', justifyContent: 'space-between', marginTop: 10 * u, fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.2, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
 					<span>TICKET · ROW G, SEAT 12</span>
 					<span>$30</span>
 				</div>
@@ -335,12 +337,12 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 					const k = clamp((t - at) / 0.2, 0, 1);
 					const lab = fe.label ? (fe.label_ === undefined ? fe.label : fe.label.slice(0, clamp(Math.floor((t - fe.label_) / 0.04), 0, fe.label.length))) : '';
 					return (
-						<div key={i} style={{marginTop: 14 * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
-							<div style={{display: 'flex', justifyContent: 'space-between', fontFamily: fam(BODY), fontSize: 34 * u, color: C.red, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u}}>
+						<div key={i} style={{marginTop: (s.fs ? 10 : 14) * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
+							<div style={{display: 'flex', justifyContent: 'space-between', fontFamily: fam(BODY), fontSize: fs.fee * u, lineHeight: 1.2, color: C.red, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
 								<span>{fe.name}</span>
 								<span>{fe.amt}</span>
 							</div>
-							{fe.label ? <div style={{fontFamily: fam(TYPE), fontSize: 30 * u, color: C.ink, marginTop: 6 * u, minHeight: 36 * u, whiteSpace: 'pre'}}>{lab ? '↳ ' + lab : ''}</div> : null}
+							{fe.label ? <div style={{fontFamily: fam(TYPE), fontSize: fs.lab * u, lineHeight: 1.15, color: C.ink, marginTop: 4 * u, minHeight: fs.lab * 1.15 * u, whiteSpace: 'pre'}}>{lab ? '↳ ' + lab : ''}</div> : null}
 						</div>
 					);
 				})}
@@ -367,6 +369,7 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 			<div style={{position: 'absolute', left: 0, top: 0, width: 1240, height: 700, overflow: 'hidden', background: C.paper}}>
 				<Win u={1} SW={1240} SH={700} tabs={tabs} active={active} t={t} fill>
 					{body}
+					{s.stamp && s.stamp.at_ !== undefined ? <Stamp text={s.stamp.text} at={s.stamp.at_} t={t} x={s.stamp.x} y={s.stamp.y} size={s.stamp.size} rot={s.stamp.rot ?? -8} /> : null}
 				</Win>
 				{flash > 0 ? <AbsoluteFill style={{background: `rgba(255,255,255,${0.85 * flash})`}} /> : null}
 			</div>
@@ -912,11 +915,20 @@ const homography = (w: number, h: number, q: number[][]) => {
 
 // the narrator's hand (R37: right hand, white cuff, never mirrored, turned 18 deg clockwise about the pen tip)
 const HAND = {ink: {src: 'hands/hand_ink_cuff.png', w: 951, h: 958, tip: [188, 456], ref: 1024}};
-const HandImg: React.FC<{x: number; y: number; SH: number}> = ({x, y, SH}) => {
+// the pen in the hand has the colour of the ink it lays (Klot, PREVIEW 2 notes): black, red, white chalk, yellow
+const CHALK = '#F3F1EA';
+const penSrc = (color?: string) => {
+	const c = (color || '').toUpperCase();
+	if (c === C.red.toUpperCase()) return 'hands/hand_marker_cuff.png';
+	if (c === '#FFFFFF' || c === CHALK.toUpperCase() || c === 'WHITE') return 'hands/hand_white_cuff.png';
+	if (c === C.accent.toUpperCase()) return 'hands/hand_yellow_cuff.png';
+	return HAND.ink.src;
+};
+const HandImg: React.FC<{x: number; y: number; SH: number; color?: string}> = ({x, y, SH, color}) => {
 	const hh = SH * 0.62;
 	const s = hh / HAND.ink.ref;
 	return (
-		<Img src={staticFile(HAND.ink.src)} style={{position: 'absolute', left: x - HAND.ink.tip[0] * s, top: y - HAND.ink.tip[1] * s, width: HAND.ink.w * s, height: HAND.ink.h * s,
+		<Img src={staticFile(penSrc(color))} style={{position: 'absolute', left: x - HAND.ink.tip[0] * s, top: y - HAND.ink.tip[1] * s, width: HAND.ink.w * s, height: HAND.ink.h * s,
 			transformOrigin: `${HAND.ink.tip[0] * s}px ${HAND.ink.tip[1] * s}px`, transform: 'rotate(18deg)', zIndex: 50, pointerEvents: 'none'}} />
 	);
 };
@@ -963,7 +975,7 @@ const HandInk: React.FC<{st: Ink[]; t: number; SW: number; SH: number; color: st
 					return <path key={i} d={a.d} fill="none" stroke={color} strokeWidth={w} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={`${L} ${L}`} strokeDashoffset={L * (1 - p)} />;
 				})}
 			</svg>
-			{tip ? <HandImg x={tip[0]} y={tip[1]} SH={SH} /> : null}
+			{tip ? <HandImg x={tip[0]} y={tip[1]} SH={SH} color={color} /> : null}
 		</>
 	);
 };
@@ -984,7 +996,7 @@ const HandWrite: React.FC<{text: string; x: number; y: number; size: number; col
 					<div style={{fontFamily: fam(font), fontSize: size, color, whiteSpace: 'nowrap', lineHeight: 1.2}}>{text}</div>
 				</div>
 			) : null}
-			{tip ? <HandImg x={tip[0]} y={tip[1] + Math.sin(t * 40) * size * 0.06} SH={SH} /> : null}
+			{tip ? <HandImg x={tip[0]} y={tip[1] + Math.sin(t * 40) * size * 0.06} SH={SH} color={color} /> : null}
 		</>
 	);
 };
@@ -1122,7 +1134,23 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 							})}
 						</svg>
 					) : null}
-					<div style={{position: 'absolute', inset: 0, zIndex: 36}}><Stamp text="POP!" at={o.at_} t={t} x={cx} y={cy} size={90 * U} color={C.accent} rot={8} /></div>
+					{(() => {
+						const k = spring({frame: (t - o.at_) * 30, fps: 30, config: {damping: 9, stiffness: 220}});
+						const R = 190 * U, n = 14;
+						const pts = Array.from({length: n * 2}, (_, i) => {
+							const a = (i / (n * 2)) * Math.PI * 2 - Math.PI / 2, r = i % 2 ? R * 0.62 : R * (i % 4 ? 0.92 : 1.0);
+							return `${cx + Math.cos(a) * r},${cy + Math.sin(a) * r * 0.82}`;
+						}).join(' ');
+						return (
+							<div style={{position: 'absolute', inset: 0, zIndex: 37, transform: `scale(${0.3 + 0.7 * k}) rotate(${-6 * (1 - k)}deg)`, transformOrigin: `${cx}px ${cy}px`}}>
+								<svg width={SW} height={SH} style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}}>
+									<polygon points={pts} fill="#FFE066" stroke={C.ink} strokeWidth={7 * U} strokeLinejoin="round" />
+								</svg>
+								<div style={{position: 'absolute', left: cx, top: cy, transform: 'translate(-50%,-52%) rotate(-7deg)', fontFamily: fam(HEAD), fontSize: 132 * U, lineHeight: 1, color: C.red,
+									WebkitTextStroke: `${16 * U}px #FFFFFF`, paintOrder: 'stroke fill', letterSpacing: 4 * U, whiteSpace: 'nowrap', filter: `drop-shadow(${4 * U}px ${5 * U}px 0 ${C.ink})`}}>POP!</div>
+							</div>
+						);
+					})()}
 				</>
 			);
 		}
@@ -1146,12 +1174,12 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			return (
 				<>
 					{o.items.map((x: string, i: number) => {
-						const at = o.at[i];
-						if (t < at) return null;
+						const at = (o.at_ ?? o.at)[i];
+						if (at === undefined || t < at) return null;
 						const k = clamp((t - at) / 0.2, 0, 1);
 						return (
-							<Paper key={i} x={o.x * SW - 110 * U} y={o.y * SH + i * 160 * U} w={220 * U} h={130 * U} k={1} rot={i % 2 ? 3 : -3}>
-								<div style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: 84 * U, lineHeight: `${125 * U}px`, color: C.red, transform: `scale(${1.1 - 0.1 * k})`}}>{x}</div>
+							<Paper key={i} x={o.x * SW - ((o.w ?? 220) / 2) * U} y={o.y * SH + i * 160 * U} w={(o.w ?? 220) * U} h={130 * U} k={1} rot={i % 2 ? 3 : -3}>
+								<div style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: (o.size ?? 84) * U, lineHeight: `${125 * U}px`, color: o.color ?? C.red, transform: `scale(${1.1 - 0.1 * k})`, whiteSpace: 'nowrap'}}>{x}</div>
 							</Paper>
 						);
 					})}
@@ -1179,12 +1207,15 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 		case 'note': {
 			if (o.write_ === undefined) return null;
 			const k = sm((t - (o.write_ - 0.6)) / 0.3);
-			const fs = 50 * U;
+			const fs = (o.size ?? 50) * U;
 			const tw = measureText({text: o.text, fontFamily: 'PermanentMarker-Regular', fontSize: fs}).width;
+			const subFs = fs * 0.36;
 			const x = o.x * SW, y = o.y * SH;
 			return (
 				<>
-					<Paper x={x - 30 * U} y={y - 70 * U} w={tw + 60 * U} h={110 * U} k={k} rot={-2} />
+					<Paper x={x - 0.6 * fs} y={y - 1.4 * fs} w={tw + 1.2 * fs} h={fs * (o.sub ? 2.35 : 2.2)} k={k} rot={-2}>
+						{o.sub ? <div style={{position: 'absolute', left: 0.6 * fs, top: fs * 1.62, fontFamily: fam(BODY), fontSize: subFs, letterSpacing: 2 * U, color: C.ink}}>{o.sub}</div> : null}
+					</Paper>
 					<HandWrite text={o.text} x={x} y={y} size={fs} color={C.red} t0={o.write_} t={t} SW={SW} SH={SH} />
 				</>
 			);
@@ -1216,14 +1247,15 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 		}
 		case 'tag_circle': {
 			const x = o.x * SW, y = o.y * SH;
-			const r = 120 * U;
+			const sc = o.scale ?? 1;
+			const r = 120 * U * sc;
 			const d = `M ${x + r} ${y - 10 * U} C ${x + r * 1.1} ${y + r * 0.9}, ${x - r * 1.2} ${y + r * 0.95}, ${x - r * 1.1} ${y} C ${x - r} ${y - r * 0.95}, ${x + r * 0.9} ${y - r * 1.0}, ${x + r * 1.05} ${y + 10 * U}`;
 			return (
 				<>
-					<Paper x={x - 100 * U} y={y - 65 * U} w={200 * U} h={130 * U} k={sm(t / 0.3)} rot={-3}>
-						<div style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: 86 * U, lineHeight: `${125 * U}px`, color: C.red}}>{o.text}</div>
+					<Paper x={x - 100 * U * sc} y={y - 65 * U * sc} w={200 * U * sc} h={130 * U * sc} k={sm(t / 0.3)} rot={-3}>
+						<div style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: 86 * U * sc, lineHeight: `${125 * U * sc}px`, color: C.red}}>{o.text}</div>
 					</Paper>
-					{o.circle_ !== undefined ? <HandInk st={[{d, t0: o.circle_, dur: 0.6}]} t={t} SW={SW} SH={SH} color={C.red} w={9 * U} /> : null}
+					{o.circle_ !== undefined ? <HandInk st={[{d, t0: o.circle_, dur: 0.6}]} t={t} SW={SW} SH={SH} color={C.red} w={9 * U * Math.sqrt(sc)} /> : null}
 				</>
 			);
 		}
@@ -1241,7 +1273,15 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 					{tag(L, o.left, C.green, -3)}
 					{tag(Rr, o.right, C.red, 3)}
 					<HandInk st={[{d: cross, t0: o.cross_at, dur: 0.35}]} t={t} SW={SW} SH={SH} color={C.red} w={14 * U} />
-					{o.q_ !== undefined ? <div style={{position: 'absolute', inset: 0, zIndex: 45}}><Stamp text="?" at={o.q_} t={t} x={SW * 0.7} y={SH * 0.5} size={140 * U} color={C.accent} rot={6} /></div> : null}
+					{o.q_ !== undefined && t >= o.q_ ? (() => {
+						const k = spring({frame: (t - o.q_) * 30, fps: 30, config: {damping: 12, stiffness: 200}});
+						const qx = SW * (o.qx ?? 0.66), qy = SH * (o.qy ?? 0.46);
+						return (
+							<Paper x={qx - 120 * U} y={qy - 150 * U + (1 - k) * -60 * U} w={240 * U} h={300 * U} k={clamp(k * 2, 0, 1)} rot={6}>
+								<div style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: 250 * U, lineHeight: `${295 * U}px`, color: C.red}}>?</div>
+							</Paper>
+						);
+					})() : null}
 				</>
 			);
 		}
@@ -1298,6 +1338,87 @@ const KeyCard: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	);
 };
 
+// a point of the unit square mapped into the quad (the same projective map as homography())
+const projQ = (q: number[][], u: number, v: number): [number, number] => {
+	const [[x0, y0], [x1, y1], [x2, y2], [x3, y3]] = q;
+	const dx1 = x1 - x2, dx2 = x3 - x2, dy1 = y1 - y2, dy2 = y3 - y2;
+	const sx = x0 - x1 + x2 - x3, sy = y0 - y1 + y2 - y3;
+	const den = dx1 * dy2 - dx2 * dy1;
+	const g = (sx * dy2 - dx2 * sy) / den, h = (dx1 * sy - sx * dy1) / den;
+	const a = x1 - x0 + g * x1, b = x3 - x0 + h * x3, d = y1 - y0 + g * y1, e = y3 - y0 + h * y3;
+	const w = g * u + h * v + 1;
+	return [(a * u + b * v + x0) / w, (d * u + e * v + y0) / w];
+};
+// a plan drawn ON a sheet lying in the picture (the blueprint): strokes live in sheet units (pl.W x pl.H) and the sheet is mapped
+// onto its 4 pinned corners with a homography, so every stroke lies in the paper's plane and moves with the camera
+const sheetInk = (pl: any): Ink[] =>
+	pl.items.filter((it: any) => !it.static).map((it: any) => {
+		if (it.k === 'text') {
+			const tw = measureText({text: it.text, fontFamily: 'PermanentMarker-Regular', fontSize: it.size}).width;
+			return {d: `M ${it.x - tw / 2} ${it.y + it.size * 0.12} L ${it.x + tw / 2} ${it.y + it.size * 0.12}`, t0: it.t0, dur: it.dur};
+		}
+		return {d: it.d, t0: it.t0, dur: it.dur};
+	});
+const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) => {
+	const col = pl.color ?? CHALK;
+	const p = (it: any) => (it.static ? 1 : clamp((t - it.t0) / it.dur, 0, 1));
+	return (
+		<div style={{position: 'absolute', left: 0, top: 0, width: pl.W, height: pl.H, transformOrigin: '0 0', transform: homography(pl.W, pl.H, pl.quad), opacity: 0.94}}>
+			<svg width={pl.W} height={pl.H} style={{position: 'absolute', left: 0, top: 0, overflow: 'visible'}}>
+				{pl.items.map((it: any, i: number) => {
+					const k = p(it);
+					if (k <= 0) return null;
+					if (it.k === 'text') {
+						const tw = measureText({text: it.text, fontFamily: 'PermanentMarker-Regular', fontSize: it.size}).width;
+						return (
+							<g key={i}>
+								<clipPath id={`${id}c${i}`}>
+									<rect x={it.x - tw / 2 - 4} y={it.y - it.size} width={(tw + 8) * k} height={it.size * 1.5} />
+								</clipPath>
+								<text x={it.x} y={it.y} textAnchor="middle" fontFamily={fam('PermanentMarker-Regular')} fontSize={it.size} fill={col} clipPath={`url(#${id}c${i})`}>
+									{it.text}
+								</text>
+							</g>
+						);
+					}
+					const L = getLength(it.d);
+					if (it.k === 'route') {
+						return (
+							<g key={i}>
+								<mask id={`${id}m${i}`} maskUnits="userSpaceOnUse" x={-50} y={-50} width={pl.W + 100} height={pl.H + 100}>
+									<path d={it.d} fill="none" stroke="#fff" strokeWidth={30} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={`${L} ${L}`} strokeDashoffset={L * (1 - k)} />
+								</mask>
+								<path d={it.d} fill="none" stroke={col} strokeWidth={it.w ?? 7} strokeLinecap="round" strokeLinejoin="round" strokeDasharray="22 16" mask={`url(#${id}m${i})`} />
+							</g>
+						);
+					}
+					return <path key={i} d={it.d} fill="none" stroke={col} strokeWidth={it.w ?? 6} strokeLinecap="round" strokeLinejoin="round" strokeDasharray={`${L} ${L}`} strokeDashoffset={L * (1 - k)} />;
+				})}
+			</svg>
+		</div>
+	);
+};
+// the hand on the sheet: tip in sheet units -> picture -> frame; it enters before the first stroke and leaves after the last
+const sheetTip = (pl: any, t: number, toFrame: (u: number, v: number) => [number, number], SW: number, SH: number): [number, number] | null => {
+	const st = sheetInk(pl);
+	if (!st.length) return null;
+	const first = st[0], last = st[st.length - 1];
+	const t1 = last.t0 + last.dur;
+	const off: [number, number] = [SW * 1.05, SH * 1.15];
+	const at = (x: number, y: number) => toFrame(x / pl.W, y / pl.H);
+	if (t < first.t0 - 0.35 || t > t1 + 0.4) return null;
+	if (t < first.t0) {
+		const p0 = getPointAtLength(first.d, 0), f = at(p0.x, p0.y), k = sm((t - (first.t0 - 0.35)) / 0.35);
+		return [off[0] + (f[0] - off[0]) * k, off[1] + (f[1] - off[1]) * k];
+	}
+	if (t > t1) {
+		const pe = getPointAtLength(last.d, getLength(last.d)), f = at(pe.x, pe.y), k = sm((t - t1) / 0.4);
+		return [f[0] + (off[0] - f[0]) * k, f[1] + (off[1] - f[1]) * k];
+	}
+	const p = tipAt(st, t, pl.W, pl.H) as [number, number];
+	return at(p[0], p[1]);
+};
+
 // hands painted on a blank clock face (image px): hour + minute in ink, a thin red second hand ticking
 const DialHands: React.FC<{d: {c: number[]; r: number}; time: string; t: number}> = ({d, time, t}) => {
 	const [h, m] = time.split(':').map(Number);
@@ -1349,11 +1470,19 @@ const PicShot: React.FC<P & {short: boolean}> =({s, t, dur, SW, SH, u, short}) =
 								background: 'linear-gradient(125deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 55%), radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0) 60%, rgba(30,27,24,0.28) 100%)'}} />
 						</>
 					) : null}
-					{s.dial ? <DialHands d={s.dial} time={s.clock || '8:12'} t={t} /> : null}
+{s.dial ? <DialHands d={s.dial} time={s.clock || '8:12'} t={t} /> : null}
+					{s.plan ? <SheetPlanInk pl={s.plan} t={t} id={`pl${String(s.id).replace(/[^A-Za-z0-9]/g, '')}`} /> : null}
 				</div>
 				{q && s.screen ? <AbsoluteFill style={{background: `radial-gradient(ellipse at ${(((q[0][0] + q[2][0]) / 2) * sc + tx) / SW * 100}% ${(((q[0][1] + q[2][1]) / 2) * sc + ty) / SH * 100}%, rgba(159,216,255,0.18) 0%, rgba(159,216,255,0) 45%)`, mixBlendMode: 'screen', pointerEvents: 'none'}} /> : null}
 				{s.dream ? <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 55%, rgba(255,236,190,0.0) 30%, rgba(255,236,190,0.35) 100%)', mixBlendMode: 'screen'}} /> : null}
-				{s.green_creep ? <AbsoluteFill style={{background: C.green, opacity: 0.45 * sm((t - dur * 0.45) / (dur * 0.55)), mixBlendMode: 'multiply'}} /> : null}
+{s.green_creep ? <AbsoluteFill style={{background: C.green, opacity: 0.45 * sm((t - dur * 0.45) / (dur * 0.55)), mixBlendMode: 'multiply'}} /> : null}
+				{s.plan ? (() => {
+					const tip = sheetTip(s.plan, t, (u0, v0) => {
+						const [ix, iy] = projQ(s.plan.quad, u0, v0);
+						return [tx + ix * sc, ty + iy * sc];
+					}, SW, SH);
+					return tip ? <HandImg x={tip[0]} y={tip[1]} SH={SH} color={s.plan.color ?? CHALK} /> : null;
+				})() : null}
 			</AbsoluteFill>
 		);
 	}
