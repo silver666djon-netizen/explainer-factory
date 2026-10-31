@@ -112,17 +112,20 @@ def _first(d, text):
 def plan() -> list[dict]:
     import voice_samples as vs  # the cold open's own notes, exactly as sample A
     rows = []
-    for key, beats in scenes.ACTS:
-        for bi, b in enumerate(beats, 1):
-            en, ru, pause, sound, shots = b
-            note = vs.LINES[bi - 1][1] if key == "COLD" else (_first(NOTES, en) or ACT_NOTE[key])
-            tts = en
-            for a, r in RESPELL.items():
-                tts = tts.replace(a, r)
-            rows.append({"id": f"{key}.{bi}", "act": key, "text": en, "ru": ru, "tts": tts, "note": note, "pause": pause,
-                         "pre": _first(PRE, en) or 0.0, "hit": _first(HITS, en), "sound": sound,
-                         "shots": [{"picture": p, "tech": t, "source": s} for p, t, s in shots],
-                         "cliff": key in scenes.CLIFF and en.startswith(scenes.CLIFF[key])})
+    cold = 0
+    for key, bid, b in scenes.beat_ids():
+        en, ru, pause, sound, shots = b[:5]
+        extra = b[5] if len(b) > 5 else {}
+        if key == "COLD":
+            cold += 1
+        note = extra.get("note") or (vs.LINES[cold - 1][1] if key == "COLD" else (_first(NOTES, en) or ACT_NOTE[key]))
+        tts = en
+        for a, r in RESPELL.items():
+            tts = tts.replace(a, r)
+        rows.append({"id": bid, "act": key, "text": en, "ru": ru, "tts": tts, "note": note, "pause": pause,
+                     "pre": _first(PRE, en) or 0.0, "hit": _first(HITS, en), "sound": sound,
+                     "shots": [{"picture": p, "tech": t, "source": s} for p, t, s in shots],
+                     "cliff": key in scenes.CLIFF and en.startswith(scenes.CLIFF[key])})
     return rows
 
 

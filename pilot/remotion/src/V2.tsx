@@ -329,14 +329,18 @@ const ScreenView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 					<span>TICKET · ROW G, SEAT 12</span>
 					<span>$30</span>
 				</div>
-				{s.fees.map(([a, b, at]: [string, string, number], i: number) => {
+				{s.fees.map((fe: any, i: number) => {
+					const at = fe.at_ ?? -1;
 					if (t < at) return null;
 					const k = clamp((t - at) / 0.2, 0, 1);
+					const lab = fe.label ? (fe.label_ === undefined ? fe.label : fe.label.slice(0, clamp(Math.floor((t - fe.label_) / 0.04), 0, fe.label.length))) : '';
 					return (
-						<div key={i} style={{display: 'flex', justifyContent: 'space-between', marginTop: 14 * u, fontFamily: fam(BODY), fontSize: 34 * u, color: C.red, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u,
-							transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
-							<span>{a}</span>
-							<span>{b}</span>
+						<div key={i} style={{marginTop: 14 * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
+							<div style={{display: 'flex', justifyContent: 'space-between', fontFamily: fam(BODY), fontSize: 34 * u, color: C.red, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u}}>
+								<span>{fe.name}</span>
+								<span>{fe.amt}</span>
+							</div>
+							{fe.label ? <div style={{fontFamily: fam(TYPE), fontSize: 30 * u, color: C.ink, marginTop: 6 * u, minHeight: 36 * u, whiteSpace: 'pre'}}>{lab ? '↳ ' + lab : ''}</div> : null}
 						</div>
 					);
 				})}
@@ -347,7 +351,7 @@ const ScreenView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	return (
 		<AbsoluteFill>
 			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
-			<AbsoluteFill style={{transform: `scale(${push})`}}>
+			<AbsoluteFill style={{transform: `scale(${push * (s.zoom ?? 1)})`, transformOrigin: `50% ${(s.focus ?? 0.5) * 100}%`}}>
 				<Win u={u} SW={SW} SH={SH} tabs={tabs} active={active} t={t}>
 					{body}
 				</Win>
@@ -447,7 +451,20 @@ const MissingView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 					<div style={{position: 'absolute', left: 0, right: 0, top: h * 0.36, textAlign: 'center', fontFamily: fam(BODY), fontSize: fs, color: C.paper}}>{name}</div>
 					<div style={{position: 'absolute', left: w * 0.08, right: w * 0.08, top: h * 0.64, textAlign: 'center', fontFamily: fam(SERIF), fontSize: 28 * u, color: C.glow, lineHeight: 1.3}}>{s.what}</div>
 				</div>
-				{s.sub_ !== undefined ? <Stamp text={s.sub} at={s.sub_} t={t} x={SW / 2} y={(SH + h) / 2 + 20 * u} size={52 * u} color={C.accent} rot={-4} /> : null}
+				{s.pop_ !== undefined && t >= s.pop_ && t < s.pop_ + 0.5 ? (
+					<svg width={SW} height={SH} style={{position: 'absolute', left: 0, top: 0}}>
+						{Array.from({length: 12}).map((_, i) => {
+							const a = (i / 12) * Math.PI * 2;
+							const r0 = 60 * u + 200 * u * sm((t - s.pop_) / 0.25),
+								r1 = r0 + 70 * u * (1 - sm((t - s.pop_) / 0.5));
+							const cx = SW * 0.72,
+								cy = SH * 0.28;
+							return <line key={i} x1={cx + Math.cos(a) * r0} y1={cy + Math.sin(a) * r0} x2={cx + Math.cos(a) * r1} y2={cy + Math.sin(a) * r1} stroke={C.accent} strokeWidth={10 * u} strokeLinecap="round" />;
+						})}
+					</svg>
+				) : null}
+				{s.pop_ !== undefined && t >= s.pop_ ? <Stamp text="POP!" at={s.pop_} t={t} x={SW * 0.72} y={SH * 0.28} size={90 * u} color={C.accent} rot={8} /> : null}
+				{s.sub_ !== undefined || (s.sub && s.sub_ === undefined) ? <Stamp text={s.sub} at={s.sub_ ?? 0.3} t={t} x={SW / 2} y={(SH + h) / 2 + 20 * u} size={52 * u} color={C.accent} rot={-4} /> : null}
 			</AbsoluteFill>
 			{titleOn ? <ActTitle lines={s.title} k={title} SW={SW} SH={SH} u={u} t={t} /> : null}
 		</AbsoluteFill>
@@ -803,6 +820,32 @@ const FanView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	);
 };
 
+// two wires and a pair of scissors that cannot decide (A1.J2)
+const WiresView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
+	const y0 = SH * 0.42;
+	const wire = (dy: number, col: string) => `M ${SW * 0.12} ${y0 + dy} C ${SW * 0.35} ${y0 + dy - 60 * u}, ${SW * 0.6} ${y0 + dy + 70 * u}, ${SW * 0.88} ${y0 + dy}`;
+	const snip = s.snip_ ?? dur * 0.8;
+	const hes = Math.sin(t * 5.2) * 0.5 + noise2D('sc', t * 0.7, 0) * 0.5; // hovering between the wires
+	const sy = y0 + hes * 70 * u;
+	const sx = SW * 0.5 + Math.sin(t * 1.7) * 30 * u;
+	const open = 18 + 10 * Math.sin(t * 9);
+	return (
+		<AbsoluteFill>
+			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
+			<svg width={SW} height={SH} style={{position: 'absolute', left: 0, top: 0}}>
+				<path d={wire(-70 * u, '')} fill="none" stroke={C.red} strokeWidth={22 * u} strokeLinecap="round" />
+				<path d={wire(70 * u, '')} fill="none" stroke="#3E7BD6" strokeWidth={22 * u} strokeLinecap="round" />
+				<g transform={`translate(${sx} ${sy}) rotate(-90)`}>
+					<g transform={`rotate(${-open / 2})`}><path d={`M 0 0 L ${-14 * u} ${-170 * u} L ${14 * u} ${-170 * u} Z`} fill="#C9CED6" stroke={C.ink} strokeWidth={4 * u} /><circle cx={0} cy={60 * u} r={38 * u} fill="none" stroke={C.accent} strokeWidth={14 * u} /></g>
+					<g transform={`rotate(${open / 2})`}><path d={`M 0 0 L ${-14 * u} ${-170 * u} L ${14 * u} ${-170 * u} Z`} fill="#AEB4BE" stroke={C.ink} strokeWidth={4 * u} /><circle cx={0} cy={60 * u} r={38 * u} fill="none" stroke={C.accent} strokeWidth={14 * u} /></g>
+					<circle cx={0} cy={0} r={8 * u} fill={C.ink} />
+				</g>
+			</svg>
+			{t >= snip ? <div style={{position: 'absolute', left: 0, width: SW, top: SH * 0.66, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 80 * u, color: C.paper, opacity: sm((t - snip) / 0.2)}}>RED? BLUE?</div> : null}
+		</AbsoluteFill>
+	);
+};
+
 // the card-number field, close: sixteen digits typed as dots (no real number, no hands)
 const DigitsView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	const w = 1500 * u,
@@ -925,6 +968,7 @@ const ShotBody: React.FC<{s: any; SW: number; SH: number; u: number; dur: number
 		case 'casefolder': return <CaseFolderView {...p} />;
 		case 'fan': return <FanView {...p} />;
 		case 'digits': return <DigitsView {...p} />;
+		case 'wires': return <WiresView {...p} />;
 		default: return null;
 	}
 };

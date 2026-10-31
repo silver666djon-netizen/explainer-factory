@@ -23,7 +23,9 @@ LEAD = 0.15            # a picture arrives this much before its line
 PAL = {"night": "#0E1A2B", "glow": "#9FD8FF", "paper": "#F3E9D2", "ink": "#1E1B18", "red": "#D2452F", "accent": "#E8B53A",
        "green": "#2E6B4F"}
 MISSING = {"ep04v2_a1_glow": "Klot's GPT still: dark room at night, a laptop's glow (Grok clip k1 comes from it)",
-           "ep04v2_a1_wallet": "Klot's GPT still: an open wallet with $50 on a kitchen table at night"}
+           "ep04v2_a1_wallet": "Klot's GPT still: an open wallet with $50 on a kitchen table at night",
+           "ep04v2_g04_daydream": "Klot's GPT still: Larry daydreaming of a hot dog in a thought bubble (the bubble pops on 'won't')",
+           "ep04v2_g05_bomb": "Klot's GPT still: a cartoon bomb clock with a blank face (Grok clip k5: its fuse sparks)"}
 LOC_A2B = "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress"
 
 # ---------------------------------------------------------------------------------------------------------------- plan
@@ -76,10 +78,22 @@ S: dict[str, dict] = {
     "A1.9b": {"kind": "digits", "digits_on": "sixteen", "sfx": [{"kind": "typing", "on": "sixteen", "dur": 1.9}]},
     "A1.10a": {"kind": "fan", "pages": ["tabs", "seat", "timer", "form"]},
     "A1.10b": {"kind": "archive", "src": "archive-a2b", "caption": LOC_A2B, "cam": [[0.5, 0.5, 1.02], [0.5, 0.45, 1.12]]},
-    "A1.11a": {"kind": "screen", "mode": "fees", "fees": [["SERVICE FEE", "$8", "Service"], ["FACILITY FEE", "$6", "Facility"]],
-               "sfx": [{"kind": "kachunk", "on": "Service"}, {"kind": "kachunk", "on": "Facility"}]},
-    "A1.11b": {"kind": "bignum", "text": "$30", "slots": 3, "filled": ["+$8", "+$6", "+$4"], "fill3_on": "four",
-               "sfx": [{"kind": "kachunk", "on": "four"}]},
+    "A1.11a": {"kind": "screen", "mode": "fees", "fees": [{"name": "SERVICE FEE", "amt": "$8", "at_on": "Service"}],
+               "sfx": [{"kind": "kachunk", "on": "Service"}]},
+    "A1.11b": {"kind": "screen", "mode": "fees", "zoom": 1.3, "focus": 0.35,
+               "fees": [{"name": "SERVICE FEE", "amt": "$8", "label": "FOR THE SERVICE OF CHARGING YOU A FEE", "label_on": "service#2"}],
+               "sfx": [{"kind": "typing", "on": "service#2", "dur": 1.4}]},
+    "A1.J3a": {"kind": "screen", "mode": "fees", "zoom": 1.25, "focus": 0.62,
+               "fees": [{"name": "SERVICE FEE", "amt": "$8", "label": "FOR THE SERVICE OF CHARGING YOU A FEE"},
+                        {"name": "FACILITY FEE", "amt": "$6", "at_on": "Facility"},
+                        {"name": "PROCESSING", "amt": "$4", "at_on": "Processing", "label": "TO PROCESS THE OTHER FEES", "label_on": "process#2"}],
+               "sfx": [{"kind": "kachunk", "on": "Facility"}, {"kind": "kachunk", "on": "Processing"}, {"kind": "typing", "on": "process#2", "dur": 1.1}]},
+    "A1.J3b": {"kind": "bignum", "text": "$30", "slots": 3, "filled": ["+$8", "+$6", "+$4"], "fill_at": [0.02, 0.1, 0.18]},
+    "A1.J1a": {"kind": "missing", "file": "ep04v2_g04_daydream"},
+    "A1.J1b": {"kind": "missing", "file": "ep04v2_g04_daydream", "sub": "CLOSER ON THE THOUGHT BUBBLE", "pop_on": "won't",
+               "sfx": [{"kind": "pop", "on": "won't"}]},
+    "A1.J2a": {"kind": "missing", "file": "ep04v2_g05_bomb", "sub": "GROK CLIP k5 · FUSE SPARKING"},
+    "A1.J2b": {"kind": "wires", "snip_on": "wires", "sfx": [{"kind": "snip", "on": "wires", "lead": -0.6}]},
     "A1.12": {"kind": "screen", "mode": "total", "total": "$48", "total_on": "Total", "fees_shown": True,
               "sfx": [{"kind": "stab", "on": "Total"}]},
     "A1.13": {"kind": "bars", "bars": [["FIRST SCREEN", 30, "$30"], ["LAST SCREEN", 48, "$48"]], "stamp": "+60%", "stamp_on": "sixty",
@@ -123,21 +137,28 @@ def anchors(spec) -> list[str]:
             out += [x["on"] for x in v if "on" in x]
         elif k == "tabs":
             out += [t["on"] for t in v if "on" in t]
+        elif isinstance(v, list) and v and all(isinstance(x, dict) for x in v):
+            for x in v:
+                out += anchors(x)
     return out
 
 
 def word_time(beat: dict, prefix: str) -> float:
-    p = _norm(prefix)
+    """Spoken start of the first word starting with prefix ("service#2": the second such word)."""
+    nth = int(prefix.split("#")[1]) if "#" in prefix else 1
+    p = _norm(prefix.split("#")[0])
     for w, s, _e in beat["words"]:
         if _norm(w).startswith(p):
-            return beat["start"] + s
+            nth -= 1
+            if nth == 0:
+                return beat["start"] + s
     raise KeyError(f"{beat['id']}: no word '{prefix}' in {beat['text']!r}")
 
 
 def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], list[dict]]:
     sys.path.insert(0, str(EP / "v2"))
     import scenes  # the shots come from today's scene list (timings.json only carries the voice)
-    cur = {f"{k}.{i}": [{"picture": p, "tech": t, "source": s} for p, t, s in bb[4]] for k, bs in scenes.ACTS for i, bb in enumerate(bs, 1)}
+    cur = {bid: [{"picture": p, "tech": t, "source": s} for p, t, s in bb[4]] for _k, bid, bb in scenes.beat_ids()}
     beats = [{**b, "shots": cur[b["id"]]} for b in T["beats"] if b["act"] in acts]
     hit = {h["line"]: h for h in T["hits"]}
     vis = []
@@ -170,6 +191,9 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                 for key in list(d):
                     if isinstance(d[key], dict):
                         resolve(d[key])
+                    elif isinstance(d[key], list) and d[key] and all(isinstance(x, dict) for x in d[key]):
+                        for x in d[key]:
+                            resolve(x)
                     elif key.endswith("_on"):
                         v = d.pop(key)
                         d[key[:-3] + "_"] = ([round(word_time(b, x) - s0, 3) for x in v] if isinstance(v, list)

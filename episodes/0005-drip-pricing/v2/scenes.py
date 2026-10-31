@@ -93,6 +93,11 @@ ACTS.append(("A1", [
     ("Larry closes the first tab. Ten dollars saved. Larry is a genius.",
      "Ларри закрывает первую вкладку. Десять долларов сэкономлены. Ларри — гений.", 0.8, "tab-close click; a wry little pizzicato",
      [("tab 1 closes with a small whoosh; '+$10' floats up; a hand-drawn crown over Larry (o4)", "T1 handwriting crown, ironic", P)]),
+    ("He's already deciding what to spend the ten dollars on. He won't have to decide for long.",
+     "Он уже решает, на что потратить эти десять долларов. Решать ему придётся недолго.", 1.0, "dreamy harp glide; a soft POP on 'long'",
+     [("GPT ep04v2_g04_daydream: Larry daydreaming of a hot dog in a thought bubble", "T7 parallax", G),
+      ("closer on the thought bubble (new angle); on 'won't' the bubble pops (code-drawn pop burst over it)", "push-in + T2 pop", G)],
+     {"id": "A1.J1", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Remember that number. Thirty. Hold on to it — because over the next seven minutes it's going to change, quietly, three times.",
      "Запомните это число. Тридцать. Держитесь за него — потому что за следующие семь минут оно тихо изменится трижды.", 0.6, "bed thins, clock louder",
      [("$30 big in the centre, the ink of the number slowly breathing", "T8 ink bleed + T3", P),
@@ -105,6 +110,11 @@ ACTS.append(("A1", [
      "20:14. Появляются маленькие часы. «Ваш билет забронирован на десять минут». Никто Ларри не торопит. Часы просто… есть.", 0.7, "the tick moves to the foreground",
      [("code-drawn hold timer 10:00 slides into the screen corner and starts", "T2 spring in", P),
       ("close on the timer, digits ticking 9:59 · 9:58", "T3 breathing vignette", P)]),
+    ("Ten minutes on a red ticking clock. In the movies, that's when someone starts cutting wires.",
+     "Десять минут на красных тикающих часах. В кино в этот момент кто-то начинает резать провода.", 1.0, "the tick louder, a fuse fizz; silence after 'wires'",
+     [("GPT ep04v2_g05_bomb -> Grok k5: the hold timer as a cartoon bomb clock, its fuse sparking (digits code-drawn on its blank face)", "slow push", K),
+      ("code-drawn red wire and blue wire; a pair of scissors hovers between them, hesitating", "T2 + noise wobble on the scissors", P)],
+     {"id": "A1.J2", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("8:16. Name. Email. Card number. Larry types the sixteen digits he knows by heart.",
      "20:16. Имя. Почта. Номер карты. Ларри вводит шестнадцать цифр, которые знает наизусть.", 0.4, "typing clicks, sixteen of them",
      [("code-drawn card form fills field by field as each is read: NAME · EMAIL · CARD (no hands, no real number)", "T1 caret stroke", P),
@@ -113,10 +123,15 @@ ACTS.append(("A1", [
      "Если вы хоть раз покупали билет онлайн, вы знаете каждый из этих экранов. Вы побывали на всех.", 0.5, "bed",
      [("the four screens so far fan out like cards: tabs · seat map · timer · card form", "T12 blur on the fan", P),
       ("archive radio_city_ticket_booth_1942: people at a ticket window, every era buys this way", "slow push", A)]),
-    ("8:18. Next screen. Service fee: eight dollars. Facility fee: six. Processing: four.",
-     "20:18. Следующий экран. Сервисный сбор: восемь долларов. Сбор площадки: шесть. Обработка: четыре.", 0.4, "HEARTBEAT starts",
-     [("code-drawn fee lines drop in one by one: SERVICE $8 · FACILITY $6 · PROCESSING $4", "T2 stamp per line on the heartbeat", P),
-      ("slots ① ② ③ under $30: +$8, +$6 in place, +$4 lands on 'four'", "T2 stamp", P)]),
+    ("8:18. Next screen. Service fee: eight dollars — for the service of charging you a fee.",
+     "20:18. Следующий экран. Сервисный сбор: восемь долларов — за услугу по взиманию с вас сбора.", 0.9, "HEARTBEAT starts; a beat of silence after the joke",
+     [("code-drawn fee lines: SERVICE FEE $8 drops in", "T2 stamp", P),
+      ("closer on the line (new angle): under it the joke label is typed: FOR THE SERVICE OF CHARGING YOU A FEE", "typed label", P)]),
+    ("Facility fee: six. Processing: four dollars — to process the other fees.",
+     "Сбор площадки: шесть. Обработка: четыре доллара — за обработку остальных сборов.", 1.0, "heartbeat; a beat of silence after the joke",
+     [("closer on the fee lines (new angle): FACILITY FEE $6, PROCESSING $4 drop in; under PROCESSING the label is typed: TO PROCESS THE OTHER FEES", "T2 + typed label", P),
+      ("slots ① ② ③ under $30: +$8, +$6 in place, +$4 lands", "T2 stamp", P)],
+     {"id": "A1.J3", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Total: forty-eight dollars.",
      "Итого: сорок восемь долларов.", 0.6, "heartbeat",
      [("TOTAL $48 builds up from $30", "T4 eased number build", P)]),
@@ -181,6 +196,11 @@ ACTS.append(("A2", [
      "Потом на двенадцать дней он разделил покупателей надвое. Тот же сайт. Те же билеты. Две разные кассы.", 0.4, "bed",
      [("Ep.4 a5 queue split by a velvet rope; 'A' / 'B' written", "T1", G),
       ("code-drawn two checkouts side by side, '12 DAYS' counter ticks", "T2", P)]),
+    ("Twelve days. Most of us can't keep a diet for twelve days. StubHub kept an experiment going on millions of people.",
+     "Двенадцать дней. Большинство из нас не может продержаться на диете двенадцать дней. А StubHub продержал эксперимент на миллионах людей.", 1.0, "dry pizzicato",
+     [("GPT ep04v2_g06_diet: a 1950s fridge with a blank diet calendar taped on it; our overlay writes the day numbers and crosses it out on day 3", "slow push + T1 cross", G),
+      ("cut back: code-drawn 12-DAY counter over the split queue (Ep.4 a5)", "T2", P)],
+     {"id": "A2.J4", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Half saw the full price from the start. The other half saw the ticket alone — with the fees waiting at checkout.",
      "Половина видела полную цену с самого начала. Другая половина — только билет, а сборы ждали на кассе.", 0.4, "bed",
      [("Ep.4 a6/a7 marks: A = FULL PRICE, B = TICKET ONLY", "T1", G),
@@ -248,6 +268,10 @@ ACTS.append(("A2", [
       ("code-drawn tags $15 → $10 and $125 → $120, a '20 MIN' route between", "T6 route + T9", P),
       ("bars: 68% would drive vs 29% would drive", "T4 eased chart", P),
       ("'$5 = $5' written, then dial 4 clicks open", "T1 + T2", P)]),
+    ("Your brain also thinks you're going to the gym on Monday.",
+     "А ещё ваш мозг думает, что в понедельник вы пойдёте в спортзал.", 1.0, "dry beat",
+     [("code-drawn calendar page MONDAY; GYM written by hand, then crossed out", "T1 handwriting + strike", P)],
+     {"id": "A2.J5", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("And that little clock? It doesn't pick a lock. It's the lookout. Its only job is to make sure you don't stop and think.",
      "А те маленькие часы? Они не вскрывают замок. Они — на стрёме. Их единственная задача — чтобы вы не остановились подумать.", 0.5, "the Act 1 tick returns",
      [("ep04v2_a2_lookout: a lookout figure at a corner under a street lamp", "T7 parallax", G),
@@ -293,6 +317,10 @@ ACTS.append(("A3", [
       ("GAP ep04v2_g02 empty hotel gym — associate card GYM", "T2", G),
       ("code-drawn Wi-Fi icon over Larry's home laptop (o4) — WI-FI", "T2", P),
       ("GAP ep04v2_g03 an unopened yellowed newspaper at a hotel door — NEWSPAPER", "T2", G)]),
+    ("The gym? That's your Monday plan, now with a fee.",
+     "Спортзал? Это ваш план на понедельник, теперь с доплатой.", 1.0, "dry beat",
+     [("ep04v2_g02_gym with the MONDAY page from A2.J5 pinned on the wall (code-drawn, callback)", "slow push + T2 pin", G)],
+     {"id": "A3.J6", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Larry will use none of it. Larry will pay for all of it.",
      "Ларри не воспользуется ничем из этого. Ларри заплатит за всё.", 0.6, "wry beat",
      [("the four associate cards: USED 0 / PAID 4", "T4", P)]),
@@ -319,6 +347,10 @@ ACTS.append(("A3", [
      "Они утверждают, что сборы составляют от двадцати четырёх до сорока четырёх процентов полной цены — и что фанаты заплатили больше шестнадцати целых четырёх десятых миллиарда долларов обязательных сборов.", 0.4, "bed",
      [("Ep.4 b4 doc card FTC complaint ¶36", "T8 + T9", P),
       ("Ep.4 b5 stat $16.4bn · ALLEGED", "T2", P)]),
+    ("At eighteen dollars a time, that's an awful lot of Larrys.",
+     "По восемнадцать долларов за раз — это ужасно много Ларри.", 1.0, "a rising pizzicato as the icons multiply",
+     [("code-drawn grid of tiny Larry icons doubling until they fill the frame; the ALLEGED plate stays", "T4 eased build", P)],
+     {"id": "A3.J7", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Larry's eighteen dollars? Thirty-seven and a half percent of what he paid. Right inside that range.",
      "Восемнадцать долларов Ларри? Тридцать семь с половиной процентов от того, что он заплатил. Прямо внутри этого диапазона.", 0.5, "bed",
      [("Ep.4 b6 chart: 24% · Larry 37.5% · 44%", "T4 eased chart build", P)]),
@@ -339,6 +371,10 @@ ACTS.append(("A3", [
     ("Think about that. The honest seller looked more expensive. The honest seller lost.",
      "Подумайте об этом. Честный продавец выглядел дороже. Честный продавец проиграл.", 0.6, "bed thins",
      [("two code-drawn price tags: HONEST $40 vs '$30' (+fees hidden) — the crowd goes to $30", "T4", P)]),
+    ("Which is why there are so few honest sellers. Mystery solved.",
+     "Вот почему честных продавцов так мало. Загадка раскрыта.", 1.0, "heavy stamp thud on 'solved'",
+     [("ep04v2_a3_race: the empty honest shop; a CASE stamp SOLVED lands crooked on its blank sign", "T2 large stamp", G)],
+     {"id": "A3.J8", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("So this isn't one villain. It's a race. And in this race, whoever tells you the truth first finishes last.",
      "Так что это не один злодей. Это гонка. И в этой гонке тот, кто первым говорит вам правду, приходит последним.", 0.5, "race tension builds",
      [("ep04v2_a3_race via Grok k2: two 1950s shop fronts; slow push-in on the empty honest shop (left) while the long queue at the right shop shuffles", "slow push; overlay writes ALL-IN on the left sign, $30 on the right sign", K),
@@ -360,6 +396,10 @@ ACTS.append(("A4", [
     ("Cars got the total sixty-seven years before concert tickets did.",
      "Машины получили итоговую цену на шестьдесят семь лет раньше, чем билеты на концерты.", 0.5, "wry beat",
      [("code-drawn timeline 1958 —— 67 YEARS —— 2025", "T6 the line draws", P)]),
+    ("Somewhere, a 1958 sedan is laughing.",
+     "Где-то смеётся седан 1958 года.", 1.0, "two short horn honks",
+     [("GPT ep04v2_g07_car -> Grok k6: the cartoon 1958 sedan winks one headlight", "slow push", K)],
+     {"id": "A4.J9", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("Because in 2025, the cops finally showed up. On both sides of the ocean.",
      "Потому что в 2025 году копы наконец появились. По обе стороны океана.", 0.4, "siren swell",
      [("night map, two flags/stamps flash: UK · USA (no real logos)", "T2", P)]),
@@ -367,11 +407,19 @@ ACTS.append(("A4", [
      "Сначала Британия. С апреля 2025 года в цену должны входить все сборы, которых не избежать.", 0.4, "stamp",
      [("Ep.4 l1 customs desk + the ticket travels to the UK stop on the route", "T6 animated route", G),
       ("stamp UK · ALL UNAVOIDABLE FEES · APRIL 2025", "T2", P)]),
-    ("A driving-school group hid a three-pound booking fee from over eighty thousand learner drivers. It paid a four point two million pound fine. Three pounds. Very expensive pounds.",
-     "Группа автошкол прятала трёхфунтовый сбор за бронирование от более чем восьмидесяти тысяч учеников. Она заплатила штраф четыре целых две десятых миллиона фунтов. Три фунта. Очень дорогие фунты.", 0.6, "wry beat on 'very expensive pounds'",
+    ("A driving-school group hid a three-pound booking fee from over eighty thousand learner drivers. It paid a four point two million pound fine.",
+     "Группа автошкол прятала трёхфунтовый сбор за бронирование от более чем восьмидесяти тысяч учеников. Она заплатила штраф четыре целых две десятых миллиона фунтов.", 0.6, "hit on the fine",
      [("Ep.4 l8 small British car with the blank L-plate area", "T7 parallax", G),
       ("code-drawn '£3' tag × 80,000 tiles", "T4", P),
       ("Ep.4 l9 stat £4.2m fine · CMA", "T2 + hit", P)]),
+    ("A driving school. You'd think they'd check their mirrors.",
+     "Автошкола. Казалось бы, уж они-то смотрят в зеркала.", 1.0, "dry beat",
+     [("GPT ep04v2_g08_mirror: a rear-view mirror with a red police light reflected in it", "slow push, the red light pulses", G)],
+     {"id": "A4.J10", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
+    ("Three pounds. Very expensive pounds.",
+     "Три фунта. Очень дорогие фунты.", 0.8, "wry beat",
+     [("code-drawn card: £3 -> £4.2M, the arrow drawn", "T1 + T2", P)],
+     {"id": "A4.6b", "note": "dry and amused, deadpan"}),
     ("And in June 2026, StubHub's British arm was fined too.",
      "А в июне 2026 года оштрафовали и британское подразделение StubHub.", 0.4, "stamp",
      [("route stop UK: second stamp STUBHUB UK · FINED · JUNE 2026", "T2", P)]),
@@ -421,6 +469,11 @@ ACTS.append(("A4", [
      "Субботний вечер. Ларри на своём месте. Группа стоит каждого цента.", 0.8, "concert swell (Uppbeat, no vocals)",
      [("ep04v2_a4_seat: Larry in his seat, warm lights, smiling (Grok clip of the still)", "slow push", K),
       ("Ep.4 z0 Grok clip: Larry happy in the crowd", "T7", K)]),
+    ("He spent the ten dollars on a hot dog. Best hot dog of his life. All fees included.",
+     "Он потратил десять долларов на хот-дог. Лучший хот-дог в его жизни. Все сборы включены.", 1.0, "warm; stamp on 'included'",
+     [("GPT ep04v2_g09_hotdog: Larry at the concert with a hot dog, beaming", "slow push", G),
+      ("closer on the hot dog (new angle): stamp ALL FEES INCLUDED lands beside it (overlay)", "push-in + T2 large stamp", G)],
+     {"id": "A4.J11", "note": "dry and deadpan, a straight face; the punchline flat and quiet, then a beat of silence"}),
     ("So — why did Larry press Pay that first Tuesday? Because the first number had already done its job. By the last screen, the fee didn't arrive at a price. It arrived at a decision that was already made.",
      "Так почему же Ларри нажал «Оплатить» в тот первый вторник? Потому что первое число уже сделало своё дело. К последнему экрану сбор пришёл не к цене. Он пришёл к решению, которое уже было принято.", 0.8, "bed low, music drops out before 'already made'",
      [("the four dials again, all open", "T2", P),
@@ -443,6 +496,21 @@ ACTS.append(("A4", [
      "Подпишитесь, чтобы следующее дело нашло вас.", 1.5, "end sting",
      [("Ep.4 sub stack + end cards; sources plate (all 15 sources)", "T1", P)]),
 ]))
+
+def beat_ids():
+    """(act, beat id, beat) for every beat: an inserted beat carries its own id (6th element), the others keep their
+    original numbers (A1.1 ... A1.19), so the ids of the approved scene list never move."""
+    out = []
+    for key, beats in ACTS:
+        n = 0
+        for b in beats:
+            if len(b) > 5 and b[5].get("id"):
+                out.append((key, b[5]["id"], b))
+            else:
+                n += 1
+                out.append((key, f"{key}.{n}", b))
+    return out
+
 
 CLIFF = {"A1": "To answer that", "A2": "Because when a trick", "A3": "So who stops"}
 STILLS = ["ep04v2_a1_wallet", "ep04v2_a1_glow", "ep04v2_a2_safe", "ep04v2_a2_mug", "ep04v2_a2_calculators",
@@ -467,18 +535,26 @@ def main(out: str) -> int:
     t, rows, breaks, shots_n, longest, over = 0.0, [], [], 0, 0.0, False
     lines_md = []
     act_title_pad = 0.0
+    ids = {id(b): bid for _k, bid, b in beat_ids()}
+    tj = Path(__file__).with_name("timings.json")
+    real = {b["id"]: b for b in json.loads(tj.read_text())["beats"]} if tj.exists() else {}
     for key, beats in ACTS:
         name, pal = PALETTE[key]
-        raw = sum(len(en.split()) / WPS + pause for en, _, pause, _, _ in beats)
+        raw = sum(len(b[0].split()) / WPS + b[2] for b in beats)
         scale = (cold_len / raw) if (key == "COLD" and cold_len) else 1.0
         lines_md.append(f"\n## {name}  ·  starts {tc(t)}\n\n**Palette:** {pal}\n")
         lines_md.append("| # | Time | Narration (EN) / Перевод (RU) | Shot · picture | Technique | Sound | Source |")
         lines_md.append("|---|---|---|---|---|---|---|")
-        for bi, (en, ru, pause, sound, shots) in enumerate(beats, 1):
-            d = (len(en.split()) / WPS + pause) * scale
+        for bb in beats:
+            en, ru, pause, sound, shots = bb[:5]
+            bid = ids[id(bb)]
+            if bid in real:  # the real voice: this line's start to the next line's start
+                t, d = real[bid]["start"], real[bid]["next"] - real[bid]["start"]
+            else:
+                d = (len(en.split()) / WPS + pause) * scale
             per = d / len(shots)
             if per > MAX_SHOT:
-                print(f"OVER 8 s: {key} #{bi} {per:.1f}s x{len(shots)} {en[:40]}", file=sys.stderr)
+                print(f"OVER 8 s: {bid} {per:.1f}s x{len(shots)} {en[:40]}", file=sys.stderr)
                 over = True
             longest = max(longest, per)
             for si, (pic, tech, src) in enumerate(shots):
@@ -486,10 +562,11 @@ def main(out: str) -> int:
                 shots_n += 1
                 narr = f"{en}<br>*{ru}*" if si == 0 else "↳ (same line)"
                 snd = sound if si == 0 else ""
-                lines_md.append(f"| {key}.{bi}{chr(97 + si) if len(shots) > 1 else ''} | {tc(a)}–{tc(a + per)} ({per:.1f}s) | {narr} | {pic} | {tech} | {snd} | {src} |")
+                lines_md.append(f"| {bid}{chr(97 + si) if len(shots) > 1 else ''} | {tc(a)}–{tc(a + per)} ({per:.1f}s) | {narr} | {pic} | {tech} | {snd} | {src} |")
             t += d
             if key in CLIFF and en.startswith(CLIFF[key]):
-                breaks.append((key, t + 0.4, en, ru))
+                rb = [x for x in json.loads(tj.read_text())["breaks"] if x["after"] == bid] if real else []
+                breaks.append((key, rb[0]["at"] if rb else t + 0.4, en, ru))
         if key != "A4":
             t += act_title_pad
     total = t
