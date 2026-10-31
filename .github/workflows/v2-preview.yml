@@ -81,7 +81,6 @@ jobs:
           python tools/v2_qc.py pv rel 2>&1 | tee qc.log || true
           tail -n 60 qc.log | python3 -c 'import sys; print("::notice title=qc::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
       - name: Telegram copy of the long preview (bot limit)
-        if: github.event.inputs.render != 'no'
         run: |
           f=pv/cs_ep04v2_preview2_long.mp4
           [ -f "$f" ] && ffmpeg -v error -y -i "$f" -vf scale=1280:-2 -c:v libx264 -preset medium -crf 26 -c:a copy -movflags +faststart pv/cs_ep04v2_preview2_long_tg.mp4 && ls -la pv/*_tg.mp4 || true
@@ -90,7 +89,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls pv/qc_preview2.md pv/sheet_*.png 2>/dev/null || true)
+          files=$(ls pv/qc_preview2.md pv/sheet_*.png pv/*_tg.mp4 2>/dev/null || true)
           [ "${{ github.event.inputs.render }}" != "no" ] && files="$files $(ls pv/cs_ep04v2_preview2_*.mp4 pv/render_time.txt 2>/dev/null || true)"
           [ -n "$files" ] || exit 0
           if tools/rel.sh id ep04v2-preview2 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-preview2 $files
