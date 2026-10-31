@@ -283,7 +283,7 @@ ACTS.append(("A3", [
      "Внутри неё, рядом с настоящими налогами, сидит второй член банды.", 0.4, "low brass",
      [("the line opens: CITY TAX · STATE TAX · RESORT FEE — the last one in shadow", "T3", P)]),
     ("Name: the resort fee. Aliases: amenity fee, destination fee.",
-     "Имя: курортный сбор. Клички: сбор за удобства, сбор за направление.", 0.4, "camera flash, stamp",
+     "Имя: курортный сбор. Клички: сбор за удобства, сбор за местоположение.", 0.4, "camera flash, stamp",
      [("Ep.4 m2 mugshot (hotel key fob) + plate RESORT FEE, stamp SUSPECT", "T2 spring stamp + flash", G),
       ("ep04v2_a3_lineup: the lineup wall, aliases written on the height chart", "T1", G)]),
     ("Known associates: a pool Larry will never swim in, a gym he will never visit, Wi-Fi he already pays for at home, and a newspaper nobody has opened since 1998.",
@@ -340,11 +340,11 @@ ACTS.append(("A3", [
      [("two code-drawn price tags: HONEST $40 vs '$30' (+fees hidden) — the crowd goes to $30", "T4", P)]),
     ("So this isn't one villain. It's a race. And in this race, whoever tells you the truth first finishes last.",
      "Так что это не один злодей. Это гонка. И в этой гонке тот, кто первым говорит вам правду, приходит последним.", 0.5, "race tension builds",
-     [("ep04v2_a3_race (Grok clip of the still): racers, one carrying an ALL-IN sign falls behind", "T12 motion blur", K),
-      ("code-drawn finishing order: the honest runner LAST", "T2", P)]),
+     [("ep04v2_a3_race via Grok k2: two 1950s shop fronts; slow push-in on the empty honest shop (left) while the long queue at the right shop shuffles", "slow push; overlay writes ALL-IN on the left sign, $30 on the right sign", K),
+      ("hold on the empty left doorway; code-drawn tally under each shop: LEFT 0 · RIGHT a long count", "T4 eased count", P)]),
     ("So who stops a race that nobody can afford to quit?",
      "Так кто остановит гонку, из которой никто не может себе позволить выйти?", 1.2, "a distant siren rises, cut → AD BREAK",
-     [("freeze on the race, red light sweeps across the frame (Act 4 teaser)", "T11 ink wipe to red", K)]),
+     [("last frame of k2 (both shop fronts, ALL-IN and $30 signs), red light sweeps across the frame (Act 4 teaser)", "T11 ink wipe to red", K)]),
 ]))
 
 ACTS.append(("A4", [
