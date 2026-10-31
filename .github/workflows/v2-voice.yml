@@ -1,0 +1,45 @@
+name: Ep.4 v2 voice (fable, full script)
+# Klot Stage 2: the whole English narration in voice A (OpenAI gpt-audio "fable" via OpenRouter), line by line,
+# STT-diffed and retaken (tools/v2_voice.py). Voice track + timings.json + ad-break table into draft ep04v2-preview1.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-v1
+          restore-keys: kokoro-
+      - uses: actions/cache@v4
+        with:
+          path: .cache/v2voice
+          key: v2voice-${{ hashFiles('episodes/0005-drip-pricing/v2/scenes.py', 'tools/v2_voice.py') }}
+          restore-keys: v2voice-
+      - run: pip install -q numpy scipy requests soundfile faster-whisper pyyaml pillow 2>&1 | tail -2
+      - name: Voice every line
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+        run: |
+          set -o pipefail
+          python tools/v2_voice.py v2 2>&1 | tee v2.log; rc=$?
+          grep -E "^(total|DIFF)" v2.log | python3 -c 'import sys; print("::notice title=voice::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+          ffmpeg -v error -y -f f32le -ar 24000 -ac 1 -i <(python3 -c "import numpy,sys; sys.stdout.buffer.write(numpy.load('v2/_voice.npy').astype('float32').tobytes())") -c:a flac v2/voice_24k.flac
+          ls -la v2
+          exit 0
+      - name: Publish (draft ep04v2-preview1)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files="v2/cs_ep04v2_voice_en.mp3 v2/voice_24k.flac v2/timings.json v2/voice_stt.md v2/ad_breaks.md"
+          if tools/rel.sh id ep04v2-preview1 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-preview1 $files
+          else gh release create ep04v2-preview1 $files --title "CoinSense · EP04v2 · PREVIEW 1" --notes "Ep.4 v2 preview 1 (draft, not for upload)." --prerelease --draft; fi
