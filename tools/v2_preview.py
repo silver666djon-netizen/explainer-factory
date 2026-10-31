@@ -22,98 +22,123 @@ FPS = 30
 LEAD = 0.15            # a picture arrives this much before its line
 PAL = {"night": "#0E1A2B", "glow": "#9FD8FF", "paper": "#F3E9D2", "ink": "#1E1B18", "red": "#D2452F", "accent": "#E8B53A",
        "green": "#2E6B4F"}
-MISSING = {"ep04v2_a1_glow": "Klot's GPT still: dark room at night, a laptop's glow (Grok clip k1 comes from it)",
+MISSING_OLD = {"ep04v2_a1_glow": "Klot's GPT still: dark room at night, a laptop's glow (Grok clip k1 comes from it)",
            "ep04v2_a1_wallet": "Klot's GPT still: an open wallet with $50 on a kitchen table at night",
            "ep04v2_g04_daydream": "Klot's GPT still: Larry daydreaming of a hot dog in a thought bubble (the bubble pops on 'won't')",
            "ep04v2_g05_bomb": "Klot's GPT still: a cartoon bomb clock with a blank face (Grok clip k5: its fuse sparks)"}
+MISSING = {"ep04v2_a1_wallet": "an open wallet with $50 on a kitchen table at night", "ep04v2_g01_blueprint": "a blank blueprint on a drafting table",
+           "ep04v2_g04_daydream": "Larry daydreaming of a hot dog in a thought bubble", "ep04v2_g05_bomb": "a cartoon bomb clock with a blank face",
+           "ep04v2_s04_wall_clock": "a 1950s kitchen wall clock"}
 LOC_A2B = "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Library of Congress"
 
 # ---------------------------------------------------------------------------------------------------------------- plan
 # one entry per shot id of docs/ep04v2_scenes.md (COLD + Act 1). "*_on": a word of the shot's line (prefix match) whose
 # spoken start becomes the matching key in seconds from the shot start. sfx: {kind, on|at}.
+# The picture-first plan (Klot R41-R43, episodes/.../v2/picture_first.py): every shot has a picture base ("base", a
+# logical name resolved in BASES: Klot's still when it is in the repo, else a tagged Ep.4 stand-in, else a labelled
+# placeholder), a camera ("cam", fractions of the logical still), the checkout screen-replaced into a blank laptop screen
+# ("screen", a page spec) and overlays in frame space ("overs"). "*_on": a spoken word -> seconds from the shot start.
+W_ = lambda **k: k  # noqa: E731
 S: dict[str, dict] = {
-    "COLD.1": {"kind": "missing", "file": "ep04v2_a1_glow"},
-    "COLD.2": {"kind": "icons", "items": ["mask", "car", "megaphone"], "cross_on": ["masks", "car", "voice"],
-               "sfx": [{"kind": "pop", "on": "masks"}, {"kind": "pop", "on": "getaway"}, {"kind": "pop", "on": "raised"}]},
-    "COLD.3a": {"kind": "screen", "mode": "form", "fill": [0.1, 0.95], "sfx": [{"kind": "typing", "at": 0.3, "dur": 2.4}]},
-    "COLD.3b": {"kind": "screen", "mode": "form", "fill": [1, 1], "tick_on": "ticked", "thanks_on": "thank",
-                "sfx": [{"kind": "tap", "on": "ticked"}, {"kind": "tap", "on": "thank"}]},
-    "COLD.4a": {"kind": "still", "src": "o4", "cam": [[0.5, 0.5, 1.03], [0.47, 0.42, 1.12]],
-                "namecard": {"name": "LARRY", "box": [0.03, 0.08, 0.27, 0.36], "box_short": [0.7, 0.04, 0.97, 0.3], "stamp": "FICTIONAL", "stamp_on": "made"},
-                "sfx": [{"kind": "stamp", "on": "made"}]},
-    "COLD.4b": {"kind": "feecard", "lines": ["SERVICE FEE", "FACILITY FEE", "PROCESSING"], "amounts": None,
-                "stamp": "REAL", "stamp_on": "not", "sfx": [{"kind": "stamp", "on": "not"}]},
-    "COLD.5": {"kind": "still", "src": "o4", "cam": [[0.55, 0.48, 1.05], [0.6, 0.45, 1.35]], "glow": True},
-    "COLD.6": {"kind": "screen", "mode": "whip", "pages": ["list", "seat", "form"], "page_on": ["found", "picked", "typed"],
-               "sfx": [{"kind": "whoosh", "on": "found"}, {"kind": "whoosh", "on": "picked"}, {"kind": "whoosh", "on": "typed"}]},
-    "COLD.7": {"kind": "screen", "mode": "total", "total": "$48", "total_on": "number", "pay_on": "paid",
-               "sfx": [{"kind": "stab", "on": "number"}]},
-    "COLD.8": {"kind": "blueprint", "dark": True},
-    "COLD.9": {"kind": "casefolder", "number": "004", "title": "THE SEVEN-MINUTE HEIST", "slide_on": "Case",
-               "type_on": ["Case", "seven"], "sfx": [{"kind": "paper", "on": "Case", "lead": 0.45}, {"kind": "type", "on": "Case"},
-                                                     {"kind": "type", "on": "seven"}]},
-    "A1.1a": {"kind": "missing", "file": "ep04v2_a1_wallet", "title": ["ACT 1", "THE MARK"]},
-    "A1.1b": {"kind": "calendar", "from": "$50", "to": "$50", "days": ["TUE", "WED", "THU", "FRI"]},
-    "A1.2a": {"kind": "route", "from": "LARRY'S FLAT", "to": "THE CONCERT HALL", "label": "2 HOURS", "draw_on": "two",
-              "day": "SATURDAY"},
-    "A1.2b": {"kind": "still", "src": "o4", "cam": [[0.45, 0.33, 1.25], [0.43, 0.27, 1.6]]},
-    "A1.3": {"kind": "screen", "mode": "tabs", "tabs": [{"price": "$40", "tag": "ALL-IN", "on": "forty"}], "hl_on": "Everything",
-             "sfx": [{"kind": "tap", "on": "first"}]},
-    "A1.4": {"kind": "screen", "mode": "tabs", "tabs": [{"price": "$40", "tag": "ALL-IN"}, {"price": "$30", "on": "thirty"}],
-             "active": 1, "sfx": [{"kind": "tap", "on": "second"}]},
-    "A1.5": {"kind": "screen", "mode": "tabs", "tabs": [{"price": "$40", "tag": "ALL-IN"}, {"price": "$30"}], "active": 1,
-             "close_on": "closes", "saved_on": "Ten", "crown_on": "genius",
-             "sfx": [{"kind": "tap", "on": "closes"}, {"kind": "ding", "on": "Ten"}, {"kind": "marker", "on": "genius", "dur": 0.7}]},
-    "A1.6a": {"kind": "bignum", "text": "$30"},
-    "A1.6b": {"kind": "bignum", "text": "$30", "slots_on": "three", "slots": 3, "sfx": [{"kind": "pop", "on": "three"}]},
-    "A1.7a": {"kind": "screen", "mode": "seat", "seat": "G12", "fly_on": "Row", "light_on": "12",
-              "sfx": [{"kind": "whoosh", "on": "Row"}, {"kind": "pop", "on": "12"}]},
-    "A1.7b": {"kind": "clip", "src": "a10", "cam": [[0.5, 0.5, 1.0], [0.5, 0.55, 1.08]]},
-    "A1.8a": {"kind": "screen", "mode": "timer", "timer_on": "clock", "from": 600, "note": "Your ticket is held for 10 minutes",
-              "sfx": [{"kind": "pop", "on": "clock"}]},
-    "A1.8b": {"kind": "timer", "from": 596},
-    "A1.9a": {"kind": "screen", "mode": "form", "fillat_on": ["Name", "Email", "Card"],
-              "sfx": [{"kind": "typing", "on": "Name", "dur": 0.6}, {"kind": "typing", "on": "Email", "dur": 0.6},
-                      {"kind": "typing", "on": "Card", "dur": 0.9}]},
-    "A1.9b": {"kind": "digits", "digits_on": "sixteen", "sfx": [{"kind": "typing", "on": "sixteen", "dur": 1.9}]},
-    "A1.10a": {"kind": "fan", "pages": ["tabs", "seat", "timer", "form"]},
-    "A1.10b": {"kind": "archive", "src": "archive-a2b", "caption": LOC_A2B, "cam": [[0.5, 0.5, 1.02], [0.5, 0.45, 1.12]]},
-    "A1.11a": {"kind": "screen", "mode": "fees", "fees": [{"name": "SERVICE FEE", "amt": "$8", "at_on": "Service"}],
-               "sfx": [{"kind": "kachunk", "on": "Service"}]},
-    "A1.11b": {"kind": "screen", "mode": "fees", "zoom": 1.3, "focus": 0.35,
-               "fees": [{"name": "SERVICE FEE", "amt": "$8", "label": "FOR THE SERVICE OF CHARGING YOU A FEE", "label_on": "service#2"}],
-               "sfx": [{"kind": "typing", "on": "service#2", "dur": 1.4}]},
-    "A1.J3a": {"kind": "screen", "mode": "fees", "zoom": 1.25, "focus": 0.62,
-               "fees": [{"name": "SERVICE FEE", "amt": "$8", "label": "FOR THE SERVICE OF CHARGING YOU A FEE"},
-                        {"name": "FACILITY FEE", "amt": "$6", "at_on": "Facility"},
-                        {"name": "PROCESSING", "amt": "$4", "at_on": "Processing", "label": "TO PROCESS THE OTHER FEES", "label_on": "process#2"}],
-               "sfx": [{"kind": "kachunk", "on": "Facility"}, {"kind": "kachunk", "on": "Processing"}, {"kind": "typing", "on": "process#2", "dur": 1.1}]},
-    "A1.J3b": {"kind": "bignum", "text": "$30", "slots": 3, "filled": ["+$8", "+$6", "+$4"], "fill_at": [0.02, 0.1, 0.18]},
-    "A1.J1a": {"kind": "missing", "file": "ep04v2_g04_daydream"},
-    "A1.J1b": {"kind": "missing", "file": "ep04v2_g04_daydream", "sub": "CLOSER ON THE THOUGHT BUBBLE", "pop_on": "won't",
-               "sfx": [{"kind": "pop", "on": "won't"}]},
-    "A1.J2a": {"kind": "missing", "file": "ep04v2_g05_bomb", "sub": "GROK CLIP k5 · FUSE SPARKING"},
-    "A1.J2b": {"kind": "wires", "snip_on": "wires", "sfx": [{"kind": "snip", "on": "wires", "lead": -0.6}]},
-    "A1.12": {"kind": "screen", "mode": "total", "total": "$48", "total_on": "Total", "fees_shown": True,
-              "sfx": [{"kind": "stab", "on": "Total"}]},
-    "A1.13": {"kind": "bars", "bars": [["FIRST SCREEN", 30, "$30"], ["LAST SCREEN", 48, "$48"]], "stamp": "+60%", "stamp_on": "sixty",
-              "sfx": [{"kind": "stamp", "on": "sixty"}]},
-    "A1.14a": {"kind": "versus", "left": "$40", "left_tag": "THE TAB HE CLOSED", "right": "$48", "right_tag": "WHAT HE PAYS",
-               "badge": "+$8", "badge_on": "eight", "sfx": [{"kind": "pop", "on": "eight"}]},
-    "A1.14b": {"kind": "missing", "file": "ep04v2_a1_wallet", "sub": "$2 LEFT UNTIL FRIDAY", "sub_on": "two"},
-    "A1.15a": {"kind": "timer", "from": 360, "big": True},
-    "A1.15b": {"kind": "still", "src": "a11", "cam": [[0.5, 0.55, 1.05], [0.5, 0.6, 1.18]], "dream": True},
-    "A1.16": {"kind": "screen", "mode": "pay", "press_on": "presses", "sfx": [{"kind": "tap", "on": "presses"}]},
-    "A1.17a": {"kind": "timeline", "steps": [["8:12", "TWO TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"],
-                                             ["8:18", "FEES"], ["8:19", "PAY"]]},
-    "A1.17b": {"kind": "timeline", "steps": [["8:12", "TWO TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"],
-                                             ["8:18", "FEES"], ["8:19", "PAY"]], "drawn": True, "total": "$18", "circle_on": "number",
-               "sfx": [{"kind": "marker", "on": "number", "dur": 0.6}]},
-    "A1.18": {"kind": "versus", "left": "$40", "left_tag": "CLOSED", "left_cross": True, "right": "$48", "right_tag": "PAID",
-              "badge": "?", "badge_on": "forty-eight", "sfx": [{"kind": "stamp", "on": "forty-eight"}]},
-    "A1.19a": {"kind": "blueprint", "dark": True, "tint": "green"},
-    "A1.19b": {"kind": "still", "src": "a5", "cam": [[0.5, 0.45, 1.5], [0.5, 0.5, 1.02]], "green_creep": True},
+    "COLD.1": W_(base="a1_glow", cam=[[0.5, 0.5, 1.02], [0.6, 0.52, 1.25]]),
+    "COLD.2": W_(base="s01", cam=[[0.45, 0.5, 1.04], [0.52, 0.5, 1.1]],
+                 overs=[W_(t="icons_strip", items=["mask", "car", "megaphone"], cross_on=["masks", "car", "voice"])],
+                 sfx=[{"kind": "pop", "on": "masks"}, {"kind": "pop", "on": "getaway"}, {"kind": "pop", "on": "raised"}]),
+    "COLD.3a": W_(base="s02", cam=[[0.5, 0.45, 1.0], [0.52, 0.42, 1.12]], screen=W_(mode="form", fill=[0.1, 0.95]),
+                  sfx=[{"kind": "typing", "at": 0.3, "dur": 2.4}]),
+    "COLD.3b": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.58, 0.55, 1.35]], screen=W_(mode="form", fill=[1, 1], tick_on="ticked", thanks_on="thank"),
+                  sfx=[{"kind": "tap", "on": "ticked"}, {"kind": "tap", "on": "thank"}]),
+    "COLD.4a": W_(base="o4", cam=[[0.5, 0.5, 1.03], [0.47, 0.42, 1.12]],
+                  overs=[W_(t="namecard", name="LARRY", box=[0.03, 0.08, 0.27, 0.36], box_short=[0.7, 0.04, 0.97, 0.3], stamp="FICTIONAL", stamp_on="made")],
+                  sfx=[{"kind": "kachunk", "on": "made"}]),
+    "COLD.4b": W_(base="s03", cam=[[0.5, 0.42, 1.1], [0.5, 0.4, 1.25]],
+                  screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt=""), W_(name="FACILITY FEE", amt=""), W_(name="PROCESSING", amt="")]),
+                  overs=[W_(t="stamp", text="REAL", at_on="not", x=0.62, y=0.42, size=150)], sfx=[{"kind": "stamp", "on": "not"}]),
+    "COLD.5": W_(base="o4clip", cam=[[0.55, 0.48, 1.05], [0.6, 0.45, 1.3]]),
+    "COLD.6": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.1]], screen=W_(mode="whip", pages=["list", "seat", "form"], page_on=["found", "picked", "typed"]),
+                 sfx=[{"kind": "whoosh", "on": "found"}, {"kind": "whoosh", "on": "picked"}, {"kind": "whoosh", "on": "typed"}]),
+    "COLD.7": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.45, 0.4, 1.3]], screen=W_(mode="total", total="$48", total_on="number", pay_on="paid"),
+                 sfx=[{"kind": "stab", "on": "number"}]),
+    "COLD.8": W_(base="g01", cam=[[0.5, 0.5, 1.05], [0.5, 0.5, 1.15]], dark=True,
+                 overs=[W_(t="plan_lines", color="#FFFFFF", at=0.2)]),
+    "COLD.9": W_(base="l1", cam=[[0.5, 0.55, 1.05], [0.5, 0.55, 1.15]],
+                 overs=[W_(t="case_folder", number="004", title="THE SEVEN-MINUTE HEIST", slide_on="Case", type_on=["Case", "seven"])],
+                 sfx=[{"kind": "paper", "on": "Case", "lead": 0.45}, {"kind": "type", "on": "Case"}, {"kind": "type", "on": "seven"}]),
+    "A1.1a": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.02], [0.5, 0.5, 1.12]], title=["ACT 1", "THE MARK"]),
+    "A1.1b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.15], [0.5, 0.48, 1.3]],
+                overs=[W_(t="calendar_strip", days=["TUE", "WED", "THU", "FRI"], amount="$50", write_on="fifty")]),
+    "A1.2a": W_(base="a4_seat", cam=[[0.5, 0.55, 1.03], [0.5, 0.58, 1.15]], dream=True,
+                overs=[W_(t="plate", text="SATURDAY · 2 HOURS AWAY", at_on="Saturday", x=0.5, y=0.12)]),
+    "A1.2b": W_(base="s06", cam=[[0.42, 0.45, 1.02], [0.36, 0.42, 1.14]]),
+    "A1.3": W_(base="s02", cam=[[0.5, 0.45, 1.0], [0.52, 0.42, 1.1]],
+               screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN", on="forty")], hl_on="Everything"), sfx=[{"kind": "tap", "on": "first"}]),
+    "A1.4": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.42, 0.4, 1.3]],
+               screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30", on="thirty")], active=1), sfx=[{"kind": "tap", "on": "second"}]),
+    "A1.5a": W_(base="s03", cam=[[0.5, 0.45, 1.1], [0.5, 0.45, 1.2]],
+                screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30")], active=1, close_on="closes", saved_on="Ten"),
+                sfx=[{"kind": "tap", "on": "closes"}, {"kind": "ding", "on": "Ten"}]),
+    "A1.5b": W_(base="s06", cam=[[0.32, 0.36, 1.6], [0.32, 0.33, 1.8]], overs=[W_(t="crown", draw_on="genius", x=0.47, y=0.11, w=0.16)]),
+    "A1.J1a": W_(base="g04", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]]),
+    "A1.J1b": W_(base="g04", cam=[[0.6, 0.35, 1.3], [0.62, 0.3, 1.5]], overs=[W_(t="pop", at_on="won't", x=0.5, y=0.35)],
+                 sfx=[{"kind": "pop", "on": "won't"}]),
+    "A1.6a": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.38, 0.42, 1.45]], screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30")], active=1, single=True)),
+    "A1.6b": W_(base="s02", cam=[[0.45, 0.45, 1.05], [0.45, 0.45, 1.12]], screen=W_(mode="tabs", tabs=[W_(price="$30")], active=0),
+                overs=[W_(t="slots", slots_on="three", x=0.82, y=0.3)], sfx=[{"kind": "pop", "on": "three"}]),
+    "A1.7a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.12]], screen=W_(mode="seat", seat="G12", fly_on="Row", light_on="12"),
+                sfx=[{"kind": "whoosh", "on": "Row"}, {"kind": "pop", "on": "12"}]),
+    "A1.7b": W_(base="a10clip", cam=[[0.5, 0.5, 1.0], [0.5, 0.55, 1.08]]),
+    "A1.8a": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.65, 0.3, 1.4]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
+    "A1.8b": W_(base="s04", cam=[[0.45, 0.45, 1.02], [0.36, 0.33, 1.3]]),
+    "A1.J2a": W_(base="g05", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
+    "A1.J2b": W_(base="g05", cam=[[0.5, 0.55, 1.25], [0.5, 0.55, 1.35]], overs=[W_(t="wires", snip_on="wires")],
+                 sfx=[{"kind": "snip", "on": "wires", "lead": -0.6}]),
+    "A1.9a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.52, 0.42, 1.12]], screen=W_(mode="form", fillat_on=["Name", "Email", "Card"]),
+                sfx=[{"kind": "typing", "on": "Name", "dur": 0.6}, {"kind": "typing", "on": "Email", "dur": 0.6}, {"kind": "typing", "on": "Card", "dur": 0.9}]),
+    "A1.9b": W_(base="s03", cam=[[0.5, 0.5, 1.25], [0.5, 0.52, 1.45]], screen=W_(mode="form", fill=[0.67, 1.0], digits_on="sixteen"),
+                sfx=[{"kind": "typing", "on": "sixteen", "dur": 1.9}]),
+    "A1.10a": W_(base="arch_a2", cam=[[0.5, 0.5, 1.02], [0.5, 0.46, 1.12]], caption="Waiting in line at Loew's Capitol, Washington, 1939 · Library of Congress"),
+    "A1.10b": W_(base="arch_a2b", cam=[[0.5, 0.5, 1.02], [0.5, 0.45, 1.12]], caption=LOC_A2B),
+    "A1.11a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.52, 0.42, 1.1]], screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", at_on="Service")]),
+                 sfx=[{"kind": "kachunk", "on": "Service"}]),
+    "A1.11b": W_(base="s03", cam=[[0.45, 0.4, 1.3], [0.45, 0.38, 1.45]],
+                 screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE", label_on="service#2")]),
+                 sfx=[{"kind": "typing", "on": "service#2", "dur": 1.4}]),
+    "A1.J3a": W_(base="s03", cam=[[0.5, 0.55, 1.2], [0.5, 0.58, 1.35]],
+                 screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE"),
+                                              W_(name="FACILITY FEE", amt="$6", at_on="Facility"),
+                                              W_(name="PROCESSING", amt="$4", at_on="Processing", label="TO PROCESS THE OTHER FEES", label_on="process#2")]),
+                 sfx=[{"kind": "kachunk", "on": "Facility"}, {"kind": "kachunk", "on": "Processing"}, {"kind": "typing", "on": "process#2", "dur": 1.1}]),
+    "A1.J3b": W_(base="s05", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.12]], overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.05, 0.25, 0.45], x=0.84, y=0.2)]),
+    "A1.12": W_(base="key", key="$48", sub="TOTAL", at=0.15, sfx=[{"kind": "stab", "on": "Total"}]),
+    "A1.13": W_(base="s05", cam=[[0.5, 0.42, 1.15], [0.5, 0.38, 1.35]],
+                overs=[W_(t="bars_card", bars=[["FIRST", 30, "$30"], ["LAST", 48, "$48"]], x=0.8, y=0.62),
+                       W_(t="stamp", text="+60%", at_on="sixty", x=0.78, y=0.25, size=120)], sfx=[{"kind": "stamp", "on": "sixty"}]),
+    "A1.14a": W_(base="s03", cam=[[0.5, 0.45, 1.08], [0.5, 0.42, 1.2]], screen=W_(mode="versus", left="$40", right="$48", badge="+$8", badge_on="eight"),
+                 sfx=[{"kind": "pop", "on": "eight"}]),
+    "A1.14b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.2], [0.5, 0.5, 1.35]], overs=[W_(t="note", text="$2 LEFT UNTIL FRIDAY", write_on="two", x=0.62, y=0.2)]),
+    "A1.15a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.55, 0.42, 1.12]], screen=W_(mode="timer", timer_=0.0, secs=360)),
+    "A1.15b": W_(base="a4_seat", cam=[[0.5, 0.55, 1.08], [0.5, 0.58, 1.2]], dream=True),
+    "A1.16": W_(base="s03", cam=[[0.5, 0.45, 1.1], [0.55, 0.55, 1.25]], screen=W_(mode="pay", press_on="presses"), sfx=[{"kind": "tap", "on": "presses"}]),
+    "A1.17a": W_(base="s04", cam=[[0.42, 0.42, 1.1], [0.38, 0.38, 1.22]],
+                 overs=[W_(t="timeline_strip", steps=[["8:12", "TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"], ["8:18", "FEES"], ["8:19", "PAY"]], at=0.2)]),
+    "A1.17b": W_(base="o4", cam=[[0.45, 0.35, 1.25], [0.45, 0.32, 1.4]], overs=[W_(t="tag_circle", text="$18", x=0.78, y=0.3, circle_on="number")]),
+    "A1.18": W_(base="s01", cam=[[0.5, 0.5, 1.05], [0.5, 0.48, 1.15]],
+                overs=[W_(t="price_pair", left="$40", right="$48", cross_at=0.4, q_on="forty-eight")], sfx=[{"kind": "stamp", "on": "forty-eight"}]),
+    "A1.19a": W_(base="g01", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]], overs=[W_(t="plan_lines", color="#FFFFFF", at=0.2)]),
+    "A1.19b": W_(base="a5", cam=[[0.5, 0.45, 1.5], [0.5, 0.5, 1.02]], green_creep=True),
 }
+for _k, _v in list(S.items()):  # sfx inside a shot spec is the mixer's, not the layer's
+    _v.setdefault("kind", "pic")
+# logical stills -> Klot's file when it is in the repo, else an Ep.4 stand-in window (x0, y0, x1, y1 of the stand-in) or a placeholder
+KLOT = {"a1_glow": "ep04v2_a1_glow", "a1_wallet": "ep04v2_a1_wallet", "a4_seat": "ep04v2_a4_seat", "g01": "ep04v2_g01_blueprint",
+        "g04": "ep04v2_g04_daydream", "g05": "ep04v2_g05_bomb", "s01": "ep04v2_s01_flat_wide", "s02": "ep04v2_s02_over_shoulder",
+        "s03": "ep04v2_s03_laptop_close", "s04": "ep04v2_s04_wall_clock", "s05": "ep04v2_s05_gulp", "s06": "ep04v2_s06_smug"}
+STANDIN = {"a1_glow": ("ep04v2_s01_flat_wide", [0.16, 0.14, 0.6, 0.6], "dark"), "s01": ("o4", [0.0, 0.0, 1.0, 1.0], "night"),
+           "s02": ("m1b-blank", [0.08, 0.04, 0.92, 0.886], ""), "s03": ("m1b-blank", [0.275, 0.128, 0.726, 0.582], ""),
+           "s05": ("b1", [0.2, 0.02, 0.56, 0.38], ""), "s06": ("o4", [0.23, 0.02, 0.63, 0.42], ""), "a4_seat": ("a11", [0.0, 0.0, 1.0, 1.0], "")}
+EP4 = {"o4": "o4", "l1": "l1", "a5": "a5", "arch_a2": "archive-a2", "arch_a2b": "archive-a2b", "m1b-blank": "m1b", "b1": "b1", "a11": "a11"}
+CLIPS = {"o4clip": "o4", "a10clip": "a10"}
+SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
 CLOCK = {"A1.1": "8:12", "A1.7": "8:13", "A1.8": "8:14", "A1.9": "8:16", "A1.11": "8:18", "A1.16": "8:19"}
 TICKS = ("A1.8", "A1.16")      # the hold clock ticks from 8:14 until Pay
 HEART = ("A1.11", "A1.16")     # heartbeat from 8:18 until Pay (stops before the silence)
@@ -202,13 +227,33 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
             for t in spec.get("tabs", []):
                 if "on" in t:
                     t["at"] = round(word_time(b, t.pop("on")) - s0, 3)
-            ev = []
+            ink = []  # (t0, t1) absolute: the hand lays ink (scratch sound exactly then, R34)
+            for o in spec.get("overs", []):
+                if o.get("t") == "icons_strip":
+                    ink += [(s0 + c, s0 + c + 0.32) for c in o.get("cross_", [])]
+                elif o.get("t") == "crown" and "draw_" in o:
+                    ink.append((s0 + o["draw_"], s0 + o["draw_"] + 0.7))
+                elif o.get("t") == "tag_circle" and "circle_" in o:
+                    ink.append((s0 + o["circle_"], s0 + o["circle_"] + 0.6))
+                elif o.get("t") == "price_pair":
+                    ink.append((s0 + o["cross_at"], s0 + o["cross_at"] + 0.35))
+                elif o.get("t") == "timeline_strip":
+                    ink.append((s0 + o["at"] + 0.4, s0 + o["at"] + 0.4 + 1.8))
+                elif o.get("t") == "plan_lines":
+                    step = max(0.7, ((s1 - s0) - o["at"] - 0.6) / 3)
+                    ink += [(s0 + o["at"] + 0.35 + i * step, s0 + o["at"] + 0.35 + i * step + step * 0.8) for i in range(3)]
+                elif o.get("t") == "calendar_strip" and "write_" in o:
+                    ink.append((s0 + o["write_"], s0 + o["write_"] + len(f"{o['amount']} UNTIL FRIDAY") * 0.075))
+                elif o.get("t") == "note" and "write_" in o:
+                    ink.append((s0 + o["write_"], s0 + o["write_"] + len(o["text"]) * 0.075))
+            ev = [{"kind": "marker", "t": round(a, 3), "dur": round(b - a, 3)} for a, b in ink]
             for x in spec.pop("sfx", []):
                 at = (word_time(b, x["on"]) - x.get("lead", 0.0)) if "on" in x else s0 + x["at"]
                 ev.append({**x, "t": round(at, 3)})
             key = b["id"]
             shots.append({"id": sid, "beat": b["id"], "act": b["act"], "start": round(s0, 3), "end": round(s1, 3),
                           "picture": b["shots"][k]["picture"], "source": b["shots"][k]["source"], **spec, "_sfx": ev,
+                          "_ink": [[round(a, 3), round(b, 3)] for a, b in ink],
                           "clock": clock if b["act"] == "A1" else None})
     return beats, shots
 
@@ -296,6 +341,75 @@ def short_from(shots: list[dict]) -> list[dict]:
     return [dict(s) for s in shots]
 
 
+def _find(name: str, R: Path) -> Path | None:
+    if name == "m1b":  # the BLANK laptop (frames release), not the composited images/m1b.png
+        cand = sorted((R / "frames").glob("m1b-*.png"))
+    elif name.startswith("ep04v2_"):
+        cand = [EP / "v2" / "manual_assets" / f"{name}.png", EP / "images" / f"{name}.png"]
+    else:
+        # the raw generation (frames release) first: some images/*.png are composited (l1 carries the ticket)
+        cand = sorted((R / "frames").glob(f"{name}-*.png")) + [R / "frames" / f"{name}.png", EP / "images" / f"{name}.png"]
+    cand = [c for c in cand if c.exists() and not c.name.endswith(".depth.png")]
+    return cand[0] if cand else None
+
+
+def _load(path: Path, key: str, P: Path) -> tuple[str, int, int, float]:
+    from PIL import Image
+    im = Image.open(path).convert("RGB")
+    f = 1.0
+    if im.width > 2600:
+        f = 2600 / im.width
+        im = im.resize((2600, round(im.height * f)), Image.LANCZOS)
+    im.save(P / "v2" / f"{key}.jpg", quality=92)
+    return f"v2/{key}.jpg", im.width, im.height, f
+
+
+def resolve_base(s: dict, R: Path, P: Path) -> None:
+    """Fills img/iw/ih (or video, or missing), maps the camera into a stand-in window, and places the screen quad."""
+    b = s.get("base")
+    s["base_kind"] = "picture"
+    if b == "key":
+        s["base_kind"] = "flat"
+        return
+    if b in CLIPS:
+        shutil.copy(EP / "clips" / f"{CLIPS[b]}.mp4", P / "v2" / f"{CLIPS[b]}.mp4")
+        s.update(video=f"v2/{CLIPS[b]}.mp4", iw=1920, ih=1094)
+        return
+    screens = json.loads((EP / "v2" / "screens.json").read_text()) if (EP / "v2" / "screens.json").exists() else {}
+    kp = _find(KLOT[b], R) if b in KLOT else None
+    if kp is not None:
+        s["img"], s["iw"], s["ih"], f = _load(kp, KLOT[b], P)
+        if s.get("screen"):
+            q = screens.get(KLOT[b])
+            if not q:
+                raise SystemExit(f"{s['id']}: {KLOT[b]} has no screen quad in v2/screens.json (measure it first)")
+            s["quad"] = [[x * f, y * f] for x, y in q]
+        return
+    if b in STANDIN:
+        src, (x0, y0, x1, y1), grade = STANDIN[b]
+        path = _find(EP4.get(src, src), R)
+        if path is None:
+            raise SystemExit(f"{s['id']}: stand-in {src} not found")
+        s["img"], s["iw"], s["ih"], f = _load(path, src, P)
+        if src.startswith("ep04v2_"):
+            src = src[len("ep04v2_"):]
+        ww, wh = x1 - x0, y1 - y0
+        s["cam"] = [[x0 + c[0] * ww, y0 + c[1] * wh, c[2] / ww] for c in s["cam"]]
+        s["standin"] = {"for": KLOT[b], "src": src}
+        s["grade"] = grade
+        if s.get("screen") and src in SCREEN_PX:
+            s["quad"] = [[x * f, y * f] for x, y in SCREEN_PX[src]]
+        return
+    if b in KLOT:
+        s["base_kind"] = "missing"
+        s["missing"], s["what"] = KLOT[b], MISSING.get(KLOT[b], "")
+        return
+    path = _find(EP4.get(b, b), R)
+    if path is None:
+        raise SystemExit(f"{s['id']}: picture {b} not found")
+    s["img"], s["iw"], s["ih"], _f = _load(path, EP4.get(b, b), P)
+
+
 def main(rel: str, pub: str, outd: str) -> int:
     import soundfile as sf
     from factory.config import load_config
@@ -312,25 +426,11 @@ def main(rel: str, pub: str, outd: str) -> int:
     for kind, acts, end in (("long", ("COLD", "A1"), end_long), ("short", ("COLD",), a1)):
         beats, shots = build(T, acts, end)
         W, H = (1920, 1080) if kind == "long" else (1080, 1920)
-        # pictures
+        # pictures: Klot's still if it is in the repo, else an Ep.4 stand-in (tagged on screen), else a labelled placeholder
         for s in shots:
-            if s["kind"] in ("still", "archive"):
-                src = s["src"]
-                cand = [EP / "images" / f"{src}.png", R / "frames" / f"{src}.png"] + sorted((R / "frames").glob(f"{src}-*.png"))
-                cand = [c for c in cand if c.exists() and not c.name.endswith(".depth.png")]
-                if not cand:
-                    raise SystemExit(f"{s['id']}: picture {src} not found")
-                from PIL import Image
-                im = Image.open(cand[0]).convert("RGB")
-                if im.width > 2600:
-                    im = im.resize((2600, round(im.height * 2600 / im.width)), Image.LANCZOS)
-                im.save(P / "v2" / f"{src}.jpg", quality=92)
-                s["img"], s["iw"], s["ih"] = f"v2/{src}.jpg", im.width, im.height
-            if s["kind"] == "clip":
-                shutil.copy(EP / "clips" / f"{s['src']}.mp4", P / "v2" / f"{s['src']}.mp4")
-                s["video"] = f"v2/{s['src']}.mp4"
-            if s["kind"] == "missing":
-                s["what"] = MISSING[s["file"]]
+            if s["kind"] != "pic":
+                continue
+            resolve_base(s, R, P)
         stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg)
         data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + 18, "end": round(end, 3), "pal": PAL,
                 "band": None if kind == "long" else [0, 380, 1080, 1080],
@@ -342,6 +442,9 @@ def main(rel: str, pub: str, outd: str) -> int:
         (P / f"v2_{kind}.json").write_text(json.dumps(data, ensure_ascii=False))
         plans[kind] = {"data": data, "beats": beats, "shots": shots, "audio": {k: v for k, v in stats.items()}}
         print(kind, len(shots), "shots,", round(end, 2), "s", flush=True)
+    (P / "hands").mkdir(exist_ok=True)
+    for f in ("hand_ink_cuff.png", "hand_marker_cuff.png", "hand_stamp_cuff.png"):
+        shutil.copy(ROOT / "assets" / "hands" / f, P / "hands" / f)
     (P / "fonts").mkdir(exist_ok=True)
     for f in plans["long"]["data"]["fonts"]:
         if (ROOT / "assets" / "fonts" / f).exists():

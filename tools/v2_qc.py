@@ -1,6 +1,6 @@
 """Ep.4 v2 PREVIEW 1: master the Remotion renders (mix -> calibrated gain -> 4x oversampled limiter -> AAC, as the
 Python engine's masters) and run the release checks that apply to the Remotion layer, each with its planted-bug
-self-test (R40). Writes qc_preview1.md + contact sheets.
+self-test (R40). Writes qc_preview2.md + contact sheets.
 python tools/v2_qc.py <pv dir: plan.json, mix_*.wav, v2_*_silent.mp4> <timings dir>"""
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from factory import render as R  # noqa: E402
 from factory import sttdiff  # noqa: E402
 from factory.config import load_config  # noqa: E402
 
-OUT = {"long": "cs_ep04v2_preview1_long.mp4", "short": "cs_ep04v2_preview1_cold_open_9x16.mp4"}
+OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4"}
 MIN_SHOT, MAX_SHOT = 1.4, 8.0
 FONTS = ROOT / "assets" / "fonts"
 
@@ -56,9 +56,10 @@ def c_same_object(shots, **_):
     """R36: consecutive shots on the same picture continue the camera (no jump at the cut)."""
     out = []
     for a, b in zip(shots, shots[1:]):
-        if a.get("src") and a.get("src") == b.get("src") and a.get("cam") and b.get("cam"):
+        ka, kb = a.get("img") or a.get("src"), b.get("img") or b.get("src")
+        if ka and ka == kb and a.get("cam") and b.get("cam") and a.get("cont"):
             if any(abs(x - y) > 0.01 for x, y in zip(a["cam"][1], b["cam"][0])):
-                out.append(f"{a['id']} -> {b['id']}: {a['src']} jumps from {a['cam'][1]} to {b['cam'][0]}")
+                out.append(f"{a['id']} -> {b['id']}: {ka} jumps from {a['cam'][1]} to {b['cam'][0]}")
     return out
 
 
@@ -132,7 +133,7 @@ def plates(data, shots, captions):
             w = fs * 0.6 * 2 + fs * 1.5 + fs * 0.5 + _tw(f"TUE · {s['clock']} PM", "ArchivoBlack-Regular.ttf", fs) + 4
             h = fs * 0.35 * 2 + max(fs * 1.5, fs * 1.2) + 4
             out.append(("clock", s["start"], s["end"], [W - 40 - w, 36, W - 40, 36 + h]))
-        if s["kind"] == "archive":
+        if s["kind"] == "archive" or s.get("caption"):
             fs = 30 if not short else 34
             maxw = W * (0.6 if not short else 0.88)
             tw = _tw(s["caption"], "PT_Serif-Web-Regular.ttf", fs)
@@ -141,8 +142,9 @@ def plates(data, shots, captions):
             h = lines * fs * 1.25 + 20
             box = [48, H * 0.8 - h, 48 + w, H * 0.8] if not short else [(W - maxw) / 2, 150, (W + maxw) / 2, 150 + h]
             out.append(("archive caption", s["start"], s["end"], box))
-        if s.get("namecard"):
-            x0, y0, x1, y1 = s["namecard"]["box_short"] if short and s["namecard"].get("box_short") else s["namecard"]["box"]
+        ncs = ([s["namecard"]] if s.get("namecard") else []) + [o for o in s.get("overs", []) if o.get("t") == "namecard"]
+        for nc in ncs:
+            x0, y0, x1, y1 = nc["box_short"] if short and nc.get("box_short") else nc["box"]
             b = data.get("band") or [0, 0, W, H]
             out.append(("name card", s["start"], s["end"], [b[0] + x0 * b[2], b[1] + y0 * b[3], b[0] + x1 * b[2], b[1] + y1 * b[3]]))
     for c in captions:
@@ -181,10 +183,11 @@ def c_card_text_margin(shots=None, data=None, **_):
     """R30: typed card text starts right of the red margin line (>= 16 px)."""
     out = []
     for s in shots:
-        if s.get("namecard"):
+        if s.get("namecard") or any(o.get("t") == "namecard" for o in s.get("overs", [])):
             b = data.get("band") or [0, 0, data["W"], data["H"]]
             u = min(b[2] / 1920, b[3] / 1080)
-            gap = s["namecard"].get("text_dx_px", 22)  # V2.tsx NameCard: text 22 px right of the line, at any scale
+            nc = s.get("namecard") or next(o for o in s["overs"] if o.get("t") == "namecard")
+            gap = nc.get("text_dx_px", 22)  # V2.tsx NameCard: text 22 px right of the line, at any scale
             if gap < 16:
                 out.append(f"{s['id']}: name text {gap:.0f} px from the margin line")
     return out
@@ -266,6 +269,7 @@ def _io(p):  # Remotion Easing.inOut(Easing.cubic)
 def cam_track(s, SW, SH, fps=30, per_frame_clamp=False):
     """Screen position of four picture points, frame by frame, with V2.tsx's camera math (fitted ends, eased)."""
     iw, ih = (s.get("iw"), s.get("ih")) if s["kind"] != "clip" else (1920, 1094)
+    iw, ih = iw or 1920, ih or 1094
     base = max(SW / iw, SH / ih)
 
     def fit(c):
@@ -296,7 +300,7 @@ def c_jitter(shots=None, data=None, per_frame_clamp=False, **_):
     SW, SH = b[2], b[3]
     out = []
     for s in shots:
-        if s["kind"] not in ("still", "archive", "clip") or not s.get("cam"):
+        if not s.get("cam") or not (s["kind"] in ("still", "archive", "clip") or (s["kind"] == "pic" and s.get("iw"))):
             continue
         tr = cam_track(s, SW, SH, per_frame_clamp=per_frame_clamp)
         for j in range(4):
@@ -327,7 +331,25 @@ def c_shorts_length(data=None, **_):
     return [] if data["end"] <= 45.0 else [f"{data['end']:.1f} s > 45 s"]
 
 
+def c_picture_first(shots=None, data=None, **_):
+    """R41: >= 85% of screen time on a picture base (flat only: act titles and key numbers, <= 4 key numbers);
+    a placeholder for a still not yet delivered counts as NOT a picture."""
+    tot = sum(s["end"] - s["start"] for s in shots) or 1
+    flat = sum(s["end"] - s["start"] for s in shots if s.get("base_kind") == "flat") + sum(1.9 for s in shots if s.get("title"))
+    miss = sum(s["end"] - s["start"] for s in shots if s.get("base_kind") == "missing" or s["kind"] in ("missing",))
+    old = sum(s["end"] - s["start"] for s in shots if s["kind"] not in ("pic", "missing", "still", "archive", "clip"))
+    pic = 1 - (flat + miss + old) / tot
+    keys = sum(1 for s in shots if s.get("base_kind") == "flat")
+    out = []
+    if pic < 0.85:
+        out.append(f"picture base {pic:.0%} of screen time (placeholders {miss / tot:.0%}, flat {flat / tot:.0%}, old flat kinds {old / tot:.0%})")
+    if keys > 4:
+        out.append(f"{keys} flat key-number cards (max 4 per episode)")
+    return out
+
+
 CHECKS = [
+    ("picture_first (R41)", c_picture_first, "picture base >= 85% of screen time, <= 4 key numbers"),
     ("decode", c_decode, "file decodes end to end without an error"),
     ("max_still", c_max_still, "no picture longer than 8 s"),
     ("min_shot", c_min_shot, "no shot shorter than 1.4 s"),
@@ -355,7 +377,7 @@ NOT_APPLICABLE = {
 
 
 def ink_spans(plan_shots):
-    sp = []
+    sp = [tuple(x) for s in plan_shots for x in s.get("_ink", [])]
     for s in plan_shots:
         for k, d in (("crown_", 0.7), ("circle_", 0.6)):
             if s.get(k) is not None:
@@ -400,6 +422,11 @@ def selftest(ctx):
             got = [f"crash {e}"]
         rows.append((name, desc, "FAIL" if got else "PASS"))
     sh = lambda c: c["shots"]
+    def m_pf(c):
+        c["shots"] = [{"id": "p", "kind": "pic", "base_kind": "missing", "start": 0.0, "end": 10.0},
+                      {"id": "q", "kind": "pic", "base_kind": "picture", "start": 10.0, "end": 12.0}]
+        return "83% of the time on placeholder cards"
+    plant("picture_first (R41)", m_pf, c_picture_first)
     def m_long(c):
         c["shots"][0]["end"] = c["shots"][0]["start"] + 9.0
         return "a 9 s shot"
@@ -409,8 +436,8 @@ def selftest(ctx):
         return "a 0.6 s shot"
     plant("min_shot", m_short, c_min_shot)
     def m_jump(c):
-        c["shots"] = [{"id": "x1", "src": "o4", "cam": [[0.5, 0.5, 1], [0.5, 0.5, 1.1]]}, {"id": "x2", "src": "o4", "cam": [[0.7, 0.5, 1.4], [0.7, 0.5, 1.5]]}]
-        return "o4 cut to o4 with a camera jump"
+        c["shots"] = [{"id": "x1", "src": "o4", "cont": True, "cam": [[0.5, 0.5, 1], [0.5, 0.5, 1.1]]}, {"id": "x2", "src": "o4", "cam": [[0.7, 0.5, 1.4], [0.7, 0.5, 1.5]]}]
+        return "o4 meant to continue into o4, with a camera jump"
     plant("same_object (R36)", m_jump, c_same_object)
     def m_diff(c):
         c["beats"][0]["diff"] = ["replace: script 'robbery' | heard 'rubbery'"]
@@ -512,7 +539,7 @@ def main(pvd: str, tdir: str) -> int:
     for kind in ("long", "short"):
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
-    md = ["# Ep.4 v2 · PREVIEW 1 · QC", "",
+    md = ["# Ep.4 v2 · PREVIEW 2 · QC (picture-first)", "",
           "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open. Remotion layer; only assets already "
           "in the repo; Klot's missing stills held on labelled placeholder cards.", ""]
     allres, ctxs = {}, {}
@@ -541,7 +568,9 @@ def main(pvd: str, tdir: str) -> int:
     st = selftest(ctxs["long"])
     md += ["", "Self-test (R40: each check must FAIL on its planted bug):", "", "| check | planted bug | result |", "|---|---|---|"]
     md += [f"| {a} | {b} | {c}{'' if c == 'FAIL' else ' - BLIND'} |" for a, b, c in st]
-    miss = sorted({s["file"] for k in ("long",) for s in P[k]["data"]["shots"] if s["kind"] == "missing"})
+    miss = sorted({s.get("missing") or s.get("file") for s in P["long"]["data"]["shots"] if s.get("base_kind") == "missing" or s["kind"] == "missing"})
+    sti = sorted({f"{s['standin']['for']} -> Ep.4 {s['standin']['src']}" for s in P["long"]["data"]["shots"] if s.get("standin")})
+    md += ["", "Stand-ins (tagged on screen): " + ("; ".join(sti) or "none")]
     md += ["", "Placeholders (Klot's stills not in yet): " + ", ".join(f"{m}.png" for m in miss)]
     for kind in ("long", "short"):
         p = pv / OUT[kind]
@@ -551,7 +580,7 @@ def main(pvd: str, tdir: str) -> int:
                                        capture_output=True, text=True).stdout)
             md.append(f"- {p.name}: {dur:.1f} s, {i:.1f} LUFS, true peak {tp:.1f} dBTP")
             sheet(p, pv / f"sheet_{kind}.png")
-    (pv / "qc_preview1.md").write_text("\n".join(md) + "\n")
+    (pv / "qc_preview2.md").write_text("\n".join(md) + "\n")
     print("\n".join(md))
     bad = any(r for k in allres for n, r in allres[k].items() if r and n != "shorts_length") or any(c != "FAIL" for *_x, c in st)
     return 1 if bad else 0
