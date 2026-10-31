@@ -2,7 +2,12 @@ name: Voice samples (Ep.4 v2 cold open)
 # Klot, Ep.4 v2 Stage 1: the cold open read by three expressive voices over the same music bed (tools/voice_samples.py).
 # Writes the mp3s + voice_samples.json into the draft release ep04v2-stage1 (kept: later Stage 1 files are added to it).
 on:
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "which samples to (re)make: any of A B C"
+        required: false
+        default: "ABC"
 permissions:
   contents: write
 jobs:
@@ -28,17 +33,22 @@ jobs:
       - name: Voice the cold open
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+          ONLY: ${{ github.event.inputs.only || 'ABC' }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -o pipefail
+          mkdir -p vs
+          tools/rel.sh download ep04v2-stage1 vs voice_samples.json 2>/dev/null || true
           python tools/voice_samples.py vs 2>&1 | tee vs.log || true
-          grep -E "^(A_|B_|C_)" vs.log | python3 -c 'import sys; t=sys.stdin.read(); print("::notice title=voices::" + t.replace("%","%25").replace("\n","%0A"))'
+          grep -E "^(A_|B_|C_|openrouter audio|GEMINI)" vs.log | python3 -c 'import sys; t=sys.stdin.read(); print("::notice title=voices::" + t.replace("%","%25").replace("\n","%0A"))'
           ls -la vs
       - name: Publish (draft release ep04v2-stage1)
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls vs/*.mp3 vs/voice_samples.json 2>/dev/null || true)
+          files=$(ls vs/*.mp3 vs/voice_samples.json 2>/dev/null || true)  # only the samples made in this run are in vs/
           [ -n "$files" ] || exit 1
           if tools/rel.sh id ep04v2-stage1 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-stage1 $files
           else gh release create ep04v2-stage1 $files --title "CoinSense · EP04v2 · STAGE 1" --notes "Ep.4 v2 Stage 1 (draft, not for upload)." --prerelease --draft; fi

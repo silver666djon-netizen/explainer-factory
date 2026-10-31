@@ -68,6 +68,76 @@ def gemini(text: str, note: str, voice: str, log: dict) -> np.ndarray:
     raise RuntimeError(f"Gemini TTS failed: {last}")
 
 
+OR_PREFS = ["google/gemini-2.5-pro-preview-tts", "google/gemini-2.5-flash-preview-tts", "openai/gpt-4o-audio-preview",
+            "openai/gpt-audio", "openai/gpt-audio-mini"]
+
+
+def openrouter_models() -> list[str]:
+    """Models on OpenRouter that output audio (public list, no key)."""
+    import requests
+    d = requests.get("https://openrouter.ai/api/v1/models", timeout=60).json()["data"]
+    have = [m["id"] for m in d if "audio" in (m.get("architecture") or {}).get("output_modalities", [])]
+    print("openrouter audio models:", have, flush=True)
+    return [m for m in OR_PREFS if m in have] + [m for m in have if m not in OR_PREFS]
+
+
+def _words(t: str) -> list[str]:
+    import re
+    return re.findall(r"[a-z0-9]+", t.lower())
+
+
+def openrouter(text: str, note: str, voice: str, log: dict) -> np.ndarray:
+    """Audio out through OpenRouter chat completions (streamed pcm16, 24 kHz). The transcript must match the line."""
+    import requests
+    key = os.environ.get("OPENROUTER_API_KEY", "").strip()
+    if not key:
+        raise RuntimeError("OPENROUTER_API_KEY is empty in this run")
+    models = [log["model"]] if log.get("model") else log.setdefault("_models", openrouter_models())
+    last = None
+    for model in models:
+        for attempt in range(4):
+            body = {"model": model, "stream": True, "modalities": ["text", "audio"],
+                    "audio": {"voice": voice, "format": "pcm16"},
+                    "messages": [{"role": "system", "content":
+                                  "You are a voice actor: a British documentary narrator, male, Received Pronunciation, low voice. "
+                                  "Speak the user's line exactly as written, word for word, nothing before or after it. "
+                                  f"Direction for this line: {note}."},
+                                 {"role": "user", "content": text}]}
+            try:
+                r = requests.post("https://openrouter.ai/api/v1/chat/completions", stream=True, timeout=240,
+                                  headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"}, json=body)
+            except Exception as e:  # noqa: BLE001
+                last = f"{model}: {e}"
+                time.sleep(5)
+                continue
+            if r.status_code != 200:
+                last = f"{model}: {r.status_code} {r.text[:200]}"
+                if r.status_code in (400, 404):
+                    break
+                time.sleep(5 + 5 * attempt)
+                continue
+            pcm, said = [], []
+            for raw in r.iter_lines():
+                if not raw or not raw.startswith(b"data: ") or raw == b"data: [DONE]":
+                    continue
+                try:
+                    ch = json.loads(raw[6:])["choices"][0]["delta"].get("audio") or {}
+                except Exception:  # noqa: BLE001
+                    continue
+                if ch.get("data"):
+                    pcm.append(base64.b64decode(ch["data"]))
+                if ch.get("transcript"):
+                    said.append(ch["transcript"])
+            a, b = _words(text), _words("".join(said))
+            ok = bool(pcm) and (not b or (len(set(a) & set(b)) / max(1, len(set(a))) > 0.9 and len(b) <= len(a) + 2))
+            if not ok:
+                last = f"{model}: transcript mismatch {''.join(said)[:120]!r}"
+                continue
+            log["model"] = model
+            return np.frombuffer(b"".join(pcm), np.int16).astype(np.float32) / 32768.0
+    raise RuntimeError(f"OpenRouter audio failed: {last}")
+
+
 _CB = None
 
 
@@ -154,16 +224,30 @@ def assemble(clips: list[np.ndarray], out: Path, name: str) -> dict:
 def main(out_dir: str) -> int:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
-    report = {}
-    for name, voice in (("A_gemini_charon", "Charon"), ("B_gemini_algenib", "Algenib")):
+    only = os.environ.get("ONLY", "ABC")
+    old = out / "voice_samples.json"
+    report = json.loads(old.read_text()) if old.exists() else {}
+    gem = bool(os.environ.get("GEMINI_API_KEY", "").strip())
+    # Gemini TTS straight from Google when the key is set; otherwise the same idea through OpenRouter (key already a secret)
+    pairs = ((("A_gemini_charon", "Charon"), ("B_gemini_algenib", "Algenib")) if gem else
+             (("A_openrouter_fable", "fable"), ("B_openrouter_ballad", "ballad")))
+    if not gem:
+        print("GEMINI_API_KEY is empty: A and B go through OpenRouter", flush=True)
+    for name, voice in pairs:
+        if name[0] not in only:
+            continue
         log = {}
         try:
-            clips = [trim(gemini(t, n, voice, log)) for t, n, _, _ in LINES]
-            report[name] = {**assemble(clips, out, name), "engine": f"Gemini TTS {log.get('model')}", "voice": voice,
-                            "characters": sum(len(t) for t, *_ in LINES)}
+            fn = gemini if gem else openrouter
+            clips = [trim(fn(t, n, voice, log)) for t, n, _, _ in LINES]
+            report[name] = {**assemble(clips, out, name), "engine": f"{'Gemini TTS' if gem else 'OpenRouter'} {log.get('model')}",
+                            "voice": voice, "characters": sum(len(t) for t, *_ in LINES)}
         except Exception as e:  # noqa: BLE001
             report[name] = {"error": str(e)[:400]}
         print(name, report[name], flush=True)
+    if "C" not in only:
+        (out / "voice_samples.json").write_text(json.dumps(report, indent=1))
+        return 0 if all("file" in v for k, v in report.items() if k[0] in only) else 1
     try:
         ref = out / "_ref_bm_george.wav"
         kokoro_reference(ref)
