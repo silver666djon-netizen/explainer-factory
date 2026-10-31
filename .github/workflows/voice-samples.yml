@@ -1,0 +1,43 @@
+name: Voice samples (Ep.4 v2 cold open)
+# Klot, Ep.4 v2 Stage 1: the cold open read by three expressive voices over the same music bed (tools/voice_samples.py).
+# Writes the mp3s + voice_samples.json into the draft release ep04v2-stage1 (kept: later Stage 1 files are added to it).
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  voices:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg espeak-ng
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: kokoro-whisper-v1
+          restore-keys: kokoro-
+      - name: Python packages
+        run: |
+          pip install -q chatterbox-tts 2>&1 | tail -3
+          pip install -q "kokoro>=0.9.4" requests soundfile 2>&1 | tail -3
+          python -c "import torch, chatterbox, kokoro; print('torch', torch.__version__)"
+      - name: Voice the cold open
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          set -o pipefail
+          python tools/voice_samples.py vs 2>&1 | tee vs.log || true
+          grep -E "^(A_|B_|C_)" vs.log | python3 -c 'import sys; t=sys.stdin.read(); print("::notice title=voices::" + t.replace("%","%25").replace("\n","%0A"))'
+          ls -la vs
+      - name: Publish (draft release ep04v2-stage1)
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh id ep04v2-stage1 >/dev/null 2>&1 || gh release create ep04v2-stage1 --title "CoinSense · EP04v2 · STAGE 1" --notes "Ep.4 v2 Stage 1 (draft, not for upload)." --prerelease --draft
+          files=$(ls vs/*.mp3 vs/voice_samples.json 2>/dev/null || true)
+          [ -n "$files" ] && tools/rel.sh upload ep04v2-stage1 $files
