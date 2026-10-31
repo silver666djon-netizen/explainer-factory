@@ -41,7 +41,7 @@ S: dict[str, dict] = {
                 "sfx": [{"kind": "stamp", "on": "made"}]},
     "COLD.4b": {"kind": "feecard", "lines": ["SERVICE FEE", "FACILITY FEE", "PROCESSING"], "amounts": None,
                 "stamp": "REAL", "stamp_on": "not", "sfx": [{"kind": "stamp", "on": "not"}]},
-    "COLD.5": {"kind": "still", "src": "o4", "cam": [[0.55, 0.48, 1.05], [0.7, 0.55, 1.55]], "glow": True},
+    "COLD.5": {"kind": "still", "src": "o4", "cam": [[0.55, 0.48, 1.05], [0.6, 0.45, 1.35]], "glow": True},
     "COLD.6": {"kind": "screen", "mode": "whip", "pages": ["list", "seat", "form"], "page_on": ["found", "picked", "typed"],
                "sfx": [{"kind": "whoosh", "on": "found"}, {"kind": "whoosh", "on": "picked"}, {"kind": "whoosh", "on": "typed"}]},
     "COLD.7": {"kind": "screen", "mode": "total", "total": "$48", "total_on": "number", "pay_on": "paid",

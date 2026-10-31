@@ -282,7 +282,7 @@ const ScreenView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 		body = (
 			<AbsoluteFill style={{opacity: k}}>
 				<div style={{position: 'absolute', left: 60 * u, top: 40 * u, fontFamily: fam(BODY), fontSize: 26 * u, color: C.mute}}>SATURDAY · 8 PM · THE CONCERT HALL</div>
-				<div style={{position: 'absolute', left: 60 * u, top: 110 * u, fontFamily: fam(BODY), fontSize: 30 * u, color: C.ink}}>1 TICKET</div>
+				{s.crown_ === undefined ? <div style={{position: 'absolute', left: 60 * u, top: 110 * u, fontFamily: fam(BODY), fontSize: 30 * u, color: C.ink}}>1 TICKET</div> : null}
 				<div style={{position: 'absolute', left: 56 * u, top: 150 * u, fontFamily: fam(HEAD), fontSize: 200 * u, lineHeight: 1.05, color: active === 0 ? C.green : C.red}}>{tb.price}</div>
 				{tb.tag ? (
 					<div style={{position: 'absolute', left: 64 * u, top: 400 * u}}>
@@ -646,7 +646,7 @@ const BarsView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 					</React.Fragment>
 				);
 			})}
-			{s.stamp_ !== undefined ? <Stamp text={s.stamp} at={s.stamp_} t={t} x={SW * 0.5} y={SH * 0.3} size={130 * u} rot={-8} /> : null}
+			{s.stamp_ !== undefined ? <Stamp text={s.stamp} at={s.stamp_} t={t} x={x0 + 2 * bw + gap + 250 * u} y={base - hMax * 0.55} size={110 * u} rot={-8} /> : null}
 		</AbsoluteFill>
 	);
 };
@@ -669,7 +669,7 @@ const VersusView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 				{col(rx, s.right, s.right_tag, C.red)}
 				<div style={{position: 'absolute', left: SW / 2 - 2 * u, top: cy - 200 * u, width: 4 * u, height: 380 * u, background: '#2B4466'}} />
 				{s.left_cross ? <Stroke d={`M ${lx - 230 * u} ${cy + 60 * u} L ${lx + 230 * u} ${cy - 120 * u}`} t0={0.25} dur={0.35} t={t} w={18 * u} W={SW} H={SH} /> : null}
-				{s.badge_ !== undefined ? <Stamp text={s.badge} at={s.badge_} t={t} x={s.badge === '?' ? SW / 2 : rx + 250 * u} y={s.badge === '?' ? cy - 40 * u : cy - 210 * u} size={(s.badge === '?' ? 220 : 90) * u} rot={s.badge === '?' ? 6 : -10} color={s.badge === '?' ? C.accent : C.red} /> : null}
+				{s.badge_ !== undefined ? <Stamp text={s.badge} at={s.badge_} t={t} x={s.badge === '?' ? SW / 2 : rx + 250 * u} y={s.badge === '?' ? cy - 230 * u : cy - 210 * u} size={(s.badge === '?' ? 220 : 90) * u} rot={s.badge === '?' ? 6 : -10} color={s.badge === '?' ? C.accent : C.red} /> : null}
 			</AbsoluteFill>
 		</AbsoluteFill>
 	);
@@ -776,15 +776,15 @@ const FanView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 			{s.pages.map((pg: string, i: number) => {
 				const k = spring({frame: (t - 0.1 - i * 0.18) * 30, fps: 30, config: {damping: 16, stiffness: 140}});
 				const rot = (i - (n - 1) / 2) * 9 * k;
-				const dx = (i - (n - 1) / 2) * 300 * u * k;
-				const w = 620 * u,
-					h = 380 * u;
-				const label = {tabs: '$40 · $30', seat: 'ROW G · SEAT 12', timer: 'HELD FOR 10:00', form: 'CARD NUMBER'}[pg] as string;
+				const dx = (i - (n - 1) / 2) * 400 * u * k;
+				const w = 520 * u,
+					h = 360 * u;
+				const label = {tabs: '$40 / $30', seat: 'SEAT G12', timer: '10:00', form: 'CARD'}[pg] as string;
 				return (
 					<div key={i} style={{position: 'absolute', left: SW / 2 - w / 2 + dx, top: SH * 0.42 - h / 2, width: w, height: h, transform: `rotate(${rot}deg)`, transformOrigin: '50% 120%', background: C.paper, border: `${3 * u}px solid ${C.ink}`, borderRadius: 14 * u,
 						boxShadow: '0 12px 30px rgba(0,0,0,0.5)', opacity: clamp(k * 1.5, 0, 1)}}>
 						<div style={{height: 40 * u, background: C.paper2, borderBottom: `${3 * u}px solid ${C.ink}`, borderRadius: `${12 * u}px ${12 * u}px 0 0`}} />
-						<div style={{position: 'absolute', left: 0, right: 0, top: 150 * u, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 64 * u, color: C.ink}}>{label}</div>
+						<div style={{position: 'absolute', left: 0, right: 0, top: 140 * u, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 72 * u, color: C.ink}}>{label}</div>
 					</div>
 				);
 			})}
@@ -912,7 +912,8 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 		SY = short ? band[1] : 0,
 		SW = short ? band[2] : W,
 		SH = short ? band[3] : H;
-	const u = Math.min(SW / 1920, SH / 1080);
+	// the 9:16 band is square: the code-drawn objects are drawn larger there so they read on a phone
+	const u = short ? Math.min(SW / 1300, SH / 760) : Math.min(SW / 1920, SH / 1080);
 	const t = f / fps;
 	const wipeAt = new Set((data.wipes || []).map((x: number) => Math.round(x * fps)));
 	const shots = data.shots;
@@ -921,7 +922,7 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 	return (
 		<AbsoluteFill style={{background: short ? '#0A1320' : C.night}}>
 			{short ? <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 45%, #15253C 0%, #0A1320 70%)'}} /> : null}
-			<div style={{position: 'absolute', left: SX, top: SY, width: SW, height: SH, overflow: 'hidden'}}>
+			<div style={{position: 'absolute', left: SX, top: SY, width: SW, height: SH, overflow: 'hidden', zIndex: 0}}>
 				{shots.map((s: any, i: number) => {
 					const from = Math.round(s.start * fps);
 					const next = shots[i + 1];
@@ -940,9 +941,11 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 				})}
 				<AbsoluteFill style={{pointerEvents: 'none', background: `radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 55%, rgba(0,0,0,${breathe * 2.2}) 100%)`, zIndex: 900}} />
 			</div>
+			<div style={{position: 'absolute', left: 0, top: 0, width: W, height: H, zIndex: 10}}>
 			{cur && cur.kind === 'archive' ? <CaptionPlate text={cur.caption} W={W} H={H} short={short} t={t - cur.start} /> : null}
 			{cur && cur.clock && !(cur.kind === 'missing' && cur.title && t - cur.start < 2.0) ? <Clock label={cur.clock} W={W} H={H} t={t} /> : null}
 			<Subs caps={data.captions} W={W} H={H} t={t} short={short} />
+			</div>
 		</AbsoluteFill>
 	);
 };
