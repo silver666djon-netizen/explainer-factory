@@ -477,12 +477,12 @@ def selftest(ctx):
     if ctx.get("path") is not None and Path(ctx["path"]).exists():
         plant("audio_gate (14)", m_gate, c_audio_gate)
     def m_plate(c):
-        s = next(x for x in c["shots"] if x["kind"] == "still")
+        s = next(x for x in c["shots"] if x["kind"] in ("still", "pic"))
         s["namecard"] = {"box": [-0.01, 0.1, 0.2, 0.3], "name": "X", "stamp": "X"}
         return "name card off the left edge"
     plant("plate_fit (R26)", m_plate, c_plate_fit)
     def m_margin(c):
-        s = next(x for x in c["shots"] if x["kind"] == "still")
+        s = next(x for x in c["shots"] if x["kind"] in ("still", "pic"))
         s["namecard"] = {"box": [0.1, 0.1, 0.3, 0.3], "name": "X", "text_dx_px": 8}
         return "typed text 8 px from the margin line"
     plant("card_text_margin (R30)", m_margin, c_card_text_margin)

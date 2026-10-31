@@ -80,6 +80,11 @@ jobs:
           set -o pipefail
           python tools/v2_qc.py pv rel 2>&1 | tee qc.log || true
           tail -n 60 qc.log | python3 -c 'import sys; print("::notice title=qc::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
+      - name: Telegram copy of the long preview (bot limit)
+        if: github.event.inputs.render != 'no'
+        run: |
+          f=pv/cs_ep04v2_preview2_long.mp4
+          [ -f "$f" ] && ffmpeg -v error -y -i "$f" -vf scale=1280:-2 -c:v libx264 -preset medium -crf 26 -c:a copy -movflags +faststart pv/cs_ep04v2_preview2_long_tg.mp4 && ls -la pv/*_tg.mp4 || true
       - name: Publish into ep04v2-preview2
         if: always()
         env:
