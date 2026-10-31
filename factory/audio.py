@@ -20,6 +20,7 @@ def db(value: float) -> float:
 
 def _env(n: int, attack: float, release: float) -> np.ndarray:
     a, r = max(1, int(attack * SR)), max(1, int(release * SR))
+    a, r = min(a, max(1, n // 2)), min(r, max(1, n // 2))  # very short sounds (a one-letter scribble): ramps fit inside
     env = np.ones(n, dtype=np.float32)
     env[:a] = np.linspace(0, 1, a)
     env[-r:] *= np.linspace(1, 0, r)

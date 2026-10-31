@@ -18,18 +18,20 @@ from factory import render as R  # noqa: E402
 from factory import sttdiff  # noqa: E402
 from factory.config import load_config  # noqa: E402
 
-OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4"}
+OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4"}
+AUD = {"long": "long", "short": "short", "a2": "long"}  # which master spec a preview file follows
+COL = {"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9"}
 MIN_SHOT, MAX_SHOT = 1.4, 8.0
 FONTS = ROOT / "assets" / "fonts"
 
 
 def master(pv: Path, kind: str, cfg: dict) -> Path:
     wav, silent, out = pv / f"mix_{kind}.wav", pv / f"v2_{kind}_silent.mp4", pv / OUT[kind]
-    lim0 = R.LIMIT0_LONG if kind == "long" else R.LIMIT0
+    lim0 = R.LIMIT0_LONG if AUD[kind] == "long" else R.LIMIT0
     loud = R._gain_filter(wav, cfg["audio"].get("target_lufs", -14), lim0)
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(silent), "-i", str(wav), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
                     "-af", R._master_af(loud, lim0), *R.AAC_ARGS, "-shortest", "-movflags", "+faststart", str(out)], check=True)
-    R._gate_with_remaster(out, wav, loud, cfg, kind=kind, lim0=lim0)
+    R._gate_with_remaster(out, wav, loud, cfg, kind=AUD[kind], lim0=lim0)
     return out
 
 
@@ -421,11 +423,15 @@ def c_screen_marks(shots=None, data=None, **_):
 
 
 def c_face_cut(shots=None, **_):
-    """R46 (Klot note 8): no more than two laptop-screen shots without a cut to Larry's face in between."""
-    out, run = [], []
+    """R46 (Klot note 8): no more than two laptop-screen shots without a cut to Larry's face in between (screens 10 s or
+    more apart are not 'back to back')."""
+    out, run, last = [], [], None
     for s in shots:
         if s.get("screen"):
+            if last is not None and s["start"] - last >= 10.0:
+                run = []
             run.append(s["id"])
+            last = s["end"]
             if len(run) > 2:
                 out.append(f"{', '.join(run)}: {len(run)} screens without a face cut")
         elif s.get("face"):
@@ -436,10 +442,13 @@ def c_face_cut(shots=None, **_):
 def c_ink_hold(shots=None, **_):
     """R47 (Klot note 7): the hand leaves after writing and the finished mark is seen clean for >= 0.5 s before the cut."""
     out = []
-    for s in shots:
+    for k, s in enumerate(shots):
         ink = s.get("_ink") or []
         if not ink:
             continue
+        nxt = shots[k + 1] if k + 1 < len(shots) else {}
+        if s.get("cont") and nxt.get("img") == s.get("img"):
+            continue  # the next shot continues on the same picture with the marks in place: the mark is seen there
         free = s["end"] - (max(b for _a, b in ink) + 0.4)
         if free < 0.5:
             out.append(f"{s['id']}: the mark is seen without the hand for {free:.2f} s before the cut (< 0.5 s)")
@@ -494,8 +503,9 @@ def run(kind, P, pv, tdir, cfg, audio_ok=True):
     audio = decode(path) if path.exists() else None
     import soundfile as sf
     voice, _ = sf.read(tdir / "voice_24k.flac", dtype="float32")
+    voice = voice[int(round(pl.get("offset", 0.0) * 24000)):]  # a segment preview starts at its ad break
     ctx = dict(beats=beats, shots=data["shots"], data=data, captions=data["captions"], audio=audio, voice=voice,
-               silences=pl["audio"]["silences"], sfx=pl["audio"]["sfx"], ink=ink_spans(data["shots"]), path=path, cfg=cfg, kind=kind)
+               silences=pl["audio"]["silences"], sfx=pl["audio"]["sfx"], ink=ink_spans(data["shots"]), path=path, cfg=cfg, kind=AUD[kind])
     res = {}
     for name, fn, _desc in CHECKS:
         if kind == "short" and name.startswith("stt_mix"):
@@ -626,7 +636,12 @@ def selftest(ctx):
     plant("jitter (R28)", m_jit, c_jitter)
 
     def scr(c):
-        return next(s for s in c["shots"] if (s.get("screen") or {}).get("mode") in ("fees", "total", "pay"))
+        s = next((s for s in c["shots"] if (s.get("screen") or {}).get("mode") in ("fees", "total", "pay")), None)
+        if s is None:  # a segment without a checkout page: plant one (a laptop screen 40 % of the picture wide)
+            s = {"id": "planted", "kind": "pic", "start": 0.0, "end": 4.0, "iw": 2600, "ih": 1463, "cam": [[0.5, 0.5, 1.0], [0.5, 0.5, 1.05]],
+                 "quad": [[780, 400], [1820, 400], [1820, 990], [780, 990]], "screen": {"mode": "fees", "fees": [], "fs": None}}
+            c["shots"] = c["shots"] + [s]
+        return s
     def m_read(c):
         s = scr(c)
         s["screen"]["fs"] = {"os": 24, "row": 30, "fee": 34, "lab": 30, "tot": 38}
@@ -638,8 +653,7 @@ def selftest(ctx):
         return "the REAL stamp at the screen's right edge (over the bezel)"
     plant("screen_marks (R44)", m_mark, c_screen_marks)
     def m_face(c):
-        ss = [s for s in c["shots"] if s.get("screen")][:3]
-        c["shots"] = [dict(x, face=False) for x in ss]
+        c["shots"] = [{"id": f"scr{i}", "screen": {"mode": "tabs"}, "face": False, "start": i * 4.0, "end": i * 4.0 + 4.0} for i in range(3)]
         return "three screen shots back to back"
     plant("face_cut (R46)", m_face, c_face_cut)
     def m_hold(c):
@@ -661,27 +675,34 @@ def main(pvd: str, tdir: str) -> int:
     pv, td = Path(pvd), Path(tdir)
     cfg = load_config({})
     P = json.loads((pv / "plan.json").read_text())
-    for kind in ("long", "short"):
+    kinds = list(P)
+    for kind in kinds:
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
-    md = ["# Ep.4 v2 · PREVIEW 2 · QC (picture-first)", "",
-          "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open. Remotion layer; Klot's stills, "
-          "Ep.4 pictures and archive prints; any still not in yet is held on a labelled placeholder card or a tagged stand-in.", ""]
+    seg = "a2" if "a2" in P else "p2"
+    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2"}[seg]
+    what = {"p2": "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open.",
+            "a2": "Act 2 (first ad break to the second), 16:9."}[seg]
+    md = [f"# Ep.4 v2 · {title} · QC (picture-first)", "",
+          what + " Remotion layer; Klot's stills, Ep.4 pictures and archive prints; any still not in yet is held on a labelled "
+          "placeholder card or a tagged stand-in.", ""]
     allres, ctxs = {}, {}
-    for kind in ("long", "short"):
+    for kind in kinds:
         res, ctx = run(kind, P, pv, td, cfg)
         allres[kind], ctxs[kind] = res, ctx
-    md += ["| check | what | 16:9 | 9:16 |", "|---|---|---|---|"]
+    md += ["| check | what | " + " | ".join(COL[k] for k in kinds) + " |", "|---|---|" + "---|" * len(kinds)]
     desc = {n: d for n, _f, d in CHECKS}
     desc["shorts_length"] = "a Short is <= 45 s"
-    for name in [n for n, *_ in CHECKS] + ["shorts_length"]:
+    for name in [n for n, *_ in CHECKS] + (["shorts_length"] if "short" in kinds else []):
         cells = []
-        for kind in ("long", "short"):
+        for kind in kinds:
             r = allres[kind].get(name)
             if name == "read_size (R45)" and kind == "short":
                 cells.append("n/a: judged on the 16:9 film; the 9:16 file is a layout sample")
             elif name == "shorts_length" and kind == "short" and r:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
+            elif name in ("shorts_band (R38)", "shorts_length") and kind != "short":
+                cells.append("n/a (16:9)" if name == "shorts_length" else ("PASS" if not r else f"FAIL ({len(r)})"))
             elif r is None:
                 cells.append("same as 16:9")
             else:
@@ -692,14 +713,15 @@ def main(pvd: str, tdir: str) -> int:
     if det:
         md += ["", "Details:"] + det
     md += ["", "| not applicable in this preview | why |", "|---|---|"] + [f"| {k} | {v} |" for k, v in NOT_APPLICABLE.items()]
-    st = selftest(ctxs["long"])
+    st = selftest(ctxs[kinds[0]])
     md += ["", "Self-test (R40: each check must FAIL on its planted bug):", "", "| check | planted bug | result |", "|---|---|---|"]
     md += [f"| {a} | {b} | {c}{'' if c == 'FAIL' else ' - BLIND'} |" for a, b, c in st]
-    miss = sorted({s.get("missing") or s.get("file") for s in P["long"]["data"]["shots"] if s.get("base_kind") == "missing" or s["kind"] == "missing"})
-    sti = sorted({f"{s['standin']['for']} -> {('Klot ' if s['standin']['src'].startswith('s0') else 'Ep.4 ') + s['standin']['src']}" for s in P["long"]["data"]["shots"] if s.get("standin")})
+    shots0 = P[kinds[0]]["data"]["shots"]
+    miss = sorted({s.get("missing") or s.get("file") for s in shots0 if s.get("base_kind") == "missing" or s["kind"] == "missing"})
+    sti = sorted({f"{s['standin']['for']} -> {('Klot ' if s['standin']['src'].startswith('s0') else 'Ep.4 ') + s['standin']['src']}" for s in shots0 if s.get("standin")})
     md += ["", "Stand-ins (tagged on screen): " + ("; ".join(sti) or "none")]
-    md += ["", "Placeholders (Klot's stills not in yet): " + ", ".join(f"{m}.png" for m in miss)]
-    for kind in ("long", "short"):
+    md += ["", "Placeholders (Klot's stills not in yet): " + (", ".join(f"{m}.png" for m in miss) or "none")]
+    for kind in kinds:
         p = pv / OUT[kind]
         if p.exists():
             i, tp = R.measure_audio(p)
@@ -707,7 +729,7 @@ def main(pvd: str, tdir: str) -> int:
                                        capture_output=True, text=True).stdout)
             md.append(f"- {p.name}: {dur:.1f} s, {i:.1f} LUFS, true peak {tp:.1f} dBTP")
             sheet(p, pv / f"sheet_{kind}.png")
-    (pv / "qc_preview2.md").write_text("\n".join(md) + "\n")
+    (pv / ("qc_preview2.md" if seg == "p2" else "qc_preview_a2.md")).write_text("\n".join(md) + "\n")
     print("\n".join(md))
     bad = any(r for k in allres for n, r in allres[k].items() if r and n != "shorts_length") or any(c != "FAIL" for *_x, c in st)
     return 1 if bad else 0

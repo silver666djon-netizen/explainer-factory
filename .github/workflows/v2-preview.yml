@@ -9,6 +9,10 @@ on:
         description: "yes = render with Remotion; no = re-run the checks on the published preview files"
         required: false
         default: "yes"
+      segment:
+        description: "p2 = cold open + Act 1 (draft ep04v2-preview2); a2 = Act 2, break 1 -> break 2 (draft ep04v2-preview-a2)"
+        required: false
+        default: "p2"
 permissions:
   contents: write
 concurrency:
@@ -47,18 +51,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           tools/rel.sh download ep04v2-preview1 rel timings.json voice_24k.flac
-          tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2-*.png" "archive-a2b-*.png" "m1b-*.png" "l1-*.png"
+          tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2-*.png" "archive-a2b-*.png" "m1b-*.png" "l1-*.png" "n1-*.png" "n4-*.png" "a4-*.png"
           ls rel rel/frames
       - name: Export the plan + audio mixes
         run: |
           set -o pipefail
-          python tools/v2_preview.py rel pilot/remotion/public pv 2>&1 | tee export.log \
+          python tools/v2_preview.py rel pilot/remotion/public pv "${{ github.event.inputs.segment || 'p2' }}" 2>&1 | tee export.log \
             || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
       - name: Published preview files (checks only)
         if: github.event.inputs.render == 'no'
         env:
           GH_TOKEN: ${{ github.token }}
-        run: tools/rel.sh download ep04v2-preview2 pv "cs_ep04v2_preview2_*.mp4"
+        run: |
+          if [ "${{ github.event.inputs.segment || 'p2' }}" = a2 ]; then tools/rel.sh download ep04v2-preview-a2 pv "cs_ep04v2_preview_a2*.mp4"
+          else tools/rel.sh download ep04v2-preview2 pv "cs_ep04v2_preview2_*.mp4"; fi
       - name: Remotion install
         if: github.event.inputs.render != 'no'
         working-directory: pilot/remotion
@@ -68,7 +74,7 @@ jobs:
         working-directory: pilot/remotion
         run: |
           set -o pipefail
-          for n in long short; do
+          for n in $(python3 -c "import json; print(' '.join(json.load(open('../../pv/plan.json'))))"); do
             s0=$(date +%s)
             npx remotion render src/index.ts V2 "../../pv/v2_${n}_silent.mp4" --props="{\"name\":\"v2_$n\"}" --concurrency=4 --muted --crf=22 --log=error 2>&1 | tail -30 > "../../pv/render_$n.log" \
               || { tail -n 30 "../../pv/render_$n.log" | python3 -c 'import sys; print("::error title=render::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
@@ -82,15 +88,19 @@ jobs:
           tail -n 60 qc.log | python3 -c 'import sys; print("::notice title=qc::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
       - name: Telegram copy of the long preview (bot limit)
         run: |
-          f=pv/cs_ep04v2_preview2_long.mp4
-          [ -f "$f" ] && ffmpeg -v error -y -i "$f" -vf scale=1280:-2 -c:v libx264 -preset medium -crf 26 -c:a copy -movflags +faststart pv/cs_ep04v2_preview2_long_tg.mp4 && ls -la pv/*_tg.mp4 || true
-      - name: Publish into ep04v2-preview2
+          for f in pv/cs_ep04v2_preview2_long.mp4 pv/cs_ep04v2_preview_a2.mp4; do
+            [ -f "$f" ] && ffmpeg -v error -y -i "$f" -vf scale=1280:-2 -c:v libx264 -preset medium -crf 26 -c:a copy -movflags +faststart "${f%.mp4}_tg.mp4" || true
+          done
+          ls -la pv/*_tg.mp4 || true
+      - name: Publish into the preview draft
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls pv/qc_preview2.md pv/sheet_*.png pv/*_tg.mp4 2>/dev/null || true)
-          [ "${{ github.event.inputs.render }}" != "no" ] && files="$files $(ls pv/cs_ep04v2_preview2_*.mp4 pv/render_time.txt 2>/dev/null || true)"
+          if [ "${{ github.event.inputs.segment || 'p2' }}" = a2 ]; then tag=ep04v2-preview-a2; title="CoinSense · EP04v2 · PREVIEW · ACT 2"; pat=cs_ep04v2_preview_a2
+          else tag=ep04v2-preview2; title="CoinSense · EP04v2 · PREVIEW 2"; pat=cs_ep04v2_preview2_; fi
+          files=$(ls pv/qc_preview*.md pv/sheet_*.png pv/*_tg.mp4 2>/dev/null || true)
+          [ "${{ github.event.inputs.render }}" != "no" ] && files="$files $(ls pv/${pat}*.mp4 pv/render_time.txt 2>/dev/null | grep -v _tg || true)"
           [ -n "$files" ] || exit 0
-          if tools/rel.sh id ep04v2-preview2 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-preview2 $files
-          else gh release create ep04v2-preview2 $files --title "CoinSense · EP04v2 · PREVIEW 2" --notes "Ep.4 v2 preview 2, picture-first (draft, not for upload)." --prerelease --draft; fi
+          if tools/rel.sh id $tag >/dev/null 2>&1; then tools/rel.sh upload $tag $files
+          else gh release create $tag $files --title "$title" --notes "Ep.4 v2 preview, picture-first (draft, not for upload)." --prerelease --draft; fi

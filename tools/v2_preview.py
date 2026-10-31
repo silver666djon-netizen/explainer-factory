@@ -129,6 +129,8 @@ S: dict[str, dict] = {
     "A1.19a": W_(base="g01", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]], plan=W_(mode="route", at=0.35)),
     "A1.19b": W_(base="a5", cam=[[0.5, 0.45, 1.5], [0.5, 0.5, 1.02]], green_creep=True),
 }
+from v2_preview_a2 import A2 as _A2, KLOT_A2, EP4_A2, CLIPS_A2  # noqa: E402  (Act 2 specs)
+S.update(_A2)
 for _k, _v in list(S.items()):  # sfx inside a shot spec is the mixer's, not the layer's
     _v.setdefault("kind", "pic")
 # logical stills -> Klot's file when it is in the repo, else an Ep.4 stand-in window (x0, y0, x1, y1 of the stand-in) or a placeholder
@@ -139,7 +141,9 @@ STANDIN = {"a1_glow": ("ep04v2_s01_flat_wide", [0.16, 0.14, 0.6, 0.6], "dark"), 
            "s02": ("m1b-blank", [0.08, 0.04, 0.92, 0.886], ""), "s03": ("m1b-blank", [0.275, 0.128, 0.726, 0.582], ""),
            "s05": ("b1", [0.2, 0.02, 0.56, 0.38], ""), "s06": ("o4", [0.23, 0.02, 0.63, 0.42], ""), "a4_seat": ("a11", [0.0, 0.0, 1.0, 1.0], "")}
 EP4 = {"o4": "o4", "l1": "l1", "a5": "a5", "arch_a2": "archive-a2", "arch_a2b": "archive-a2b", "m1b-blank": "m1b", "b1": "b1", "a11": "a11"}
-CLIPS = {"o4clip": "o4", "a10clip": "a10"}
+CLIPS = {"o4clip": "o4", "a10clip": "a10", **CLIPS_A2}
+KLOT.update(KLOT_A2)
+EP4.update(EP4_A2)
 SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
 CLOCK = {"A1.1": "8:12", "A1.7": "8:13", "A1.8": "8:14", "A1.9": "8:16", "A1.11": "8:18", "A1.16": "8:19"}
 TICKS = ("A1.8", "A1.16")      # the hold clock ticks from 8:14 until Pay
@@ -147,7 +151,7 @@ HEART = ("A1.11", "A1.16")     # heartbeat from 8:18 until Pay (stops before the
 
 
 # Larry's face (or Larry in the room): a cut to one of these breaks a run of laptop screens (Klot note 8: <= 2 screens in a row)
-FACES = {"s01", "s05", "s06", "a1_glow", "a1_wallet", "g04", "o4", "o4clip"}
+FACES = {"s01", "s05", "s06", "a1_glow", "a1_wallet", "a4_seat", "g04", "o4", "o4clip", "p06", "p08"}
 # checkout text we want read on a phone (Klot note 5): sizes in screen units (the screen box is 1240 wide); the QC checks the cap
 # height against 2.8 % of the frame from these same numbers (ArchivoBlack / SpecialElite cap height = 0.688 / 0.689 em)
 READ_FS = {"os": 46, "row": 50, "fee": 54, "lab": 44, "tot": 52, "big": 140}
@@ -184,6 +188,9 @@ def plan_items(spec: dict, shot_dur: float) -> list[dict]:
     route = [{"k": "route", "d": PLAN_ROUTE}, {"k": "line", "d": PLAN_ARROW}] + [{"k": "line", "d": d, "w": 9} for d in PLAN_X]
     if spec["mode"] == "walls":
         anim, still = walls + rooms, []
+    elif spec["mode"] == "static":  # the finished plan (route included); optional extra ink
+        anim, still = [dict(i) for i in spec.get("extra", [])], walls + rooms + route
+        at = min([i.get("at_", at) for i in anim] or [at])
     else:
         anim, still = route, walls + rooms
     budget = shot_dur - at - 0.35 - 1.3  # the hand leaves (0.4 s) and the plan holds ~0.8 s before the cut
@@ -194,12 +201,27 @@ def plan_items(spec: dict, shot_dur: float) -> list[dict]:
         v *= 1.05
     t = at + 0.35
     for i in anim:
+        t = max(t, i.get("at_", t))
         i["dur"] = round(len(i["text"]) * 0.075 if i["k"] == "text" else max(0.14, _plen(i["d"]) / v), 3)
         i["t0"] = round(t, 3)
         t += i["dur"] + gap
     for i in still:
         i["static"] = True
     return still + anim
+
+
+def sheet_times(sh: dict, shot_dur: float) -> None:
+    """Times the items of an ink sheet in order: each starts at its word (or 'at', or right after the previous one);
+    text at 0.075 s per letter (rule 1), strokes at ~1600 units/s of the sheet's width scale."""
+    unit = sh["W"] / 1000
+    t = sh.get("at_", sh.get("at", 0.3))
+    for i in sh["items"]:
+        if i.get("static"):
+            continue
+        t0 = max(t, i.get("at_", i.get("at", t)))
+        i["dur"] = round(len(i["text"]) * 0.075 if i["k"] == "text" else max(0.18, _plen(i["d"]) / (1600 * unit)), 3)
+        i["t0"] = round(t0, 3)
+        t = t0 + i["dur"] + 0.1
 
 
 def _norm(w: str) -> str:
@@ -250,7 +272,7 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
     vis = []
     for i, b in enumerate(beats):
         s = 0.0 if i == 0 else b["start"] - LEAD
-        if beats[i - 1]["id"] in hit and i > 0:
+        if i > 0 and beats[i - 1]["id"] in hit and hit[beats[i - 1]["id"]]["at"] >= beats[i - 1]["end"] - 0.05:
             s = hit[beats[i - 1]["id"]]["at"]  # the picture cuts on the brass hit; the silence holds the next card
         vis.append(s)
     shots, clock = [], None
@@ -289,6 +311,9 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                 if "on" in t:
                     t["at"] = round(word_time(b, t.pop("on")) - s0, 3)
             ink = []  # (t0, t1) absolute: the hand lays ink (scratch sound exactly then, R34)
+            for sh in spec.get("sheets", []):
+                sheet_times(sh, s1 - s0)
+                ink += [(s0 + i["t0"], s0 + i["t0"] + i["dur"]) for i in sh["items"] if not i.get("static")]
             if "plan" in spec:
                 spec["plan"] = {"W": PLAN_W, "H": PLAN_H, "items": plan_items(spec["plan"], s1 - s0), "color": "#F3F1EA"}
                 ink += [(s0 + i["t0"], s0 + i["t0"] + i["dur"]) for i in spec["plan"]["items"] if not i.get("static")]
@@ -329,10 +354,22 @@ def captions(beats: list[dict], kind: str) -> list[dict]:
     from factory.render import group_captions
     mc, mw = (26, 5) if kind == "long" else (16, 3)
     out = []
+    import re as _re
+    from factory.captions import _dangles
     for b in beats:
-        for c in group_captions(b["words"], b["start"], mc, mw):
-            out.append({"start": round(c.start, 3), "end": round(c.end, 3),
-                        "words": [[w, round(s, 3), round(e, 3)] for w, (s, e) in zip(c.words, c.word_times)]})
+        cards = [[[w, round(s, 3), round(e, 3)] for w, (s, e) in zip(c.words, c.word_times)] for c in group_captions(b["words"], b["start"], mc, mw)]
+        # R23: a card never ends on a dangling word ("the", "to", "was" ...) mid-sentence: hand it to the next card
+        def dangling(c):
+            return c and not _re.search(r"[.!?…,:;—-]$", c[-1][0]) and _dangles(c[-1][0])
+        for i in range(len(cards) - 1):
+            while len(cards[i]) > 1 and dangling(cards[i]):
+                cards[i + 1].insert(0, cards[i].pop())
+            if len(cards[i]) == 1 and not _re.search(r"[.!?…]$", cards[i][0][0]):  # a lone word goes on with the next card
+                cards[i + 1].insert(0, cards[i].pop())
+        if len(cards) > 1 and len(cards[-1]) == 1 and not _re.search(r"[.!?…]$", cards[-1][0][0]) and not dangling(cards[-2] + cards[-1]):
+            cards[-2].append(cards[-1].pop())
+        for ws in [c for c in cards if c]:
+            out.append({"start": ws[0][1], "end": ws[-1][2], "words": ws})
     return out
 
 
@@ -353,14 +390,15 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
         tl.add_voice(b["start"], voice[i:j], 24000, tag=b["id"])
     hits = [h for h in T["hits"] if any(h["line"] == b["id"] for b in beats)]
     acts = {a["act"]: a["start"] for a in T["acts"]}
-    tl.music_cue(0.0, "ub_ticking_tension")
+    bed = "ub_mechanisms_of_action" if beats and beats[0]["act"] == "A2" else "ub_ticking_tension"
+    tl.music_cue(0.0, bed)
     silences = []
     for h in hits:
         tl.add_stab(h["at"], "ub_sting_brass", dur=T["hit_len"])
-        s0 = h["at"] + T["hit_len"]
+        s0 = max(h["at"] + T["hit_len"], h.get("silence_from", 0.0))  # the second of silence comes after the line
         silences.append((s0, s0 + 1.0))
         tl.music_cue(h["at"] + 0.2, "none")
-        tl.music_cue(s0 + 1.0, "ub_ticking_tension")
+        tl.music_cue(s0 + 1.0, bed)
     if "A1" in acts and acts["A1"] < end_t:
         tl.music_cue(acts["A1"], "ub_night_spot")
     for sh in shots:
@@ -431,6 +469,16 @@ def _load(path: Path, key: str, P: Path) -> tuple[str, int, int, float]:
     return f"v2/{key}.jpg", im.width, im.height, f
 
 
+def _world(s: dict, f: float) -> None:
+    """Ink sheets, safe dials and the safe door are given in px of the original picture: scale them with it."""
+    for sh in s.get("sheets", []):
+        sh["quad"] = [[x * f, y * f] for x, y in sh.pop("q")]
+    for d in s.get("dials", []):
+        d["c"], d["r"] = [d["c"][0] * f, d["c"][1] * f], d["r"] * f
+    if s.get("door"):
+        s["door"]["box"] = [v * f for v in s["door"]["box"]]
+
+
 def resolve_base(s: dict, R: Path, P: Path) -> None:
     """Fills img/iw/ih (or video, or missing), maps the camera into a stand-in window, and places the screen quad."""
     b = s.get("base")
@@ -446,11 +494,17 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
     kp = _find(KLOT[b], R) if b in KLOT else None
     if kp is not None:
         s["img"], s["iw"], s["ih"], f = _load(kp, KLOT[b], P)
+        _world(s, f)
         if s.get("screen"):
             q = screens.get(KLOT[b])
             if not q:
                 raise SystemExit(f"{s['id']}: {KLOT[b]} has no screen quad in v2/screens.json (measure it first)")
-            s["quad"] = [[x * f, y * f] for x, y in q]
+            if isinstance(q[0][0], list):  # a picture with two screens (p04): screen -> the left one, screen2 -> the right one
+                s["quad"] = [[x * f, y * f] for x, y in q[0]]
+                if s.get("screen2"):
+                    s["quad2"] = [[x * f, y * f] for x, y in q[1]]
+            else:
+                s["quad"] = [[x * f, y * f] for x, y in q]
         sq = screens.get("sheets", {}).get(KLOT[b])
         if s.get("plan"):
             if not sq:
@@ -458,7 +512,7 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
             s["plan"]["quad"] = [[x * f, y * f] for x, y in sq]
         d = screens.get("clocks", {}).get(KLOT[b])
         if d:  # blank clock face: we paint the hands (the in-world time)
-            s["dial"] = {"c": [d["c"][0] * f, d["c"][1] * f], "r": d["r"] * f}
+            s["dial"] = {"c": [d["c"][0] * f, d["c"][1] * f], "r": d["r"] * f, "time": s.get("dial_time")}
         return
     if b in STANDIN:
         src, (x0, y0, x1, y1), grade = STANDIN[b]
@@ -483,9 +537,35 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
     if path is None:
         raise SystemExit(f"{s['id']}: picture {b} not found")
     s["img"], s["iw"], s["ih"], _f = _load(path, EP4.get(b, b), P)
+    _world(s, _f)
 
 
-def main(rel: str, pub: str, outd: str) -> int:
+def shift_T(T: dict, off: float) -> dict:
+    """The timings with every absolute time moved by -off (a preview that starts at an ad break starts at 0)."""
+    T = json.loads(json.dumps(T))
+    for b in T["beats"]:
+        b["start"], b["end"] = b["start"] - off, b["end"] - off
+    for h in T["hits"]:
+        h["at"] -= off
+        if "silence_from" in h:
+            h["silence_from"] -= off
+    for a in T["acts"]:
+        a["start"] -= off
+    for k in T["breaks"]:
+        k["at"] -= off
+    return T
+
+
+# preview segments: (kind, acts, start, end) — p2 = cold open + Act 1 (16:9 + the 9:16 sample), a2 = Act 2 (break 1 -> break 2)
+def segments(T: dict, seg: str) -> list[tuple[str, tuple[str, ...], float, float]]:
+    b = [k["at"] for k in T["breaks"]]
+    if seg == "a2":
+        return [("a2", ("A2",), b[0], b[1])]
+    a1 = next(a["start"] for a in T["acts"] if a["act"] == "A1")
+    return [("long", ("COLD", "A1"), 0.0, b[0]), ("short", ("COLD",), 0.0, a1)]
+
+
+def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
     import soundfile as sf
     from factory.config import load_config
     R, P, O = Path(rel), Path(pub), Path(outd)
@@ -495,12 +575,14 @@ def main(rel: str, pub: str, outd: str) -> int:
     voice, sr = sf.read(R / "voice_24k.flac", dtype="float32")
     assert sr == 24000
     cfg = load_config({})
-    end_long = T["breaks"][0]["at"]
-    a1 = next(a["start"] for a in T["acts"] if a["act"] == "A1")
+    T0, voice0 = T, voice
     plans = {}
-    for kind, acts, end in (("long", ("COLD", "A1"), end_long), ("short", ("COLD",), a1)):
+    for kind, acts, t_in, t_out in segments(T0, seg):
+        T = shift_T(T0, t_in) if t_in else T0
+        voice = voice0[int(round(t_in * 24000)):]
+        end = t_out - t_in
         beats, shots = build(T, acts, end)
-        W, H = (1920, 1080) if kind == "long" else (1080, 1920)
+        W, H = (1080, 1920) if kind == "short" else (1920, 1080)
         # pictures: Klot's still if it is in the repo, else an Ep.4 stand-in (tagged on screen), else a labelled placeholder
         for s in shots:
             if s["kind"] != "pic":
@@ -517,24 +599,24 @@ def main(rel: str, pub: str, outd: str) -> int:
         data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + 18, "end": round(end, 3), "pal": PAL,
                 "band": None if kind == "long" else [0, 380, 1080, 1080],
                 "shots": [{k: v for k, v in s.items() if k != "_sfx"} for s in shots], "captions": captions(beats, kind),
-                "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] == "A1.1a"],
+                "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a")],
                 "fonts": {"Anton-Regular.ttf": "Anton-Regular", "ArchivoBlack-Regular.ttf": "ArchivoBlack-Regular",
                           "SpecialElite-Regular.ttf": "SpecialElite-Regular", "PermanentMarker-Regular.ttf": "PermanentMarker-Regular",
                           "PT_Serif-Web-Regular.ttf": "PT-Serif-Web-Regular"}}
         (P / f"v2_{kind}.json").write_text(json.dumps(data, ensure_ascii=False))
-        plans[kind] = {"data": data, "beats": beats, "shots": shots, "audio": {k: v for k, v in stats.items()}}
+        plans[kind] = {"data": data, "beats": beats, "shots": shots, "audio": {k: v for k, v in stats.items()}, "offset": t_in}
         print(kind, len(shots), "shots,", round(end, 2), "s", flush=True)
     (P / "hands").mkdir(exist_ok=True)
     for f in ("hand_ink_cuff.png", "hand_marker_cuff.png", "hand_stamp_cuff.png", "hand_white_cuff.png", "hand_yellow_cuff.png"):
         shutil.copy(ROOT / "assets" / "hands" / f, P / "hands" / f)
     (P / "fonts").mkdir(exist_ok=True)
-    for f in plans["long"]["data"]["fonts"]:
+    for f in next(iter(plans.values()))["data"]["fonts"]:
         if (ROOT / "assets" / "fonts" / f).exists():
             shutil.copy(ROOT / "assets" / "fonts" / f, P / "fonts" / f)
-    (O / "plan.json").write_text(json.dumps({k: {"beats": v["beats"], "shots": v["shots"], "audio": v["audio"],
+    (O / "plan.json").write_text(json.dumps({k: {"beats": v["beats"], "shots": v["shots"], "audio": v["audio"], "offset": v["offset"],
                                                  "data": v["data"]} for k, v in plans.items()}, ensure_ascii=False, default=str))
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main(*sys.argv[1:4]))
+    sys.exit(main(*sys.argv[1:5]))
