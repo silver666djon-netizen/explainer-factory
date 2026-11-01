@@ -11,7 +11,7 @@
 set -euo pipefail
 R="${GITHUB_REPOSITORY:-silver666djon-netizen/explainer-factory}"
 cmd="$1"; tag="$2"; shift 2
-rid() { gh api "repos/$R/releases?per_page=100" --paginate -q ".[] | select(.tag_name == \"$tag\") | .id" | head -1; }
+rid() { gh api "repos/$R/releases?per_page=100" --paginate -q ".[] | select(.tag_name == \"$tag\") | .id" | sort -n | head -1; }  # the oldest, if a draft got duplicated
 id=$(rid)
 case "$cmd" in
   id) [ -n "$id" ] && echo "$id" || exit 1 ;;
