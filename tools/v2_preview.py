@@ -90,7 +90,7 @@ S: dict[str, dict] = {
     "A1.7b": W_(base="a10clip", cam=[[0.5, 0.5, 1.0], [0.5, 0.55, 1.08]]),
     "A1.8a": W_(base="s03", cam=[[0.511, 0.5, 1.5], [0.6, 0.4, 1.9]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
     "A1.8b": W_(base="s04", cam=[[0.45, 0.45, 1.02], [0.36, 0.33, 1.3]]),
-    "A1.J2a": W_(base="g05", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
+    "A1.J2a": W_(base="k5", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
     "A1.J2b": W_(base="g05", cam=[[0.4, 0.55, 1.25], [0.4, 0.55, 1.32]], overs=[W_(t="wires", snip_on="wires", xa=0.12, xb=0.6, y=0.5)],
                  sfx=[{"kind": "snip", "on": "wires", "lead": -0.6}]),
     "A1.9a": W_(base="s01", cam=[[0.45, 0.5, 1.15], [0.4, 0.42, 1.5]],  # a face between screens (note 8): Larry typing
@@ -144,7 +144,7 @@ STANDIN = {"a1_glow": ("ep04v2_s01_flat_wide", [0.16, 0.14, 0.6, 0.6], "dark"), 
            "s02": ("m1b-blank", [0.08, 0.04, 0.92, 0.886], ""), "s03": ("m1b-blank", [0.275, 0.128, 0.726, 0.582], ""),
            "s05": ("b1", [0.2, 0.02, 0.56, 0.38], ""), "s06": ("o4", [0.23, 0.02, 0.63, 0.42], ""), "a4_seat": ("a11", [0.0, 0.0, 1.0, 1.0], "")}
 EP4 = {"o4": "o4", "l1": "l1", "a5": "a5", "a10": "a10", "arch_a2": "archive-a2", "arch_a2b": "archive-a2b", "m1b-blank": "m1b", "b1": "b1", "a11": "a11"}
-CLIPS = {"o4clip": "o4", "a10clip": "a10", "k1": "ep04v2_k1_glow", **CLIPS_A2}
+CLIPS = {"o4clip": "o4", "a10clip": "a10", "k1": "ep04v2_k1_glow", "k5": "ep04v2_k5_bomb", "k6": "ep04v2_k6_car", **CLIPS_A2}
 KLOT.update(KLOT_A2)
 EP4.update(EP4_A2)
 SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
