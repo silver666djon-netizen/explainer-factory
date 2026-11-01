@@ -456,7 +456,13 @@ class Timeline:
         act = speaking > 0.5
         v_rms = float(np.sqrt(np.mean(self.voice[act] ** 2))) if act.any() else 0.05
         v_peak = float(np.percentile(np.abs(self.voice[act]), 99.9)) if act.any() else 0.5
-        out = self.voice + self.fx + self.hits * v_peak * db(self.cfg.get("hit_db", -6))
+        dip = np.ones(self.n, np.float32)  # extra dips (music and foley) under chosen lines
+        for t0, t1, d in getattr(self, "dips", []):
+            i0, i1, r = int(max(0.0, t0) * SR), int(min(total, t1) * SR), int(0.25 * SR)
+            dip[i0:i1] = np.minimum(dip[i0:i1], db(d))
+            dip[max(0, i0 - r):i0] = np.minimum(dip[max(0, i0 - r):i0], np.linspace(1.0, db(d), i0 - max(0, i0 - r)))
+            dip[i1:i1 + r] = np.minimum(dip[i1:i1 + r], np.linspace(db(d), 1.0, len(dip[i1:i1 + r])))
+        out = self.voice + self.fx * dip + self.hits * v_peak * db(self.cfg.get("hit_db", -6))
         music = _cue_track(self.n, self.cues, align_end=self.align_end) if self.cues else _load_music(total)
         if music is not None:
             music = music[: self.n]
@@ -466,13 +472,7 @@ class Timeline:
             gap = v_rms * db(self.cfg.get("music_gap_db", -8)) / max(m_rms, 1e-6)
             duck = db(self.cfg.get("music_under_voice_db", -14) - self.cfg.get("music_gap_db", -8))
             gain = gap * (1 - speaking * (1 - duck))
-            for t0, t1, d in getattr(self, "dips", []):
-                env = np.ones(self.n, np.float32)
-                i0, i1, r = int(max(0.0, t0) * SR), int(min(total, t1) * SR), int(0.25 * SR)
-                env[i0:i1] = db(d)
-                env[max(0, i0 - r):i0] = np.linspace(1.0, db(d), i0 - max(0, i0 - r))
-                env[i1:i1 + r] = np.linspace(db(d), 1.0, len(env[i1:i1 + r]))
-                gain = gain * env
+            gain = gain * dip
             out = out + music * gain
         out = out + self.stings * v_peak * db(self.cfg.get("sting_db", -6)) * (1 - speaking * (1 - db(-4)))
         peak = np.abs(out).max()

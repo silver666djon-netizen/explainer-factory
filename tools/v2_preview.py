@@ -156,7 +156,7 @@ CLIPS.update(CLIPS_A34)
 SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
 CLOCK = {"A1.1": "8:12", "A1.7": "8:13", "A1.8": "8:14", "A1.9": "8:16", "A1.11": "8:18", "A1.16": "8:19"}
 TICKS = ("A1.8", "A1.16")
-DIP_LINES = {"A3.5": -7.0, "A1.1": -7.0}  # extra music dip (dB) under lines the final-mix STT check heard unclean      # the hold clock ticks from 8:14 until Pay
+DIP_LINES = {"A3.5": -7.0, "A1.1": -10.0}  # extra dip (dB) of music + foley (the pen scratch) under lines the final-mix STT check heard unclean      # the hold clock ticks from 8:14 until Pay
 HEART = ("A1.11", "A1.16")     # heartbeat from 8:18 until Pay (stops before the silence)
 
 
