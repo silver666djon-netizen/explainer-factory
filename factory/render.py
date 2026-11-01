@@ -1664,6 +1664,8 @@ def _gate_with_remaster(out_path: Path, wav_path: Path, loud_af: str, cfg: dict,
         if tp <= ceiling or not Path(wav_path).exists():
             break
         log(f"  audio {out_path.name}: true peak {tp:.1f} dBTP over {ceiling:.1f} - remastering at limit {limit}")
+        # the gain is re-calibrated for the lower ceiling, so the level stays on target (a lower ceiling alone loses loudness)
+        loud_af = _gain_filter(wav_path, (cfg.get("audio") or cfg).get("target_lufs", -14), limit, log)
         tmp = out_path.with_suffix(".remaster.mp4")
         subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(out_path), "-i", str(wav_path), "-map", "0:v", "-map", "1:a",
                         "-c:v", "copy", "-af", _master_af(loud_af, limit), *AAC_ARGS, "-shortest", "-movflags", "+faststart",

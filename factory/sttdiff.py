@@ -104,6 +104,8 @@ def words(text: str) -> list[str]:
         w = w.strip("'")
         if not w:
             continue
+        if w.endswith("'s"):  # "Larrys" said, "Larry's" written (or the reverse): the same sound, spelling is not checked
+            w = w[:-2] + "s"
         if w in ("dollars", "pounds", "euros", "percents"):
             w = w[:-1]
         w = SPELLING.get(w, w)

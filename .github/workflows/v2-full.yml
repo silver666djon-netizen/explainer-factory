@@ -9,6 +9,10 @@ on:
         description: "parallel render parts"
         required: false
         default: "6"
+      from_run:
+        description: "optional: a previous run id whose plan + rendered parts are reused (only the join, master and checks run again)"
+        required: false
+        default: ""
 permissions:
   contents: write
 concurrency:
@@ -16,6 +20,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   plan:
+    if: github.event.inputs.from_run == ''
     runs-on: ubuntu-latest
     timeout-minutes: 60
     outputs:
@@ -75,6 +80,7 @@ jobs:
           retention-days: 3
   render:
     needs: plan
+    if: github.event.inputs.from_run == ''
     runs-on: ubuntu-latest
     timeout-minutes: 120
     strategy:
@@ -108,6 +114,7 @@ jobs:
           retention-days: 3
   finish:
     needs: [plan, render]
+    if: always() && (needs.render.result == 'success' || github.event.inputs.from_run != '')
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -127,19 +134,32 @@ jobs:
           restore-keys: kokoro-
       - name: Python packages
         run: pip install -q -r requirements.txt soundfile faster-whisper opencv-python-headless 2>&1 | tail -3
+      - name: Fonts
+        run: |
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf \
+                   ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
       - uses: actions/download-artifact@v4
         with:
           name: public
           path: pilot/remotion/public
+          run-id: ${{ github.event.inputs.from_run || github.run_id }}
+          github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           name: pv
           path: .
+          run-id: ${{ github.event.inputs.from_run || github.run_id }}
+          github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
           pattern: part-*
           merge-multiple: true
           path: parts
+          run-id: ${{ github.event.inputs.from_run || github.run_id }}
+          github-token: ${{ github.token }}
       - name: Join the parts (no re-encode)
         run: |
           ls parts | sort -t_ -k2 -n | sed "s|^|file '$PWD/parts/|; s|$|'|" > parts.txt
