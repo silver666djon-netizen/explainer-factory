@@ -1,14 +1,11 @@
-PREVIEW 2 (your 8 notes): cold open + Act 1, 0:00 to the first ad break (3:56). All your stills are in: no placeholders, no stand-ins.
+PREVIEW 2 (frame review, round 3): cold open + Act 1, 0:00-3:56. Every note fixed and each one is now a release check that fails on a planted bug.
 
-1. Blueprint: the plan is drawn IN the sheet's plane (mapped onto its 4 corners), white chalk pen in the hand. A heist floor plan of the checkout: rooms PRICE, SEAT, TIMER, CARD, FEES, PAY. At the end of Act 1 the hand draws the dashed route through the doors and an X on PAY.
-2. POP!: red letters, thick white outline, on a yellow comic starburst over the bubble's edge.
-3. REAL: stamped ON the screen, on the fee lines, -8 deg, inside the page. New rule R44 (stamps and marks on a screen stay inside the screen), checked automatically.
-4. "?": a big red question mark on a cream tag.
-5. Checkout text: order summary, fee lines and the two joke lines are at least 2.8 % of the frame tall (R45, checked); the camera pushes in on the screen while each joke is spoken.
-6. Archive: the original prints fill the whole frame with a slow push (Loew's 1939; Briggs Stadium 1942 with its price + tax = total sign).
-7. Tags: "$2 LEFT / UNTIL FRIDAY" and "$18" are bigger and well inside the frame; the hand leaves after writing (R47: the finished mark is seen at least 0.5 s before the cut).
-8. Face cuts: never more than two laptop screens in a row (R46): pushes on Larry (s01), a1_glow, s06, s05 between them.
-Also: the pen in the hand always has the ink's colour (black, red, white chalk, yellow).
+Hands, stamps, marks: FICTIONAL card fully in frame (top right, over the dark window), its stamp held >= 0.8 s before the cut. Hands enter from the nearest frame edge and never cover a face (checked against the faces marked on every picture). The crown over Larry's head is replaced by GENIUS! written beside him (a hand drawing over his hat would cover his face). $18 tag far from his face; the $40 strike now comes in from the top edge.
+Readable: hold timer, timeline labels, the slots 1-2-3, ORDER SUMMARY and fee lines all >= 2.8 % cap height; every read text >= 4.5:1 contrast (our red is a touch deeper so it reads on cream).
+Archive (R48): the two 1939/1942 photos under "if you've ever bought a ticket online" are gone: the checkout pages flick by on Larry's laptop, then his knowing smile.
+Variety: a4_seat is kept for 3:20 and the finale only (1:04 is now the Ep.4 concert hall); no screen framing repeats more than twice a minute.
+COLD.1 is now the Grok clip k1 (Larry in the screen glow).
+9:16: a 4:5 picture band (70 % of the height); the laptop page fills the band's width; the blueprint plan is laid on the part of the sheet the band shows.
 
 ---
-RU: ПРЕВЬЮ 2 по вашим 8 замечаниям. Все ваши кадры на месте, заглушек и замен нет. 1) План на чертеже нарисован в плоскости листа (по 4 углам), белый мел в руке: план ограбления кассы — комнаты PRICE → SEAT → TIMER → CARD → FEES → PAY, в конце акта рука рисует пунктирный маршрут и крестик на PAY. 2) POP! — красные буквы с толстой белой обводкой на комиксной звезде у края пузыря. 3) Штамп REAL стоит на экране, на строках сборов, −8°, внутри страницы (новое правило R44, проверяется). 4) «?» — большой красный знак на кремовом ярлыке. 5) Текст кассы ≥ 2,8 % высоты кадра (R45), камера наезжает на экран во время шуток. 6) Архив во весь кадр с медленным наездом. 7) Ярлыки крупнее, ≥ 6 % от краёв, рука уходит после записи (R47). 8) Не больше двух экранов подряд без лица Ларри (R46). Цвет пера в руке = цвет чернил.
+RU: ПРЕВЬЮ 2 (третий раунд правок): все замечания исправлены, и каждое стало автоматической проверкой. Карточка FICTIONAL целиком в кадре, штамп держится ≥ 0,8 с. Рука входит с ближайшего края и не закрывает лица; корона над шляпой заменена надписью GENIUS! рядом с Ларри. Все тексты ≥ 2,8 % высоты и контраст ≥ 4,5:1. Архивные фото 1939/1942 под «покупали билет онлайн» убраны — вместо них экраны кассы и лицо Ларри. a4_seat только в 3:20 и в финале. COLD.1 — клип Grok k1. 9:16: полоса картинки 4:5, страница ноутбука во всю ширину.
