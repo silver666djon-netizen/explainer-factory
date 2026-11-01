@@ -247,3 +247,16 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
   (tools/tts_scan.py: per-word G2P) confirm the word is spoken right. Transcription is line by line (each beat's own
   voice span), never one pass over the whole track (whisper carries words across lines). The published files are
   checked the same way on their final audio before FINAL: tools/qc/stt_release.py (stt-release.yml) -> stt_diff.md.
+
+## Ep.4 v2 frame review rules (Klot, PREVIEW 2 / ACT 2) — each is a release check with a planted-bug self-test (tools/v2_qc.py)
+
+- **R44 screen_marks** — stamps and marks on a laptop screen are drawn in screen space and stay inside the page (30-unit margin).
+- **R45 read_size / text_size_contrast** — any text we want read: cap height ≥ 2.8 % of the frame (9:16: of the picture band), WCAG contrast ≥ 4.5:1 against what is right behind it. Measured on the rendered DOM (tools/v2_dom_qc.py).
+- **R46 face_cut** — never more than two laptop screens in a row without Larry's face.
+- **R47 ink_hold** — the hand leaves after writing; the finished mark is seen ≥ 0.5 s before the cut. **stamp_hold**: a stamp's impression ≥ 0.8 s before the cut.
+- **hand_over_face** — the drawing hand (or the stamp hand) never covers a face (faces marked once per picture in `episodes/0005-drip-pricing/v2/faces.json`). Hands enter and leave from the frame edge nearest to their target; the pen has the colour of its ink.
+- **edge_margin / tag_face** — every mark, tag, plate and stamp ≥ 6 % inside the frame; never on a face or a hand.
+- **repeat_shot** — the same picture with the same framing at most twice in any 60 s. **dial_run**: ≤ 2 s of dial close-ups in a row (dial turns in a medium shot, the click in a close-up).
+- **ui_state_consistency** — checkout A ($48, fees included) and checkout B ($30, fees at the end) look the same in every shot. **card_not_empty**: a key-number card shows its number within 0.3 s.
+- **plain_background** — no object on a plain cream background (act titles and ≤ 4 key numbers excepted): every object sits in a picture of a place.
+- **R48 archive_era** — an archive photo only under a line about general behaviour (no date) or within ±10 years of the event spoken about; its caption shows the photo's real date; never a modern date plate on an old photo. Modern dated events use our illustrated world or a typeset document card. Never generate a photoreal "archive" or news photo.

@@ -14,6 +14,7 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
+sys.path.insert(0, str(ROOT / "tools"))
 from factory import render as R  # noqa: E402
 from factory import sttdiff  # noqa: E402
 from factory.config import load_config  # noqa: E402
@@ -51,7 +52,9 @@ def c_max_still(shots, **_):
 
 
 def c_min_shot(shots, **_):
-    return [f"{s['id']}: only {s['end'] - s['start']:.2f} s (min {MIN_SHOT})" for s in shots if s["end"] - s["start"] < MIN_SHOT - 1e-6]
+    # a dial close-up of the safe is a quick cut by design (Klot: a dial turns <= 1.5 s, clicks <= 1 s): >= 0.9 s
+    return [f"{s['id']}: only {s['end'] - s['start']:.2f} s (min {0.9 if s.get('quick') else MIN_SHOT})" for s in shots
+            if s["end"] - s["start"] < (0.9 if s.get("quick") else MIN_SHOT) - 1e-6]
 
 
 def c_same_object(shots, **_):
@@ -455,6 +458,242 @@ def c_ink_hold(shots=None, **_):
     return out
 
 
+# ---------------------------------------------------------------- Klot's frame review (PREVIEW 2 + ACT 2): DOM checks
+# They read dom.json (tools/v2_dom_qc.py: the real composition rendered in Chromium at a settled frame of every shot and
+# every 0.1 s while a hand is on screen): the hand's tip, the faces of the picture (faces.json), every mark/tag, every text.
+_HAND_ALPHA = None
+
+
+def _hand_alpha():
+    global _HAND_ALPHA
+    if _HAND_ALPHA is None:
+        from PIL import Image
+        _HAND_ALPHA = np.asarray(Image.open(ROOT / "assets" / "hands" / "hand_ink_cuff.png").convert("RGBA"))[..., 3]
+    return _HAND_ALPHA
+
+
+def _frame(dom_k):
+    b = dom_k.get("band")
+    return (b[0], b[1], b[0] + b[2], b[1] + b[3]) if b else (0, 0, dom_k["W"], dom_k["H"])
+
+
+def _inter(a, b):
+    return max(0.0, min(a[2], b[2]) - max(a[0], b[0])) * max(0.0, min(a[3], b[3]) - max(a[1], b[1]))
+
+
+def _covered(hand, box, fr):
+    """fraction of the visible part of a face box under the opaque part of the hand (R37 hand image, turned 18 deg)"""
+    al = _hand_alpha()
+    s = 0.62 * hand["sh"] / 1024
+    c, sn = np.cos(np.radians(18)), np.sin(np.radians(18))
+    x0, y0, x1, y1 = max(box[0], fr[0]), max(box[1], fr[1]), min(box[2], fr[2]), min(box[3], fr[3])
+    if x1 - x0 < 4 or y1 - y0 < 4:
+        return 0.0
+    xs, ys = np.meshgrid(np.linspace(x0, x1, 12), np.linspace(y0, y1, 12))
+    dx, dy = xs - hand["tip"][0], ys - hand["tip"][1]
+    u = (dx * c + dy * sn) / s + 188
+    v = (-dx * sn + dy * c) / s + 456
+    ok = (u >= 0) & (u < al.shape[1]) & (v >= 0) & (v < al.shape[0])
+    hit = np.zeros_like(ok)
+    hit[ok] = al[v[ok].astype(int), u[ok].astype(int)] > 128
+    return float(hit.mean())
+
+
+def c_hand_over_face(dom=None, **_):
+    """Klot: the drawing hand never covers a face (or a stamp hand a face) — <= 12 % of any visible face for <= 0.1 s."""
+    if not dom:
+        return ["no dom.json (DOM sampling did not run)"]
+    out, streak = [], {}
+    fr = _frame(dom)
+    for smp in dom["samples"]:
+        hits = []
+        for f in (x for x in smp.get("faces", []) if x["kind"] == "face"):
+            if _inter(f["box"], fr) < 0.2 * max(1.0, (f["box"][2] - f["box"][0]) * (f["box"][3] - f["box"][1])):
+                continue
+            cov = max([_covered(h, f["box"], fr) for h in smp.get("hands", [])] + [
+                _inter(b, f["box"]) / max(1.0, (f["box"][2] - f["box"][0]) * (f["box"][3] - f["box"][1])) for b in smp.get("stampHands", [])] + [0.0])
+            if cov > 0.12:
+                hits.append(cov)
+        key = smp["shot"]
+        if hits:
+            streak[key] = streak.get(key, 0) + 1
+            if streak[key] == 2:
+                out.append(f"{key} at {smp['t']:.1f} s: the hand covers {max(hits):.0%} of a face")
+        else:
+            streak[key] = 0
+    return out
+
+
+def c_text_size_contrast(dom=None, **_):
+    """Klot: any text we want read: cap height >= 2.8 % of the frame (9:16: of the picture band) and WCAG contrast >= 4.5:1
+    against what is right behind it; measured on the settled frame of every shot."""
+    if not dom:
+        return ["no dom.json (DOM sampling did not run)"]
+    fr = _frame(dom)
+    need = 0.028 * (fr[3] - fr[1])
+    out = []
+    for smp in dom["samples"]:
+        if not smp.get("shotpic"):
+            continue
+        for r in smp.get("reads", []):
+            area = max(1.0, (r["box"][2] - r["box"][0]) * (r["box"][3] - r["box"][1]))
+            if _inter(r["box"], fr) < 0.5 * area:
+                continue
+            if r.get("cap", 99) < need - 0.5:
+                out.append(f"{smp['shot']}: '{r['text']}' cap height {r['cap']:.0f} px < {need:.0f} px")
+            if r.get("contrast") is not None and r["contrast"] < 4.5:
+                out.append(f"{smp['shot']}: '{r['text']}' contrast {r['contrast']:.1f}:1 < 4.5:1")
+    return out
+
+
+def c_edge_margin(dom=None, **_):
+    """Klot: every mark, tag, plate and stamp sits >= 6 % inside the frame (9:16: the picture band), on the settled frame."""
+    if not dom:
+        return ["no dom.json (DOM sampling did not run)"]
+    fr = _frame(dom)
+    mx, my = 0.06 * (fr[2] - fr[0]), 0.06 * (fr[3] - fr[1])
+    out = []
+    for smp in dom["samples"]:
+        if not smp.get("shotpic"):
+            continue
+        for m in smp.get("marks", []):
+            b = m["box"]
+            if b[2] - b[0] > 0.9 * (fr[2] - fr[0]):
+                continue
+            if b[0] < fr[0] + mx - 1 or b[1] < fr[1] + my - 1 or b[2] > fr[2] - mx + 1 or b[3] > fr[3] - my + 1:
+                out.append(f"{smp['shot']}: {m['kind']} '{m['text']}' at {[round(v) for v in b]} is within 6 % of the edge")
+    return out
+
+
+def c_tag_face(dom=None, **_):
+    """Klot: tags, plates and stamps never sit on a face or a hand of the picture (overlap <= 5 % of it)."""
+    if not dom:
+        return ["no dom.json (DOM sampling did not run)"]
+    out = []
+    for smp in dom["samples"]:
+        if not smp.get("shotpic"):
+            continue
+        for f in smp.get("faces", []):
+            fa = max(1.0, (f["box"][2] - f["box"][0]) * (f["box"][3] - f["box"][1]))
+            for m in smp.get("marks", []):
+                if _inter(m["box"], f["box"]) > 0.05 * fa:
+                    out.append(f"{smp['shot']}: {m['kind']} '{m['text']}' sits on a {f['kind']}")
+    return sorted(set(out))
+
+
+# ---------------------------------------------------------------- plan checks
+def c_stamp_hold(shots=None, **_):
+    """Klot: a stamp's impression is seen >= 0.8 s before the cut (the stamp lands at t, presses 0.13 s)."""
+    out = []
+    for s in shots:
+        ats = [o.get("at_") for o in s.get("overs", []) if o.get("t") == "stamp"] + [o.get("stamp_") for o in s.get("overs", []) if o.get("t") == "namecard"]
+        st = (s.get("screen") or {}).get("stamp")
+        if st:
+            ats.append(st.get("at_"))
+        for a in (x for x in ats if x is not None):
+            seen = (s["end"] - s["start"]) - (a + 0.13)
+            if seen < 0.8:
+                out.append(f"{s['id']}: the stamp is seen {seen:.2f} s before the cut (< 0.8 s)")
+    return out
+
+
+def c_ui_state(shots=None, **_):
+    """Klot: checkout A and checkout B show the same thing everywhere (A = $48 fees included, B = $30, fees at the end)."""
+    seen, out = {}, []
+    for s in shots:
+        for sc in (s.get("screen"), s.get("screen2")):
+            if not sc or not str(sc.get("head", "")).startswith("CHECKOUT "):
+                continue
+            sig = (sc.get("mode"), sc.get("price"), sc.get("late"), sc.get("sub"))
+            k = sc["head"]
+            if k in seen and seen[k][0] != sig:
+                out.append(f"{s['id']}: {k} shows {sig}, but {seen[k][1]} showed {seen[k][0]}")
+            seen.setdefault(k, (sig, s["id"]))
+    return out
+
+
+def c_card_not_empty(shots=None, **_):
+    """Klot: a key-number card is never empty navy: its number is up within 0.3 s of the cut."""
+    return [f"{s['id']}: {s.get('key')} appears {(s.get('at_') if s.get('at_') is not None else s.get('at', 0.15)):.2f} s into the card"
+            for s in shots if s.get("base_kind") == "flat" and (s.get("at_") if s.get("at_") is not None else s.get("at", 0.15)) > 0.3]
+
+
+def _framing(s):
+    c = s.get("cam") or [[0.5, 0.5, 1], [0.5, 0.5, 1]]
+    return c[1]
+
+
+def c_repeat_shot(shots=None, **_):
+    """Klot: the same picture with the same framing (centre within 0.1, zoom within 0.2) at most twice in any 60 s."""
+    out = []
+    pics = [s for s in shots if s.get("img") or s.get("video")]
+    for i, s in enumerate(pics):
+        same = [x for x in pics if (x.get("img") or x.get("video")) == (s.get("img") or s.get("video")) and 0 <= x["start"] - s["start"] < 60
+                and abs(_framing(x)[0] - _framing(s)[0]) < 0.1 and abs(_framing(x)[1] - _framing(s)[1]) < 0.1 and abs(_framing(x)[2] - _framing(s)[2]) < 0.2]
+        if len(same) > 2:
+            out.append(f"{', '.join(x['id'] for x in same)}: the same picture and framing {len(same)}x within 60 s")
+    return sorted(set(out))
+
+
+PLAIN = {"n1", "n4", "a4", "l1", "l13", "sub", "x1", "x1clip"}  # Ep.4 objects drawn on plain cream
+
+
+def c_plain_background(shots=None, **_):
+    """Klot: no object on a plain background (act titles and <= 4 key numbers excepted): it sits in a picture of a place."""
+    return [f"{s['id']}: {s.get('base')} is an object on plain cream" for s in shots if s.get("base") in PLAIN]
+
+
+def c_dial_run(shots=None, **_):
+    """Klot: per lock the dial turns <= 1.5 s and clicks <= 1 s, never more than 2 s of dial close-ups in a row; the wide
+    safe <= 3.5 s."""
+    out, run, ids = [], 0.0, []
+    for s in shots:
+        is_safe = "a2_safe" in str(s.get("img", ""))
+        zoom = (s.get("cam") or [[0, 0, 1]])[0][2]
+        d = s["end"] - s["start"]
+        if is_safe and zoom >= 2.0:
+            run += d
+            ids.append(s["id"])
+            if run > 2.05:
+                out.append(f"{', '.join(ids)}: {run:.1f} s of dial close-ups in a row")
+        else:
+            run, ids = 0.0, []
+            if is_safe and d > 3.55 and not s.get("title"):
+                out.append(f"{s['id']}: the wide safe for {d:.1f} s")
+    return sorted(set(out))
+
+
+MODERN = re.compile(r"\b(online|website|web site|app|laptop|internet|click|tab|screen)s?\b", re.I)
+
+
+def c_archive_era(shots=None, beats=None, **_):
+    """R48: an archive photo only under a line about general behaviour (no date) or within +-10 years of the year spoken;
+    its caption shows its real year; never a date plate of 1970 or later on a photo from before 1970."""
+    from v2_preview_a2 import ARCHIVE_YEAR
+    text = {b["id"]: b["text"] for b in (beats or [])}
+    out = []
+    for s in shots:
+        y = ARCHIVE_YEAR.get(s.get("base"))
+        if y is None:
+            m = re.search(r"\b(1[89]\d\d)\b[^·]*· Library of Congress", s.get("caption") or "")
+            y = int(m.group(1)) if m else None
+        if y is None:
+            continue
+        line = text.get(s["beat"], "")
+        for yy in (int(v) for v in re.findall(r"\b(19\d\d|20\d\d)\b", line)):
+            if abs(yy - y) > 10:
+                out.append(f"{s['id']}: a {y} photo under a line about {yy}")
+        if MODERN.search(line):
+            out.append(f"{s['id']}: a {y} photo under '{MODERN.search(line).group(0)}' (a modern thing)")
+        for o in s.get("overs", []):
+            for yy in (int(v) for v in re.findall(r"\b(19\d\d|20\d\d)\b", str(o.get("text", "")))):
+                if yy >= 1970 and y < 1970:
+                    out.append(f"{s['id']}: date plate {yy} on a {y} photo")
+        if s.get("caption") and str(y) not in s["caption"]:
+            out.append(f"{s['id']}: the caption does not show the photo's year {y}")
+    return out
+
+
 CHECKS = [
     ("picture_first (R41)", c_picture_first, "picture base >= 85% of screen time, <= 4 key numbers"),
     ("decode", c_decode, "file decodes end to end without an error"),
@@ -478,9 +717,20 @@ CHECKS = [
     ("screen_marks (R44)", c_screen_marks, "stamps on a screen stay inside the screen (screen space, 30-unit margin)"),
     ("face_cut (R46)", c_face_cut, "no more than 2 laptop screens in a row without Larry's face"),
     ("ink_hold (R47)", c_ink_hold, "the hand leaves; the finished mark is seen >= 0.5 s before the cut"),
+    ("hand_over_face", c_hand_over_face, "the drawing / stamp hand covers no face (<= 12 % for <= 0.1 s)"),
+    ("text_size_contrast", c_text_size_contrast, "text we want read: cap >= 2.8 % of the frame (9:16: band), contrast >= 4.5:1"),
+    ("edge_margin", c_edge_margin, "marks, tags, plates, stamps >= 6 % inside the frame"),
+    ("tag_face", c_tag_face, "no tag, plate or stamp on a face or a hand"),
+    ("stamp_hold", c_stamp_hold, "a stamp is seen >= 0.8 s before the cut"),
+    ("ui_state_consistency", c_ui_state, "checkout A / B identical in every shot"),
+    ("card_not_empty", c_card_not_empty, "a key-number card shows its number within 0.3 s"),
+    ("repeat_shot", c_repeat_shot, "same picture + framing <= 2x per 60 s"),
+    ("plain_background", c_plain_background, "no object on a plain background"),
+    ("dial_run", c_dial_run, "<= 2 s of dial close-ups in a row; wide safe <= 3.5 s"),
+    ("archive_era (R48)", c_archive_era, "archive photo year within +-10 y of the line (or no date); real year in the caption; no modern plate"),
 ]
 NOT_APPLICABLE = {
-    "hand_over_ink (R37), one hand at a time (rules 1-5)": "the hand is in this preview (right hand, white cuff, 18 deg, the pen has the ink's colour: black, red, white chalk, yellow; ink only behind the nib, one hand at a time by construction); the automatic hand_over_ink check is not ported to the Remotion layer yet: checked by eye on the frames",
+    "hand_over_ink (R37), one hand at a time (rules 1-5)": "by construction (ink only behind the nib, one hand at a time, pen colour = ink colour); the hand's position against the faces is checked (hand_over_face, from the rendered DOM)",
     "mark_on_object (R29), mark_in_frame (R32), mark audit (rules 11, 15, 16, 25)": "Act 1 ink sits on our paper strips, tags and notes laid over the pictures (and the crown above Larry's hat); the mark audit is not ported yet: checked by eye",
     "Larry's tab / ledger (rule 31)": "not used in v2",
     "text_stability (R31)": "by construction: kinetic and typed text is laid out in its final place and only fades/types in place",
@@ -504,8 +754,10 @@ def run(kind, P, pv, tdir, cfg, audio_ok=True):
     import soundfile as sf
     voice, _ = sf.read(tdir / "voice_24k.flac", dtype="float32")
     voice = voice[int(round(pl.get("offset", 0.0) * 24000)):]  # a segment preview starts at its ad break
+    dom_all = json.loads((pv / "dom.json").read_text()) if (pv / "dom.json").exists() else {}
     ctx = dict(beats=beats, shots=data["shots"], data=data, captions=data["captions"], audio=audio, voice=voice,
-               silences=pl["audio"]["silences"], sfx=pl["audio"]["sfx"], ink=ink_spans(data["shots"]), path=path, cfg=cfg, kind=AUD[kind])
+               silences=pl["audio"]["silences"], sfx=pl["audio"]["sfx"], ink=ink_spans(data["shots"]), path=path, cfg=cfg, kind=AUD[kind],
+               dom=dom_all.get(kind))
     res = {}
     for name, fn, _desc in CHECKS:
         if kind == "short" and name.startswith("stt_mix"):
@@ -527,6 +779,7 @@ def selftest(ctx):
     def plant(name, mut, call):
         c = copy.deepcopy({k: v for k, v in ctx.items() if k not in ("audio", "voice", "cfg", "path")})
         c.update({k: ctx[k] for k in ("audio", "voice", "cfg", "path")})
+        c.setdefault("dom", None)
         desc = mut(c)
         try:
             got = call(**c)
@@ -661,6 +914,57 @@ def selftest(ctx):
         s["end"] = max(b for _a, b in s["_ink"]) + 0.2
         return f"{s['id']} cut 0.2 s after the last stroke (hand still on it)"
     plant("ink_hold (R47)", m_hold, c_ink_hold)
+
+    face = {"kind": "face", "box": [900, 400, 1100, 600]}
+    def smp(**k):
+        return {"t": 0.0, "shot": "planted", "shotpic": True, "faces": [face], "hands": [], "stampHands": [], "marks": [], "reads": [], **k}
+    def m_hof(c):
+        c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [dict(smp(hands=[{"tip": [860, 360], "sh": 1080}]), t=t) for t in (0.0, 0.1, 0.2)]}
+        return "the hand's palm parked on a face for 0.3 s"
+    plant("hand_over_face", m_hof, c_hand_over_face)
+    def m_txt(c):
+        c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [smp(reads=[{"text": "SMALL", "box": [300, 300, 500, 330], "cap": 14.0, "contrast": 1.6}])]}
+        return "a 14 px cap line, contrast 1.6:1 (red on green)"
+    plant("text_size_contrast", m_txt, c_text_size_contrast)
+    def m_edge(c):
+        c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [smp(marks=[{"kind": "tag", "text": "A", "box": [10, 300, 200, 400]}])]}
+        return "a tag 10 px from the left edge"
+    plant("edge_margin", m_edge, c_edge_margin)
+    def m_tf(c):
+        c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [smp(marks=[{"kind": "tag", "text": "$18", "box": [950, 450, 1150, 560]}])]}
+        return "the $18 tag on Larry's face"
+    plant("tag_face", m_tf, c_tag_face)
+    def m_sh(c):
+        c["shots"] = [{"id": "planted", "start": 0.0, "end": 3.0, "overs": [{"t": "stamp", "at_": 2.6}]}]
+        return "FICTIONAL lands 0.4 s before the cut"
+    plant("stamp_hold", m_sh, c_stamp_hold)
+    def m_ui(c):
+        c["shots"] = [{"id": "x1", "screen": {"head": "CHECKOUT A", "mode": "allin", "price": "$48"}},
+                      {"id": "x2", "screen": {"head": "CHECKOUT A", "mode": "split", "price": None}}]
+        return "checkout A all-in in one shot, '$30 + fees' in the next"
+    plant("ui_state_consistency", m_ui, c_ui_state)
+    def m_card(c):
+        c["shots"] = [{"id": "planted", "base_kind": "flat", "key": "21%", "at_": 1.0, "start": 0, "end": 3}]
+        return "1 s of empty navy before the number"
+    plant("card_not_empty", m_card, c_card_not_empty)
+    def m_rep(c):
+        c["shots"] = [{"id": f"r{i}", "img": "v2/a5.jpg", "start": i * 15.0, "end": i * 15.0 + 4, "cam": [[0.5, 0.5, 1], [0.5, 0.5, 1.1]]} for i in range(3)]
+        return "the queue, same framing, 3x in 34 s"
+    plant("repeat_shot", m_rep, c_repeat_shot)
+    def m_plain(c):
+        c["shots"] = [{"id": "planted", "base": "n4"}]
+        return "the filing drawer on plain cream"
+    plant("plain_background", m_plain, c_plain_background)
+    def m_dial(c):
+        c["shots"] = [{"id": f"d{i}", "img": "v2/ep04v2_a2_safe.jpg", "start": i * 1.5, "end": i * 1.5 + 1.5, "cam": [[0.3, 0.4, 2.4], [0.3, 0.4, 2.5]]} for i in range(3)]
+        return "4.5 s of dial close-ups"
+    plant("dial_run", m_dial, c_dial_run)
+    def m_era(c):
+        c["shots"] = [{"id": "planted", "beat": "X", "base": "arch_loews", "caption": "Ticket line, Washington, 1939 · Library of Congress",
+                       "overs": [{"t": "plate", "text": "AUGUST 2015 · STUBHUB"}]}]
+        c["beats"] = [{"id": "X", "text": "August 2015. StubHub, the ticket resale site."}]
+        return "Loew's 1939 under AUGUST 2015"
+    plant("archive_era (R48)", m_era, lambda **k: c_archive_era(shots=k["shots"], beats=k["beats"]))
     return rows
 
 

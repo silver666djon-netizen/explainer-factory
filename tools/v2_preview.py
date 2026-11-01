@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import shutil
+import subprocess
 import sys
 from pathlib import Path
 
@@ -20,7 +21,7 @@ from factory import audio as A  # noqa: E402
 EP = ROOT / "episodes" / "0005-drip-pricing"
 FPS = 30
 LEAD = 0.15            # a picture arrives this much before its line
-PAL = {"night": "#0E1A2B", "glow": "#9FD8FF", "paper": "#F3E9D2", "ink": "#1E1B18", "red": "#D2452F", "accent": "#E8B53A",
+PAL = {"night": "#0E1A2B", "glow": "#9FD8FF", "paper": "#F3E9D2", "ink": "#1E1B18", "red": "#B23421", "accent": "#E8B53A",
        "green": "#2E6B4F"}
 MISSING_OLD = {"ep04v2_a1_glow": "Klot's GPT still: dark room at night, a laptop's glow (Grok clip k1 comes from it)",
            "ep04v2_a1_wallet": "Klot's GPT still: an open wallet with $50 on a kitchen table at night",
@@ -40,16 +41,16 @@ LOC_A2B = "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Libr
 # ("screen", a page spec) and overlays in frame space ("overs"). "*_on": a spoken word -> seconds from the shot start.
 W_ = lambda **k: k  # noqa: E731
 S: dict[str, dict] = {
-    "COLD.1": W_(base="a1_glow", cam=[[0.5, 0.5, 1.02], [0.6, 0.52, 1.25]]),
+    "COLD.1": W_(base="k1", cam=[[0.5, 0.5, 1.02], [0.6, 0.52, 1.25]]),
     "COLD.2": W_(base="s01", cam=[[0.45, 0.5, 1.04], [0.52, 0.5, 1.1]],
-                 overs=[W_(t="icons_strip", items=["mask", "car", "megaphone"], cross_on=["masks", "car", "raised"])],
+                 overs=[W_(t="icons_strip", items=["mask", "car", "megaphone"], cross_on=["masks", "car", "raised"], y=0.58)],
                  sfx=[{"kind": "pop", "on": "masks"}, {"kind": "pop", "on": "getaway"}, {"kind": "pop", "on": "raised"}]),
     "COLD.3a": W_(base="s02", cam=[[0.5, 0.45, 1.0], [0.52, 0.42, 1.12]], screen=W_(mode="form", fill=[0.1, 0.95]),
                   sfx=[{"kind": "typing", "at": 0.3, "dur": 2.4}]),
     "COLD.3b": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.58, 0.55, 1.35]], screen=W_(mode="form", fill=[1, 1], tick_on="ticked", thanks_on="thank"),
                   sfx=[{"kind": "tap", "on": "ticked"}, {"kind": "tap", "on": "thank"}]),
     "COLD.4a": W_(base="o4", cam=[[0.5, 0.5, 1.03], [0.47, 0.42, 1.12]],
-                  overs=[W_(t="namecard", name="LARRY", box=[0.03, 0.08, 0.27, 0.36], box_short=[0.7, 0.04, 0.97, 0.3], stamp="FICTIONAL", stamp_on="made")],
+                  overs=[W_(t="namecard", name="LARRY", box=[0.66, 0.08, 0.92, 0.36], box_short=[0.62, 0.08, 0.93, 0.36], stamp="FICTIONAL", stamp_on="made")],
                   sfx=[{"kind": "kachunk", "on": "made"}]),
     "COLD.4b": W_(base="s03", cam=[[0.511, 0.52, 1.66], [0.511, 0.53, 1.8]],
                   screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt=""), W_(name="FACILITY FEE", amt=""), W_(name="PROCESSING", amt="")],
@@ -57,36 +58,37 @@ S: dict[str, dict] = {
     "COLD.5": W_(base="o4clip", cam=[[0.55, 0.48, 1.05], [0.6, 0.45, 1.3]]),
     "COLD.6": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.1]], screen=W_(mode="whip", pages=["list", "seat", "form"], page_on=["found", "picked", "typed"]),
                  sfx=[{"kind": "whoosh", "on": "found"}, {"kind": "whoosh", "on": "picked"}, {"kind": "whoosh", "on": "typed"}]),
-    "COLD.7": W_(base="s03", cam=[[0.511, 0.52, 1.62], [0.48, 0.52, 1.85]], screen=W_(mode="total", total="$48", total_on="number", pay_on="paid"),
+    "COLD.7": W_(base="s03", cam=[[0.5, 0.52, 1.6], [0.45, 0.5, 1.75]], screen=W_(mode="total", total="$48", total_on="number", pay_on="paid"),
                  sfx=[{"kind": "stab", "on": "number"}]),
     "COLD.8": W_(base="g01", cam=[[0.5, 0.5, 1.05], [0.5, 0.5, 1.15]], dark=True, plan=W_(mode="walls", at=0.2)),
-    "COLD.9": W_(base="l1", cam=[[0.5, 0.55, 1.05], [0.5, 0.55, 1.15]],
+    "COLD.9": W_(base="p01", cam=[[0.5, 0.6, 1.05], [0.5, 0.6, 1.15]],
                  overs=[W_(t="case_folder", number="004", title="THE SEVEN-MINUTE HEIST", slide_on="Case", type_on=["Case", "seven"])],
                  sfx=[{"kind": "paper", "on": "Case", "lead": 0.45}, {"kind": "type", "on": "Case"}, {"kind": "type", "on": "seven"}]),
     "A1.1a": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.02], [0.5, 0.5, 1.12]], title=["ACT 1", "THE MARK"]),
     "A1.1b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.15], [0.5, 0.48, 1.3]],
-                overs=[W_(t="calendar_strip", days=["TUE", "WED", "THU", "FRI"], amount="$50", write_on="fifty", cx=0.72, cy=0.27)]),
-    "A1.2a": W_(base="a4_seat", cam=[[0.5, 0.55, 1.03], [0.5, 0.58, 1.15]], dream=True,
+                overs=[W_(t="calendar_strip", days=["TUE", "WED", "THU", "FRI"], amount="$50", write_on="fifty", cx=0.7, cy=0.27, s=0.85)]),
+    "A1.2a": W_(base="a10", cam=[[0.5, 0.55, 1.03], [0.5, 0.58, 1.15]], dream=True,
                 overs=[W_(t="plate", text="SATURDAY · 2 HOURS AWAY", at_on="Saturday", x=0.5, y=0.12)]),
     "A1.2b": W_(base="s06", cam=[[0.42, 0.45, 1.02], [0.36, 0.42, 1.14]]),
-    "A1.3": W_(base="s02", cam=[[0.5, 0.45, 1.0], [0.52, 0.42, 1.1]],
+    "A1.3": W_(base="s02", cam=[[0.511, 0.5, 1.2], [0.511, 0.5, 1.6]],
                screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN", on="forty")], hl_on="Everything"), sfx=[{"kind": "tap", "on": "first"}]),
-    "A1.4": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.42, 0.4, 1.3]],
+    "A1.4": W_(base="s03", cam=[[0.511, 0.52, 1.2], [0.56, 0.5, 1.55]],
                screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30", on="thirty")], active=1), sfx=[{"kind": "tap", "on": "second"}]),
     "A1.5a": W_(base="s01", cam=[[0.42, 0.4, 1.4], [0.38, 0.34, 1.9]],  # a face between screens (Klot note 8): push in on Larry
-                overs=[W_(t="tags", items=["+$10 SAVED"], at_on=["Ten"], x=0.72, y=0.2, w=520, size=80, color="#2E6B4F")],
+                overs=[W_(t="tags", items=["+$10 SAVED"], at_on=["Ten"], x=0.78, y=0.12, w=440, size=76, color="#2E6B4F")],
                 sfx=[{"kind": "tap", "on": "closes"}, {"kind": "ding", "on": "Ten"}]),
-    "A1.5b": W_(base="s06", cam=[[0.32, 0.36, 1.6], [0.32, 0.33, 1.8]], overs=[W_(t="crown", draw_on="Larry#2", x=0.47, y=0.11, w=0.16)]),
+    "A1.5b": W_(base="s06", cam=[[0.36, 0.38, 1.5], [0.34, 0.36, 1.65]],  # Klot: the hand never covers a face -> the word goes beside him
+                overs=[W_(t="note", text="GENIUS!", size=100, write_on="Larry#2", x=0.68, y=0.3)]),
     "A1.J1a": W_(base="g04", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]]),
     "A1.J1b": W_(base="g04", cam=[[0.52, 0.4, 1.3], [0.52, 0.36, 1.5]], overs=[W_(t="pop", at_on="won't", x=0.63, y=0.47)],
                  sfx=[{"kind": "pop", "on": "won't"}]),
-    "A1.6a": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.38, 0.42, 1.45]], screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30")], active=1, single=True)),
+    "A1.6a": W_(base="s03", cam=[[0.511, 0.52, 1.2], [0.42, 0.45, 1.7]], screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30")], active=1, single=True)),
     "A1.6b": W_(base="a1_glow", cam=[[0.5, 0.45, 1.0], [0.46, 0.42, 1.14]],  # a face between screens (note 8)
                 overs=[W_(t="slots", slots_on="three", x=0.8, y=0.22)], sfx=[{"kind": "pop", "on": "three"}]),
-    "A1.7a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.12]], screen=W_(mode="seat", seat="G12", fly_on="Row", light_on="12"),
+    "A1.7a": W_(base="s02", cam=[[0.511, 0.5, 1.3], [0.511, 0.5, 1.6]], screen=W_(mode="seat", seat="G12", fly_on="Row", light_on="12"),
                 sfx=[{"kind": "whoosh", "on": "Row"}, {"kind": "pop", "on": "12"}]),
     "A1.7b": W_(base="a10clip", cam=[[0.5, 0.5, 1.0], [0.5, 0.55, 1.08]]),
-    "A1.8a": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.65, 0.3, 1.4]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
+    "A1.8a": W_(base="s03", cam=[[0.511, 0.5, 1.5], [0.6, 0.4, 1.9]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
     "A1.8b": W_(base="s04", cam=[[0.45, 0.45, 1.02], [0.36, 0.33, 1.3]]),
     "A1.J2a": W_(base="g05", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
     "A1.J2b": W_(base="g05", cam=[[0.4, 0.55, 1.25], [0.4, 0.55, 1.32]], overs=[W_(t="wires", snip_on="wires", xa=0.12, xb=0.6, y=0.5)],
@@ -97,8 +99,9 @@ S: dict[str, dict] = {
     "A1.9b": W_(base="s03", cam=[[0.5, 0.5, 1.25], [0.5, 0.52, 1.45]], screen=W_(mode="form", fill=[0.67, 1.0], digits_on="sixteen"),
                 sfx=[{"kind": "typing", "on": "sixteen", "dur": 1.9}]),
     # archive photos fill the frame (note 6): the original prints, cropped to the picture, a slow push
-    "A1.10a": W_(base="arch_loews", cam=[[0.5, 0.5, 1.0], [0.56, 0.46, 1.1]], caption="Waiting in line at Loew's Capitol, Washington, 1939 · Library of Congress"),
-    "A1.10b": W_(base="arch_briggs", cam=[[0.5, 0.5, 1.0], [0.62, 0.42, 1.16]], caption="Buying tickets, Briggs Stadium, Detroit, 1942 · Library of Congress"),
+    # R48: no 1939/1942 photos under "if you've ever bought a ticket online": the screens themselves, then Larry's face
+    "A1.10a": W_(base="s02", cam=[[0.511, 0.5, 1.35], [0.511, 0.5, 1.6]], screen=W_(mode="whip", pages=["list", "seat", "form"], page_on=["bought", "know", "been"])),
+    "A1.10b": W_(base="s06", cam=[[0.42, 0.45, 1.02], [0.38, 0.42, 1.14]]),
     "A1.11a": W_(base="a1_glow", cam=[[0.45, 0.42, 1.1], [0.4, 0.38, 1.35]],  # a face between screens (note 8)
                  overs=[W_(t="tags", items=["+$8"], at_on=["Service"], x=0.78, y=0.2)], sfx=[{"kind": "kachunk", "on": "Service"}]),
     "A1.11b": W_(base="s03", cam=[[0.511, 0.52, 1.8], [0.5, 0.55, 2.1]],  # push in on the screen while the joke is spoken (note 5)
@@ -114,19 +117,19 @@ S: dict[str, dict] = {
     "A1.13": W_(base="s05", cam=[[0.5, 0.42, 1.15], [0.5, 0.38, 1.35]],
                 overs=[W_(t="bars_card", bars=[["FIRST", 30, "$30"], ["LAST", 48, "$48"]], x=0.8, y=0.62),
                        W_(t="stamp", text="+60%", at_on="sixty", x=0.78, y=0.25, size=120)], sfx=[{"kind": "stamp", "on": "sixty"}]),
-    "A1.14a": W_(base="s03", cam=[[0.5, 0.45, 1.08], [0.5, 0.42, 1.2]], screen=W_(mode="versus", left="$40", right="$48", badge="+$8", badge_on="eight"),
+    "A1.14a": W_(base="s03", cam=[[0.511, 0.52, 1.5], [0.511, 0.52, 1.66]], screen=W_(mode="versus", left="$40", right="$48", badge="+$8", badge_on="eight"),
                  sfx=[{"kind": "pop", "on": "eight"}]),
     "A1.14b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.2], [0.5, 0.5, 1.35]],
                  overs=[W_(t="note", text="$2 LEFT", sub="UNTIL FRIDAY", size=104, write_on="two", x=0.6, y=0.24)]),
-    "A1.15a": W_(base="s02", cam=[[0.5, 0.45, 1.02], [0.55, 0.42, 1.12]], screen=W_(mode="timer", timer_=0.0, secs=360)),
+    "A1.15a": W_(base="s02", cam=[[0.511, 0.5, 1.5], [0.56, 0.45, 1.68]], screen=W_(mode="timer", timer_=0.0, secs=360)),
     "A1.15b": W_(base="a4_seat", cam=[[0.5, 0.55, 1.08], [0.5, 0.58, 1.2]], dream=True),
     "A1.16": W_(base="s03", cam=[[0.511, 0.52, 1.62], [0.56, 0.58, 1.85]], screen=W_(mode="pay", press_on="presses"), sfx=[{"kind": "tap", "on": "presses"}]),
-    "A1.17a": W_(base="s04", cam=[[0.42, 0.54, 1.1], [0.41, 0.52, 1.18]],
-                 overs=[W_(t="timeline_strip", steps=[["8:12", "TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"], ["8:18", "FEES"], ["8:19", "PAY"]], at=0.2)]),
-    "A1.17b": W_(base="o4", cam=[[0.45, 0.35, 1.25], [0.45, 0.32, 1.4]], overs=[W_(t="tag_circle", text="$18", x=0.7, y=0.34, scale=1.5, circle_on="saw")]),
+    "A1.17a": W_(base="s04", cam=[[0.42, 0.5, 1.1], [0.41, 0.48, 1.18]],
+                 overs=[W_(t="timeline_strip", steps=[["8:12", "TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"], ["8:18", "FEES"], ["8:19", "PAY"]], at=0.2, y=0.58)]),
+    "A1.17b": W_(base="o4", cam=[[0.5, 0.5, 1.0], [0.52, 0.48, 1.08]], overs=[W_(t="tag_circle", text="$18", x=0.8, y=0.25, scale=1.5, circle_on="saw")]),
     "A1.18": W_(base="s01", cam=[[0.5, 0.5, 1.05], [0.5, 0.48, 1.15]],
                 overs=[W_(t="price_pair", left="$40", right="$48", cross_at=0.4, q_on="forty-eight", qx=0.68, qy=0.5)], sfx=[{"kind": "stamp", "on": "forty-eight"}]),
-    "A1.19a": W_(base="g01", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]], plan=W_(mode="route", at=0.35)),
+    "A1.19a": W_(base="g01", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]], grade="dusk", plan=W_(mode="route", at=0.35)),
     "A1.19b": W_(base="a5", cam=[[0.5, 0.45, 1.5], [0.5, 0.5, 1.02]], green_creep=True),
 }
 from v2_preview_a2 import A2 as _A2, KLOT_A2, EP4_A2, CLIPS_A2  # noqa: E402  (Act 2 specs)
@@ -140,8 +143,8 @@ KLOT = {"arch_loews": "ep04v2_arch_loews_1939", "arch_briggs": "ep04v2_arch_brig
 STANDIN = {"a1_glow": ("ep04v2_s01_flat_wide", [0.16, 0.14, 0.6, 0.6], "dark"), "s01": ("o4", [0.0, 0.0, 1.0, 1.0], "night"),
            "s02": ("m1b-blank", [0.08, 0.04, 0.92, 0.886], ""), "s03": ("m1b-blank", [0.275, 0.128, 0.726, 0.582], ""),
            "s05": ("b1", [0.2, 0.02, 0.56, 0.38], ""), "s06": ("o4", [0.23, 0.02, 0.63, 0.42], ""), "a4_seat": ("a11", [0.0, 0.0, 1.0, 1.0], "")}
-EP4 = {"o4": "o4", "l1": "l1", "a5": "a5", "arch_a2": "archive-a2", "arch_a2b": "archive-a2b", "m1b-blank": "m1b", "b1": "b1", "a11": "a11"}
-CLIPS = {"o4clip": "o4", "a10clip": "a10", **CLIPS_A2}
+EP4 = {"o4": "o4", "l1": "l1", "a5": "a5", "a10": "a10", "arch_a2": "archive-a2", "arch_a2b": "archive-a2b", "m1b-blank": "m1b", "b1": "b1", "a11": "a11"}
+CLIPS = {"o4clip": "o4", "a10clip": "a10", "k1": "ep04v2_k1_glow", **CLIPS_A2}
 KLOT.update(KLOT_A2)
 EP4.update(EP4_A2)
 SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
@@ -218,6 +221,10 @@ def sheet_times(sh: dict, shot_dur: float) -> None:
     for i in sh["items"]:
         if i.get("static"):
             continue
+        if i["k"] in ("tag", "paper", "prop"):  # pops in at its own time; laid by no hand
+            i["t0"] = round(i.get("at_", i.get("at", sh.get("at_", sh.get("at", 0.3)))), 3)
+            i["dur"] = 0.25
+            continue
         t0 = max(t, i.get("at_", i.get("at", t)))
         i["dur"] = round(len(i["text"]) * 0.075 if i["k"] == "text" else max(0.18, _plen(i["d"]) / (1600 * unit)), 3)
         i["t0"] = round(t0, 3)
@@ -231,6 +238,10 @@ def _norm(w: str) -> str:
 MIN_SHOT = 1.4
 
 
+def _has_stamp(spec) -> bool:
+    return any(o.get("t") in ("stamp", "namecard") for o in spec.get("overs", [])) or bool((spec.get("screen") or {}).get("stamp"))
+
+
 def anchors(spec) -> list[str]:
     out = []
     for k, v in spec.items():
@@ -239,7 +250,7 @@ def anchors(spec) -> list[str]:
         elif isinstance(v, list) and v and all(isinstance(x, dict) for x in v) and k != "sfx":
             for x in v:
                 out += anchors(x)
-        elif k.endswith("_on"):
+        elif k.endswith("_on") and k != "cut_on":
             out += v if isinstance(v, list) else [v]
         elif k == "sfx":
             out += [x["on"] for x in v if "on" in x]
@@ -280,17 +291,34 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
         clock = CLOCK.get(b["id"], clock)
         a, z = vis[i], (vis[i + 1] if i + 1 < len(beats) else end_t)
         n = len(b["shots"])
-        cuts = [a + (z - a) * k / n for k in range(n + 1)]
-        # a shot's word anchors must fall inside it: move the cuts (never under MIN_SHOT on either side)
+        sids = [b["id"] + (chr(97 + k) if n > 1 else "") for k in range(n)]
+        # lengths: a spec may ask for its own length ("dur", e.g. a dial close-up <= 1.5 s); the rest share the remainder
+        fixed = {k: S[sid]["dur"] for k, sid in enumerate(sids) if "dur" in S[sid]}
+        free = [k for k in range(n) if k not in fixed]
+        rest = ((z - a) - sum(fixed.values())) / max(1, len(free))
+        lens = [fixed.get(k, rest) for k in range(n)]
+        cuts = [a + sum(lens[:k]) for k in range(n + 1)]
+        cuts[-1] = z
+        for k, sid in enumerate(sids):  # "cut_on": this shot starts on that word (a key number lands with its word)
+            if k > 0 and "cut_on" in S[sid]:
+                cuts[k] = word_time(b, S[sid]["cut_on"]) - 0.05
+        # a shot's word anchors must fall inside it: move the cuts (never under MIN_SHOT on either side). A stamp is seen
+        # >= 0.8 s after it lands (stamp_hold); ink: the shot runs on until the hand has left (R47, checked)
         for k in range(n):
-            sid = b["id"] + (chr(97 + k) if n > 1 else "")
+            sid = sids[k]
             ws = [word_time(b, w) for w in anchors(S[sid])]
             if not ws:
                 continue
-            if k > 0 and min(ws) - 0.35 < cuts[k]:
+            after = 1.05 if _has_stamp(S[sid]) else 0.6
+            if k > 0 and min(ws) - 0.35 < cuts[k] and "cut_on" not in S[sid]:
                 cuts[k] = max(cuts[k - 1] + MIN_SHOT, min(ws) - 0.35)
-            if k < n - 1 and max(ws) + 0.6 > cuts[k + 1]:
-                cuts[k + 1] = min(cuts[k + 2] - MIN_SHOT, max(ws) + 0.6)
+            if k < n - 1 and max(ws) + after > cuts[k + 1] and "dur" not in S[sids[k + 1]]:
+                cuts[k + 1] = min(cuts[k + 2] - MIN_SHOT, max(ws) + after)
+            elif k < n - 1 and max(ws) + after > cuts[k + 1]:  # the next shot has a fixed length: it moves as a whole
+                d = max(ws) + after - cuts[k + 1]
+                cuts[k + 1] += d
+                if k + 2 <= n - 1 and "dur" in S[sids[k + 1]]:
+                    cuts[k + 2] = min(z if k + 2 == n else cuts[k + 3] - MIN_SHOT, cuts[k + 2] + d)
         for k in range(n):
             sid = b["id"] + (chr(97 + k) if n > 1 else "")
             spec = json.loads(json.dumps(S[sid]))
@@ -302,6 +330,8 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                     elif isinstance(d[key], list) and d[key] and all(isinstance(x, dict) for x in d[key]):
                         for x in d[key]:
                             resolve(x)
+                    elif key == "cut_on":
+                        d.pop(key)
                     elif key.endswith("_on"):
                         v = d.pop(key)
                         d[key[:-3] + "_"] = ([round(word_time(b, x) - s0, 3) for x in v] if isinstance(v, list)
@@ -313,9 +343,9 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
             ink = []  # (t0, t1) absolute: the hand lays ink (scratch sound exactly then, R34)
             for sh in spec.get("sheets", []):
                 sheet_times(sh, s1 - s0)
-                ink += [(s0 + i["t0"], s0 + i["t0"] + i["dur"]) for i in sh["items"] if not i.get("static")]
+                ink += [(s0 + i["t0"], s0 + i["t0"] + i["dur"]) for i in sh["items"] if not i.get("static") and i["k"] in ("text", "line", "route")]
             if "plan" in spec:
-                spec["plan"] = {"W": PLAN_W, "H": PLAN_H, "items": plan_items(spec["plan"], s1 - s0), "color": "#F3F1EA"}
+                spec["plan"] = {"W": PLAN_W, "H": PLAN_H, "items": plan_items(spec["plan"], s1 - s0), "color": "#FBFAF5"}
                 ink += [(s0 + i["t0"], s0 + i["t0"] + i["dur"]) for i in spec["plan"]["items"] if not i.get("static")]
             if spec.get("screen", {}).get("mode") in ("fees", "total", "pay"):
                 spec["screen"]["fs"] = dict(READ_FS)
@@ -469,14 +499,46 @@ def _load(path: Path, key: str, P: Path) -> tuple[str, int, int, float]:
     return f"v2/{key}.jpg", im.width, im.height, f
 
 
-def _world(s: dict, f: float) -> None:
-    """Ink sheets, safe dials and the safe door are given in px of the original picture: scale them with it."""
+FACE_BOXES = json.loads((EP / "v2" / "faces.json").read_text()) if (EP / "v2" / "faces.json").exists() else {}
+
+
+def _world(s: dict, f: float, key: str = "", P: Path | None = None) -> None:
+    """Ink sheets, safe dials, the safe door and media insets are given in px of the original picture: scale them with it.
+    Faces (faces.json, fractions of the picture) go along as invisible boxes for the hand_over_face / tag checks."""
+    iw, ih = s["iw"], s["ih"]
+    s["faces"] = [[a * iw, b * ih, c * iw, d * ih, k] for a, b, c, d, k in FACE_BOXES.get(key, [])]
     for sh in s.get("sheets", []):
         sh["quad"] = [[x * f, y * f] for x, y in sh.pop("q")]
+        for it in sh["items"]:
+            if it.get("k") == "prop" and P is not None:
+                src = EP / "v2" / "manual_assets" / "props" / Path(it["src"]).name
+                (P / "v2" / "props").mkdir(parents=True, exist_ok=True)
+                shutil.copy(src, P / "v2" / "props" / src.name)
+    for m in s.get("insets", []):
+        m["quad"] = [[x * f, y * f] for x, y in m.pop("q")]
+        x0, y0, x1, y1 = m["crop"]
+        m["W"], m["H"] = x1 - x0, y1 - y0
+        if m.get("video"):
+            shutil.copy(EP / "clips" / f"{m['video']}.mp4", P / "v2" / f"{m['video']}.mp4")
+            m["video"], m["vw"], m["vh"] = f"v2/{m['video']}.mp4", 1920, 1094
     for d in s.get("dials", []):
         d["c"], d["r"] = [d["c"][0] * f, d["c"][1] * f], d["r"] * f
     if s.get("door"):
         s["door"]["box"] = [v * f for v in s["door"]["box"]]
+
+
+def card_cam(s: dict, SW: int = 1920, SH: int = 1080) -> None:
+    """A paper card lying in the picture: the camera frames the whole card with >= 7 % to spare and pushes in a little
+    (Klot: text >= 2.8 % cap height, push in; R: every tag >= 6 % inside the frame)."""
+    q = [p for sh in s.get("sheets", []) if sh.get("card") for p in sh["quad"]]
+    if not q:
+        return
+    xs, ys = [p[0] for p in q], [p[1] for p in q]
+    bw, bh = max(xs) - min(xs), max(ys) - min(ys)
+    base = max(SW / s["iw"], SH / s["ih"])
+    z = min(SW / (base * bw / 0.84), SH / (base * bh / 0.84), 2.6)
+    cx, cy = (min(xs) + max(xs)) / 2 / s["iw"], (min(ys) + max(ys)) / 2 / s["ih"]
+    s["cam"] = [[cx, cy, z * 0.88], [cx, cy, z]]
 
 
 def resolve_base(s: dict, R: Path, P: Path) -> None:
@@ -487,14 +549,21 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
         s["base_kind"] = "flat"
         return
     if b in CLIPS:
-        shutil.copy(EP / "clips" / f"{CLIPS[b]}.mp4", P / "v2" / f"{CLIPS[b]}.mp4")
+        src = EP / "clips" / f"{CLIPS[b]}.mp4"
+        shutil.copy(src, P / "v2" / f"{CLIPS[b]}.mp4")
         s.update(video=f"v2/{CLIPS[b]}.mp4", iw=1920, ih=1094)
+        try:  # a clip shorter than its shot plays a little slower (never below 0.85 x) instead of freezing
+            d = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(src)],
+                                     capture_output=True, text=True).stdout)
+            s["rate"] = round(max(0.85, min(1.0, (d - 0.05) / max(0.1, s["end"] - s["start"]))), 3)
+        except Exception:  # noqa: BLE001
+            pass
         return
     screens = json.loads((EP / "v2" / "screens.json").read_text()) if (EP / "v2" / "screens.json").exists() else {}
     kp = _find(KLOT[b], R) if b in KLOT else None
     if kp is not None:
         s["img"], s["iw"], s["ih"], f = _load(kp, KLOT[b], P)
-        _world(s, f)
+        _world(s, f, KLOT[b], P)
         if s.get("screen"):
             q = screens.get(KLOT[b])
             if not q:
@@ -537,7 +606,58 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
     if path is None:
         raise SystemExit(f"{s['id']}: picture {b} not found")
     s["img"], s["iw"], s["ih"], _f = _load(path, EP4.get(b, b), P)
-    _world(s, _f)
+    _world(s, _f, EP4.get(b, b), P)
+
+
+BAND_9x16 = [0, 250, 1080, 1350]  # the 9:16 picture band: 4:5, 70 % of the height (R38 >= 50 %), captions under it
+SHORT_FS = {"os": 70, "row": 66, "fee": 72, "lab": 60, "tot": 66, "big": 170}
+
+
+def _projq(q, u, v):
+    (x0, y0), (x1, y1), (x2, y2), (x3, y3) = q
+    dx1, dx2, dy1, dy2 = x1 - x2, x3 - x2, y1 - y2, y3 - y2
+    sx, sy = x0 - x1 + x2 - x3, y0 - y1 + y2 - y3
+    den = dx1 * dy2 - dx2 * dy1
+    g, h = (sx * dy2 - dx2 * sy) / den, (dx1 * sy - sx * dy1) / den
+    a, b, d, e = x1 - x0 + g * x1, x3 - x0 + h * x3, y1 - y0 + g * y1, y3 - y0 + h * y3
+    w = g * u + h * v + 1
+    return (a * u + b * v + x0) / w, (d * u + e * v + y0) / w
+
+
+def short_frame(s: dict) -> None:
+    """The 9:16 band (1080 x 1350): a laptop page fills the band's width (text big enough to read on a phone), a sheet
+    plan is laid only on the part of the sheet the band shows; the picture always covers the band (never letterboxed)."""
+    if s.get("base_kind") != "picture" or not s.get("iw"):
+        return
+    bw, bh = BAND_9x16[2], BAND_9x16[3]
+    base = max(bw / s["iw"], bh / s["ih"])
+    if s.get("quad") and s.get("screen"):
+        qx = [p[0] for p in s["quad"]]
+        qy = [p[1] for p in s["quad"]]
+        z = max(1.0, bw / (base * (max(qx) - min(qx)))) * (1.22 if s["screen"].get("mode") in ("fees", "total", "pay") else 1.0)
+        cx, cy = (min(qx) + max(qx)) / 2 / s["iw"], (min(qy) + max(qy)) / 2 / s["ih"]
+        s["cam"] = [[cx, cy, z], [cx, cy, z * 1.06]]
+        if s["screen"].get("mode") in ("fees", "total", "pay"):
+            s["screen"]["fs"] = dict(SHORT_FS)
+        s["screen"]["ts"] = 1.25
+    if s.get("plan"):
+        # the visible part of the sheet at the camera's start (the push only narrows it): plan drawn there, 4 % inside
+        cx, cy, z = s["cam"][0]
+        hw = bw / (s["iw"] * base * z) / 2
+        vx0, vx1 = (cx - hw) * s["iw"], (cx + hw) * s["iw"]
+        q = s["plan"]["quad"]
+        def u_at(xt):
+            lo, hi = 0.0, 1.0
+            for _ in range(40):
+                m = (lo + hi) / 2
+                if _projq(q, m, 0.5)[0] < xt:
+                    lo = m
+                else:
+                    hi = m
+            return lo
+        pad = 0.04 * (vx1 - vx0)
+        u0, u1 = max(0.0, u_at(vx0 + pad)), min(1.0, u_at(vx1 - pad))
+        s["plan"]["quad"] = [list(_projq(q, u0, 0.03)), list(_projq(q, u1, 0.03)), list(_projq(q, u1, 0.97)), list(_projq(q, u0, 0.97))]
 
 
 def shift_T(T: dict, off: float) -> dict:
@@ -588,16 +708,13 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
             if s["kind"] != "pic":
                 continue
             resolve_base(s, R, P)
-            if kind == "short" and s.get("quad"):  # the square 9:16 band: pull back until the whole laptop page is in
-                bw = 1080
-                base = max(bw / s["iw"], bw / s["ih"])
-                qx = [p[0] for p in s["quad"]]
-                zmax = bw / (base * (max(qx) - min(qx)) * 1.08)
-                cxs = (min(qx) + max(qx)) / 2 / s["iw"]
-                s["cam"] = [[cxs, c[1], min(c[2], zmax * (0.94 if i == 0 else 1.0))] for i, c in enumerate(s["cam"])]
+            if s.get("cardcam"):
+                card_cam(s)
+            if kind == "short":
+                short_frame(s)
         stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg)
         data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + 18, "end": round(end, 3), "pal": PAL,
-                "band": None if kind == "long" else [0, 380, 1080, 1080],
+                "band": BAND_9x16 if kind == "short" else None,
                 "shots": [{k: v for k, v in s.items() if k != "_sfx"} for s in shots], "captions": captions(beats, kind),
                 "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a")],
                 "fonts": {"Anton-Regular.ttf": "Anton-Regular", "ArchivoBlack-Regular.ttf": "ArchivoBlack-Regular",

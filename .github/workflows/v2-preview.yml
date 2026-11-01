@@ -66,7 +66,6 @@ jobs:
           if [ "${{ github.event.inputs.segment || 'p2' }}" = a2 ]; then tools/rel.sh download ep04v2-preview-a2 pv "cs_ep04v2_preview_a2*.mp4"
           else tools/rel.sh download ep04v2-preview2 pv "cs_ep04v2_preview2_*.mp4"; fi
       - name: Remotion install
-        if: github.event.inputs.render != 'no'
         working-directory: pilot/remotion
         run: npm install --no-audit --no-fund 2>&1 | tail -3
       - name: Render (timed)
@@ -81,6 +80,13 @@ jobs:
             echo "$n: $(( $(date +%s) - s0 )) s" >> ../../pv/render_time.txt
           done
           cat ../../pv/render_time.txt
+      - name: DOM sampling for the frame checks (hand over faces, text size + contrast, margins)
+        run: |
+          set -o pipefail
+          pip install -q playwright 2>&1 | tail -2
+          python -m playwright install --with-deps chromium 2>&1 | tail -2
+          ls pilot/remotion/node_modules/.bin/esbuild
+          python tools/v2_dom_qc.py pilot/remotion/public pv pilot/remotion/node_modules/.bin/esbuild 2>&1 | tail -20
       - name: Master + QC
         run: |
           set -o pipefail
