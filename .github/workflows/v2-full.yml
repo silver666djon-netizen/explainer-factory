@@ -10,9 +10,13 @@ on:
         required: false
         default: "6"
       from_run:
-        description: "optional: a previous run id whose plan + rendered parts are reused (only the join, master and checks run again)"
+        description: "optional: a previous run id whose rendered parts are reused (only the join, master and checks run again)"
         required: false
         default: ""
+      remix:
+        description: "with from_run: yes = export the plan + audio mix again (picture unchanged), then master and check"
+        required: false
+        default: "no"
 permissions:
   contents: write
 concurrency:
@@ -20,7 +24,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   plan:
-    if: github.event.inputs.from_run == ''
+    if: github.event.inputs.from_run == '' || github.event.inputs.remix == 'yes'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     outputs:
@@ -114,7 +118,7 @@ jobs:
           retention-days: 3
   finish:
     needs: [plan, render]
-    if: always() && (needs.render.result == 'success' || github.event.inputs.from_run != '')
+    if: always() && (needs.render.result == 'success' || (github.event.inputs.from_run != '' && needs.plan.result != 'failure'))
     runs-on: ubuntu-latest
     timeout-minutes: 180
     steps:
@@ -151,7 +155,7 @@ jobs:
         with:
           name: pv
           path: .
-          run-id: ${{ github.event.inputs.from_run || github.run_id }}
+          run-id: ${{ (github.event.inputs.remix == 'yes' && github.run_id) || github.event.inputs.from_run || github.run_id }}
           github-token: ${{ github.token }}
       - uses: actions/download-artifact@v4
         with:
