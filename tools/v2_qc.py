@@ -19,9 +19,9 @@ from factory import render as R  # noqa: E402
 from factory import sttdiff  # noqa: E402
 from factory.config import load_config  # noqa: E402
 
-OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4", "a3": "cs_ep04v2_preview_a3.mp4", "a4": "cs_ep04v2_preview_a4.mp4"}
-AUD = {"long": "long", "short": "short", "a2": "long", "a3": "long", "a4": "long"}  # which master spec a preview file follows
-COL = {"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9"}
+OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4", "a3": "cs_ep04v2_preview_a3.mp4", "a4": "cs_ep04v2_preview_a4.mp4", "full": "cs_ep04v2_full.mp4"}
+AUD = {"long": "long", "short": "short", "a2": "long", "a3": "long", "a4": "long", "full": "long"}  # which master spec a preview file follows
+COL = {"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9", "full": "full episode · 16:9"}
 MIN_SHOT, MAX_SHOT = 1.4, 8.0
 FONTS = ROOT / "assets" / "fonts"
 
@@ -696,6 +696,36 @@ def c_archive_era(shots=None, beats=None, **_):
     return out
 
 
+END_MIN, END_MAX = 20.0, 22.0
+
+
+def c_end_screen(shots=None, beats=None, data=None, dom=None, **_):
+    """Klot (locked): a file that ends the episode carries a 20-22 s end screen: the last line ('Subscribe ...') then music
+    only (next-case sketch, subscribe); during those seconds YouTube's zones stay free of our marks and text
+    (right third: the video element; bottom-left: the subscribe button)."""
+    if not shots or not any(s.get("endscreen") for s in shots):
+        return []
+    out = []
+    end = data["end"] if data else shots[-1]["end"]
+    last = max(beats, key=lambda b: b["start"])
+    t0 = max(s["start"] for s in shots if s.get("beat") == last["id"])
+    if not END_MIN <= end - t0 <= END_MAX:
+        out.append(f"end screen {end - t0:.1f} s (from the last line's shot to the end; wants {END_MIN:.0f}-{END_MAX:.0f} s)")
+    if end - last["end"] < END_MIN - 7.0:
+        out.append(f"only {end - last['end']:.1f} s of music after the last word")
+    if dom:
+        W, H = dom["W"], dom["H"]
+        zones = {"right (video element)": (0.62 * W, 0, W, H), "bottom-left (subscribe)": (0, 0.75 * H, 0.35 * W, H)}
+        for smp in dom["samples"]:
+            if smp["t"] < end - END_MAX or not smp.get("shotpic"):
+                continue
+            for m in smp.get("marks", []) + smp.get("reads", []):
+                for zn, z in zones.items():
+                    if _inter(m["box"], z) > 0.15 * max(1.0, (m["box"][2] - m["box"][0]) * (m["box"][3] - m["box"][1])):
+                        out.append(f"{smp['shot']}: '{m.get('text', '')}' in the YouTube {zn} zone")
+    return sorted(set(out))
+
+
 CHECKS = [
     ("picture_first (R41)", c_picture_first, "picture base >= 85% of screen time, <= 4 key numbers"),
     ("decode", c_decode, "file decodes end to end without an error"),
@@ -729,6 +759,7 @@ CHECKS = [
     ("repeat_shot", c_repeat_shot, "same picture + framing <= 2x per 60 s"),
     ("plain_background", c_plain_background, "no object on a plain background"),
     ("dial_run", c_dial_run, "<= 2 s of dial close-ups in a row; wide safe <= 3.5 s"),
+    ("end_screen", c_end_screen, "end screen 20-22 s, music only after the last line, YouTube zones free"),
     ("archive_era (R48)", c_archive_era, "archive photo year within +-10 y of the line (or no date); real year in the caption; no modern plate"),
 ]
 NOT_APPLICABLE = {
@@ -967,12 +998,21 @@ def selftest(ctx):
         c["beats"] = [{"id": "X", "text": "August 2015. StubHub, the ticket resale site."}]
         return "Loew's 1939 under AUGUST 2015"
     plant("archive_era (R48)", m_era, lambda **k: c_archive_era(shots=k["shots"], beats=k["beats"]))
+    def m_end(c):
+        c["beats"] = [{"id": "L", "start": 100.0, "end": 103.0, "text": "Subscribe."}]
+        c["shots"] = [{"id": "L", "beat": "L", "start": 99.8, "end": 103.4}, {"id": "E", "beat": "END", "endscreen": True, "start": 103.4, "end": 109.0}]
+        c["data"] = dict(c["data"], end=109.0)
+        c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [smp(t=105.0, marks=[{"kind": "tag", "text": "SUBSCRIBE", "box": [1500, 300, 1800, 420]}])]}
+        return "a 9 s end screen with a tag in the video-element zone"
+    plant("end_screen", m_end, c_end_screen)
     return rows
 
 
 def sheet(path: Path, out: Path, every: float = 1.5):
-    n = int(float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
-                                 capture_output=True, text=True).stdout or 0) / every) + 1
+    dur = float(subprocess.run(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)],
+                               capture_output=True, text=True).stdout or 0)
+    every = max(every, dur / 240)  # the full episode: <= 240 tiles
+    n = int(dur / every) + 1
     rows = (n + 5) // 6
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(path), "-vf", f"fps=1/{every},scale=480:-1,tile=6x{rows}", "-frames:v", "1", str(out)], check=True)
 
@@ -985,11 +1025,11 @@ def main(pvd: str, tdir: str) -> int:
     for kind in kinds:
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
-    seg = next((k for k in ("a2", "a3", "a4") if k in P), "p2")
-    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4"}[seg]
+    seg = next((k for k in ("a2", "a3", "a4", "full") if k in P), "p2")
+    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4", "full": "FULL EPISODE"}[seg]
     what = {"p2": "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open.",
             "a2": "Act 2 (first ad break to the second), 16:9.", "a3": "Act 3 (second ad break to the third), 16:9.",
-            "a4": "Act 4 (third ad break to the end), 16:9."}[seg]
+            "a4": "Act 4 (third ad break to the end), 16:9.", "full": "The whole episode in one file (16:9), end screen included."}[seg]
     md = [f"# Ep.4 v2 · {title} · QC (picture-first)", "",
           what + " Remotion layer; Klot's stills, Ep.4 pictures and archive prints; any still not in yet is held on a labelled "
           "placeholder card or a tagged stand-in.", ""]

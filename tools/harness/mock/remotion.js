@@ -4,7 +4,10 @@ export const useCurrentFrame = () => React.useContext(Ctx).frame;
 export const useVideoConfig = () => ({fps: React.useContext(Ctx).fps, width: 1920, height: 1080});
 export const AbsoluteFill = ({style, children}) => React.createElement('div', {style: {position: 'absolute', left: 0, top: 0, right: 0, bottom: 0, ...style}}, children);
 export const Img = (p) => React.createElement('img', p);
-export const OffthreadVideo = ({src, style}) => React.createElement('div', {style: {...style, background: 'repeating-linear-gradient(45deg,#733,#733 20px,#955 20px,#955 40px)'}});
+// the QC page cannot decode H.264: a clip shows its poster (the frame at the shot's settled moment, written by the export)
+export const OffthreadVideo = ({src, style, ...rest}) => rest['data-poster']
+	? React.createElement('img', {src: rest['data-poster'], style: {...style, objectFit: 'fill'}})
+	: React.createElement('div', {style: {...style, background: 'repeating-linear-gradient(45deg,#733,#733 20px,#955 20px,#955 40px)'}});
 export const staticFile = (f) => '/pub/' + f;
 export const delayRender = () => 1;
 export const continueRender = () => {};

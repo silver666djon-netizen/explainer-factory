@@ -93,6 +93,14 @@ def scissors(extra):
     return dict(SCISSORS, items=SCISSORS["items"] + extra)
 
 
+CALC_TAGS = [TAG("$15", 840, 1350, 330, 210, 150, col=INK), TAG("68% DRIVE", 840, 1650, 620, 190, 110, col=GREEN),
+             TAG("$125", 3250, 900, 420, 210, 150, col=INK), TAG("29% DRIVE", 3250, 1230, 620, 190, 110, col=RED)]
+
+
+def static(items):
+    return [dict(i, static=True) for i in items]
+
+
 A2 = {
     # ---------------------------------------------------------------- the blueprint
     "A2.1a": W_(base="g01", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]], grade="dusk", title=["ACT 2", "THE LAB"], plan=W_(mode="static")),
@@ -187,22 +195,23 @@ A2 = {
     "A2.24b": W_(base="p09", cam=[[0.5, 0.5, 1.02], [0.58, 0.55, 1.12]],
                  overs=[W_(t="tags", items=["$18"], at_on=["Eighteen"], x=0.76, y=0.3, w=230, size=100)]),
     "A2.24c": W_(base="a1_wallet", cam=[[0.42, 0.36, 1.5], [0.4, 0.33, 1.7]],
-                 overs=[W_(t="stamp", text="DECIDED", at_on="decided", x=0.8, y=0.52, size=96)], sfx=[{"kind": "stamp", "on": "decided"}]),
+                 overs=[W_(t="stamp", text="DECIDED", at_on="decided", x=0.78, y=0.5, size=96, paper=True)], sfx=[{"kind": "stamp", "on": "decided"}]),
     "A2.25a": W_(base="p01", cardcam=True, cam=[[0.45, 0.58, 1.6], [0.43, 0.57, 1.9]], sfx=[{"kind": "paper", "at": 0.1}],
                  sheets=[card_sheet(P01_CARD["journal_tilt"], ["TVERSKY & KAHNEMAN · 1981", "\"The Framing of Decisions and", "the Psychology of Choice\"", "Science 211"], hl="Science 211")]),
     "A2.25b": W_(base="a2_calculators", cam=[[0.5, 0.5, 1.0], [0.62, 0.45, 1.3]]),
-    # Klot r3: $15 / 68% DRIVE on the small one, $125 / 29% DRIVE on the big one, seen together; every tag >= 6 % inside
-    "A2.25c": W_(base="a2_calculators", cam=[[0.36, 0.52, 1.2], [0.3, 0.52, 1.35]],
+    # Klot r3/r4: $15 + 68% DRIVE on the small one, $125 + 29% DRIVE on the big one, both pairs on screen together from "far fewer"
+    # to "doesn't think so" (three framings of the same desk); every tag >= 6 % inside
+    "A2.25c": W_(base="a2_calculators", cam=[[0.47, 0.5, 1.02], [0.47, 0.5, 1.1]],
                  sheets=[img_sheet(5016, 2823, [{"k": "route", "d": "M 500 1150 C 900 600, 1500 600, 1850 1000", "w": 14, "at_on": "drive", "col": INK}, T("20 MIN", 1180, 620, 110, col=INK),
                                                 TAG("$15", 840, 1350, 330, 210, 150, col=INK, at_on="fifteen"),
-                                                TAG("68% DRIVE", 840, 1650, 620, 190, 110, col=GREEN, at_on="calculator")])]),
-    "A2.25d": W_(base="a2_calculators", cam=[[0.47, 0.5, 1.04], [0.47, 0.5, 1.1]],
-                 sheets=[img_sheet(5016, 2823, [TAG("$15", 840, 1350, 330, 210, 150, col=INK, static=True),
-                                                TAG("68% DRIVE", 840, 1650, 620, 190, 110, col=GREEN, static=True),
-                                                TAG("$125", 3250, 900, 420, 210, 150, col=INK, at_on="hundred"),
-                                                TAG("29% DRIVE", 3250, 1230, 620, 190, 110, col=RED, at_on="one")])]),
-    "A2.25e": W_(base="a2_calculators", cam=[[0.44, 0.58, 1.2], [0.42, 0.6, 1.3]],
-                 overs=[W_(t="note", text="$5 = $5", size=110, color=INK, write_on="Five#3", x=0.38, y=0.22)]),
+                                                TAG("68% DRIVE", 840, 1650, 620, 190, 110, col=GREEN, at_on="calculator"),
+                                                TAG("$125", 3250, 900, 420, 210, 150, col=INK, at_on="fewer"),
+                                                TAG("29% DRIVE", 3250, 1230, 620, 190, 110, col=RED, at_on="fewer")])]),
+    "A2.25d": W_(base="a2_calculators", cam=[[0.44, 0.49, 1.14], [0.42, 0.47, 1.32]],
+                 sheets=[img_sheet(5016, 2823, static(CALC_TAGS))]),
+    "A2.25e": W_(base="a2_calculators", cam=[[0.43, 0.58, 1.2], [0.42, 0.6, 1.3]],
+                 sheets=[img_sheet(5016, 2823, static(CALC_TAGS))],
+                 overs=[W_(t="note", text="$5 = $5", size=110, color=INK, write_on="Five#3", x=0.4, y=0.22)]),
     "A2.25f": W_(base="a2_safe", cam=dial_cam(3, 2.55, 2.6), dur=CLICK, quick=True, dials=dials(opened(3, {3: {"turn_": -2.0, "open_on": "so"}})),
                  sfx=[{"kind": "kachunk", "on": "so"}]),
     "A2.J5": W_(base="p10", cam=[[0.38, 0.4, 1.3], [0.36, 0.38, 1.5]],

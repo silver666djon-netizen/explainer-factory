@@ -572,11 +572,11 @@ const MissingView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	);
 };
 
-const ActTitle: React.FC<{lines: string[]; k: number; SW: number; SH: number; u: number; t: number}> = ({lines, k, SW, SH, u, t}) => {
+const ActTitle: React.FC<{lines: string[]; k: number; SW: number; SH: number; u: number; t: number; over?: boolean}> = ({lines, k, SW, SH, u, t, over = false}) => {
 	const size = Math.min(fitText({text: lines[1], withinWidth: SW * 0.8, fontFamily: HEAD}).fontSize, 230 * u);
 	const top = SH * 0.42 - size * 0.6;
 	return (
-		<AbsoluteFill style={{background: C.night, opacity: k}}>
+		<AbsoluteFill style={{background: over ? 'radial-gradient(ellipse at 50% 42%, rgba(14,26,43,0.72) 0%, rgba(14,26,43,0.9) 100%)' : C.night, opacity: k}}>
 			<AbsoluteFill style={{transform: `scale(${1.01 + 0.02 * t})`}}>
 				<div data-read="1" style={{position: 'absolute', top: top - 70 * u, width: SW, textAlign: 'center', fontFamily: fam(BODY), fontSize: 46 * u, color: C.accent, letterSpacing: 10 * u, opacity: sm(t / 0.3)}}>{lines[0]}</div>
 				<div data-read="1" style={{position: 'absolute', top, width: SW, textAlign: 'center', fontFamily: fam(HEAD), fontSize: size, lineHeight: 1.1, color: C.paper, opacity: sm((t - 0.2) / 0.3)}}>{lines[1]}</div>
@@ -1135,8 +1135,23 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 					})()}
 				</>
 			);
-		case 'stamp':
-			return o.at_ === undefined ? null : <div style={{position: 'absolute', inset: 0, zIndex: 45}}><Stamp text={o.text} at={o.at_} t={t} x={o.x * SW} y={o.y * SH} size={o.size * U} rot={-9} /></div>;
+		case 'stamp': {
+			if (o.at_ === undefined) return null;
+			// Klot r4: a stamp on a busy or dark picture lands on a cream tag laid there just before it (>= 4.5:1)
+			const fs = o.size * U;
+			const tw = measureText({text: o.text, fontFamily: HEAD, fontSize: fs}).width + fs * 0.04 * o.text.length;
+			const pw = tw + fs * 1.3, ph = fs * 2.0;
+			const pk = o.paper ? sm((t - (o.at_ - 0.35)) / 0.25) : 0;
+			return (
+				<div style={{position: 'absolute', inset: 0, zIndex: 45}}>
+					{o.paper && pk > 0 ? (
+						<div data-mark="tag" style={{position: 'absolute', left: o.x * SW - pw / 2, top: o.y * SH - ph / 2, width: pw, height: ph, background: '#FBF4E2', border: `${3 * U}px solid ${C.ink}`, borderRadius: 6 * U,
+							boxShadow: '0 10px 24px rgba(0,0,0,0.45)', transform: `rotate(-2deg) translateY(${(1 - pk) * 14 * U}px)`, opacity: pk}} />
+					) : null}
+					<Stamp text={o.text} at={o.at_} t={t} x={o.x * SW} y={o.y * SH} size={fs} rot={o.paper ? -6 : -9} />
+				</div>
+			);
+		}
 		case 'plate': {
 			const at = o.at_ ?? 0.2;
 			const k = sm((t - at) / 0.3);
@@ -1175,7 +1190,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			const k = io(clamp((t - at) / 0.5, 0, 1));
 			const Uc = short ? U * (1.55 + 0.15 * clamp(t / Math.max(dur, 0.1), 0, 1)) : U; // 9:16: pushed in on the label so it reads
 			const w = 1000 * Uc, h = 600 * Uc;
-			const x = (SW - w) / 2, y = (SH - h) / 2 - 40 * Uc + (1 - k) * SH * 0.9;
+			const x = (o.cx ?? 0.5) * SW - w / 2, y = (o.cy ?? 0.5) * SH - h / 2 - 40 * Uc + (1 - k) * SH * 0.9;
 			const typed = (txt: string, a?: number) => (a === undefined ? '' : txt.slice(0, clamp(Math.floor((t - a) / 0.045), 0, txt.length)));
 			return (
 				<div style={{position: 'absolute', left: x, top: y, width: w, height: h, zIndex: 30, transform: 'rotate(-2deg)'}}>
@@ -1270,8 +1285,11 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 						if (at === undefined || t < at) return null;
 						const k = clamp((t - at) / 0.2, 0, 1);
 						return (
-							<Paper key={i} x={o.x * SW - ((o.w ?? 220) / 2) * U} y={o.y * SH + i * 160 * U} w={(o.w ?? 220) * U} h={130 * U} k={1} rot={i % 2 ? 3 : -3}>
+							<Paper key={i} x={o.x * SW - ((o.w ?? 220) / 2) * U} y={o.y * SH + i * 160 * U} w={(o.w ?? 220) * U} h={(i === 0 && o.h ? o.h : 130) * U} k={1} rot={i % 2 ? 3 : -3}>
 								<div data-read="1" style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: (o.size ?? 84) * U, lineHeight: `${125 * U}px`, color: o.color ?? C.red, transform: `scale(${1.1 - 0.1 * k})`, whiteSpace: 'nowrap'}}>{x}</div>
+								{i === 0 && o.stamp && o.stamp.at_ !== undefined ? (
+									<Stamp text={o.stamp.text} at={o.stamp.at_} t={t} x={((o.w ?? 220) / 2) * U} y={(125 + ((o.h ?? 130) - 125) / 2) * U} size={(o.stamp.size ?? 70) * U} rot={-6} />
+								) : null}
 							</Paper>
 						);
 					})}
@@ -1712,7 +1730,7 @@ const filt = s.grade === 'dusk' ? 'brightness(0.8)' : s.grade === 'gray' ? 'satu
 		world = (
 			<AbsoluteFill style={{overflow: 'hidden', background: C.ink}}>
 				<div style={{position: 'absolute', left: 0, top: 0, width: s.iw, height: s.ih, transformOrigin: '0 0', transform: `translate(${tx}px, ${ty}px) scale(${sc})`}}>
-					{s.video ? <OffthreadVideo src={staticFile(s.video)} muted playbackRate={s.rate ?? 1} style={{position: 'absolute', width: s.iw, height: s.ih, filter: filt}} /> : <Img src={staticFile(s.img)} style={{position: 'absolute', width: s.iw, height: s.ih, filter: filt}} />}
+					{s.video ? <OffthreadVideo src={staticFile(s.video)} muted playbackRate={s.rate ?? 1} data-poster={s.poster ? staticFile(s.poster) : undefined} style={{position: 'absolute', width: s.iw, height: s.ih, filter: filt}} /> : <Img src={staticFile(s.img)} style={{position: 'absolute', width: s.iw, height: s.ih, filter: filt}} />}
 					{q && s.screen ? (
 						<>
 							<div style={{position: 'absolute', left: 0, top: 0, width: 1240, height: 700, transformOrigin: '0 0', transform: homography(1240, 700, q), filter: 'brightness(1.04)'}}>
@@ -1757,14 +1775,23 @@ const filt = s.grade === 'dusk' ? 'brightness(0.8)' : s.grade === 'gray' ? 'satu
 							})() : null}
 						</div>
 					))}
-					{(s.sheets || []).map((pl: any, i: number) => <SheetPlanInk key={i} pl={pl} t={t} id={`sh${i}${String(s.id).replace(/[^A-Za-z0-9]/g, '')}`} />)}
+					{s.track ? (() => {
+							// ink laid on the still, carried by the clip's own camera (tools/track_clip.py: still px -> display px per clip frame)
+							const n = s.track.m.length;
+							const m = s.track.m[clamp(Math.round(((s.from ?? 0) + t * (s.rate ?? 1)) * s.track.fps), 0, n - 1)];
+							return (
+								<div style={{position: 'absolute', left: 0, top: 0, width: 1, height: 1, transformOrigin: '0 0', transform: `matrix(${m[0]}, ${m[2]}, ${m[1]}, ${m[3]}, ${m[4]}, ${m[5]})`}}>
+									{(s.sheets || []).map((pl: any, i: number) => <SheetPlanInk key={i} pl={pl} t={t} id={`sh${i}${String(s.id).replace(/[^A-Za-z0-9]/g, '')}`} />)}
+								</div>
+							);
+						})() : (s.sheets || []).map((pl: any, i: number) => <SheetPlanInk key={i} pl={pl} t={t} id={`sh${i}${String(s.id).replace(/[^A-Za-z0-9]/g, '')}`} />)}
 					{(s.faces || []).map((f: number[], i: number) => <div key={`f${i}`} data-face={f[4] ?? 'face'} style={{position: 'absolute', left: f[0], top: f[1], width: f[2] - f[0], height: f[3] - f[1], pointerEvents: 'none'}} />)}
 					{s.plan ? <SheetPlanInk pl={s.plan} t={t} id={`pl${String(s.id).replace(/[^A-Za-z0-9]/g, '')}`} /> : null}
 				</div>
 				{q && s.screen ? <AbsoluteFill style={{background: `radial-gradient(ellipse at ${(((q[0][0] + q[2][0]) / 2) * sc + tx) / SW * 100}% ${(((q[0][1] + q[2][1]) / 2) * sc + ty) / SH * 100}%, rgba(159,216,255,0.18) 0%, rgba(159,216,255,0) 45%)`, mixBlendMode: 'screen', pointerEvents: 'none'}} /> : null}
 				{s.dream ? <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 55%, rgba(255,236,190,0.0) 30%, rgba(255,236,190,0.35) 100%)', mixBlendMode: 'screen'}} /> : null}
 {s.green_creep ? <AbsoluteFill style={{background: C.green, opacity: 0.45 * sm((t - dur * 0.45) / (dur * 0.55)), mixBlendMode: 'multiply'}} /> : null}
-				{s.pulse ? <AbsoluteFill style={{pointerEvents: 'none', background: `radial-gradient(ellipse at ${s.pulse.x ?? 50}% ${s.pulse.y ?? 30}%, rgba(255,40,30,0.85) 0%, rgba(255,40,30,0) 60%)`, mixBlendMode: 'screen', opacity: (s.pulse.k ?? 0.55) * (0.5 + 0.5 * Math.sin((t - (s.pulse.at ?? 0)) * 2 * Math.PI * 1.1)) * sm((t - (s.pulse.at ?? 0)) / 0.3)}} /> : null}
+				{s.pulse ? <AbsoluteFill style={{pointerEvents: 'none', background: `radial-gradient(ellipse at ${s.pulse.sweep ? -30 + ((((t - (s.pulse.at ?? 0)) * 70) % 160) + 160) % 160 : s.pulse.x ?? 50}% ${s.pulse.y ?? 30}%, rgba(255,40,30,0.85) 0%, rgba(255,40,30,0) 60%)`, mixBlendMode: 'screen', opacity: (s.pulse.k ?? 0.55) * (0.5 + 0.5 * Math.sin((t - (s.pulse.at ?? 0)) * 2 * Math.PI * 1.1)) * sm((t - (s.pulse.at ?? 0)) / 0.3)}} /> : null}
 				{(s.sheets || []).map((pl: any, i: number) => {
 					const tip = sheetTip(pl, t, (u0, v0) => {
 						const [ix, iy] = projQ(pl.quad, u0, v0);
@@ -1794,7 +1821,7 @@ const filt = s.grade === 'dusk' ? 'brightness(0.8)' : s.grade === 'gray' ? 'satu
 					STAND-IN for {s.standin.for} · {s.standin.src.startsWith('s0') ? 'Klot ' : 'Ep.4 '}{s.standin.src}
 				</div>
 			) : null}
-			{s.title && t < 2.0 ? <ActTitle lines={s.title} k={titleK} SW={SW} SH={SH} u={u} t={t} /> : null}
+			{s.title && t < 2.0 ? <ActTitle lines={s.title} k={titleK} SW={SW} SH={SH} u={u} t={t} over={!!s.title_over} /> : null}
 		</AbsoluteFill>
 	);
 };

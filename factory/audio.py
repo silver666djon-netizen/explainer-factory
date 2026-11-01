@@ -367,6 +367,7 @@ def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6, align_e
 
 class Timeline:
     def __init__(self, total_seconds: float, cfg: dict):
+        self.dips: list[tuple[float, float, float]] = []  # (t0, t1, dB): extra music dips under chosen lines
         self.cfg = cfg["audio"]
         self.n = int(np.ceil(total_seconds * SR)) + SR // 2
         self.voice = np.zeros(self.n, dtype=np.float32)
@@ -465,6 +466,13 @@ class Timeline:
             gap = v_rms * db(self.cfg.get("music_gap_db", -8)) / max(m_rms, 1e-6)
             duck = db(self.cfg.get("music_under_voice_db", -14) - self.cfg.get("music_gap_db", -8))
             gain = gap * (1 - speaking * (1 - duck))
+            for t0, t1, d in getattr(self, "dips", []):
+                env = np.ones(self.n, np.float32)
+                i0, i1, r = int(max(0.0, t0) * SR), int(min(total, t1) * SR), int(0.25 * SR)
+                env[i0:i1] = db(d)
+                env[max(0, i0 - r):i0] = np.linspace(1.0, db(d), i0 - max(0, i0 - r))
+                env[i1:i1 + r] = np.linspace(db(d), 1.0, len(env[i1:i1 + r]))
+                gain = gain * env
             out = out + music * gain
         out = out + self.stings * v_peak * db(self.cfg.get("sting_db", -6)) * (1 - speaking * (1 - db(-4)))
         peak = np.abs(out).max()

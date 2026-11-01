@@ -1,0 +1,191 @@
+name: Ep.4 v2 full episode (Remotion, parallel render)
+# The whole episode (cold open -> Act 4 + the 20-22 s end screen) in one file: the plan is exported once, the frames are
+# rendered in N parallel parts (remotion --frames), concatenated losslessly, mastered, checked (tools/v2_qc.py, DOM checks
+# included) and published to the draft ep04v2-full with Telegram-size copies split at the ad breaks. No Telegram here.
+on:
+  workflow_dispatch:
+    inputs:
+      parts:
+        description: "parallel render parts"
+        required: false
+        default: "6"
+permissions:
+  contents: write
+concurrency:
+  group: v2-full
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    outputs:
+      ranges: ${{ steps.r.outputs.ranges }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - name: Python packages
+        run: pip install -q -r requirements.txt soundfile 2>&1 | tail -3
+      - name: Fonts
+        run: |
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf \
+                   ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
+      - name: Voice, timings, Ep.4 frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download ep04v2-preview1 rel timings.json voice_24k.flac
+          tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2-*.png" "archive-a2b-*.png" "m1b-*.png" "l1-*.png" "n1-*.png" "n4-*.png" "a4-*.png" "l5-*.png" "l8-*.png"
+      - name: Export the plan + audio mix
+        run: |
+          set -o pipefail
+          python tools/v2_preview.py rel pilot/remotion/public pv full 2>&1 | tee export.log \
+            || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+      - id: r
+        name: Frame ranges
+        run: |
+          python3 - "${{ github.event.inputs.parts || '6' }}" <<'PY' >> "$GITHUB_OUTPUT"
+          import json, sys
+          n = int(sys.argv[1]); F = json.load(open("pilot/remotion/public/v2_full.json"))["frames"]
+          step = -(-F // n)
+          print("ranges=" + json.dumps([{"k": k, "a": k * step, "b": min(F, (k + 1) * step) - 1} for k in range(n) if k * step < F]))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: public
+          path: |
+            pilot/remotion/public/v2
+            pilot/remotion/public/v2_full.json
+            pilot/remotion/public/hands
+            pilot/remotion/public/fonts
+          retention-days: 3
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pv
+          path: |
+            pv
+            rel/timings.json
+            rel/voice_24k.flac
+          retention-days: 3
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: true
+      matrix:
+        part: ${{ fromJson(needs.plan.outputs.ranges) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/download-artifact@v4
+        with:
+          name: public
+          path: pilot/remotion/public
+      - name: Remotion install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -3
+      - name: Render part ${{ matrix.part.k }} (frames ${{ matrix.part.a }}-${{ matrix.part.b }})
+        working-directory: pilot/remotion
+        run: |
+          set -o pipefail
+          s0=$(date +%s)
+          npx remotion render src/index.ts V2 "../../part_${{ matrix.part.k }}.mp4" --props='{"name":"v2_full"}' --frames=${{ matrix.part.a }}-${{ matrix.part.b }} \
+            --concurrency=4 --muted --crf=22 --log=error 2>&1 | tail -30
+          echo "part ${{ matrix.part.k }}: $(( $(date +%s) - s0 )) s"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: part-${{ matrix.part.k }}
+          path: part_${{ matrix.part.k }}.mp4
+          retention-days: 3
+  finish:
+    needs: [plan, render]
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-v1
+          restore-keys: kokoro-
+      - name: Python packages
+        run: pip install -q -r requirements.txt soundfile faster-whisper opencv-python-headless 2>&1 | tail -3
+      - uses: actions/download-artifact@v4
+        with:
+          name: public
+          path: pilot/remotion/public
+      - uses: actions/download-artifact@v4
+        with:
+          name: pv
+          path: .
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: part-*
+          merge-multiple: true
+          path: parts
+      - name: Join the parts (no re-encode)
+        run: |
+          ls parts | sort -t_ -k2 -n | sed "s|^|file '$PWD/parts/|; s|$|'|" > parts.txt
+          cat parts.txt
+          ffmpeg -v error -y -f concat -safe 0 -i parts.txt -c copy pv/v2_full_silent.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 pv/v2_full_silent.mp4
+      - name: Remotion install (DOM checks bundle)
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -3
+      - name: DOM sampling for the frame checks
+        run: |
+          set -o pipefail
+          pip install -q playwright 2>&1 | tail -2
+          python -m playwright install --with-deps chromium 2>&1 | tail -2
+          E=$(ls pilot/remotion/node_modules/.bin/esbuild pilot/remotion/node_modules/esbuild/bin/esbuild 2>/dev/null | head -1)
+          [ -n "$E" ] || E=$(find pilot/remotion/node_modules -path '*esbuild/bin/esbuild' -type f 2>/dev/null | head -1)
+          if [ -z "$E" ]; then (mkdir -p /tmp/esb && cd /tmp/esb && npm init -y >/dev/null && npm i --no-audit --no-fund esbuild@0.21.5 >/dev/null); E=/tmp/esb/node_modules/.bin/esbuild; fi
+          python tools/v2_dom_qc.py pilot/remotion/public pv "$E" 2>&1 | tail -20 || echo "::error title=dom::DOM sampling failed"
+      - name: Master + QC
+        run: |
+          set -o pipefail
+          python tools/v2_qc.py pv rel 2>&1 | tee qc.log || true
+          tail -n 60 qc.log | python3 -c 'import sys; print("::notice title=qc::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
+      - name: Telegram copies, split at the ad breaks (bot limit)
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          T = json.load(open("rel/timings.json"))
+          cuts = [0.0] + [round(b["at"], 3) for b in T["breaks"]] + [None]
+          names = ["1_cold_open_act1", "2_act2", "3_act3", "4_act4_end"]
+          for i, n in enumerate(names):
+              a, b = cuts[i], cuts[i + 1]
+              args = ["ffmpeg", "-v", "error", "-y", "-ss", str(a), "-i", "pv/cs_ep04v2_full.mp4"] + (["-t", str(b - a)] if b else []) + \
+                     ["-vf", "scale=1280:-2", "-c:v", "libx264", "-preset", "medium", "-crf", "27", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", f"pv/cs_ep04v2_full_{n}_tg.mp4"]
+              subprocess.run(args, check=True)
+          lines = ["Ad breaks (mid-rolls):"] + [f"{i + 1}. {int(b['at'] // 60)}:{b['at'] % 60:04.1f}" for i, b in enumerate(T["breaks"])]
+          open("pv/ad_breaks.txt", "w").write("\n".join(lines) + "\n")
+          PY
+          ls -la pv/*_tg.mp4; cat pv/ad_breaks.txt
+      - name: Publish into the draft ep04v2-full
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=ep04v2-full
+          files=$(ls pv/qc_preview_full.md pv/sheet_*.png pv/*_tg.mp4 pv/cs_ep04v2_full.mp4 pv/ad_breaks.txt 2>/dev/null || true)
+          [ -n "$files" ] || exit 0
+          if tools/rel.sh id $tag >/dev/null 2>&1; then tools/rel.sh upload $tag $files
+          else gh release create $tag $files --title "CoinSense · EP04v2 · FULL EPISODE" --notes "Ep.4 v2 full episode, picture-first (draft, not for upload)." --prerelease --draft; fi

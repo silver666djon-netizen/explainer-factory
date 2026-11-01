@@ -133,7 +133,7 @@ S: dict[str, dict] = {
     "A1.19b": W_(base="a5", cam=[[0.5, 0.45, 1.5], [0.5, 0.5, 1.02]], green_creep=True),
 }
 from v2_preview_a2 import A2 as _A2, KLOT_A2, EP4_A2, CLIPS_A2  # noqa: E402  (Act 2 specs)
-from v2_preview_a3a4 import A3 as _A3, A4 as _A4, KLOT_A34, EP4_A34, CLIPS_A34, FACES_A34  # noqa: E402  (Acts 3-4)
+from v2_preview_a3a4 import A3 as _A3, A4 as _A4, KLOT_A34, EP4_A34, CLIPS_A34, FACES_A34, END_SCREEN  # noqa: E402  (Acts 3-4)
 S.update(_A2)
 S.update(_A3)
 S.update(_A4)
@@ -155,7 +155,8 @@ EP4.update(EP4_A34)
 CLIPS.update(CLIPS_A34)
 SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
 CLOCK = {"A1.1": "8:12", "A1.7": "8:13", "A1.8": "8:14", "A1.9": "8:16", "A1.11": "8:18", "A1.16": "8:19"}
-TICKS = ("A1.8", "A1.16")      # the hold clock ticks from 8:14 until Pay
+TICKS = ("A1.8", "A1.16")
+DIP_LINES = {"A3.5": -7.0}  # extra music dip (dB) under these lines      # the hold clock ticks from 8:14 until Pay
 HEART = ("A1.11", "A1.16")     # heartbeat from 8:18 until Pay (stops before the silence)
 
 
@@ -292,6 +293,10 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
         s = 0.0 if i == 0 else b["start"] - LEAD
         if i > 0 and beats[i - 1]["id"] in hit and hit[beats[i - 1]["id"]]["at"] >= beats[i - 1]["end"] - 0.05:
             s = hit[beats[i - 1]["id"]]["at"]  # the picture cuts on the brass hit; the silence holds the next card
+        if i > 0 and b["act"] != beats[i - 1]["act"]:  # a new act (the full file): its title arrives on the ad break
+            brk = [k["at"] for k in T.get("breaks", []) if beats[i - 1]["end"] - 0.5 <= k["at"] <= b["start"]]
+            if brk:
+                s = brk[0]
         vis.append(s)
     shots, clock = [], None
     for i, b in enumerate(beats):
@@ -429,16 +434,32 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
         tl.add_voice(b["start"], voice[i:j], 24000, tag=b["id"])
     hits = [h for h in T["hits"] if any(h["line"] == b["id"] for b in beats)]
     acts = {a["act"]: a["start"] for a in T["acts"]}
-    bed = {"A2": "ub_mechanisms_of_action", "A3": "ub_usual_suspects", "A4": "ub_clock_is_ticking"}.get(beats[0]["act"] if beats else "", "ub_ticking_tension")
+    beds = {"COLD": "ub_ticking_tension", "A1": "ub_night_spot", "A2": "ub_mechanisms_of_action", "A3": "ub_usual_suspects", "A4": "ub_clock_is_ticking"}
+    act_at = sorted((a["start"], a["act"]) for a in T["acts"])
+
+    def bed_at(t):  # the bed of the act playing at t (a preview segment or the full episode)
+        cur = beats[0]["act"] if beats else "COLD"
+        for a0, act in act_at:
+            if a0 <= t + 1e-3 and any(bb["act"] == act for bb in beats):
+                cur = act
+        return beds.get(cur, "ub_ticking_tension")
+    bed = bed_at(0.0)
     tl.music_cue(0.0, bed)
+    for a0, act in act_at:
+        if 0 < a0 < end_t and any(bb["act"] == act for bb in beats) and act != "A1":
+            tl.music_cue(a0, beds.get(act, bed))
+    # Klot r4: the music dips under a line the final-mix STT check could not hear cleanly (A3.5 "swim in")
+    for bb in beats:
+        if bb["id"] in DIP_LINES:
+            tl.dips.append((bb["start"] - 0.2, bb["end"] + 0.2, DIP_LINES[bb["id"]]))
     silences = []
     for h in hits:
         tl.add_stab(h["at"], "ub_sting_brass", dur=T["hit_len"])
         s0 = max(h["at"] + T["hit_len"], h.get("silence_from", 0.0))  # the second of silence comes after the line
         silences.append((s0, s0 + 1.0))
         tl.music_cue(h["at"] + 0.2, "none")
-        tl.music_cue(s0 + 1.0, bed)
-    if "A1" in acts and acts["A1"] < end_t:
+        tl.music_cue(s0 + 1.0, bed_at(s0 + 1.0))
+    if "A1" in acts and 0.0 <= acts["A1"] < end_t:  # only when Act 1 starts inside this file
         tl.music_cue(acts["A1"], "ub_night_spot")
     for sh in shots:
         for e in sh["_sfx"]:
@@ -572,6 +593,19 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
             s["rate"] = round(max(0.85, min(1.0, (d - 0.05) / max(0.1, s["end"] - s["start"]))), 3)
         except Exception:  # noqa: BLE001
             pass
+        try:  # the QC page's stand-in for the clip (it cannot decode H.264): the frame at the shot's settled moment
+            (P / "v2" / "posters").mkdir(parents=True, exist_ok=True)
+            tc = min(d - 0.05, max(0.0, (s["end"] - s["start"] - 0.3) * s.get("rate", 1.0)))
+            pf = P / "v2" / "posters" / f"{s['id'].replace('/', '_')}.jpg"
+            subprocess.run(["ffmpeg", "-v", "error", "-y", "-ss", f"{tc:.3f}", "-i", str(src), "-frames:v", "1", "-vf", "scale=1920:1094", "-q:v", "3", str(pf)], check=True)
+            s["poster"] = f"v2/posters/{pf.name}"
+        except Exception:  # noqa: BLE001
+            pass
+        if s.get("track"):  # ink laid on the still the clip was made from, carried by the clip's camera (tools/track_clip.py)
+            s["track"] = json.loads((EP / "v2" / "tracks" / f"{s['track']}.json").read_text())
+            for sh in s.get("sheets", []):
+                sh["quad"] = [[x, y] for x, y in sh.pop("q")]
+                assert all(i.get("static") for i in sh["items"]), f"{s['id']}: ink on a clip must be static (no hand on a moving picture)"
         return
     screens = json.loads((EP / "v2" / "screens.json").read_text()) if (EP / "v2" / "screens.json").exists() else {}
     kp = _find(KLOT[b], R) if b in KLOT else None
@@ -700,6 +734,8 @@ def segments(T: dict, seg: str) -> list[tuple[str, tuple[str, ...], float, float
         return [("a2", ("A2",), b[0], b[1])]
     if seg == "a3":
         return [("a3", ("A3",), b[1], b[2])]
+    if seg == "full":  # the whole episode in one file + the end screen (music only)
+        return [("full", ("COLD", "A1", "A2", "A3", "A4"), 0.0, float(T.get("total") or max(x["end"] for x in T["beats"]) + 1.5))]
     if seg == "a4":
         return [("a4", ("A4",), b[2], float(T.get("total") or max(x["end"] for x in T["beats"]) + 1.5))]
     a1 = next(a["start"] for a in T["acts"] if a["act"] == "A1")
@@ -723,6 +759,20 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
         voice = voice0[int(round(t_in * 24000)):]
         end = t_out - t_in
         beats, shots = build(T, acts, end)
+        if kind == "full":
+            # Klot (locked): the end screen is the last 20-22 s: the Subscribe line, then music only. The last line's shot
+            # ends 0.4 s after the voice; the next-case sketch and subscribe follow.
+            last = shots[-1]
+            last["end"] = round(max(b["end"] for b in beats) + 0.4, 3)
+            t = last["end"]
+            for sid, dur, spec in END_SCREEN:
+                spec = json.loads(json.dumps(spec))
+                spec.setdefault("kind", "pic")
+                shots.append({"id": sid, "beat": "END", "act": "A4", "start": round(t, 3), "end": round(t + dur, 3), "picture": spec["base"],
+                              "source": "end screen", **spec, "_sfx": [{**x, "t": round(t + x["at"], 3)} for x in spec.pop("sfx", [])],
+                              "_ink": [], "clock": None, "face": spec.get("base") in FACES, "endscreen": True})
+                t += dur
+            end = round(t, 3)
         W, H = (1080, 1920) if kind == "short" else (1920, 1080)
         # pictures: Klot's still if it is in the repo, else an Ep.4 stand-in (tagged on screen), else a labelled placeholder
         for s in shots:
