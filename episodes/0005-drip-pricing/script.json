@@ -59,6 +59,11 @@
       "script": "all-in",
       "heard": "Orleans",
       "why": "x1 / s7_0 'all-in' = /ˈɔːlˌɪn/; long x1 and voice-only scan: 'all-in'"
+    },
+    {
+      "script": "swim in",
+      "heard": "swimming",
+      "why": "v2 A3.5 'swim in' = /swˈɪm ɪn/ (final n, not ŋ); v2 voice-only scan: 'swim in'"
     }
   ],
   "config": {

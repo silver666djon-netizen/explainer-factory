@@ -78,8 +78,10 @@ def c_stt_mix(beats, audio=None, **_):
     if audio is None:
         return []
     sr = 48000
-    fails, _notes = sttdiff.check_lines(audio, sr, [(b["start"], b["end"], b["id"]) for b in beats], {b["id"]: b["text"] for b in beats},
-                                        known=[("Live Nation", "Lyve Nation")])
+    # the episode's stt_known: transcription slips already confirmed against the voice's phonemes (and its voice-only scan)
+    ep = json.loads((ROOT / "episodes" / "0005-drip-pricing" / "script.json").read_text())
+    known = [("Live Nation", "Lyve Nation")] + [(k["script"], k["heard"]) for k in ep.get("stt_known") or []]
+    fails, _notes = sttdiff.check_lines(audio, sr, [(b["start"], b["end"], b["id"]) for b in beats], {b["id"]: b["text"] for b in beats}, known=known)
     return fails
 
 

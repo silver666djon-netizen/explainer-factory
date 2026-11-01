@@ -862,6 +862,7 @@ STT_KNOWN = [
     {"script": "charged", "heard": "charge", "why": "c3 'charged' = /ʧˈɑːʤd/ (final d before 'these'); voice-only scan: 'charged'"},
     {"script": "over fees it showed", "heard": "overfees its show", "why": "l3b 'it showed' = /ɪt ʃˈQd/; voice-only scan: 'it showed'"},
     {"script": "all-in", "heard": "Orleans", "why": "x1 / s7_0 'all-in' = /ˈɔːlˌɪn/; long x1 and voice-only scan: 'all-in'"},
+    {"script": "swim in", "heard": "swimming", "why": "v2 A3.5 'swim in' = /swˈɪm ɪn/ (final n, not ŋ); v2 voice-only scan: 'swim in'"},
 ]
 
 ep = {
