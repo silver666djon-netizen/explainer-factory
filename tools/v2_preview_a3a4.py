@@ -165,7 +165,7 @@ A4 = {
     "A4.12b": W_(base="s04", cam=[[0.42, 0.42, 1.12], [0.42, 0.41, 1.3]], dial_time="8:12", cut_on="So",
                  rewind={"from": "8:19", "at_on": "rewind", "dur": 1.4}, sfx=[{"kind": "whoosh", "on": "rewind"}]),
     "A4.13a": W_(base="s01", cam=[[0.85, 0.41, 3.2], [0.85, 0.41, 3.35]],
-                 insets=[dict(X1_INSET, from_on="switch", plate=W_(box=[590, 112, 1300, 298], size=72, text="ALL-IN:\nOFF", text2="ALL-IN:\nON", swap_on="switch"))],
+                 insets=[dict(X1_INSET, from_on="switch", flip=3.95, plate=W_(box=[590, 112, 1300, 298], size=72, text="ALL-IN:\nOFF", text2="ALL-IN:\nON", swap_on="switch"))],
                  overs=[W_(t="plate", text="8:12 · CHECK 1", at=0.2, x=0.5, y=0.08)], sfx=[{"kind": "kachunk", "on": "switch", "lead": -0.25}]),
     "A4.13b": W_(base="s02", cam=[[0.511, 0.5, 1.45], [0.511, 0.5, 1.6]],
                  screen=W_(mode="bill", tabn=2, active=1, head="SATURDAY · 8 PM", big="$30", big_col=RED, sub="TICKET",

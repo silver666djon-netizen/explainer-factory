@@ -216,7 +216,7 @@ A2 = {
                  screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8"), W_(name="FACILITY FEE", amt="$6"), W_(name="PROCESSING", amt="$4")])),
     # Klot r3: the plate reads FEES: UPFRONT; on "with the result?" the lever flips (clip 3.2-3.9 s) with a clunk -> FEES: AT THE END
     "A2.28a": W_(base="s01", cam=[[0.85, 0.41, 3.2], [0.85, 0.41, 3.35]],
-                 insets=[W_(video="x1", q=[[4110, 890], [4830, 890], [4830, 1335], [4110, 1335]], crop=[460, 110, 1880, 985], frame=True, from_on="result",
+                 insets=[W_(video="x1", q=[[4110, 890], [4830, 890], [4830, 1335], [4110, 1335]], crop=[460, 110, 1880, 985], frame=True, from_on="result", flip=3.95,
                             plate=W_(box=[590, 112, 1300, 298], size=72, text="FEES:\nUPFRONT", text2="FEES:\nAT THE END", swap_on="result"))],
                  sfx=[{"kind": "kachunk", "on": "result", "lead": -0.25}]),
     "A2.28b": W_(base="p01", cardcam=True, cam=[[0.5, 0.8, 1.9], [0.5, 0.84, 2.3]], sfx=[{"kind": "paper", "at": 0.1}],
