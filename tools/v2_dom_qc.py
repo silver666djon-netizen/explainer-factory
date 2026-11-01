@@ -142,7 +142,7 @@ async def sample(port: int, data: dict, name: str) -> list[dict]:
 
 def main(pub: str, pvd: str, esbuild: str = "") -> int:
     pub_p, pv = Path(pub).resolve(), Path(pvd)
-    esbuild = esbuild or str(ROOT / "pilot" / "remotion" / "node_modules" / ".bin" / "esbuild")
+    esbuild = str(Path(esbuild).resolve()) if esbuild else str(ROOT / "pilot" / "remotion" / "node_modules" / ".bin" / "esbuild")
     plan = json.loads((pv / "plan.json").read_text())
     work = Path(tempfile.mkdtemp(prefix="v2dom"))
     bundle(work, esbuild)
