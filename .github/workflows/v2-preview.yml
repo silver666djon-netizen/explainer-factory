@@ -85,8 +85,12 @@ jobs:
           set -o pipefail
           pip install -q playwright 2>&1 | tail -2
           python -m playwright install --with-deps chromium 2>&1 | tail -2
-          ls pilot/remotion/node_modules/.bin/esbuild
-          python tools/v2_dom_qc.py pilot/remotion/public pv pilot/remotion/node_modules/.bin/esbuild 2>&1 | tail -20
+          E=$(ls pilot/remotion/node_modules/.bin/esbuild pilot/remotion/node_modules/esbuild/bin/esbuild 2>/dev/null | head -1)
+          [ -n "$E" ] || E=$(find pilot/remotion/node_modules -path '*esbuild/bin/esbuild' -type f 2>/dev/null | head -1)
+          if [ -z "$E" ]; then (mkdir -p /tmp/esb && cd /tmp/esb && npm init -y >/dev/null && npm i --no-audit --no-fund esbuild@0.21.5 >/dev/null); E=/tmp/esb/node_modules/.bin/esbuild; fi
+          echo "esbuild: $E"
+          # never lose a render to this step: if it breaks, the QC reports "no dom.json" and the release gate fails there
+          python tools/v2_dom_qc.py pilot/remotion/public pv "$E" 2>&1 | tail -20 || echo "::error title=dom::DOM sampling failed"
       - name: Master + QC
         run: |
           set -o pipefail
