@@ -375,6 +375,55 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 			</AbsoluteFill>
 		);
 	}
+	if (s.mode === 'bill') {
+		// a generic checkout page (Acts 3-4): head, a big price (it can change: big2 at big_), rows that slide in (hl = marker,
+		// dim = in shadow), an all-in switch (toggle.on_ flips it), PAY. Sizes: the same read sizes as the other pages.
+		const fs = {os: 52, row: 54, big: 200, sub: 54, ...(s.fs || {})};
+		const swap = s.big2 !== undefined && s.big_ !== undefined && t >= s.big_;
+		const kb = swap ? clamp((t - s.big_) / 0.2, 0, 1) : 1;
+		const tog = s.toggle;
+		const on = tog ? (tog.on_ === undefined ? (tog.state ?? 0) : sm((t - tog.on_) / 0.25)) : 0;
+		if (s.tabn) {
+			tabs = Array.from({length: s.tabn}, (_x, i) => ({label: s.tablabel ?? 'Concert tickets', dot: i === 0 ? C.green : C.red, on: -1}));
+			active = s.active ?? 0;
+		}
+		const rowTop = s.rows_top ?? (s.sub2 ? 380 : 320);
+		body = (
+			<AbsoluteFill style={{padding: `${30 * u}px ${50 * u}px`}}>
+				{s.head ? <div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>{s.head}</div> : null}
+				{s.big ? (
+					<div style={{display: 'flex', alignItems: 'baseline', gap: 24 * u, transform: `scale(${swap ? 1.12 - 0.12 * kb : 1})`, transformOrigin: '0% 60%'}}>
+						<span data-read="1" style={{fontFamily: fam(HEAD), fontSize: fs.big * u, lineHeight: 1.05, color: swap ? s.big2_col ?? C.red : s.big_col ?? C.green}}>{swap ? s.big2 : s.big}</span>
+						{s.sub ? <span data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.sub * u, color: C.ink}}>{swap && s.sub2b ? s.sub2b : s.sub}</span> : null}
+					</div>
+				) : null}
+				{s.sub2 ? <div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.row * u, color: C.ink, marginTop: -6 * u}}>{s.sub2}</div> : null}
+				{(s.rows || []).map((r: any, i: number) => {
+					const at = r.at_ ?? -1;
+					if (t < at) return null;
+					const k = at < 0 ? 1 : clamp((t - at) / 0.3, 0, 1);
+					const hk = r.hl ? (r.hl_ === undefined ? 1 : sm((t - r.hl_) / 0.4)) : 0;
+					return (
+						<div key={i} style={{position: 'absolute', left: 50 * u, right: 50 * u, top: (rowTop + i * (fs.row * 1.25 + 26)) * u, transform: `translateX(${(1 - io(k)) * 260 * u}px)`, opacity: k * (r.dim ? 0.38 : 1),
+							display: 'flex', justifyContent: 'space-between', fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.25, color: r.col ?? C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u,
+							background: hk > 0 ? `rgba(232,181,58,${0.55 * hk})` : undefined, borderRadius: 6 * u}}>
+							<span data-read="1">{r.name}</span>
+							<span data-read="1">{r.amt}</span>
+						</div>
+					);
+				})}
+				{tog ? (
+					<div style={{position: 'absolute', right: 50 * u, top: (tog.y ?? 40) * u, display: 'flex', alignItems: 'center', gap: 22 * u}}>
+						<span data-read="1" style={{fontFamily: fam(BODY), fontSize: (tog.size ?? fs.os) * u, color: C.ink, textAlign: 'right', lineHeight: 1.1, whiteSpace: 'pre'}}>{tog.label}</span>
+						<div style={{position: 'relative', width: 150 * u, height: 78 * u, borderRadius: 39 * u, background: on > 0.5 ? C.green : '#B9B1A2', border: `${4 * u}px solid ${C.ink}`, flex: 'none'}}>
+							<div style={{position: 'absolute', top: 5 * u, left: (6 + 68 * on) * u, width: 60 * u, height: 60 * u, borderRadius: 30 * u, background: C.paper, border: `${3 * u}px solid ${C.ink}`}} />
+						</div>
+					</div>
+				) : null}
+				{s.pay ? <Button u={u} x={B.w - 420 * u} y={B.h - 120 * u} w={360 * u} label="PAY" lit={s.pay_ ?? -1} press={s.press_} t={t} color={C.red} /> : null}
+			</AbsoluteFill>
+		);
+	}
 	if (s.mode === 'versus') {
 		const k = s.badge_ === undefined ? 0 : clamp((t - s.badge_) / 0.2, 0, 1);
 		tabs = [{label: 'Concert tickets', dot: C.green, on: -1}, {label: 'Concert tickets', dot: C.red, on: -1}];
@@ -1124,16 +1173,17 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 		case 'case_folder': {
 			const at = (o.slide_ ?? 0.5) - 0.45;
 			const k = io(clamp((t - at) / 0.5, 0, 1));
-			const w = 1000 * U, h = 600 * U;
-			const x = (SW - w) / 2, y = (SH - h) / 2 - 40 * U + (1 - k) * SH * 0.9;
+			const Uc = short ? U * (1.55 + 0.15 * clamp(t / Math.max(dur, 0.1), 0, 1)) : U; // 9:16: pushed in on the label so it reads
+			const w = 1000 * Uc, h = 600 * Uc;
+			const x = (SW - w) / 2, y = (SH - h) / 2 - 40 * Uc + (1 - k) * SH * 0.9;
 			const typed = (txt: string, a?: number) => (a === undefined ? '' : txt.slice(0, clamp(Math.floor((t - a) / 0.045), 0, txt.length)));
 			return (
 				<div style={{position: 'absolute', left: x, top: y, width: w, height: h, zIndex: 30, transform: 'rotate(-2deg)'}}>
-					<div style={{position: 'absolute', left: 60 * U, top: -50 * U, width: 340 * U, height: 70 * U, background: '#D9B97A', border: `${3 * U}px solid ${C.ink}`, borderBottom: 'none', borderRadius: `${12 * U}px ${12 * U}px 0 0`}} />
-					<div style={{position: 'absolute', inset: 0, background: '#D9B97A', border: `${3 * U}px solid ${C.ink}`, borderRadius: 10 * U, boxShadow: '0 30px 60px rgba(0,0,0,0.6)'}}>
-						<div style={{position: 'absolute', left: 80 * U, top: 100 * U, fontFamily: fam(TYPE), fontSize: 64 * U, color: C.ink}}>{typed(`CASE FILE ${o.number}`, o.type_?.[0])}</div>
-						<div style={{position: 'absolute', left: 80 * U, top: 210 * U, width: w - 160 * U, fontFamily: fam(TYPE), fontSize: Math.min(84 * U, fitText({text: o.title, withinWidth: w - 160 * U, fontFamily: TYPE}).fontSize), color: C.red}}>{typed(o.title, o.type_?.[1])}</div>
-						<div style={{position: 'absolute', left: 80 * U, top: 400 * U, fontFamily: fam(BODY), fontSize: 24 * U, color: 'rgba(30,27,24,0.6)', letterSpacing: 3 * U}}>COINSENSE · PRICE INVESTIGATIONS</div>
+					<div style={{position: 'absolute', left: 60 * Uc, top: -50 * Uc, width: 340 * Uc, height: 70 * Uc, background: '#D9B97A', border: `${3 * Uc}px solid ${C.ink}`, borderBottom: 'none', borderRadius: `${12 * Uc}px ${12 * Uc}px 0 0`}} />
+					<div style={{position: 'absolute', inset: 0, background: '#D9B97A', border: `${3 * Uc}px solid ${C.ink}`, borderRadius: 10 * Uc, boxShadow: '0 30px 60px rgba(0,0,0,0.6)'}}>
+						<div style={{position: 'absolute', left: 80 * Uc, top: 100 * Uc, fontFamily: fam(TYPE), fontSize: 64 * Uc, color: C.ink}}>{typed(`CASE FILE ${o.number}`, o.type_?.[0])}</div>
+						<div style={{position: 'absolute', left: 80 * Uc, top: 210 * Uc, width: w - 160 * Uc, fontFamily: fam(TYPE), fontSize: Math.min(84 * Uc, fitText({text: o.title, withinWidth: w - 160 * Uc, fontFamily: TYPE}).fontSize), color: C.red}}>{typed(o.title, o.type_?.[1])}</div>
+						<div style={{position: 'absolute', left: 80 * Uc, top: 400 * Uc, fontFamily: fam(BODY), fontSize: 24 * Uc, color: 'rgba(30,27,24,0.6)', letterSpacing: 3 * Uc}}>COINSENSE · PRICE INVESTIGATIONS</div>
 					</div>
 				</div>
 			);
@@ -1412,7 +1462,7 @@ const KeyCard: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 			{k > 0 ? (
 				<div style={{position: 'absolute', left: 0, width: SW, top: SH * 0.2, textAlign: 'center', transform: `scale(${1.1 - 0.1 * k})`}}>
 					<div data-read="1" style={{fontFamily: fam(BODY), fontSize: 60 * U, letterSpacing: 8 * U, color: C.glow}}>{s.sub}</div>
-					<div data-read="1" style={{fontFamily: fam(HEAD), fontSize: 380 * U, lineHeight: 1.1, color: '#FF8466'}}>{s.key}</div>
+					<div data-read="1" style={{fontFamily: fam(HEAD), fontSize: Math.min(380 * U, (SW * 0.86) / (String(s.key).length * 0.5)), lineHeight: 1.1, color: '#FF8466'}}>{s.key}</div>
 				</div>
 			) : null}
 		</AbsoluteFill>
@@ -1612,8 +1662,19 @@ const SafeDoor: React.FC<{d: any; img: string; iw: number; ih: number; t: number
 };
 
 // hands painted on a blank clock face (image px): hour + minute in ink, a thin red second hand ticking
-const DialHands: React.FC<{d: {c: number[]; r: number}; time: string; t: number}> = ({d, time, t}) => {
-	const [h, m] = time.split(':').map(Number);
+const DialHands: React.FC<{d: {c: number[]; r: number}; time: string; t: number; rew?: any}> = ({d, time, t, rew}) => {
+	let [h, m] = time.split(':').map(Number);
+	let mAng: number | null = null;
+	if (rew) {
+		// REWIND (Act 4): the clock shows rew.from, then at rew.at_ the hands spin back to time (minute hand: two extra turns)
+		const [fh, fm] = String(rew.from).split(':').map(Number);
+		const a = fh * 60 + fm, b = h * 60 + m;
+		const k = rew.at_ === undefined ? 1 : io(clamp((t - rew.at_) / (rew.dur ?? 1.4), 0, 1));
+		const cur = a + (b - a) * k;
+		h = Math.floor(cur / 60);
+		m = cur - h * 60;
+		mAng = fm * 6 + ((b - a) * 6 - 720) * k;
+	}
 	const r = d.r, cx = d.c[0], cy = d.c[1];
 	const hand = (deg: number, len: number, w: number, col: string, tail = 0.12) => {
 		const a = (deg * Math.PI) / 180;
@@ -1627,7 +1688,7 @@ const DialHands: React.FC<{d: {c: number[]; r: number}; time: string; t: number}
 				return <line key={i} x1={cx + Math.sin(a) * r * k} y1={cy - Math.cos(a) * r * k} x2={cx + Math.sin(a) * r * 0.93} y2={cy - Math.cos(a) * r * 0.93} stroke={C.ink} strokeWidth={r * (i % 3 === 0 ? 0.035 : 0.018)} strokeLinecap="round" />;
 			})}
 			{hand(((h % 12) + m / 60) * 30, r * 0.5, r * 0.06, C.ink)}
-			{hand(m * 6, r * 0.75, r * 0.04, C.ink)}
+			{hand(mAng ?? m * 6, r * 0.75, r * 0.04, C.ink)}
 			{hand(sec, r * 0.82, r * 0.012, C.red, 0.2)}
 			<circle cx={cx} cy={cy} r={r * 0.045} fill={C.ink} />
 		</svg>
@@ -1662,7 +1723,7 @@ const filt = s.grade === 'dusk' ? 'brightness(0.8)' : s.grade === 'gray' ? 'satu
 								background: 'linear-gradient(125deg, rgba(255,255,255,0.22) 0%, rgba(255,255,255,0.05) 38%, rgba(255,255,255,0) 55%), radial-gradient(ellipse at 50% 50%, rgba(255,255,255,0) 60%, rgba(30,27,24,0.28) 100%)'}} />
 						</>
 					) : null}
-				{s.dial ? <DialHands d={s.dial} time={s.clock || s.dial.time || '8:12'} t={t} /> : null}
+				{s.dial ? <DialHands d={s.dial} time={s.clock || s.dial.time || '8:12'} t={t} rew={s.rewind} /> : null}
 					{(s.dials || []).map((d: any, i: number) => <SafeDial key={i} d={d} img={s.img} iw={s.iw} ih={s.ih} t={t} />)}
 					{s.door ? <SafeDoor d={s.door} img={s.img} iw={s.iw} ih={s.ih} t={t} /> : null}
 					{s.quad2 && s.screen2 ? (
@@ -1672,12 +1733,28 @@ const filt = s.grade === 'dusk' ? 'brightness(0.8)' : s.grade === 'gray' ? 'satu
 					) : null}
 					{(s.insets || []).map((m: any, i: number) => (
 						<div key={i} style={{position: 'absolute', left: 0, top: 0, width: m.W, height: m.H, transformOrigin: '0 0', transform: homography(m.W, m.H, m.quad), overflow: 'hidden',
+							borderRadius: m.round ? '50%' : undefined, opacity: m.at_ === undefined ? 1 : sm((t - m.at_) / 0.45),
 							boxShadow: m.frame ? '0 0 0 6px #1E1B18, 0 18px 30px rgba(0,0,0,0.55)' : undefined}}>
 							{m.video ? (
-								<OffthreadVideo src={staticFile(m.video)} muted style={{position: 'absolute', left: -m.crop[0], top: -m.crop[1], width: m.vw, height: m.vh}} />
+								<OffthreadVideo src={staticFile(m.video)} muted startFrom={Math.round((m.from_ !== undefined ? Math.max(0, (m.flip ?? 3.5) - m.from_ - 0.25) : m.from ?? 0) * 30)} style={{position: 'absolute', left: -m.crop[0], top: -m.crop[1], width: m.vw, height: m.vh}} />
 							) : (
 								<Img src={staticFile(m.img)} style={{position: 'absolute', left: -m.crop[0], top: -m.crop[1], width: m.vw, height: m.vh}} />
 							)}
+							{m.plate ? (() => {
+								// our own name plate over the clip's blank one (Klot: the plate reads what the switch is set to)
+								const [x0, y0, x1, y1] = m.plate.box;
+								const sw = m.plate.swap_ === undefined ? undefined : m.plate.swap_ + (m.plate.delay ?? 0.35); // the plate changes as the lever lands
+								const swap = sw !== undefined && t >= sw;
+								const k = swap ? sm((t - (sw as number)) / 0.18) : 1;
+								return (
+									<div style={{position: 'absolute', left: x0 - m.crop[0], top: y0 - m.crop[1], width: x1 - x0, height: y1 - y0, borderRadius: 10, border: '4px solid #6E6A60',
+										background: 'linear-gradient(180deg, #F2F0EA 0%, #D3CFC4 50%, #E8E5DC 100%)', boxShadow: 'inset 0 2px 4px rgba(255,255,255,0.8), 0 4px 8px rgba(0,0,0,0.35)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+										<span data-read="1" style={{fontFamily: fam(BODY), fontSize: m.plate.size, lineHeight: 1.05, textAlign: "center", color: swap ? "#8A2416" : C.ink, letterSpacing: 2, whiteSpace: "pre", opacity: k, transform: `scale(${1.08 - 0.08 * k})`}}>
+											{swap ? m.plate.text2 : m.plate.text}
+										</span>
+									</div>
+								);
+							})() : null}
 						</div>
 					))}
 					{(s.sheets || []).map((pl: any, i: number) => <SheetPlanInk key={i} pl={pl} t={t} id={`sh${i}${String(s.id).replace(/[^A-Za-z0-9]/g, '')}`} />)}
@@ -1687,6 +1764,7 @@ const filt = s.grade === 'dusk' ? 'brightness(0.8)' : s.grade === 'gray' ? 'satu
 				{q && s.screen ? <AbsoluteFill style={{background: `radial-gradient(ellipse at ${(((q[0][0] + q[2][0]) / 2) * sc + tx) / SW * 100}% ${(((q[0][1] + q[2][1]) / 2) * sc + ty) / SH * 100}%, rgba(159,216,255,0.18) 0%, rgba(159,216,255,0) 45%)`, mixBlendMode: 'screen', pointerEvents: 'none'}} /> : null}
 				{s.dream ? <AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 55%, rgba(255,236,190,0.0) 30%, rgba(255,236,190,0.35) 100%)', mixBlendMode: 'screen'}} /> : null}
 {s.green_creep ? <AbsoluteFill style={{background: C.green, opacity: 0.45 * sm((t - dur * 0.45) / (dur * 0.55)), mixBlendMode: 'multiply'}} /> : null}
+				{s.pulse ? <AbsoluteFill style={{pointerEvents: 'none', background: `radial-gradient(ellipse at ${s.pulse.x ?? 50}% ${s.pulse.y ?? 30}%, rgba(255,40,30,0.85) 0%, rgba(255,40,30,0) 60%)`, mixBlendMode: 'screen', opacity: (s.pulse.k ?? 0.55) * (0.5 + 0.5 * Math.sin((t - (s.pulse.at ?? 0)) * 2 * Math.PI * 1.1)) * sm((t - (s.pulse.at ?? 0)) / 0.3)}} /> : null}
 				{(s.sheets || []).map((pl: any, i: number) => {
 					const tip = sheetTip(pl, t, (u0, v0) => {
 						const [ix, iy] = projQ(pl.quad, u0, v0);

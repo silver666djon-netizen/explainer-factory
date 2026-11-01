@@ -1,14 +1,28 @@
-PREVIEW · ACT 2 (frame review, round 3): 3:56-9:02. Every note fixed; each is now a release check.
+PREVIEW · ACT 2 (round 4): 3:56-9:02. Your 10 notes, fixed:
 
-- 1998 written inside the plan (SEAT room). The ticket + scissors now lie on Larry's kitchen table by the mug; BASE / SURCHARGE written in black.
-- The filing drawer is the green cabinet in the p01 office: $30 big on the top drawer, the fee slips +$8 +$6 +$4 shrink to small print on the one below (still readable).
-- StubHub 2015 = the queue illustration with the date plate (no 1939 photo, R48). "The price on the screen was the price you paid" is on Larry's screen: $48 FEES INCLUDED.
-- Checkout A is $48 fees included everywhere; B is $30 with + FEES AT THE END landing on "moment".
-- Queue: A / B and A · FULL PRICE / B · TICKET ONLY on cream tags inside the frame, black ink, no hand near a face. Fridge calendar: one hand, black day numbers, then the red cross.
-- Crowd: a cream LARRY tag with an arrow (no circle: any hand drawing there would cover the faces next to him), then a cream YOU tag with an arrow to a gap in the crowd.
-- ≈21% lands with its word (no empty navy). The four paper cards lie on the p01 desk, each in a new framing, text >= 2.8 %.
-- HOW THE LOCK WAS PICKED is a full kinetic title. Each lock: the dial turns in a medium shot with cream number tags, story pictures, then a short close-up CLICK; never more than 2 s of dial close-ups. "By 8:18 Larry has picked his seat" plays over the seat map; "in his head" is a grey push-in on Larry dreaming.
-- Mug: SELL $7.12 on its own tag, BUY $2.87 on a second tag beside it. GYM written in black, struck in red. The open safe holds the fee slips $8 · $6 · $4 and the $18 tag. The switch is a plate on Larry's kitchen wall; the case files lie on the p01 desk.
+1. 4:10 scissors: framed on the ticket + scissors (about 55 % of the frame) on the researchers' desk; BASE on the big half, SUR-/CHARGE on the stub, both >= 2.8 % cap height.
+2. 4:26 "files the first number": an open drawer of the green cabinet; the $30 card filed big in front, the +$8 +$6 +$4 slips behind it shrink to small print.
+3. 4:38 "a very big one": the Radio City crowd, 1942 (general line, R48 a), with its caption.
+4. 5:32 +14% moved up, well clear of the subtitles.
+5. 6:50 the TUE · 8:18 PM tag on the bezel is gone.
+6. 6:54 "in his head": Larry daydreaming (g04), a4_seat inside the thought bubble.
+7. 7:08 mug: SELL $7.12 is a cream tag like BUY $2.87 (same style and size), with an arrow to the mug's tag.
+8. 7:42 "already decided": the wallet still with a DECIDED stamp (beside Larry, off his face).
+9. 7:50 calculators: $15 + 68% DRIVE on the small one, $125 + 29% DRIVE on the big one, seen together; all tags >= 6 % inside the frame.
+10. 8:31 switch: the plate reads FEES: UPFRONT; on "with the result?" the lever flips with a clunk and the plate changes to FEES: AT THE END.
+
+9:16 (cold open): the checkout page now fits the width (no side crop); COLD.9 pushes in on the case-file label.
 
 ---
-RU: ПРЕВЬЮ · АКТ 2 (третий раунд): все замечания исправлены и стали проверками. 1998 внутри плана; билет с ножницами на кухонном столе Ларри; картотека — зелёный шкаф в кабинете p01; StubHub 2015 — иллюстрация очереди (без фото 1939 года); касса A везде $48 с включёнными сборами, B — $30 и сборы в конце; ярлыки A/B на кремовых бирках, рука не у лиц; в толпе бирки LARRY и YOU со стрелками; ≈21% появляется со словом; все карточки на столе p01 в разных ракурсах; HOW THE LOCK WAS PICKED — полноэкранный титр; на каждый замок — поворот ручки (средний план), истории, короткий щелчок крупно; кружка SELL $7.12 и BUY $2.87; GYM чёрным, зачёркнут красным; в открытом сейфе бумажки $8 · $6 · $4 и $18.
+RU: ПРЕВЬЮ · АКТ 2 (четвёртый раунд), все 10 замечаний:
+1. Ножницы: кадр на билет с ножницами (около 55 % кадра), BASE на большой половине, SUR-/CHARGE на корешке, высота ≥ 2,8 %.
+2. «Мозг запоминает первое число»: открытый ящик зелёного шкафа, карточка $30 крупно спереди, бумажки +$8 +$6 +$4 сзади уменьшаются в мелкий шрифт.
+3. «Очень большая»: толпа у Radio City, 1942 (общая фраза, R48 a), с подписью.
+4. +14% поднят, далеко от субтитров.
+5. Бирка TUE · 8:18 PM на рамке ноутбука убрана.
+6. «В мыслях он уже сидит»: Ларри мечтает (g04), в облачке a4_seat.
+7. Кружка: SELL $7.12 — кремовая бирка как BUY $2.87, со стрелкой к бирке кружки.
+8. «Уже решённая покупка»: кадр с кошельком и штамп DECIDED (рядом с Ларри, не на лице).
+9. Калькуляторы: $15 и 68% DRIVE на маленьком, $125 и 29% DRIVE на большом, вместе; все бирки ≥ 6 % от краёв.
+10. Переключатель: табличка FEES: UPFRONT; на «with the result?» рычаг щёлкает и табличка меняется на FEES: AT THE END.
+9:16: страница кассы во всю ширину (без обрезки); наезд на ярлык папки дела.

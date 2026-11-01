@@ -19,9 +19,9 @@ from factory import render as R  # noqa: E402
 from factory import sttdiff  # noqa: E402
 from factory.config import load_config  # noqa: E402
 
-OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4"}
-AUD = {"long": "long", "short": "short", "a2": "long"}  # which master spec a preview file follows
-COL = {"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9"}
+OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4", "a3": "cs_ep04v2_preview_a3.mp4", "a4": "cs_ep04v2_preview_a4.mp4"}
+AUD = {"long": "long", "short": "short", "a2": "long", "a3": "long", "a4": "long"}  # which master spec a preview file follows
+COL = {"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9"}
 MIN_SHOT, MAX_SHOT = 1.4, 8.0
 FONTS = ROOT / "assets" / "fonts"
 
@@ -983,10 +983,11 @@ def main(pvd: str, tdir: str) -> int:
     for kind in kinds:
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
-    seg = "a2" if "a2" in P else "p2"
-    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2"}[seg]
+    seg = next((k for k in ("a2", "a3", "a4") if k in P), "p2")
+    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4"}[seg]
     what = {"p2": "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open.",
-            "a2": "Act 2 (first ad break to the second), 16:9."}[seg]
+            "a2": "Act 2 (first ad break to the second), 16:9.", "a3": "Act 3 (second ad break to the third), 16:9.",
+            "a4": "Act 4 (third ad break to the end), 16:9."}[seg]
     md = [f"# Ep.4 v2 · {title} · QC (picture-first)", "",
           what + " Remotion layer; Klot's stills, Ep.4 pictures and archive prints; any still not in yet is held on a labelled "
           "placeholder card or a tagged stand-in.", ""]
@@ -1033,7 +1034,7 @@ def main(pvd: str, tdir: str) -> int:
                                        capture_output=True, text=True).stdout)
             md.append(f"- {p.name}: {dur:.1f} s, {i:.1f} LUFS, true peak {tp:.1f} dBTP")
             sheet(p, pv / f"sheet_{kind}.png")
-    (pv / ("qc_preview2.md" if seg == "p2" else "qc_preview_a2.md")).write_text("\n".join(md) + "\n")
+    (pv / ("qc_preview2.md" if seg == "p2" else f"qc_preview_{seg}.md")).write_text("\n".join(md) + "\n")
     print("\n".join(md))
     bad = any(r for k in allres for n, r in allres[k].items() if r and n != "shorts_length") or any(c != "FAIL" for *_x, c in st)
     return 1 if bad else 0

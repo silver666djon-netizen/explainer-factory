@@ -133,7 +133,10 @@ S: dict[str, dict] = {
     "A1.19b": W_(base="a5", cam=[[0.5, 0.45, 1.5], [0.5, 0.5, 1.02]], green_creep=True),
 }
 from v2_preview_a2 import A2 as _A2, KLOT_A2, EP4_A2, CLIPS_A2  # noqa: E402  (Act 2 specs)
+from v2_preview_a3a4 import A3 as _A3, A4 as _A4, KLOT_A34, EP4_A34, CLIPS_A34, FACES_A34  # noqa: E402  (Acts 3-4)
 S.update(_A2)
+S.update(_A3)
+S.update(_A4)
 for _k, _v in list(S.items()):  # sfx inside a shot spec is the mixer's, not the layer's
     _v.setdefault("kind", "pic")
 # logical stills -> Klot's file when it is in the repo, else an Ep.4 stand-in window (x0, y0, x1, y1 of the stand-in) or a placeholder
@@ -146,7 +149,10 @@ STANDIN = {"a1_glow": ("ep04v2_s01_flat_wide", [0.16, 0.14, 0.6, 0.6], "dark"), 
 EP4 = {"o4": "o4", "l1": "l1", "a5": "a5", "a10": "a10", "arch_a2": "archive-a2", "arch_a2b": "archive-a2b", "m1b-blank": "m1b", "b1": "b1", "a11": "a11"}
 CLIPS = {"o4clip": "o4", "a10clip": "a10", "k1": "ep04v2_k1_glow", "k5": "ep04v2_k5_bomb", "k6": "ep04v2_k6_car", **CLIPS_A2}
 KLOT.update(KLOT_A2)
+KLOT.update(KLOT_A34)
 EP4.update(EP4_A2)
+EP4.update(EP4_A34)
+CLIPS.update(CLIPS_A34)
 SCREEN_PX = {"m1b-blank": [[440, 122], [938, 122], [938, 422], [440, 422]]}  # the blank screen (px of the 1376x768 still)
 CLOCK = {"A1.1": "8:12", "A1.7": "8:13", "A1.8": "8:14", "A1.9": "8:16", "A1.11": "8:18", "A1.16": "8:19"}
 TICKS = ("A1.8", "A1.16")      # the hold clock ticks from 8:14 until Pay
@@ -155,6 +161,7 @@ HEART = ("A1.11", "A1.16")     # heartbeat from 8:18 until Pay (stops before the
 
 # Larry's face (or Larry in the room): a cut to one of these breaks a run of laptop screens (Klot note 8: <= 2 screens in a row)
 FACES = {"s01", "s05", "s06", "a1_glow", "a1_wallet", "a4_seat", "g04", "o4", "o4clip", "p06", "p08"}
+FACES |= FACES_A34
 # checkout text we want read on a phone (Klot note 5): sizes in screen units (the screen box is 1240 wide); the QC checks the cap
 # height against 2.8 % of the frame from these same numbers (ArchivoBlack / SpecialElite cap height = 0.688 / 0.689 em)
 READ_FS = {"os": 46, "row": 50, "fee": 54, "lab": 44, "tot": 52, "big": 140}
@@ -292,6 +299,8 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
         a, z = vis[i], (vis[i + 1] if i + 1 < len(beats) else end_t)
         n = len(b["shots"])
         sids = [b["id"] + (chr(97 + k) if n > 1 else "") for k in range(n)]
+        if n == 1 and b["id"] + "/" in S:  # a one-shot beat whose id is another beat's shot id (A4.6b): its spec is "<id>/"
+            sids = [b["id"] + "/"]
         # lengths: a spec may ask for its own length ("dur", e.g. a dial close-up <= 1.5 s); the rest share the remainder
         fixed = {k: S[sid]["dur"] for k, sid in enumerate(sids) if "dur" in S[sid]}
         free = [k for k in range(n) if k not in fixed]
@@ -320,7 +329,7 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                 if k + 2 <= n - 1 and "dur" in S[sids[k + 1]]:
                     cuts[k + 2] = min(z if k + 2 == n else cuts[k + 3] - MIN_SHOT, cuts[k + 2] + d)
         for k in range(n):
-            sid = b["id"] + (chr(97 + k) if n > 1 else "")
+            sid = sids[k]
             spec = json.loads(json.dumps(S[sid]))
             s0, s1 = cuts[k], cuts[k + 1]
             def resolve(d):  # "<key>_on": word(s) -> "<key>_": seconds from the shot start (nested dicts too)
@@ -420,7 +429,7 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
         tl.add_voice(b["start"], voice[i:j], 24000, tag=b["id"])
     hits = [h for h in T["hits"] if any(h["line"] == b["id"] for b in beats)]
     acts = {a["act"]: a["start"] for a in T["acts"]}
-    bed = "ub_mechanisms_of_action" if beats and beats[0]["act"] == "A2" else "ub_ticking_tension"
+    bed = {"A2": "ub_mechanisms_of_action", "A3": "ub_usual_suspects", "A4": "ub_clock_is_ticking"}.get(beats[0]["act"] if beats else "", "ub_ticking_tension")
     tl.music_cue(0.0, bed)
     silences = []
     for h in hits:
@@ -516,6 +525,11 @@ def _world(s: dict, f: float, key: str = "", P: Path | None = None) -> None:
                 shutil.copy(src, P / "v2" / "props" / src.name)
     for m in s.get("insets", []):
         m["quad"] = [[x * f, y * f] for x, y in m.pop("q")]
+        if m.get("still") and P is not None:  # a still inside the picture (a thought bubble, a tablet): crop in px of its original
+            st = m.pop("still")
+            path = EP / "v2" / "manual_assets" / f"{KLOT[st]}.png" if st in KLOT else EP / "images" / f"{st}.png"
+            src, m["vw"], m["vh"], fi = _load(path, KLOT.get(st, st), P)
+            m["img"], m["crop"] = src, [c * fi for c in m["crop"]]
         x0, y0, x1, y1 = m["crop"]
         m["W"], m["H"] = x1 - x0, y1 - y0
         if m.get("video"):
@@ -610,7 +624,7 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
 
 
 BAND_9x16 = [0, 250, 1080, 1350]  # the 9:16 picture band: 4:5, 70 % of the height (R38 >= 50 %), captions under it
-SHORT_FS = {"os": 70, "row": 66, "fee": 72, "lab": 60, "tot": 66, "big": 170}
+SHORT_FS = {"os": 70, "row": 70, "fee": 72, "lab": 60, "tot": 72, "big": 170}
 
 
 def _projq(q, u, v):
@@ -624,7 +638,7 @@ def _projq(q, u, v):
     return (a * u + b * v + x0) / w, (d * u + e * v + y0) / w
 
 
-def short_frame(s: dict) -> None:
+def short_frame(s: dict, k: int = 0) -> None:
     """The 9:16 band (1080 x 1350): a laptop page fills the band's width (text big enough to read on a phone), a sheet
     plan is laid only on the part of the sheet the band shows; the picture always covers the band (never letterboxed)."""
     if s.get("base_kind") != "picture" or not s.get("iw"):
@@ -634,9 +648,12 @@ def short_frame(s: dict) -> None:
     if s.get("quad") and s.get("screen"):
         qx = [p[0] for p in s["quad"]]
         qy = [p[1] for p in s["quad"]]
-        z = max(1.0, bw / (base * (max(qx) - min(qx)))) * (1.22 if s["screen"].get("mode") in ("fees", "total", "pay") else 1.0)
+        # Klot (round 3): the page fits the band's width (never cut at the sides); the push is a slow settle onto that fit.
+        # Repeated screen shots of one picture differ in height (repeat_shot), never in width.
+        z = max(1.0, bw / (base * (max(qx) - min(qx))))
         cx, cy = (min(qx) + max(qx)) / 2 / s["iw"], (min(qy) + max(qy)) / 2 / s["ih"]
-        s["cam"] = [[cx, cy, z], [cx, cy, z * 1.06]]
+        cy += (0.0, 0.11, -0.11, 0.06)[k % 4]
+        s["cam"] = [[cx, cy, z * 0.96], [cx, cy, z]]
         if s["screen"].get("mode") in ("fees", "total", "pay"):
             s["screen"]["fs"] = dict(SHORT_FS)
         s["screen"]["ts"] = 1.25
@@ -681,6 +698,10 @@ def segments(T: dict, seg: str) -> list[tuple[str, tuple[str, ...], float, float
     b = [k["at"] for k in T["breaks"]]
     if seg == "a2":
         return [("a2", ("A2",), b[0], b[1])]
+    if seg == "a3":
+        return [("a3", ("A3",), b[1], b[2])]
+    if seg == "a4":
+        return [("a4", ("A4",), b[2], float(T.get("total") or max(x["end"] for x in T["beats"]) + 1.5))]
     a1 = next(a["start"] for a in T["acts"] if a["act"] == "A1")
     return [("long", ("COLD", "A1"), 0.0, b[0]), ("short", ("COLD",), 0.0, a1)]
 
@@ -711,12 +732,13 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
             if s.get("cardcam"):
                 card_cam(s)
             if kind == "short":
-                short_frame(s)
+                seen = sum(1 for x in shots[:shots.index(s)] if x.get("img") == s.get("img") and x.get("screen"))
+                short_frame(s, seen)
         stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg)
         data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + 18, "end": round(end, 3), "pal": PAL,
                 "band": BAND_9x16 if kind == "short" else None,
                 "shots": [{k: v for k, v in s.items() if k != "_sfx"} for s in shots], "captions": captions(beats, kind),
-                "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a")],
+                "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a", "A3.1a", "A4.1")],
                 "fonts": {"Anton-Regular.ttf": "Anton-Regular", "ArchivoBlack-Regular.ttf": "ArchivoBlack-Regular",
                           "SpecialElite-Regular.ttf": "SpecialElite-Regular", "PermanentMarker-Regular.ttf": "PermanentMarker-Regular",
                           "PT_Serif-Web-Regular.ttf": "PT-Serif-Web-Regular"}}
