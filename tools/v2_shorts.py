@@ -132,8 +132,12 @@ def short_T(T: dict, voice, ids: list[str], sr: int = 24000):
     R["hits"] = [dict(h, at=round(h["at"] - pos[h["line"]][1] + pos[h["line"]][0], 3),
                       **({"silence_from": round(h["silence_from"] - pos[h["line"]][1] + pos[h["line"]][0], 3)} if "silence_from" in h else {}))
                  for h in T["hits"] if h["line"] in pos]
+    for h in R["hits"]:  # a brass hit keeps its full second of silence (the last picture holds through it, then the loop)
+        s0 = max(h["at"] + T.get("hit_len", 0.0), h.get("silence_from", 0.0))
+        total = max(total, s0 + 1.0 + 0.05)
+    R["total"] = round(total, 3)
+    out = np.pad(out, (0, max(0, int((total + 0.5) * sr) - len(out))))
     act = beats[0]["act"]
     R["acts"] = [dict(next(a for a in T["acts"] if a["act"] == act), start=0.0)]
     R["breaks"] = []
-    R["total"] = round(total, 3)
     return R, out

@@ -467,8 +467,8 @@ def heartbeat(n: int = 1) -> np.ndarray:
     return out.astype(np.float32)
 
 
-def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.ndarray, out: Path, cfg: dict) -> dict:
-    tl = A.Timeline(end_t + 0.6, cfg)
+def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.ndarray, out: Path, cfg: dict, tail: float = 0.6) -> dict:
+    tl = A.Timeline(end_t + tail, cfg)
     for b in beats:
         i, j = int(b["start"] * 24000), int(b["end"] * 24000)
         tl.add_voice(b["start"], voice[i:j], 24000, tag=b["id"])
@@ -535,8 +535,10 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
         r = int(0.03 * A.SR)
         x[i - r:i] *= np.linspace(1, 0, r)
         x[i:j] = 0.0
-        x[j:j + r] *= np.linspace(0, 1, r)
-    fade = int(1.0 * A.SR)
+        x[j:j + r] *= np.linspace(0, 1, r)[:len(x[j:j + r])]
+    if not tail:
+        x = x[:int(round(end_t * A.SR))]  # a looping Short: the sound ends with its picture
+    fade = int((1.0 if tail else 0.3) * A.SR)  # a looping Short: only the music's last 0.3 s (the voice ends 0.4 s before)
     x[-fade:] *= np.linspace(1, 0, fade)
     A.write_wav(out, x)
     return {"silences": silences, "voice_lines": tl.voice_lines, "voice_edits": tl.voice_edits, "sfx": tl.log}
@@ -938,8 +940,9 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
             if vertical:
                 seen = sum(1 for x in shots[:shots.index(s)] if x.get("img") == s.get("img") and x.get("screen"))
                 short_frame(s, seen, compact=kind != "short")
-        stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg)
-        data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + 18, "end": round(end, 3), "pal": PAL,
+        loop = kind.startswith("sh")  # a Short loops: it ends on its last picture, no tail
+        stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg, tail=0.0 if loop else 0.6)
+        data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + (0 if loop else 18), "end": round(end, 3), "pal": PAL,
                 "band": BAND_9x16 if vertical else None,
                 "shots": [{k: v for k, v in s.items() if k != "_sfx"} for s in shots], "captions": captions(beats, kind),
                 "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a", "A3.1a", "A4.1")],

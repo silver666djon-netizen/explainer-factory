@@ -362,6 +362,14 @@ def c_shorts_length(data=None, **_):
     return [] if data["end"] <= 45.0 else [f"{data['end']:.1f} s > 45 s"]
 
 
+def c_short_loop(shots=None, data=None, **_):
+    """A Short loops: the file ends on its last picture (no empty tail before it starts again)."""
+    if data["H"] <= data["W"]:
+        return []
+    tail = data["frames"] / data["fps"] - max(s["end"] for s in shots)
+    return [] if tail <= 1.5 / data["fps"] else [f"{tail:.2f} s of empty frame after the last picture"]
+
+
 def c_picture_first(shots=None, data=None, **_):
     """R41: >= 85% of screen time on a picture base (flat only: act titles and key numbers, <= 4 key numbers);
     a placeholder for a still not yet delivered counts as NOT a picture."""
@@ -769,6 +777,7 @@ CHECKS = [
     ("sfx_sync (R34)", c_sfx_sync, "scratch only while ink is laid"),
     ("jitter (R28)", c_jitter, "camera path: no reversal > 0.25 px (plan, as drawn)"),
     ("shorts_band (R38)", c_shorts_band, "9:16 picture band >= 50 %"),
+    ("short_loop", c_short_loop, "a Short ends on its last picture (loops cleanly)"),
     ("read_size (R45)", c_read_size, "checkout lines we want read: cap height >= 2.8 % of the frame (16:9)"),
     ("screen_marks (R44)", c_screen_marks, "stamps on a screen stay inside the screen (screen space, 30-unit margin)"),
     ("face_cut (R46)", c_face_cut, "no more than 2 laptop screens in a row without Larry's face"),
@@ -936,6 +945,10 @@ def selftest(ctx):
         c["data"] = {**c["data"], "W": 1080, "H": 1920, "end": 50.0}
         return "a 50 s Short"
     plant("shorts_length", m_len, lambda **k: c_shorts_length(data=k["data"]))
+    def m_tail(c):
+        c["data"] = {**c["data"], "W": 1080, "H": 1920, "frames": int(round(max(x["end"] for x in c["shots"]) * c["data"]["fps"])) + 18}
+        return "a Short with 0.6 s of empty frame at the end"
+    plant("short_loop", m_tail, c_short_loop)
     def m_dec(c):
         bad = Path("/tmp/_broken.mp4")
         bad.write_bytes(Path(c["path"]).read_bytes()[:200000] if Path(c["path"]).exists() else b"0" * 1000)
@@ -1080,8 +1093,8 @@ def main(pvd: str, tdir: str) -> int:
                 cells.append("n/a: 16:9 rule; 9:16 text is judged by text_size_contrast")
             elif name == "shorts_length" and kind == "short" and r:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
-            elif name in ("shorts_band (R38)", "shorts_length") and not (kind == "short" or kind.startswith("sh")):
-                cells.append("n/a (16:9)" if name == "shorts_length" else ("PASS" if not r else f"FAIL ({len(r)})"))
+            elif name in ("shorts_band (R38)", "shorts_length", "short_loop") and not (kind == "short" or kind.startswith("sh")):
+                cells.append("n/a (16:9)" if name in ("shorts_length", "short_loop") else ("PASS" if not r else f"FAIL ({len(r)})"))
             elif name.startswith("stt_") and kind == "full_ru":
                 cells.append("n/a: the STT check is English-only (the RU copy is checked by ear)")
             elif r is None:
