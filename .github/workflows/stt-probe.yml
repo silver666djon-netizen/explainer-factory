@@ -1,0 +1,55 @@
+name: STT probe (one span of a release file)
+# Prints what faster-whisper medium.en hears in one time span of a release file, exactly as the line checks cut it
+# (factory.sttdiff.transcribe), and the diff against a given script line. For diagnosing a failed line.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+      file:
+        required: true
+      start:
+        required: true
+      end:
+        required: true
+      text:
+        description: "the script line"
+        required: true
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-v1
+          restore-keys: kokoro-
+      - run: pip install -q -r requirements.txt faster-whisper 2>&1 | tail -2
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download "${{ github.event.inputs.tag }}" rel "${{ github.event.inputs.file }}"
+          python3 - "rel/${{ github.event.inputs.file }}" "${{ github.event.inputs.start }}" "${{ github.event.inputs.end }}" "${{ github.event.inputs.text }}" <<'PY'
+          import subprocess, sys
+          import numpy as np
+          sys.path.insert(0, ".")
+          from factory import sttdiff as D
+          f, a, b, text = sys.argv[1], float(sys.argv[2]), float(sys.argv[3]), sys.argv[4]
+          raw = subprocess.run(["ffmpeg", "-v", "error", "-i", f, "-map", "0:a", "-ac", "1", "-ar", "48000", "-f", "f32le", "-"], capture_output=True, check=True).stdout
+          x = np.frombuffer(raw, np.float32)
+          for pad in (0.12, 0.3):
+              i, j = int((a - pad) * 48000), int((b + pad) * 48000)
+              heard = D.transcribe(x[i:j], 48000)
+              print(f"pad {pad}: heard: {heard!r}")
+              print("   words:", D.words(heard))
+              print("   diff:", D.diff(text, heard))
+          PY
