@@ -300,6 +300,9 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
         s = 0.0 if i == 0 else b["start"] - LEAD
         if i > 0 and beats[i - 1]["id"] in hit and hit[beats[i - 1]["id"]]["at"] >= beats[i - 1]["end"] - 0.05:
             s = hit[beats[i - 1]["id"]]["at"]  # the picture cuts on the brass hit; the silence holds the next card
+        first = S.get(b["id"] + ("a" if len(cur[b["id"]]) > 1 else "")) or S.get(b["id"] + "/") or {}
+        if i > 0 and "start_on" in first:  # Klot r6: the picture arrives with its key word, not on the line's lead-in
+            s = max(s, word_time(b, first["start_on"]) - 0.5)
         if i > 0 and b["act"] != beats[i - 1]["act"]:  # a new act (the full file): its title arrives on the ad break
             brk = [k["at"] for k in T.get("breaks", []) if beats[i - 1]["end"] - 0.5 <= k["at"] <= b["start"]]
             if brk:
@@ -381,7 +384,7 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                     elif isinstance(d[key], list) and d[key] and all(isinstance(x, dict) for x in d[key]):
                         for x in d[key]:
                             resolve(x)
-                    elif key == "cut_on":
+                    elif key in ("cut_on", "start_on"):
                         d.pop(key)
                     elif key.endswith("_on"):
                         v = d.pop(key)
