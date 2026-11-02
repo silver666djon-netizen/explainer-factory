@@ -17,12 +17,19 @@ on:
         description: "optional: the run whose rendered parts are joined (default: from_run)"
         required: false
         default: ""
+      lang:
+        description: "en = the episode; ru = the RU review copy (Russian narration from the draft ep04v2-ru, Russian on-screen text, marked NOT FOR UPLOAD)"
+        required: false
+        default: "en"
       remix:
         description: "with from_run: yes = export the plan + audio mix again (picture unchanged), then master and check"
         required: false
         default: "no"
 permissions:
   contents: write
+env:
+  SEG: ${{ github.event.inputs.lang == 'ru' && 'full_ru' || 'full' }}
+  TAG: ${{ github.event.inputs.lang == 'ru' && 'ep04v2-ru' || 'ep04v2-full' }}
 concurrency:
   group: v2-full
   cancel-in-progress: false
@@ -49,23 +56,30 @@ jobs:
                    ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
             [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
           done
+          # the RU review copy's Cyrillic fallbacks (same build: condensed, black, typewriter, marker)
+          for pair in ofl/ptsansnarrow/PT_Sans-Narrow-Web-Bold.ttf:PTSansNarrow-Bold.ttf ofl/russoone/RussoOne-Regular.ttf:RussoOne-Regular.ttf \
+                      ofl/ptmono/PTM55FT.ttf:PTMono-Regular.ttf ofl/neucha/Neucha.ttf:Neucha-Regular.ttf; do
+            [ -f "assets/fonts/${pair##*:}" ] || curl -fsSL -o "assets/fonts/${pair##*:}" "$base/${pair%%:*}" || echo "font download failed: $pair"
+          done
       - name: Voice, timings, Ep.4 frames
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           tools/rel.sh download ep04v2-preview1 rel timings.json voice_24k.flac
           tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2-*.png" "archive-a2b-*.png" "m1b-*.png" "l1-*.png" "n1-*.png" "n4-*.png" "a4-*.png" "l5-*.png" "l8-*.png"
+          if [ "$SEG" = full_ru ]; then tools/rel.sh download ep04v2-ru rel timings_ru.json voice_24k_ru.flac; fi
       - name: Export the plan + audio mix
         run: |
           set -o pipefail
-          python tools/v2_preview.py rel pilot/remotion/public pv full 2>&1 | tee export.log \
+          python tools/v2_preview.py rel pilot/remotion/public pv $SEG 2>&1 | tee export.log \
             || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
       - id: r
         name: Frame ranges
         run: |
           python3 - "${{ github.event.inputs.parts || '6' }}" <<'PY' >> "$GITHUB_OUTPUT"
           import json, sys
-          n = int(sys.argv[1]); F = json.load(open("pilot/remotion/public/v2_full.json"))["frames"]
+          import os
+          n = int(sys.argv[1]); F = json.load(open(f"pilot/remotion/public/v2_{os.environ['SEG']}.json"))["frames"]
           step = -(-F // n)
           print("ranges=" + json.dumps([{"k": k, "a": k * step, "b": min(F, (k + 1) * step) - 1} for k in range(n) if k * step < F]))
           PY
@@ -74,7 +88,7 @@ jobs:
           name: public
           path: |
             pilot/remotion/public/v2
-            pilot/remotion/public/v2_full.json
+            pilot/remotion/public/v2_full*.json
             pilot/remotion/public/hands
             pilot/remotion/public/fonts
           retention-days: 3
@@ -83,8 +97,8 @@ jobs:
           name: pv
           path: |
             pv
-            rel/timings.json
-            rel/voice_24k.flac
+            rel/timings*.json
+            rel/voice_24k*.flac
           retention-days: 3
   render:
     needs: plan
@@ -112,7 +126,7 @@ jobs:
         run: |
           set -o pipefail
           s0=$(date +%s)
-          npx remotion render src/index.ts V2 "../../part_${{ matrix.part.k }}.mp4" --props='{"name":"v2_full"}' --frames=${{ matrix.part.a }}-${{ matrix.part.b }} \
+          npx remotion render src/index.ts V2 "../../part_${{ matrix.part.k }}.mp4" --props="{\"name\":\"v2_$SEG\"}" --frames=${{ matrix.part.a }}-${{ matrix.part.b }} \
             --concurrency=4 --muted --crf=22 --log=error 2>&1 | tail -30
           echo "part ${{ matrix.part.k }}: $(( $(date +%s) - s0 )) s"
       - uses: actions/upload-artifact@v4
@@ -149,6 +163,11 @@ jobs:
                    ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
             [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
           done
+          # the RU review copy's Cyrillic fallbacks (same build: condensed, black, typewriter, marker)
+          for pair in ofl/ptsansnarrow/PT_Sans-Narrow-Web-Bold.ttf:PTSansNarrow-Bold.ttf ofl/russoone/RussoOne-Regular.ttf:RussoOne-Regular.ttf \
+                      ofl/ptmono/PTM55FT.ttf:PTMono-Regular.ttf ofl/neucha/Neucha.ttf:Neucha-Regular.ttf; do
+            [ -f "assets/fonts/${pair##*:}" ] || curl -fsSL -o "assets/fonts/${pair##*:}" "$base/${pair%%:*}" || echo "font download failed: $pair"
+          done
       - uses: actions/download-artifact@v4
         with:
           name: public
@@ -172,8 +191,8 @@ jobs:
         run: |
           ls parts | sort -t_ -k2 -n | sed "s|^|file '$PWD/parts/|; s|$|'|" > parts.txt
           cat parts.txt
-          ffmpeg -v error -y -f concat -safe 0 -i parts.txt -c copy pv/v2_full_silent.mp4
-          ffprobe -v error -show_entries format=duration -of csv=p=0 pv/v2_full_silent.mp4
+          ffmpeg -v error -y -f concat -safe 0 -i parts.txt -c copy pv/v2_${SEG}_silent.mp4
+          ffprobe -v error -show_entries format=duration -of csv=p=0 pv/v2_${SEG}_silent.mp4
       - name: Remotion install (DOM checks bundle)
         working-directory: pilot/remotion
         run: npm install --no-audit --no-fund 2>&1 | tail -3
@@ -195,13 +214,17 @@ jobs:
         run: |
           python3 - <<'PY'
           import json, subprocess
-          T = json.load(open("rel/timings.json"))
+          import os
+          ru = os.environ["SEG"] == "full_ru"
+          T = json.load(open("rel/timings_ru.json" if ru else "rel/timings.json"))
+          src = "pv/cs_ep04v2_full_ru.mp4" if ru else "pv/cs_ep04v2_full.mp4"
           cuts = [0.0] + [round(b["at"], 3) for b in T["breaks"]] + [None]
           names = ["1_cold_open_act1", "2_act2", "3_act3", "4_act4_end"]
           for i, n in enumerate(names):
               a, b = cuts[i], cuts[i + 1]
-              args = ["ffmpeg", "-v", "error", "-y", "-ss", str(a), "-i", "pv/cs_ep04v2_full.mp4"] + (["-t", str(b - a)] if b else []) + \
-                     ["-vf", "scale=1280:-2", "-c:v", "libx264", "-preset", "medium", "-crf", "27", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", f"pv/cs_ep04v2_full_{n}_tg.mp4"]
+              args = ["ffmpeg", "-v", "error", "-y", "-ss", str(a), "-i", src] + (["-t", str(b - a)] if b else []) + \
+                     ["-vf", "scale=1280:-2", "-c:v", "libx264", "-preset", "medium", "-crf", "27", "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart",
+                      f"pv/cs_ep04v2_{os.environ['SEG']}_{n}_tg.mp4"]
               subprocess.run(args, check=True)
           lines = ["Ad breaks (mid-rolls):"] + [f"{i + 1}. {int(b['at'] // 60)}:{b['at'] % 60:04.1f}" for i, b in enumerate(T["breaks"])]
           open("pv/ad_breaks.txt", "w").write("\n".join(lines) + "\n")
@@ -212,8 +235,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          tag=ep04v2-full
-          files=$(ls pv/qc_preview_full.md pv/sheet_*.png pv/*_tg.mp4 pv/cs_ep04v2_full.mp4 pv/ad_breaks.txt 2>/dev/null || true)
+          tag=$TAG
+          files=$(ls pv/qc_preview_*.md pv/sheet_*.png pv/*_tg.mp4 pv/cs_ep04v2_${SEG}.mp4 pv/ad_breaks.txt 2>/dev/null || true)
           [ -n "$files" ] || exit 0
           if tools/rel.sh id $tag >/dev/null 2>&1; then tools/rel.sh upload $tag $files
-          else gh release create $tag $files --title "CoinSense · EP04v2 · FULL EPISODE" --notes "Ep.4 v2 full episode, picture-first (draft, not for upload)." --prerelease --draft; fi
+          else gh release create $tag $files --title "CoinSense · EP04v2 · $SEG" --notes "Ep.4 v2 full episode, picture-first (draft, not for upload)." --prerelease --draft; fi

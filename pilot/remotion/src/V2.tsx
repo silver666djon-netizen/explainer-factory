@@ -12,7 +12,16 @@ const HEAD = 'Anton-Regular';
 const BODY = 'ArchivoBlack-Regular';
 const TYPE = 'SpecialElite-Regular';
 const SERIF = 'PT-Serif-Web-Regular';
-const fam = (f: string) => `'${f}'`;
+// RU review copy: the Latin display fonts have no Cyrillic; each one falls back (glyph by glyph) to a Cyrillic font of
+// the same build (data.fonts carries them), and hard-coded page words go through tr() (data.tr)
+const CYR: Record<string, string> = {'Anton-Regular': 'PTSansNarrowBold-CYR', 'ArchivoBlack-Regular': 'RussoOne-CYR', 'SpecialElite-Regular': 'PTMono-CYR',
+	'PermanentMarker-Regular': 'Neucha-CYR', 'PT-Serif-Web-Regular': 'PT-Serif-Web-Regular'};
+const fam = (f: string) => (CYR[f] && CYR[f] !== f ? `'${f}', '${CYR[f]}'` : `'${f}'`);
+let TR: Record<string, string> = {};
+const tr = (x: any) => (typeof x === 'string' && TR[x] !== undefined ? TR[x] : x);
+// a one-line label keeps its size unless it would overflow its tag (a longer translation): then it shrinks to fit
+const fitTo = (text: string, family: string, size: number, maxW: number) =>
+	Math.min(size, (size * maxW) / Math.max(1, measureText({text, fontFamily: family, fontSize: size}).width));
 const clamp = (v: number, a: number, b: number) => Math.min(b, Math.max(a, v));
 const sm = (p: number) => {
 	const q = clamp(p, 0, 1);
@@ -40,8 +49,9 @@ const useFontsReady = (fonts: Record<string, string>) => {
 type P = {s: any; t: number; dur: number; SW: number; SH: number; u: number; fps: number};
 
 // ------------------------------------------------------------------ stamps (drop in from above: 110 % -> 100 % in 0.2 s)
-const Stamp: React.FC<{text: string; at: number; t: number; x: number; y: number; size: number; color?: string; rot?: number}> = ({text, at, t, x, y, size, color = C.red, rot = -8}) => {
+const Stamp: React.FC<{text: string; at: number; t: number; x: number; y: number; size: number; color?: string; rot?: number}> = ({text: text0, at, t, x, y, size, color = C.red, rot = -8}) => {
 	if (t < at) return null;
+	const text = tr(text0);
 	const k = clamp((t - at) / 0.2, 0, 1);
 	const sc = 1.1 - 0.1 * Easing.out(Easing.quad)(k);
 	return (
@@ -76,7 +86,7 @@ const NightBg: React.FC<{t: number; dur: number; SW: number; SH: number; glow?: 
 };
 
 // ------------------------------------------------------------------ the browser window (code-drawn checkout)
-const Win: React.FC<{u: number; SW: number; SH: number; tabs?: {label: string; dot: string; on: number; closing?: number}[]; active?: number; t: number; children: React.ReactNode; scale?: number; fill?: boolean}> = ({u, SW, SH, tabs = [{label: 'Concert tickets', dot: C.green, on: -1}], active = 0, t, children, scale = 1, fill = false}) => {
+const Win: React.FC<{u: number; SW: number; SH: number; tabs?: {label: string; dot: string; on: number; closing?: number}[]; active?: number; t: number; children: React.ReactNode; scale?: number; fill?: boolean}> = ({u, SW, SH, tabs = [{label: tr('Concert tickets'), dot: C.green, on: -1}], active = 0, t, children, scale = 1, fill = false}) => {
 	const w = 1240 * u,
 		h = 700 * u;
 	const x = fill ? 0 : (SW - w) / 2,
@@ -99,7 +109,7 @@ const Win: React.FC<{u: number; SW: number; SH: number; tabs?: {label: string; d
 						<div key={i} style={{position: 'absolute', left, top: 10 * u + (1 - inK) * 30 * u, width: tw, height: bar - 10 * u, opacity: inK, background: i === active ? C.paper : '#D8C8A6',
 							borderRadius: `${12 * u}px ${12 * u}px 0 0`, border: `${3 * u}px solid ${C.ink}`, borderBottom: 'none', overflow: 'hidden', display: 'flex', alignItems: 'center'}}>
 							<div style={{marginLeft: 14 * u, width: 14 * u, height: 14 * u, borderRadius: 3 * u, background: tb.dot, flex: 'none'}} />
-							<div style={{marginLeft: 10 * u, fontFamily: fam(BODY), fontSize: 19 * u, color: C.ink, whiteSpace: 'nowrap'}}>{tb.label}</div>
+							<div style={{marginLeft: 10 * u, fontFamily: fam(BODY), fontSize: 19 * u, color: C.ink, whiteSpace: 'nowrap'}}>{tr(tb.label)}</div>
 						</div>
 					);
 				})}
@@ -118,7 +128,7 @@ const Field: React.FC<{u: number; x: number; y: number; w: number; label: string
 	const shown = value.slice(0, Math.round(value.length * clamp(p, 0, 1)));
 	return (
 		<div style={{position: 'absolute', left: x, top: y, width: w}}>
-			<div style={{fontFamily: fam(BODY), fontSize: 30 * k * u, lineHeight: 1.1, color: C.mute, letterSpacing: 1.5 * u}}>{label}</div>
+			<div style={{fontFamily: fam(BODY), fontSize: 30 * k * u, lineHeight: 1.1, color: C.mute, letterSpacing: 1.5 * u}}>{tr(label)}</div>
 			<div style={{marginTop: 6 * u, height: 70 * k * u, border: `${3 * u}px solid ${C.ink}`, borderRadius: 8 * u, background: '#FBF6EA', display: 'flex', alignItems: 'center', paddingLeft: 16 * u,
 				fontFamily: fam(TYPE), fontSize: 42 * k * u, color: C.ink, whiteSpace: 'pre'}}>
 				{shown}
@@ -135,7 +145,7 @@ const Button: React.FC<{u: number; x: number; y: number; w: number; label: strin
 		<div style={{position: 'absolute', left: x, top: y, width: w, height: 70 * u, borderRadius: 12 * u, border: `${3 * u}px solid ${C.ink}`, background: l > 0.5 ? color : '#BDB3A0',
 			color: C.paper, fontFamily: fam(HEAD), fontSize: 36 * u, letterSpacing: 2 * u, display: 'flex', alignItems: 'center', justifyContent: 'center', transform: `scale(${1 - 0.06 * pr})`,
 			boxShadow: l > 0.5 ? `0 0 ${30 * u * l}px rgba(232,181,58,${0.6 * l})` : 'none'}}>
-			{label}
+			{tr(label)}
 		</div>
 	);
 };
@@ -145,7 +155,7 @@ const Page: React.FC<{kind: string; u: number; w: number; h: number; t: number; 
 	if (kind === 'list')
 		return (
 			<AbsoluteFill style={{padding: 36 * u}}>
-				<div style={{fontFamily: fam(BODY), fontSize: 34 * (s.ts ?? 1) * u, color: C.mute}}>SATURDAY · 8 PM · THE CONCERT HALL</div>
+				<div style={{fontFamily: fam(BODY), fontSize: 34 * (s.ts ?? 1) * u, color: C.mute}}>{tr('SATURDAY · 8 PM · THE CONCERT HALL')}</div>
 				{['$30', '$34', '$39'].map((p, i) => (
 					<div key={i} style={{marginTop: 18 * u, height: 112 * (s.ts ?? 1) * u, border: `${3 * u}px solid ${C.ink}`, borderRadius: 10 * u, background: i === 0 ? '#FFF3CF' : '#FBF6EA', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: `0 ${30 * u}px`}}>
 						<div style={{fontFamily: fam(BODY), fontSize: 42 * (s.ts ?? 1) * u, color: C.ink}}>{['STALLS', 'CIRCLE', 'FRONT ROWS'][i]}</div>
@@ -160,12 +170,12 @@ const Page: React.FC<{kind: string; u: number; w: number; h: number; t: number; 
 		const k = s.ts ?? 1, step = 128 * k, cy = 28 + 3 * step + 8;
 		return (
 			<AbsoluteFill>
-				<Field k={k} u={u} x={50 * u} y={28 * u} w={w - 100 * u} label="NAME" value="LARRY" p={s.f0 ?? clamp(p * 3, 0, 1)} />
+				<Field k={k} u={u} x={50 * u} y={28 * u} w={w - 100 * u} label="NAME" value={tr('LARRY')} p={s.f0 ?? clamp(p * 3, 0, 1)} />
 				<Field k={k} u={u} x={50 * u} y={(28 + step) * u} w={w - 100 * u} label="EMAIL" value="••••••••@•••••.•••" p={s.f1 ?? clamp(p * 3 - 1, 0, 1)} />
 				<Field k={k} u={u} x={50 * u} y={(28 + 2 * step) * u} w={w - 100 * u} label="CARD NUMBER" value="•••• •••• •••• ••••" p={s.f2 ?? clamp(p * 3 - 2, 0, 1)} />
 				<div style={{position: 'absolute', left: 50 * u, top: cy * u, width: 48 * u, height: 48 * u, border: `${3 * u}px solid ${C.ink}`, borderRadius: 6 * u, background: '#FBF6EA'}} />
 				{s.tick !== undefined ? <Stroke d={`M ${60 * u} ${(cy + 24) * u} L ${74 * u} ${(cy + 40) * u} L ${100 * u} ${(cy + 2) * u}`} t0={s.tick} dur={0.25} t={t} w={7 * u} color={C.green} W={w} H={h} /> : null}
-				<div style={{position: 'absolute', left: 116 * u, top: (cy + 4) * u, fontFamily: fam(BODY), fontSize: 32 * u, color: C.ink}}>I agree to the terms</div>
+				<div style={{position: 'absolute', left: 116 * u, top: (cy + 4) * u, fontFamily: fam(BODY), fontSize: 32 * u, color: C.ink}}>{tr('I agree to the terms')}</div>
 				{s.thanks !== undefined ? <Button u={u} x={w - 420 * u} y={h - 120 * u} w={360 * u} label="THANK YOU!" lit={s.thanks - 0.4} press={s.thanks} t={t} /> : null}
 			</AbsoluteFill>
 		);
@@ -181,21 +191,21 @@ const SeatMap: React.FC<{u: number; w: number; h: number; t: number; s: any; k: 
 	const gx = (w - cols * cw) / 2 + 20 * u,
 		gy = 70 * u;
 	const jumped = s.jump_ !== undefined && t >= s.jump_;
-	const tr = jumped ? 5 : 6,
+	const trow = jumped ? 5 : 6,
 		tc = 11; // G12 (F12 after the jump)
 	const tx = gx + tc * cw + cw / 2,
-		ty = gy + tr * ch + ch / 2;
+		ty = gy + trow * ch + ch / 2;
 	const z = 1 + 1.5 * k;
 	const lit = s.light_ !== undefined && t >= s.light_ ? sm((t - s.light_) / 0.2) : 0;
 	return (
 		<AbsoluteFill style={{overflow: 'hidden'}}>
 			<div style={{position: 'absolute', left: 0, top: 0, width: w, height: h, transform: `translate(${(w / 2 - tx) * k}px, ${(h / 2 - ty) * k}px) scale(${z})`, transformOrigin: `${tx}px ${ty}px`}}>
-				<div style={{position: 'absolute', left: gx, top: 18 * u, width: cols * cw, height: 34 * u, background: C.ink, borderRadius: 6 * u, color: C.paper, fontFamily: fam(BODY), fontSize: 20 * u, textAlign: 'center', lineHeight: `${34 * u}px`}}>STAGE</div>
+				<div style={{position: 'absolute', left: gx, top: 18 * u, width: cols * cw, height: 34 * u, background: C.ink, borderRadius: 6 * u, color: C.paper, fontFamily: fam(BODY), fontSize: 20 * u, textAlign: 'center', lineHeight: `${34 * u}px`}}>{tr('STAGE')}</div>
 				{rows.map((r, ri) => (
 					<React.Fragment key={r}>
 						<div style={{position: 'absolute', left: gx - 40 * u, top: gy + ri * ch, width: 30 * u, height: ch, fontFamily: fam(BODY), fontSize: 18 * u, color: C.mute, lineHeight: `${ch}px`, textAlign: 'right'}}>{r}</div>
 						{Array.from({length: cols}).map((_, ci) => {
-							const me = ri === tr && ci === tc;
+							const me = ri === trow && ci === tc;
 							const taken = (ri * 7 + ci * 3) % 5 === 0 && !me;
 							return (
 								<div key={ci} style={{position: 'absolute', left: gx + ci * cw + 5 * u, top: gy + ri * ch + 4 * u, width: cw - 10 * u, height: ch - 8 * u, borderRadius: `${8 * u}px ${8 * u}px ${3 * u}px ${3 * u}px`,
@@ -206,7 +216,7 @@ const SeatMap: React.FC<{u: number; w: number; h: number; t: number; s: any; k: 
 				))}
 			</div>
 			{lit > 0 ? (
-			<div data-read="1" style={{position: 'absolute', left: w / 2 - ((s.fs?.seat ?? 50) - 10) * u, top: h / 2 - 150 * u, opacity: lit, background: C.ink, color: C.paper, fontFamily: fam(BODY), fontSize: (s.fs?.seat ?? 50) * u, lineHeight: 1.2, padding: `${10 * u}px ${22 * u}px`, borderRadius: 10 * u, whiteSpace: 'nowrap'}}>{jumped ? 'ROW F · SEAT 12' : 'ROW G · SEAT 12'}</div>
+			<div data-read="1" style={{position: 'absolute', left: w / 2 - ((s.fs?.seat ?? 50) - 10) * u, top: h / 2 - 150 * u, opacity: lit, background: C.ink, color: C.paper, fontFamily: fam(BODY), fontSize: (s.fs?.seat ?? 50) * u, lineHeight: 1.2, padding: `${10 * u}px ${22 * u}px`, borderRadius: 10 * u, whiteSpace: 'nowrap'}}>{jumped ? tr('ROW F · SEAT 12') : tr('ROW G · SEAT 12')}</div>
 			) : null}
 		</AbsoluteFill>
 	);
@@ -255,10 +265,10 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 		const totTop = s.fs ? 30 + fs.os * 1.5 + rows.length * (fs.row * 1.25 + 24) + 18 : s.fees_shown ? 300 : 150;
 		body = (
 			<AbsoluteFill style={{padding: `${(s.fs ? 30 : 34) * u}px ${(s.fs ? 50 : 60) * u}px`}}>
-				<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>ORDER SUMMARY</div>
+				<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>{tr('ORDER SUMMARY')}</div>
 				{rows.map(([a, b], i) => (
 					<div key={i} style={{display: 'flex', justifyContent: 'space-between', marginTop: 14 * u, fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.25, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 8 * u}}>
-						<span data-read="1">{a}</span>
+						<span data-read="1">{tr(a)}</span>
 						<span data-read="1">{b}</span>
 					</div>
 				))}
@@ -268,7 +278,7 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 					const k = clamp((t - at) / 0.2, 0, 1);
 					return (
 						<div style={{position: 'absolute', left: (s.fs ? 50 : 60) * u, top: totTop * u, display: 'flex', alignItems: 'baseline', gap: 26 * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
-							<span data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.tot * u, color: C.ink}}>TOTAL</span>
+							<span data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.tot * u, color: C.ink}}>{tr('TOTAL')}</span>
 							<span data-read="1" style={{fontFamily: fam(HEAD), fontSize: fs.big * u, color: C.red, lineHeight: 1}}>{s.mode === 'pay' ? '$48' : s.total}</span>
 						</div>
 					);
@@ -277,15 +287,15 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 			</AbsoluteFill>
 		);
 	} else if (s.mode === 'tabs') {
-		tabs = s.tabs.map((tb: any, i: number) => ({label: 'Concert tickets', dot: i === 0 ? C.green : C.red, on: tb.at === undefined ? -1 : 0.15, closing: i === 0 && s.close_ !== undefined ? s.close_ : undefined}));
+		tabs = s.tabs.map((tb: any, i: number) => ({label: tr('Concert tickets'), dot: i === 0 ? C.green : C.red, on: tb.at === undefined ? -1 : 0.15, closing: i === 0 && s.close_ !== undefined ? s.close_ : undefined}));
 		active = s.active ?? 0;
 		const tb = s.tabs[active];
 		const at = tb.at ?? -1;
 		const pk = at < 0 ? 1 : clamp((t - at) / 0.2, 0, 1);
 		body = (
 			<AbsoluteFill>
-				<div style={{position: 'absolute', left: 60 * u, top: 34 * u, fontFamily: fam(BODY), fontSize: 34 * u, color: C.mute}}>SATURDAY · 8 PM · THE CONCERT HALL</div>
-				{s.crown_ === undefined ? <div data-read="1" style={{position: 'absolute', left: 60 * u, top: 96 * u, fontFamily: fam(BODY), fontSize: 58 * u, lineHeight: 1.1, color: C.ink}}>1 TICKET</div> : null}
+				<div style={{position: 'absolute', left: 60 * u, top: 34 * u, fontFamily: fam(BODY), fontSize: 34 * u, color: C.mute}}>{tr('SATURDAY · 8 PM · THE CONCERT HALL')}</div>
+				{s.crown_ === undefined ? <div data-read="1" style={{position: 'absolute', left: 60 * u, top: 96 * u, fontFamily: fam(BODY), fontSize: 58 * u, lineHeight: 1.1, color: C.ink}}>{tr('1 TICKET')}</div> : null}
 				{at < 0 || t >= at ? (
 					<div data-read="1" style={{position: 'absolute', left: 56 * u, top: 150 * u, fontFamily: fam(HEAD), fontSize: 200 * u, lineHeight: 1.05, color: active === 0 ? C.green : C.red, transform: `scale(${1.1 - 0.1 * pk})`, transformOrigin: '0% 50%'}}>{tb.price}</div>
 				) : (
@@ -294,14 +304,14 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 				{tb.tag ? (
 					<div style={{position: 'absolute', left: 64 * u, top: 400 * u}}>
 						{s.hl_ !== undefined ? <div style={{position: 'absolute', left: -10 * u, top: 4 * u, height: 58 * u, width: 300 * u * sm((t - s.hl_) / 0.45), background: C.accent, borderRadius: 6 * u, transform: 'rotate(-1.2deg)'}} /> : null}
-						<div data-read="1" style={{position: 'relative', fontFamily: fam(BODY), fontSize: 48 * u, color: C.ink, letterSpacing: 2 * u}}>{tb.tag} · EVERYTHING INCLUDED</div>
+						<div data-read="1" style={{position: 'relative', fontFamily: fam(BODY), fontSize: 48 * u, color: C.ink, letterSpacing: 2 * u}}>{tr(tb.tag)} · {tr('EVERYTHING INCLUDED')}</div>
 					</div>
 				) : null}
 				{s.crown_ !== undefined ? (
 					<Stroke d={`M ${80 * u} ${150 * u} L ${100 * u} ${95 * u} L ${135 * u} ${130 * u} L ${165 * u} ${80 * u} L ${195 * u} ${130 * u} L ${230 * u} ${95 * u} L ${250 * u} ${150 * u} Z`} t0={s.crown_} dur={0.7} t={t} w={7 * u} color={C.accent} W={B.w} H={B.h} />
 				) : null}
 				{s.saved_ !== undefined && t >= s.saved_ ? (
-					<div data-read="1" style={{position: 'absolute', right: 70 * u, top: 150 * u - 40 * u * sm((t - s.saved_) / 0.6), opacity: sm((t - s.saved_) / 0.25), fontFamily: fam(HEAD), fontSize: 90 * u, color: C.green}}>+$10 SAVED</div>
+					<div data-read="1" style={{position: 'absolute', right: 70 * u, top: 150 * u - 40 * u * sm((t - s.saved_) / 0.6), opacity: sm((t - s.saved_) / 0.25), fontFamily: fam(HEAD), fontSize: 90 * u, color: C.green}}>{tr('+$10 SAVED')}</div>
 				) : null}
 				<Button u={u} x={B.w - 420 * u} y={B.h - 120 * u} w={360 * u} label="CONTINUE" t={t} />
 			</AbsoluteFill>
@@ -318,7 +328,7 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 				<AbsoluteFill style={{background: `rgba(243,233,210,${0.55 * k})`}} />
 				{k > 0 ? (
 						<div style={{position: 'absolute', right: 60 * u, top: 40 * u + (1 - k) * -80 * u, opacity: k, background: C.ink, color: C.paper, borderRadius: 18 * u, padding: `${18 * u}px ${36 * u}px`, boxShadow: '0 8px 20px rgba(0,0,0,0.4)', textAlign: 'center'}}>
-							<div data-read="1" style={{fontFamily: fam(BODY), fontSize: 50 * u, lineHeight: 1.15, letterSpacing: 1 * u}}>HELD FOR</div>
+							<div data-read="1" style={{fontFamily: fam(BODY), fontSize: 50 * u, lineHeight: 1.15, letterSpacing: 1 * u}}>{tr('HELD FOR')}</div>
 							<div data-read="1" style={{fontFamily: fam(HEAD), fontSize: 190 * u, lineHeight: 1.0, color: C.accent}}>{mmss(left)}</div>
 					</div>
 				) : null}
@@ -330,9 +340,9 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 			<AbsoluteFill style={{padding: `${(s.fs ? 26 : 34) * u}px ${(s.fs ? 50 : 60) * u}px`}}>
 				{s.compact ? null : (
 					<>
-						<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>ORDER SUMMARY</div>
+						<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>{tr('ORDER SUMMARY')}</div>
 						<div style={{display: 'flex', justifyContent: 'space-between', marginTop: 10 * u, fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.2, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
-							<span data-read="1">TICKET · ROW G, SEAT 12</span>
+							<span data-read="1">{tr('TICKET · ROW G, SEAT 12')}</span>
 							<span data-read="1">$30</span>
 						</div>
 					</>
@@ -344,7 +354,7 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 					const at = fe.at_ ?? -1;
 					if (t < at) return null;
 					const k = clamp((t - at) / 0.2, 0, 1);
-					const lab = fe.label ? (fe.label_ === undefined ? fe.label : fe.label.slice(0, clamp(Math.floor((t - fe.label_) / 0.04), 0, fe.label.length))) : '';
+					const lab = fe.label ? (fe.label_ === undefined ? fe.label : fe.label.slice(0, clamp(Math.floor((t - fe.label_) / Math.min(0.04, Math.max(0.015, (dur - fe.label_ - 0.5) / fe.label.length))), 0, fe.label.length))) : '';
 					const labTxt = lab ? '↳ ' + lab.replace(/\n/g, '\n   ') : '';
 					return (
 						<div key={i} style={{marginTop: (s.fs ? 10 : 14) * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
@@ -367,16 +377,16 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 		const feeK = t >= feeAt ? clamp((t - feeAt) / 0.25, 0, 1) : 0;
 		body = (
 			<AbsoluteFill style={{padding: `${30 * u}px ${50 * u}px`}}>
-				<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u}}>{s.head ?? 'CONCERT · 1 TICKET'}</div>
+				<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u}}>{s.head ?? tr('CONCERT · 1 TICKET')}</div>
 				<div data-read="1" style={{fontFamily: fam(HEAD), fontSize: (s.mode === 'anchor' ? 260 : 220) * u, lineHeight: 1.05, color: s.mode === 'allin' ? C.green : C.red}}>{big}</div>
 				{s.mode === 'allin' ? <div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.row * u, color: C.ink}}>{s.sub ?? 'FEES INCLUDED'}</div> : null}
 				{s.mode === 'split' && feeK > 0 ? (
 					<div data-read="1" style={{position: 'absolute', left: 50 * u, top: (s.late ? 470 : 340) * u, transform: `scale(${1.15 - 0.15 * feeK})`, transformOrigin: '0 50%', background: C.red, color: C.paper, fontFamily: fam(HEAD),
-						fontSize: 70 * u, padding: `${4 * u}px ${24 * u}px`, borderRadius: 10 * u}}>{s.late ? '+ FEES AT THE END' : 'FEES: $18 · SHOWN NOW'}</div>
+						fontSize: 70 * u, padding: `${4 * u}px ${24 * u}px`, borderRadius: 10 * u}}>{s.late ? tr('+ FEES AT THE END') : tr('FEES: $18 · SHOWN NOW')}</div>
 				) : null}
 				{s.mode === 'anchor' ? (
 					<div data-read="1" style={{position: 'absolute', left: 50 * u, top: (360 + 40 * shrink) * u, fontFamily: fam(BODY), fontSize: (72 - 24 * shrink) * u, color: C.red, opacity: 1 - 0.3 * shrink, lineHeight: 1.3, whiteSpace: 'nowrap'}}>
-						+ FEES: $8 · $6 · $4
+						{tr('+ FEES: $8 · $6 · $4')}
 					</div>
 				) : null}
 				{s.badge ? <div style={{position: 'absolute', right: 60 * u, top: 60 * u, fontFamily: fam(HEAD), fontSize: 90 * u, color: C.ink, border: `${6 * u}px solid ${C.ink}`, padding: `0 ${16 * u}px`, borderRadius: 10 * u, transform: 'rotate(4deg)'}}>{s.badge}</div> : null}
@@ -392,7 +402,7 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 		const tog = s.toggle;
 		const on = tog ? (tog.on_ === undefined ? (tog.state ?? 0) : sm((t - tog.on_) / 0.25)) : 0;
 		if (s.tabn) {
-			tabs = Array.from({length: s.tabn}, (_x, i) => ({label: s.tablabel ?? 'Concert tickets', dot: i === 0 ? C.green : C.red, on: -1}));
+			tabs = Array.from({length: s.tabn}, (_x, i) => ({label: s.tablabel ?? tr('Concert tickets'), dot: i === 0 ? C.green : C.red, on: -1}));
 			active = s.active ?? 0;
 		}
 		const rowTop = s.rows_top ?? (s.sub2 ? 380 : 320);
@@ -434,14 +444,14 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 	}
 	if (s.mode === 'versus') {
 		const k = s.badge_ === undefined ? 0 : clamp((t - s.badge_) / 0.2, 0, 1);
-		tabs = [{label: 'Concert tickets', dot: C.green, on: -1}, {label: 'Concert tickets', dot: C.red, on: -1}];
+		tabs = [{label: tr('Concert tickets'), dot: C.green, on: -1}, {label: tr('Concert tickets'), dot: C.red, on: -1}];
 		active = 1;
 		body = (
 			<AbsoluteFill>
 				<div data-read="1" style={{position: 'absolute', left: 70 * u, top: 90 * u, fontFamily: fam(HEAD), fontSize: 190 * u, color: C.green, opacity: 0.55}}>{s.left}</div>
-				<div data-read="1" style={{position: 'absolute', left: 64 * u, top: 340 * u, width: 440 * u, fontFamily: fam(BODY), fontSize: (s.fs?.lab ?? 46) * u, lineHeight: 1.1, color: C.mute}}>THE TAB HE CLOSED</div>
+				<div data-read="1" style={{position: 'absolute', left: 64 * u, top: 340 * u, width: 440 * u, fontFamily: fam(BODY), fontSize: (s.fs?.lab ?? 46) * u, lineHeight: 1.1, color: C.mute}}>{tr('THE TAB HE CLOSED')}</div>
 				<div data-read="1" style={{position: 'absolute', right: 90 * u, top: 90 * u, fontFamily: fam(HEAD), fontSize: 190 * u, color: C.red}}>{s.right}</div>
-				<div data-read="1" style={{position: 'absolute', right: 90 * u, top: 340 * u, width: 440 * u, textAlign: 'right', fontFamily: fam(BODY), fontSize: (s.fs?.lab ?? 46) * u, lineHeight: 1.1, color: C.ink}}>WHAT HE PAYS</div>
+				<div data-read="1" style={{position: 'absolute', right: 90 * u, top: 340 * u, width: 440 * u, textAlign: 'right', fontFamily: fam(BODY), fontSize: (s.fs?.lab ?? 46) * u, lineHeight: 1.1, color: C.ink}}>{tr('WHAT HE PAYS')}</div>
 				{k > 0 ? <div data-read="1" style={{position: 'absolute', left: 520 * u, top: 200 * u, fontFamily: fam(HEAD), fontSize: 110 * u, color: C.red, transform: `scale(${1.1 - 0.1 * k}) rotate(-8deg)`, border: `${6 * u}px solid ${C.red}`, padding: `0 ${18 * u}px`, borderRadius: 10 * u}}>{s.badge}</div> : null}
 			</AbsoluteFill>
 		);
@@ -512,12 +522,12 @@ const NameCard: React.FC<{nc: any; t: number; SW: number; SH: number; u: number}
 	const w = (x1 - x0) * SW,
 		h = (y1 - y0) * SH;
 	const k = sm(t / 0.35);
-	const fs = Math.min(fitText({text: nc.name, withinWidth: w * 0.7, fontFamily: TYPE}).fontSize, h * 0.32);
+	const fs = Math.min(fitText({text: nc.name, withinWidth: w * 0.7, fontFamily: fam(TYPE)}).fontSize, h * 0.32);
 	return (
 		<div style={{position: 'absolute', left: x0 * SW, top: y0 * SH, width: w, height: h, background: '#FBF4E2', border: `${3 * u}px solid ${C.ink}`, borderRadius: 6 * u, opacity: k,
 			transform: `translateY(${(1 - k) * 14 * u}px) rotate(-1.5deg)`, boxShadow: '0 10px 24px rgba(0,0,0,0.45)', overflow: 'hidden'}}>
 			<div style={{position: 'absolute', left: w * 0.12, top: 0, bottom: 0, width: 3 * u, background: C.red, opacity: 0.8}} />
-			<div style={{position: 'absolute', left: w * 0.12 + 22, top: h * 0.12, fontFamily: fam(BODY), fontSize: h * 0.1, color: C.mute, letterSpacing: 1.5 * u}}>NAME</div>
+			<div style={{position: 'absolute', left: w * 0.12 + 22, top: h * 0.12, fontFamily: fam(BODY), fontSize: h * 0.1, color: C.mute, letterSpacing: 1.5 * u}}>{tr('NAME')}</div>
 			<div style={{position: 'absolute', left: w * 0.12 + 22, top: h * 0.26, fontFamily: fam(TYPE), fontSize: fs, color: C.ink}}>{nc.name}</div>
 			{nc.stamp ? <Stamp text={nc.stamp} at={nc.stamp_} t={t} x={w * 0.56} y={h * 0.74} size={h * 0.17} rot={-10} /> : null}
 		</div>
@@ -550,13 +560,13 @@ const MissingView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	const titleOn = s.title && t < 2.0;
 	const title = s.title ? sm(t / 0.25) * (1 - sm((t - 1.7) / 0.3)) : 0;
 	const name = `${s.file}.png`;
-	const fs = Math.min(fitText({text: name, withinWidth: w * 0.86, fontFamily: BODY}).fontSize, 64 * u);
+	const fs = Math.min(fitText({text: name, withinWidth: w * 0.86, fontFamily: fam(BODY)}).fontSize, 64 * u);
 	return (
 		<AbsoluteFill>
 			<NightBg t={t} dur={dur} SW={SW} SH={SH} glow={false} />
 			<AbsoluteFill style={{transform: `scale(${sc})`}}>
 				<div style={{position: 'absolute', left: (SW - w) / 2, top: (SH - h) / 2 - 40 * u, width: w, height: h, border: `${3 * u}px dashed ${C.glow}`, borderRadius: 18 * u, background: 'rgba(14,26,43,0.6)'}}>
-					<div style={{position: 'absolute', left: 0, right: 0, top: h * 0.14, textAlign: 'center', fontFamily: fam(BODY), fontSize: 26 * u, letterSpacing: 4 * u, color: C.accent}}>STILL TO COME · PREVIEW PLACEHOLDER</div>
+					<div style={{position: 'absolute', left: 0, right: 0, top: h * 0.14, textAlign: 'center', fontFamily: fam(BODY), fontSize: 26 * u, letterSpacing: 4 * u, color: C.accent}}>{tr('STILL TO COME · PREVIEW PLACEHOLDER')}</div>
 					<div style={{position: 'absolute', left: 0, right: 0, top: h * 0.36, textAlign: 'center', fontFamily: fam(BODY), fontSize: fs, color: C.paper}}>{name}</div>
 					<div style={{position: 'absolute', left: w * 0.08, right: w * 0.08, top: h * 0.64, textAlign: 'center', fontFamily: fam(SERIF), fontSize: 28 * u, color: C.glow, lineHeight: 1.3}}>{s.what}</div>
 				</div>
@@ -581,7 +591,7 @@ const MissingView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 };
 
 const ActTitle: React.FC<{lines: string[]; k: number; SW: number; SH: number; u: number; t: number; over?: boolean}> = ({lines, k, SW, SH, u, t, over = false}) => {
-	const size = Math.min(fitText({text: lines[1], withinWidth: SW * 0.8, fontFamily: HEAD}).fontSize, 230 * u);
+	const size = Math.min(fitText({text: lines[1], withinWidth: SW * 0.8, fontFamily: fam(HEAD)}).fontSize, 230 * u);
 	const top = SH * 0.42 - size * 0.6;
 	return (
 		<AbsoluteFill style={{background: over ? 'radial-gradient(ellipse at 50% 42%, rgba(14,26,43,0.72) 0%, rgba(14,26,43,0.9) 100%)' : C.night, opacity: k}}>
@@ -635,7 +645,7 @@ const FeeCardView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 		<AbsoluteFill>
 			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
 			<div style={{position: 'absolute', left: x, top: y, width: w, height: h, background: '#FBF4E2', border: `${3 * u}px solid ${C.ink}`, borderRadius: 10 * u, transform: `scale(${1 + 0.03 * t / dur}) rotate(1deg)`, boxShadow: '0 16px 40px rgba(0,0,0,0.5)'}}>
-				<div style={{position: 'absolute', left: 50 * u, top: 34 * u, fontFamily: fam(BODY), fontSize: 26 * u, letterSpacing: 2 * u, color: C.mute}}>CHARGED AT CHECKOUT</div>
+				<div style={{position: 'absolute', left: 50 * u, top: 34 * u, fontFamily: fam(BODY), fontSize: 26 * u, letterSpacing: 2 * u, color: C.mute}}>{tr('CHARGED AT CHECKOUT')}</div>
 				{s.lines.map((l: string, i: number) => {
 					const k = sm((t - 0.15 - i * 0.22) / 0.25);
 					return (
@@ -699,7 +709,7 @@ const CalendarView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 			))}
 			<div style={{position: 'absolute', left: x0, top: y + 220 * u, height: 26 * u, width: (n * bw + (n - 1) * gap) * p, background: C.green, borderRadius: 13 * u}} />
 			<div style={{position: 'absolute', left: x0, top: y - 140 * u, fontFamily: fam(HEAD), fontSize: 110 * u, color: C.accent, lineHeight: 1.1}}>{s.from}</div>
-			<div style={{position: 'absolute', left: x0 + 300 * u, top: y - 100 * u, fontFamily: fam(BODY), fontSize: 40 * u, color: C.paper, opacity: sm((t - 0.6) / 0.3)}}>HAS TO LAST UNTIL FRIDAY</div>
+			<div style={{position: 'absolute', left: x0 + 300 * u, top: y - 100 * u, fontFamily: fam(BODY), fontSize: 40 * u, color: C.paper, opacity: sm((t - 0.6) / 0.3)}}>{tr('HAS TO LAST UNTIL FRIDAY')}</div>
 		</AbsoluteFill>
 	);
 };
@@ -755,7 +765,7 @@ const TimerView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 					<path d={ring} fill="none" stroke={C.accent} strokeWidth={22 * u} strokeLinecap="round" strokeDasharray={ev.strokeDasharray} strokeDashoffset={ev.strokeDashoffset} />
 				</svg>
 				<div style={{position: 'absolute', left: 0, top: cy - size * 0.62, width: SW, textAlign: 'center', fontFamily: fam(HEAD), fontSize: size, lineHeight: 1.2, color: C.paper, opacity: 0.94 + 0.06 * frac}}>{mmss(left)}</div>
-				<div style={{position: 'absolute', left: 0, top: cy + r * 0.48, width: SW, textAlign: 'center', fontFamily: fam(BODY), fontSize: 30 * u, letterSpacing: 4 * u, color: C.glow}}>TICKET HELD</div>
+				<div style={{position: 'absolute', left: 0, top: cy + r * 0.48, width: SW, textAlign: 'center', fontFamily: fam(BODY), fontSize: 30 * u, letterSpacing: 4 * u, color: C.glow}}>{tr('TICKET HELD')}</div>
 			</AbsoluteFill>
 		</AbsoluteFill>
 	);
@@ -887,7 +897,7 @@ const CaseFolderView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	const x = (SW - w) / 2,
 		y = (SH - h) / 2 - 40 * u + (1 - k) * SH * 0.8;
 	const typed = (txt: string, a?: number) => (a === undefined ? '' : txt.slice(0, clamp(Math.floor((t - a) / 0.045), 0, txt.length)));
-	const t1 = `CASE FILE ${s.number}`;
+	const t1 = `${tr('CASE FILE')} ${s.number}`;
 	return (
 		<AbsoluteFill style={{background: 'radial-gradient(ellipse at 50% 45%, #3A2A1C 0%, #1C140D 70%)'}}>
 			<AbsoluteFill style={{transform: `scale(${1.02 + 0.03 * t / dur})`}}>
@@ -897,7 +907,7 @@ const CaseFolderView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 						<div style={{position: 'absolute', left: 90 * u, top: 110 * u, fontFamily: fam(TYPE), fontSize: 70 * u, color: C.ink}}>{typed(t1, s.type_?.[0])}</div>
 						<div style={{position: 'absolute', left: 90 * u, top: 230 * u, width: w - 180 * u, fontFamily: fam(TYPE), fontSize: Math.min(92 * u, fitText({text: s.title, withinWidth: w - 180 * u, fontFamily: TYPE}).fontSize), color: C.red}}>{typed(s.title, s.type_?.[1])}</div>
 						<div style={{position: 'absolute', left: 90 * u, top: 420 * u, width: w - 180 * u, height: 3 * u, background: 'rgba(30,27,24,0.35)'}} />
-						<div style={{position: 'absolute', left: 90 * u, top: 450 * u, fontFamily: fam(BODY), fontSize: 26 * u, color: 'rgba(30,27,24,0.6)', letterSpacing: 3 * u}}>COINSENSE · PRICE INVESTIGATIONS</div>
+						<div style={{position: 'absolute', left: 90 * u, top: 450 * u, fontFamily: fam(BODY), fontSize: 26 * u, color: 'rgba(30,27,24,0.6)', letterSpacing: 3 * u}}>{tr('COINSENSE · PRICE INVESTIGATIONS')}</div>
 					</div>
 				</div>
 			</AbsoluteFill>
@@ -950,7 +960,7 @@ const WiresView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 					<circle cx={0} cy={0} r={8 * u} fill={C.ink} />
 				</g>
 			</svg>
-			{t >= snip ? <div style={{position: 'absolute', left: 0, width: SW, top: SH * 0.66, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 80 * u, color: C.paper, opacity: sm((t - snip) / 0.2)}}>RED? BLUE?</div> : null}
+			{t >= snip ? <div style={{position: 'absolute', left: 0, width: SW, top: SH * 0.66, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 80 * u, color: C.paper, opacity: sm((t - snip) / 0.2)}}>{tr('RED? BLUE?')}</div> : null}
 		</AbsoluteFill>
 	);
 };
@@ -967,7 +977,7 @@ const DigitsView: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 		<AbsoluteFill>
 			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
 			<AbsoluteFill style={{transform: `scale(${1.02 + 0.04 * t / dur})`}}>
-				<div style={{position: 'absolute', left: x, top: y - 70 * u, fontFamily: fam(BODY), fontSize: 40 * u, color: C.glow, letterSpacing: 4 * u}}>CARD NUMBER</div>
+				<div style={{position: 'absolute', left: x, top: y - 70 * u, fontFamily: fam(BODY), fontSize: 40 * u, color: C.glow, letterSpacing: 4 * u}}>{tr('CARD NUMBER')}</div>
 				<div style={{position: 'absolute', left: x, top: y, width: w, height: h, background: '#FBF6EA', border: `${5 * u}px solid ${C.ink}`, borderRadius: 18 * u, boxShadow: `0 0 ${80 * u}px rgba(159,216,255,0.3)`}}>
 					{Array.from({length: 16}).map((_, i) => {
 						const k = i < n ? spring({frame: (t - at - (i * 1.8) / 16) * 30, fps: 30, config: {damping: 14, stiffness: 220}}) : 0;
@@ -1080,7 +1090,7 @@ const HandInk: React.FC<{st: Ink[]; t: number; SW: number; SH: number; color: st
 const WRITE_PER_CHAR = 0.075;
 const HandWrite: React.FC<{text: string; x: number; y: number; size: number; color: string; t0: number; t: number; SW: number; SH: number; center?: boolean}> = ({text, x, y, size, color, t0, t, SW, SH, center}) => {
 	const font = 'PermanentMarker-Regular';
-	const tw = measureText({text, fontFamily: font, fontSize: size}).width;
+	const tw = measureText({text, fontFamily: fam(font), fontSize: size}).width;
 	const x0 = center ? x - tw / 2 : x;
 	const dur = text.length * WRITE_PER_CHAR;
 	const p = clamp((t - t0) / dur, 0, 1);
@@ -1098,10 +1108,11 @@ const HandWrite: React.FC<{text: string; x: number; y: number; size: number; col
 	);
 };
 // a small stamp pressed by the stamp hand (rule 7): enters from above, presses, holds 0.13 s, lifts and leaves
-const StampHand: React.FC<{text: string; at: number; t: number; x: number; y: number; size: number; SH: number; color?: string}> = ({text, at, t, x, y, size, SH, color = C.red}) => {
+const StampHand: React.FC<{text: string; at: number; t: number; x: number; y: number; size: number; SH: number; color?: string}> = ({text: text0, at, t, x, y, size, SH, color = C.red}) => {
+	const text = tr(text0);
 	const pressed = t >= at;
 	const w0 = at - 0.35, w1 = at + 0.13 + 0.32;
-	const impW = measureText({text, fontFamily: HEAD, fontSize: size}).width + size * 0.8;
+	const impW = measureText({text, fontFamily: fam(HEAD), fontSize: size}).width + size * 0.8;
 	const hh = (impW * 1.12) / (360 / 1024);
 	const s = hh / 1024;
 	let lift = 0;
@@ -1146,8 +1157,9 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 		case 'stamp': {
 			if (o.at_ === undefined) return null;
 			// Klot r4: a stamp on a busy or dark picture lands on a cream tag laid there just before it (>= 4.5:1)
-			const fs = o.size * U;
-			const tw = measureText({text: o.text, fontFamily: HEAD, fontSize: fs}).width + fs * 0.04 * o.text.length;
+			// RU review copy: a longer translation keeps the English stamp's width (it shrinks instead of covering its neighbours)
+			const fs = o.en_text ? fitTo(o.text, fam(HEAD), o.size * U, measureText({text: o.en_text, fontFamily: fam(HEAD), fontSize: o.size * U}).width * 1.12) : o.size * U;
+			const tw = measureText({text: o.text, fontFamily: fam(HEAD), fontSize: fs}).width + fs * 0.04 * o.text.length;
 			const pw = tw + fs * 1.3, ph = fs * 2.0;
 			const pk = o.paper ? sm((t - (o.at_ - 0.35)) / 0.25) : 0;
 			return (
@@ -1204,9 +1216,9 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 				<div style={{position: 'absolute', left: x, top: y, width: w, height: h, zIndex: 30, transform: 'rotate(-2deg)'}}>
 					<div style={{position: 'absolute', left: 60 * Uc, top: -50 * Uc, width: 340 * Uc, height: 70 * Uc, background: '#D9B97A', border: `${3 * Uc}px solid ${C.ink}`, borderBottom: 'none', borderRadius: `${12 * Uc}px ${12 * Uc}px 0 0`}} />
 					<div style={{position: 'absolute', inset: 0, background: '#D9B97A', border: `${3 * Uc}px solid ${C.ink}`, borderRadius: 10 * Uc, boxShadow: '0 30px 60px rgba(0,0,0,0.6)'}}>
-						<div style={{position: 'absolute', left: 80 * Uc, top: 100 * Uc, fontFamily: fam(TYPE), fontSize: 64 * Uc, color: C.ink}}>{typed(`CASE FILE ${o.number}`, o.type_?.[0])}</div>
-						<div style={{position: 'absolute', left: 80 * Uc, top: 210 * Uc, width: w - 160 * Uc, fontFamily: fam(TYPE), fontSize: Math.min(84 * Uc, fitText({text: o.title, withinWidth: w - 160 * Uc, fontFamily: TYPE}).fontSize), color: C.red}}>{typed(o.title, o.type_?.[1])}</div>
-						<div style={{position: 'absolute', left: 80 * Uc, top: 400 * Uc, fontFamily: fam(BODY), fontSize: 24 * Uc, color: 'rgba(30,27,24,0.6)', letterSpacing: 3 * Uc}}>COINSENSE · PRICE INVESTIGATIONS</div>
+						<div style={{position: 'absolute', left: 80 * Uc, top: 100 * Uc, fontFamily: fam(TYPE), fontSize: 64 * Uc, color: C.ink}}>{typed(`${tr('CASE FILE')} ${o.number}`, o.type_?.[0])}</div>
+						<div style={{position: 'absolute', left: 80 * Uc, top: 210 * Uc, width: w - 160 * Uc, fontFamily: fam(TYPE), fontSize: Math.min(84 * Uc, fitText({text: o.title, withinWidth: w - 160 * Uc, fontFamily: fam(TYPE)}).fontSize), color: C.red}}>{typed(o.title, o.type_?.[1])}</div>
+						<div style={{position: 'absolute', left: 80 * Uc, top: 400 * Uc, fontFamily: fam(BODY), fontSize: 24 * Uc, color: 'rgba(30,27,24,0.6)', letterSpacing: 3 * Uc}}>{tr('COINSENSE · PRICE INVESTIGATIONS')}</div>
 					</div>
 				</div>
 			);
@@ -1224,7 +1236,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 								fontFamily: fam(HEAD), fontSize: 54 * Us, color: i === n - 1 ? C.red : C.ink, textAlign: 'center', lineHeight: `${80 * Us}px`}}>{d}</div>
 						))}
 					</Paper>
-					{o.write_ !== undefined ? <HandWrite text={`${o.amount} UNTIL FRIDAY`} x={x + 40 * Us} y={y + 64 * Us} size={52 * Us} color={C.red} t0={o.write_} t={t} SW={SW} SH={SH} /> : null}
+					{o.write_ !== undefined ? <HandWrite text={`${o.amount} ${tr('UNTIL FRIDAY')}`} x={x + 40 * Us} y={y + 64 * Us} size={52 * Us} color={C.red} t0={o.write_} t={t} SW={SW} SH={SH} /> : null}
 				</>
 			);
 		}
@@ -1261,7 +1273,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 									<polygon points={pts} fill="#FFE066" stroke={C.ink} strokeWidth={7 * U} strokeLinejoin="round" />
 								</svg>
 								<div style={{position: 'absolute', left: cx, top: cy, transform: 'translate(-50%,-52%) rotate(-7deg)', fontFamily: fam(HEAD), fontSize: 132 * U, lineHeight: 1, color: C.red,
-									WebkitTextStroke: `${16 * U}px #FFFFFF`, paintOrder: 'stroke fill', letterSpacing: 4 * U, whiteSpace: 'nowrap', filter: `drop-shadow(${4 * U}px ${5 * U}px 0 ${C.ink})`}}>POP!</div>
+									WebkitTextStroke: `${16 * U}px #FFFFFF`, paintOrder: 'stroke fill', letterSpacing: 4 * U, whiteSpace: 'nowrap', filter: `drop-shadow(${4 * U}px ${5 * U}px 0 ${C.ink})`}}>{tr('POP!')}</div>
 							</div>
 						);
 					})()}
@@ -1294,7 +1306,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 						const k = clamp((t - at) / 0.2, 0, 1);
 						return (
 							<Paper key={i} x={o.x * SW - ((o.w ?? 220) / 2) * U} y={o.y * SH + i * 160 * U} w={(o.w ?? 220) * U} h={(i === 0 && o.h ? o.h : 130) * U} k={1} rot={i % 2 ? 3 : -3}>
-								<div data-read="1" style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: (o.size ?? 84) * U, lineHeight: `${125 * U}px`, color: o.color ?? C.red, transform: `scale(${1.1 - 0.1 * k})`, whiteSpace: 'nowrap'}}>{x}</div>
+								<div data-read="1" style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: fitTo(x, fam(HEAD), (o.size ?? 84) * U, ((o.w ?? 220) - 44) * U), lineHeight: `${125 * U}px`, color: o.color ?? C.red, transform: `scale(${1.1 - 0.1 * k})`, whiteSpace: 'nowrap'}}>{x}</div>
 								{i === 0 && o.stamp && o.stamp.at_ !== undefined ? (
 									<Stamp text={o.stamp.text} at={o.stamp.at_} t={t} x={((o.w ?? 220) / 2) * U} y={(125 + ((o.h ?? 130) - 125) / 2) * U} size={(o.stamp.size ?? 70) * U} rot={-6} />
 								) : null}
@@ -1326,7 +1338,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			if (o.write_ === undefined) return null;
 			const k = sm((t - (o.write_ - 0.6)) / 0.3);
 			const fs = (o.size ?? 50) * U;
-			const tw = measureText({text: o.text, fontFamily: 'PermanentMarker-Regular', fontSize: fs}).width;
+			const tw = measureText({text: o.text, fontFamily: fam('PermanentMarker-Regular'), fontSize: fs}).width;
 			const subFs = fs * 0.36;
 			const x = o.x * SW, y = o.y * SH;
 			return (
@@ -1344,6 +1356,8 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			const lx0 = x + 90 * U, lx1 = x + w - 90 * U, ly = y + 128 * U;
 			const dur = 1.8;
 			const p = clamp((t - o.at - 0.4) / dur, 0, 1);
+			// a label stays inside its slot (and the end labels inside the paper): 44 px, smaller only when it is too long
+			const lfs = (lab: string) => Math.min(44, (44 * 168) / Math.max(1, measureText({text: lab, fontFamily: fam(BODY), fontSize: 44}).width));
 			return (
 				<>
 					<Paper x={x} y={y} w={w} h={h} k={sm((t - o.at) / 0.3)} rot={0.6}>
@@ -1354,7 +1368,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 							return (
 								<React.Fragment key={i}>
 									<div data-read="1" style={{position: 'absolute', left: px - 80 * U, width: 160 * U, top: 14 * U, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 62 * U, lineHeight: 1.1, color: C.ink, opacity: vis ? 1 : 0}}>{tm}</div>
-									<div data-read="1" style={{position: 'absolute', left: px - 120 * U, width: 240 * U, top: 160 * U, textAlign: 'center', fontFamily: fam(BODY), fontSize: 44 * U, lineHeight: 1.1, color: C.ink, opacity: vis ? 1 : 0}}>{lab}</div>
+									<div data-read="1" style={{position: 'absolute', left: px - 120 * U, width: 240 * U, top: (160 + (44 - lfs(lab)) * 0.5) * U, textAlign: 'center', fontFamily: fam(BODY), fontSize: lfs(lab) * U, lineHeight: 1.1, color: C.ink, opacity: vis ? 1 : 0, whiteSpace: 'nowrap'}}>{lab}</div>
 								</React.Fragment>
 							);
 						})}
@@ -1512,7 +1526,7 @@ const INKED = (it: any) => !it.static && (it.k === 'text' || it.k === 'line' || 
 const sheetInk = (pl: any): Ink[] =>
 	pl.items.filter(INKED).map((it: any) => {
 		if (it.k === 'text') {
-			const tw = measureText({text: it.text, fontFamily: 'PermanentMarker-Regular', fontSize: it.size}).width;
+			const tw = measureText({text: it.text, fontFamily: fam('PermanentMarker-Regular'), fontSize: it.size}).width;
 			return {d: `M ${it.x - tw / 2} ${it.y + it.size * 0.12} L ${it.x + tw / 2} ${it.y + it.size * 0.12}`, t0: it.t0, dur: it.dur};
 		}
 		return {d: it.d, t0: it.t0, dur: it.dur};
@@ -1555,7 +1569,7 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 										);
 									})() : null}
 									<rect data-mark="tag" x={-it.w / 2} y={-it.h / 2} width={it.w} height={it.h} rx={it.h * 0.08} fill="#FBF4E2" stroke={C.ink} strokeWidth={it.h * 0.03} style={{filter: `drop-shadow(0 ${it.h * 0.05}px ${it.h * 0.06}px rgba(0,0,0,0.45))`}} />
-									<text data-read="1" x={0} y={it.size * 0.36} textAnchor="middle" fontFamily={fam(it.font ?? HEAD)} fontSize={it.size} fill={it.col ?? C.ink}>{it.text}</text>
+									<text data-read="1" x={0} y={it.size * 0.36} textAnchor="middle" fontFamily={fam(it.font ?? HEAD)} fontSize={fitTo(it.text, fam(it.font ?? HEAD), it.size, it.w * 0.88)} fill={it.col ?? C.ink}>{it.text}</text>
 								</g>
 							);
 						// a typed paper card lying in the picture; lines type in one after another (0.03 s per letter), hl gets a marker
@@ -1570,8 +1584,8 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 									const n = it.static ? ln.length : clamp(Math.floor((t - a) / 0.03), 0, ln.length);
 									const y = -it.h / 2 + it.size * 1.2 + j * lh;
 									const hl = it.hl && ln.includes(it.hl) && n === ln.length;
-									const tw = hl ? measureText({text: it.hl, fontFamily: TYPE, fontSize: it.size}).width : 0;
-									const hx = hl ? measureText({text: ln.slice(0, ln.indexOf(it.hl)), fontFamily: TYPE, fontSize: it.size}).width : 0;
+									const tw = hl ? measureText({text: it.hl, fontFamily: fam(TYPE), fontSize: it.size}).width : 0;
+									const hx = hl ? measureText({text: ln.slice(0, ln.indexOf(it.hl)), fontFamily: fam(TYPE), fontSize: it.size}).width : 0;
 									return (
 										<g key={j}>
 											{hl ? <rect x={-it.w / 2 + it.size * 0.8 + hx - 6} y={y - it.size * 0.8} width={tw + 12} height={it.size * 1.05} fill="rgba(232,181,58,0.6)" /> : null}
@@ -1584,7 +1598,7 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 					}
 					if (k <= 0) return null;
 					if (it.k === 'text') {
-						const tw = measureText({text: it.text, fontFamily: 'PermanentMarker-Regular', fontSize: it.size}).width;
+						const tw = measureText({text: it.text, fontFamily: fam('PermanentMarker-Regular'), fontSize: it.size}).width;
 						return (
 							<g key={i}>
 								<clipPath id={`${id}c${i}`}>
@@ -1861,7 +1875,7 @@ const Clock: React.FC<{label: string; W: number; H: number; t: number}> = ({labe
 				<circle cx={r} cy={r} r={r - 2} fill="none" stroke={C.paper} strokeWidth={3} />
 				<line x1={r} y1={r} x2={r + Math.sin((a * Math.PI) / 180) * (r - 6)} y2={r - Math.cos((a * Math.PI) / 180) * (r - 6)} stroke={C.accent} strokeWidth={3} strokeLinecap="round" />
 			</svg>
-			<div style={{fontFamily: fam(BODY), fontSize: fs, color: C.paper, letterSpacing: 1}}>TUE · {label} PM</div>
+			<div style={{fontFamily: fam(BODY), fontSize: fs, color: C.paper, letterSpacing: 1}}>{TR['TUE'] ? `${TR['TUE']} · 20:${String(label).split(':')[1]}` : `TUE · ${label} PM`}</div>
 		</div>
 	);
 };
@@ -1870,26 +1884,50 @@ const Subs: React.FC<{caps: any[]; W: number; H: number; t: number; short: boole
 	const c = caps.find((x) => t >= x.start - 0.05 && t < x.end + 0.25);
 	if (!c) return null;
 	const font = short ? HEAD : BODY;
-	const toks = c.words.map((w: any, i: number) => (i ? ' ' : '') + (short ? w[0].toUpperCase() : w[0]));
-	let size = Math.round(H * (short ? 0.042 : 0.05));
-	size = Math.min(size, Math.floor(fitText({text: toks.join(''), withinWidth: W * 0.86, fontFamily: font}).fontSize));
-	const widths = toks.map((x: string) => measureText({text: x, fontFamily: font, fontSize: size}).width);
-	const total = widths.reduce((a: number, b: number) => a + b, 0);
-	const x0 = (W - total) / 2;
+	// pieces: words, and in a Short the parts of a hyphenated word (a line may break after a hyphen)
+	const pcs: {x: string; wi: number; glue: boolean}[] = [];
+	c.words.forEach((w: any, wi: number) => {
+		const word = short ? w[0].toUpperCase() : w[0];
+		const parts = short ? word.split(/(?<=-)(?=.)/) : [word];
+		parts.forEach((x: string, k: number) => pcs.push({x, wi, glue: k > 0}));
+	});
+	const base = Math.round(H * (short ? 0.042 : 0.05));
+	const mw = (x: string, fs: number) => measureText({text: x, fontFamily: fam(font), fontSize: fs}).width;
+	const join = (a: number, b: number) => pcs.slice(a, b).map((p, k) => (k && !p.glue ? ' ' : '') + p.x).join('');
+	const fitIn = (x: string) => Math.floor(fitText({text: x, withinWidth: W * 0.86, fontFamily: fam(font)}).fontSize);
+	// one line; a Short whose card would shrink below 80 % of the caption size goes on two lines instead
+	let cuts = [0, pcs.length];
+	let size = Math.min(base, fitIn(join(0, pcs.length)));
+	if (short && size < base * 0.8 && pcs.length >= 2) {
+		let best = 1, bw = 1e9;
+		for (let k = 1; k < pcs.length; k++) {
+			const m = Math.max(mw(join(0, k), base), mw(join(k, pcs.length), base));
+			if (m < bw) [best, bw] = [k, m];
+		}
+		cuts = [0, best, pcs.length];
+		size = Math.min(base, fitIn(join(0, best)), fitIn(join(best, pcs.length)));
+	}
 	const ai = c.words.findIndex((w: any, i: number) => t >= w[1] - 0.03 && (i === c.words.length - 1 || t < c.words[i + 1][1] - 0.03));
 	const y = short ? H * 0.855 : H * 0.865 - size * 0.62;
 	const stroke = Math.max(3, Math.round(size / 9));
-	let acc = 0;
+	const nl = cuts.length - 1;
 	return (
-		<div style={{position: 'absolute', left: 0, top: y, width: W, height: size * 1.3}}>
-			{toks.map((x: string, i: number) => {
-				const left = x0 + acc;
-				acc += widths[i];
-				return (
-					<span key={i} style={{position: 'absolute', left, top: 0, whiteSpace: 'pre', fontFamily: fam(font), fontSize: size, lineHeight: 1.3, color: i === ai ? C.accent : '#fff', WebkitTextStroke: `${stroke * 2}px ${C.ink}`, paintOrder: 'stroke fill'}}>
-						{x}
-					</span>
-				);
+		<div style={{position: 'absolute', left: 0, top: y, width: W, height: size * 1.3 * nl}}>
+			{cuts.slice(0, -1).map((a, li) => {
+				const ln = pcs.slice(a, cuts[li + 1]);
+				const toks = ln.map((p, k) => (k && !p.glue ? ' ' : '') + p.x);
+				const widths = toks.map((x: string) => mw(x, size));
+				const x0 = (W - widths.reduce((u: number, v: number) => u + v, 0)) / 2;
+				let acc = 0;
+				return toks.map((x: string, k: number) => {
+					const left = x0 + acc;
+					acc += widths[k];
+					return (
+						<span key={`${li}-${k}`} style={{position: 'absolute', left, top: li * size * 1.12, whiteSpace: 'pre', fontFamily: fam(font), fontSize: size, lineHeight: 1.3, color: ln[k].wi === ai ? C.accent : '#fff', WebkitTextStroke: `${stroke * 2}px ${C.ink}`, paintOrder: 'stroke fill'}}>
+							{x}
+						</span>
+					);
+				});
 			})}
 		</div>
 	);
@@ -1945,6 +1983,7 @@ const Wiped: React.FC<{W: number; H: number; on: boolean; children: React.ReactN
 };
 
 export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data}) => {
+	TR = data.tr || {};
 	const ready = useFontsReady(data.fonts);
 	const f = useCurrentFrame();
 	const {fps} = useVideoConfig();
@@ -1989,6 +2028,10 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 			{cur && cur.caption ? <CaptionPlate text={cur.caption} W={W} H={H} short={short} t={t - cur.start} /> : null}
 			{cur && cur.clock && !(cur.title && t - cur.start < 2.0) ? <Clock label={cur.clock} W={W} H={H} t={t} /> : null}
 			<Subs caps={data.captions} W={W} H={H} t={t} short={short} />
+			{data.watermark ? (
+				<div style={{position: 'absolute', left: '50%', top: Math.round(H * 0.012), transform: 'translateX(-50%)', background: 'rgba(178,52,33,0.92)', color: '#FFF', fontFamily: fam(BODY),
+					fontSize: Math.round(H * 0.024), letterSpacing: 3, padding: `${Math.round(H * 0.006)}px ${Math.round(H * 0.018)}px`, borderRadius: 6, whiteSpace: 'nowrap', zIndex: 99}}>{data.watermark}</div>
+			) : null}
 			</div>
 		</AbsoluteFill>
 	);

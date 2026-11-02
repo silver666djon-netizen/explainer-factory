@@ -36,7 +36,7 @@ class _Col(dict):
         return f"Short {k[2:]} · 9:16"
 
 
-COL = _Col({"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9", "full": "full episode · 16:9"})
+COL = _Col({"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9", "full": "full episode · 16:9", "full_ru": "RU review copy · 16:9"})
 MIN_SHOT, MAX_SHOT = 1.4, 8.0
 FONTS = ROOT / "assets" / "fonts"
 
@@ -90,7 +90,7 @@ def c_stt_voice(beats, **_):
 
 def c_stt_mix(beats, audio=None, **_):
     """Line by line on the FINAL mix (music + sfx under the voice): every word still heard."""
-    if audio is None:
+    if audio is None or any(b.get("en") for b in beats):  # the RU review copy: the English line check does not apply
         return []
     sr = 48000
     # the episode's stt_known: transcription slips already confirmed against the voice's phonemes (and its voice-only scan)
@@ -957,6 +957,7 @@ def selftest(ctx):
     def m_read(c):
         s = scr(c)
         s["screen"]["fs"] = {"os": 24, "row": 30, "fee": 34, "lab": 30, "tot": 38}
+        c["data"] = dict(c["data"], W=1920, H=1080)  # the check judges the 16:9 film; a Shorts run plants it there too
         return f"{s['id']} with PREVIEW 2's old checkout sizes (24 / 30 / 34)"
     plant("read_size (R45)", m_read, c_read_size)
     def m_mark(c):
@@ -1051,11 +1052,12 @@ def main(pvd: str, tdir: str) -> int:
     for kind in kinds:
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
-    seg = next((k for k in ("a2", "a3", "a4", "full") if k in P), "shorts" if any(k.startswith("sh") for k in P) else "p2")
-    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4", "full": "FULL EPISODE", "shorts": "SHORTS"}[seg]
+    seg = next((k for k in ("a2", "a3", "a4", "full", "full_ru") if k in P), "shorts" if any(k.startswith("sh") for k in P) else "p2")
+    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4", "full": "FULL EPISODE", "full_ru": "RU REVIEW COPY (NOT FOR UPLOAD)", "shorts": "SHORTS"}[seg]
     what = {"p2": "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open.",
             "a2": "Act 2 (first ad break to the second), 16:9.", "a3": "Act 3 (second ad break to the third), 16:9.",
             "a4": "Act 4 (third ad break to the end), 16:9.", "full": "The whole episode in one file (16:9), end screen included.",
+            "full_ru": "The whole episode on the Russian review narration (ElevenLabs v3), every on-screen word in Russian; the English line-by-line STT check does not apply.",
             "shorts": "Seven Shorts, 9:16, <= 45 s each, looping, cut from the episode's own narration."}[seg]
     md = [f"# Ep.4 v2 · {title} · QC (picture-first)", "",
           what + " Remotion layer; Klot's stills, Ep.4 pictures and archive prints; any still not in yet is held on a labelled "
@@ -1073,6 +1075,8 @@ def main(pvd: str, tdir: str) -> int:
             r = allres[kind].get(name)
             if name == "read_size (R45)" and kind == "short":
                 cells.append("n/a: judged on the 16:9 film; the 9:16 file is a layout sample")
+            elif name == "read_size (R45)" and kind.startswith("sh"):
+                cells.append("n/a: 16:9 rule; 9:16 text is judged by text_size_contrast")
             elif name == "shorts_length" and kind == "short" and r:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
             elif name in ("shorts_band (R38)", "shorts_length") and not (kind == "short" or kind.startswith("sh")):

@@ -271,7 +271,13 @@ def anchors(spec) -> list[str]:
 
 
 def word_time(beat: dict, prefix: str) -> float:
-    """Spoken start of the first word starting with prefix ("service#2": the second such word)."""
+    """Spoken start of the first word starting with prefix ("service#2": the second such word).
+    RU review copy: the anchors are English words; a Russian beat carries its English original ("en") and the English
+    word's place in its line is mapped onto the Russian line (same fraction of the line)."""
+    if beat.get("en"):
+        en = beat["en"]
+        t_en = word_time({"id": beat["id"], "start": en["start"], "words": en["words"], "text": en.get("text", "")}, prefix)
+        return beat["start"] + (t_en - en["start"]) * (beat["end"] - beat["start"]) / max(0.01, en["end"] - en["start"])
     nth = int(prefix.split("#")[1]) if "#" in prefix else 1
     p = _norm(prefix.split("#")[0])
     for w, s, _e in beat["words"]:
@@ -760,6 +766,8 @@ def segments(T: dict, seg: str) -> list[tuple[str, tuple[str, ...], float, float
     if seg == "shorts":  # Klot's 7 Shorts (tools/v2_shorts.py)
         from v2_shorts import SHORTS
         return [(x["key"], tuple(sorted({b["act"] for b in T["beats"] if b["id"] in x["beats"]})), 0.0, 0.0) for x in SHORTS]
+    if seg == "full_ru":  # the RU review copy: the whole episode on the Russian narration (timings_ru.json)
+        return [("full_ru", ("COLD", "A1", "A2", "A3", "A4"), 0.0, float(T.get("total") or max(x["end"] for x in T["beats"]) + 1.5))]
     if seg == "full":  # the whole episode in one file + the end screen (music only)
         return [("full", ("COLD", "A1", "A2", "A3", "A4"), 0.0, float(T.get("total") or max(x["end"] for x in T["beats"]) + 1.5))]
     if seg == "a4":
@@ -768,14 +776,82 @@ def segments(T: dict, seg: str) -> list[tuple[str, tuple[str, ...], float, float
     return [("long", ("COLD", "A1"), 0.0, b[0]), ("short", ("COLD",), 0.0, a1)]
 
 
+RU_KEYS = {"text", "text2", "items", "lines", "title", "head", "sub", "sub2", "sub2b", "name", "label", "key", "caption", "steps", "days",
+           "first", "rest", "left", "right", "badge", "tag", "amt"}
+RU_HL = {"Divide and Prosper": "Разделяй и богатей", "~21% more": "~21% больше", "Endowment Effect": "эффекта владения", "fees at": "сборы",
+         "every fee": "все неизбежные сборы", "24% to 44%": "от 24% до 44%", "ALLEGED": "обвинение", "all-in": "цены", "37.5%": "37,5%"}
+RU_FONTS = {"PTSansNarrow-Bold.ttf": "PTSansNarrowBold-CYR", "RussoOne-Regular.ttf": "RussoOne-CYR", "PTMono-Regular.ttf": "PTMono-CYR",
+            "Neucha-Regular.ttf": "Neucha-CYR"}
+
+
+def ru_screen(data: dict, P: Path) -> None:
+    """RU review copy: every on-screen word in Russian (episodes/.../v2/ru_screen.json), Cyrillic fallback fonts, the
+    review-copy mark. Icon kinds, page kinds and amounts are left alone; a highlight follows its translated line."""
+    D = json.loads((EP / "v2" / "ru_screen.json").read_text())
+
+    def tr(x):
+        return D.get(x, x) if isinstance(x, str) else x
+
+    def walk(o, key=None, parent=None):
+        if isinstance(o, dict):
+            if o.get("t") == "stamp" and isinstance(o.get("text"), str):
+                o["en_text"] = o["text"]  # the stamp keeps the English stamp's width
+            if o.get("t") == "icons_strip" or "pages" in o and key is None and False:
+                pass
+            for k, v in list(o.items()):
+                if k in ("pages", "src", "img", "video", "poster", "kind", "k", "t", "mode", "base", "base_kind", "id", "beat", "act", "picture",
+                         "source", "grade", "seat", "track", "font", "col", "color"):
+                    continue
+                if o.get("t") == "icons_strip" and k == "items":
+                    continue
+                if k == "hl" and isinstance(v, str):
+                    o[k] = D.get(v, RU_HL.get(v, v))
+                    continue
+                o[k] = walk(v, k, o)
+            if isinstance(o.get("hl"), str) and isinstance(o.get("lines"), list) and not any(o["hl"] in ln for ln in o["lines"]):
+                o.pop("hl")  # the highlight phrase did not survive the translation as a substring: no highlight
+            return o
+        if isinstance(o, list):
+            return [walk(v, key, parent) for v in o]
+        if key in RU_KEYS and isinstance(o, str):
+            return tr(o)
+        return o
+    for s in data["shots"]:
+        walk(s)
+
+    def props_ru(o):  # a prop drawn with English words has a Russian twin (manual_assets/props/<name>_ru.png)
+        if isinstance(o, dict):
+            for k, v in o.items():
+                if k == "src" and isinstance(v, str) and v.startswith("v2/props/"):
+                    ru_png = EP / "v2" / "manual_assets" / "props" / (Path(v).stem + "_ru.png")
+                    if ru_png.exists():
+                        (P / "v2" / "props").mkdir(parents=True, exist_ok=True)
+                        shutil.copy(ru_png, P / "v2" / "props" / ru_png.name)
+                        o[k] = "v2/props/" + ru_png.name
+                else:
+                    props_ru(v)
+        elif isinstance(o, list):
+            for v in o:
+                props_ru(v)
+    props_ru(data["shots"])
+    data["tr"] = D
+    data["watermark"] = "RU REVIEW COPY · NOT FOR UPLOAD"
+    for f, fam_ in RU_FONTS.items():
+        if (ROOT / "assets" / "fonts" / f).exists():
+            data["fonts"][f] = fam_
+            (P / "fonts").mkdir(exist_ok=True)
+            shutil.copy(ROOT / "assets" / "fonts" / f, P / "fonts" / f)
+
+
 def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
     import soundfile as sf
     from factory.config import load_config
     R, P, O = Path(rel), Path(pub), Path(outd)
     (P / "v2").mkdir(parents=True, exist_ok=True)
     O.mkdir(parents=True, exist_ok=True)
-    T = json.loads((R / "timings.json").read_text())
-    voice, sr = sf.read(R / "voice_24k.flac", dtype="float32")
+    ru = seg == "full_ru"
+    T = json.loads((R / ("timings_ru.json" if ru else "timings.json")).read_text())
+    voice, sr = sf.read(R / ("voice_24k_ru.flac" if ru else "voice_24k.flac"), dtype="float32")
     assert sr == 24000
     cfg = load_config({})
     T0, voice0 = T, voice
@@ -802,7 +878,7 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
                 S.update(saved)
         else:
             beats, shots = build(T, acts, end)
-        if kind == "full":
+        if kind in ("full", "full_ru"):
             # Klot (locked): the end screen is the last 20-22 s: the Subscribe line, then music only. The last line's shot
             # ends 0.4 s after the voice; the next-case sketch and subscribe follow.
             last = shots[-1]
@@ -836,6 +912,8 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
                 "fonts": {"Anton-Regular.ttf": "Anton-Regular", "ArchivoBlack-Regular.ttf": "ArchivoBlack-Regular",
                           "SpecialElite-Regular.ttf": "SpecialElite-Regular", "PermanentMarker-Regular.ttf": "PermanentMarker-Regular",
                           "PT_Serif-Web-Regular.ttf": "PT-Serif-Web-Regular"}}
+        if kind == "full_ru":
+            ru_screen(data, P)
         (P / f"v2_{kind}.json").write_text(json.dumps(data, ensure_ascii=False))
         plans[kind] = {"data": data, "beats": beats, "shots": shots, "audio": {k: v for k, v in stats.items()}, "offset": t_in, "voice_file": vfile}
         print(kind, len(shots), "shots,", round(end, 2), "s", flush=True)
@@ -847,7 +925,7 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
         if (ROOT / "assets" / "fonts" / f).exists():
             shutil.copy(ROOT / "assets" / "fonts" / f, P / "fonts" / f)
     (O / "plan.json").write_text(json.dumps({k: {"beats": v["beats"], "shots": v["shots"], "audio": v["audio"], "offset": v["offset"],
-                                                 "data": v["data"]} for k, v in plans.items()}, ensure_ascii=False, default=str))
+                                                 "voice_file": v["voice_file"], "data": v["data"]} for k, v in plans.items()}, ensure_ascii=False, default=str))
     return 0
 
 
