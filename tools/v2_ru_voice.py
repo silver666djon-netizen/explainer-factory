@@ -52,7 +52,9 @@ def pick_voice() -> dict:
             best[c["voice_id"]] = c
     ranked = sorted(best.values(), key=lambda c: -c["score"])
     print("RU candidates:", [(c["name"], round(c["score"], 1)) for c in ranked[:8]], flush=True)
-    mine = {m["voice_id"]: m for m in VD.get("/v2/voices", page_size=100).get("voices", [])}
+    mine_l = VD.get("/v2/voices", page_size=100).get("voices", [])
+    mine = {m["voice_id"]: m for m in mine_l}
+    probe = "Это история ограбления, которое заняло семь минут."
     for c in ranked[:6]:
         if c["voice_id"] in mine:
             return c
@@ -60,8 +62,25 @@ def pick_voice() -> dict:
         if r.status_code == 200:
             c["voice_id"] = r.json().get("voice_id", c["voice_id"])
             return c
-        print("could not add", c["name"], r.status_code, r.text[:160], flush=True)
-    raise SystemExit("no Russian narrator voice could be added")
+        # the key may not add voices (voices_write): a library voice can often still be used by its id
+        t = VD.post(f"/v1/text-to-speech/{c['voice_id']}", {"text": probe, "model_id": VD.MODEL}, output_format="pcm_24000")
+        if t.status_code == 200:
+            c["note"] = "library voice used by its id (the API key cannot add voices)"
+            return c
+        print("could not use", c["name"], r.status_code, t.status_code, t.text[:120], flush=True)
+    # last resort: the deepest male voice already in the account that speaks Russian with eleven_v3
+    acc = []
+    for v in mine_l:
+        lab = {k: str(x).lower() for k, x in (v.get("labels") or {}).items()}
+        if lab.get("gender") != "male":
+            continue
+        langs = " ".join(str(l.get("language", "")) for l in (v.get("verified_languages") or []))
+        txt = " ".join([v.get("name", ""), v.get("description") or "", *lab.values()])
+        acc.append({"voice_id": v["voice_id"], "name": v["name"], "about": (v.get("description") or ", ".join(lab.values()))[:200],
+                    "score": score(txt) + (3 if "ru" in langs.split() else 0), "note": "account voice (no Russian library voice usable with this key)"})
+    if not acc:
+        raise SystemExit("no voice usable for Russian")
+    return sorted(acc, key=lambda c: -c["score"])[0]
 
 
 def tts_aligned(text: str, voice_id: str) -> tuple[np.ndarray, list[list]]:
@@ -138,7 +157,7 @@ def main(src: str, out: str) -> int:
     if acc["characters_left"] < need * 1.05:
         raise SystemExit(f"not enough ElevenLabs characters: {acc['characters_left']} left, {need} needed")
     v = pick_voice()
-    print("voice:", v["name"], "|", v["about"][:120], flush=True)
+    print("voice:", v["name"], "|", v["about"][:120], "|", v.get("note", ""), flush=True)
     lines = []
     for b in T["beats"]:
         x, ws = tts_aligned(b["ru"], v["voice_id"])
@@ -187,7 +206,7 @@ def main(src: str, out: str) -> int:
     (O / "timings_ru.json").write_text(json.dumps(R, ensure_ascii=False))
     ratio = sum(len(x) for _b, x, _w in lines) / SR / sum(b["end"] - b["start"] for b in T["beats"])
     (O / "ru_voice_report.md").write_text(
-        f"# Ep.4 v2 · RU review copy · narration\n\nVoice: {v['name']} (ElevenLabs voice library) — {v['about']}\n\n"
+        f"# Ep.4 v2 · RU review copy · narration\n\nVoice: {v['name']} — {v['about']} ({v.get('note', 'ElevenLabs voice library')})\n\n"
         f"Model: {VD.MODEL}. Lines: {len(lines)}. Narration {ratio:.2f}x the English length; total {R['total'] / 60:.0f}:{R['total'] % 60:04.1f}.\n"
         f"Characters used: {need}.\n", encoding="utf-8")
     print(f"done: total {R['total']:.1f} s, RU/EN length {ratio:.2f}", flush=True)
