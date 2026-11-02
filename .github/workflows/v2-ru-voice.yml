@@ -1,0 +1,36 @@
+name: Ep.4 v2 RU review voice (ElevenLabs v3)
+# Klot: the RU review copy of v2 (not for upload). Step 1: the Russian narration of every line (tools/v2_ru_voice.py) and
+# timings_ru.json -> the draft ep04v2-ru. The key is a secret and is never printed.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  voice:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg libsndfile1
+      - run: pip install -q numpy requests soundfile 2>&1 | tail -2
+      - name: RU narration
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          tools/rel.sh download ep04v2-preview1 rel timings.json
+          python tools/v2_ru_voice.py rel ru 2>&1 | tee ru.log
+          tail -n 5 ru.log | python3 -c 'import sys; print("::notice title=ru voice::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+          grep -E "^(account|voice|RU candidates)" ru.log | python3 -c 'import sys; print("::notice title=ru pick::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+          ffmpeg -v error -y -i ru/voice_24k_ru.flac -t 60 -b:a 128k ru/ru_voice_first_minute.mp3
+      - name: Publish into the draft ep04v2-ru
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files="ru/timings_ru.json ru/voice_24k_ru.flac ru/ru_voice_report.md ru/ru_voice_first_minute.mp3"
+          if tools/rel.sh id ep04v2-ru >/dev/null 2>&1; then tools/rel.sh upload ep04v2-ru $files
+          else gh release create ep04v2-ru $files --title "CoinSense · EP04v2 · RU REVIEW COPY" --notes "RU review copy of Ep.4 v2 — NOT FOR UPLOAD." --prerelease --draft; fi
