@@ -244,6 +244,7 @@ def _norm(w: str) -> str:
 
 
 MIN_SHOT = 1.4
+MAX_LEN = 7.9           # max_still (8 s) with a margin
 
 
 def _has_stamp(spec) -> bool:
@@ -304,6 +305,22 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
             if brk:
                 s = brk[0]
         vis.append(s)
+    # max_still: a one-shot beat longer than 8 s (a longer translated line) lets the next picture arrive early (a pre-lap
+    # of <= 2 s), never across a brass hit or an act start
+    fixed_at = {h["at"] for h in T["hits"]} | {k["at"] for k in T.get("breaks", [])}
+    nsh = [len(cur[b["id"]]) for b in beats]
+    for i in range(len(beats) - 1):
+        d = vis[i + 1] - vis[i] - MAX_LEN
+        if nsh[i] != 1 or d <= 0:
+            continue
+        nxt_ok = vis[i + 1] not in fixed_at and beats[i + 1]["act"] == beats[i]["act"] and d <= 2.0 and (
+            (vis[i + 2] if i + 2 < len(beats) else end_t) - (vis[i + 1] - d) <= MAX_LEN * nsh[i + 1])
+        prv_ok = i > 0 and vis[i] not in fixed_at and beats[i - 1]["act"] == beats[i]["act"] and d <= 1.0 and (
+            vis[i] + d - vis[i - 1] <= MAX_LEN * nsh[i - 1])
+        if nxt_ok:
+            vis[i + 1] -= d  # the next picture arrives early (a pre-lap)
+        elif prv_ok:
+            vis[i] += d  # the previous picture holds a little into this line
     shots, clock = [], None
     for i, b in enumerate(beats):
         clock = CLOCK.get(b["id"], clock)
@@ -321,7 +338,7 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
         cuts[-1] = z
         for k, sid in enumerate(sids):  # "cut_on": this shot starts on that word (a key number lands with its word)
             if k > 0 and "cut_on" in S[sid]:
-                cuts[k] = word_time(b, S[sid]["cut_on"]) - 0.05
+                cuts[k] = max(cuts[k - 1] + (0.9 if S[sids[k - 1]].get("quick") else MIN_SHOT), word_time(b, S[sid]["cut_on"]) - 0.05)
         # a shot's word anchors must fall inside it: move the cuts (never under MIN_SHOT on either side). A stamp is seen
         # >= 0.8 s after it lands (stamp_hold); ink: the shot runs on until the hand has left (R47, checked)
         for k in range(n):
@@ -339,6 +356,20 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                 cuts[k + 1] += d
                 if k + 2 <= n - 1 and "dur" in S[sids[k + 1]]:
                     cuts[k + 2] = min(z if k + 2 == n else cuts[k + 3] - MIN_SHOT, cuts[k + 2] + d)
+        # max_still: a shot over 8 s (a longer translated line) gives its excess to a neighbour in the same beat, as long
+        # as the neighbour stays <= MAX_LEN, has no fixed length and the shot's own word anchors stay inside it
+        for k in range(n):
+            ln = cuts[k + 1] - cuts[k]
+            if ln <= MAX_LEN:
+                continue
+            ws = [word_time(b, w) for w in anchors(S[sids[k]])]
+            after = 1.05 if _has_stamp(S[sids[k]]) else 0.6
+            if (k < n - 1 and "dur" not in S[sids[k + 1]]
+                    and cuts[k + 2] - (cuts[k] + MAX_LEN) <= MAX_LEN and all(w + after <= cuts[k] + MAX_LEN for w in ws)):
+                cuts[k + 1] = cuts[k] + MAX_LEN
+            elif (k > 0 and "dur" not in S[sids[k - 1]] and "cut_on" not in S[sids[k]]
+                    and (cuts[k + 1] - MAX_LEN) - cuts[k - 1] <= MAX_LEN and all(w - 0.35 >= cuts[k + 1] - MAX_LEN for w in ws)):
+                cuts[k] = cuts[k + 1] - MAX_LEN
         for k in range(n):
             sid = sids[k]
             spec = json.loads(json.dumps(S[sid]))

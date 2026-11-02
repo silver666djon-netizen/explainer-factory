@@ -1158,7 +1158,8 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			if (o.at_ === undefined) return null;
 			// Klot r4: a stamp on a busy or dark picture lands on a cream tag laid there just before it (>= 4.5:1)
 			// RU review copy: a longer translation keeps the English stamp's width (it shrinks instead of covering its neighbours)
-			const fs = o.en_text ? fitTo(o.text, fam(HEAD), o.size * U, measureText({text: o.en_text, fontFamily: fam(HEAD), fontSize: o.size * U}).width * 1.12) : o.size * U;
+			const twAt = (x: string, f: number) => measureText({text: x, fontFamily: fam(HEAD), fontSize: f}).width + f * 0.04 * x.length;
+			const fs = o.en_text ? Math.min(o.size * U, (o.size * U * twAt(o.en_text, o.size * U)) / Math.max(1, twAt(o.text, o.size * U))) : o.size * U;
 			const tw = measureText({text: o.text, fontFamily: fam(HEAD), fontSize: fs}).width + fs * 0.04 * o.text.length;
 			const pw = tw + fs * 1.3, ph = fs * 2.0;
 			const pk = o.paper ? sm((t - (o.at_ - 0.35)) / 0.25) : 0;
@@ -1340,10 +1341,11 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			const fs = (o.size ?? 50) * U;
 			const tw = measureText({text: o.text, fontFamily: fam('PermanentMarker-Regular'), fontSize: fs}).width;
 			const subFs = fs * 0.36;
-			const x = o.x * SW, y = o.y * SH;
+			const subW = o.sub ? measureText({text: o.sub, fontFamily: fam(BODY), fontSize: subFs}).width + (o.sub.length * 2 * U) : 0;
+			const x = Math.min(o.x * SW, SW * 0.935 - Math.max(tw, subW) - 0.6 * fs), y = o.y * SH;
 			return (
 				<>
-					<Paper x={x - 0.6 * fs} y={y - 1.4 * fs} w={tw + 1.2 * fs} h={fs * (o.sub ? 2.35 : 2.2)} k={k} rot={-2}>
+					<Paper x={x - 0.6 * fs} y={y - 1.4 * fs} w={Math.max(tw, subW) + 1.2 * fs} h={fs * (o.sub ? 2.35 : 2.2)} k={k} rot={-2}>
 						{o.sub ? <div style={{position: 'absolute', left: 0.6 * fs, top: fs * 1.62, fontFamily: fam(BODY), fontSize: subFs, letterSpacing: 2 * U, color: C.ink}}>{o.sub}</div> : null}
 					</Paper>
 					<HandWrite text={o.text} x={x} y={y} size={fs} color={o.color ?? C.red} t0={o.write_} t={t} SW={SW} SH={SH} />
@@ -1357,7 +1359,11 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 			const dur = 1.8;
 			const p = clamp((t - o.at - 0.4) / dur, 0, 1);
 			// a label stays inside its slot (and the end labels inside the paper): 44 px, smaller only when it is too long
-			const lfs = (lab: string) => Math.min(44, (44 * 168) / Math.max(1, measureText({text: lab, fontFamily: fam(BODY), fontSize: 44}).width));
+			// RU review copy: a Cyrillic label is set in the narrow head face at a readable size
+			const cyr = (lab: string) => /[\u0400-\u04FF]/.test(lab);
+			const lfam = (lab: string) => (cyr(lab) ? fam(HEAD) : fam(BODY));
+			const lfs = (lab: string) => (/[\u0400-\u04FF]/.test(lab) ? Math.min(52, (52 * 220) / Math.max(1, measureText({text: lab, fontFamily: fam(HEAD), fontSize: 52}).width))
+				: Math.min(44, (44 * 168) / Math.max(1, measureText({text: lab, fontFamily: fam(BODY), fontSize: 44}).width)));
 			return (
 				<>
 					<Paper x={x} y={y} w={w} h={h} k={sm((t - o.at) / 0.3)} rot={0.6}>
@@ -1368,7 +1374,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 							return (
 								<React.Fragment key={i}>
 									<div data-read="1" style={{position: 'absolute', left: px - 80 * U, width: 160 * U, top: 14 * U, textAlign: 'center', fontFamily: fam(HEAD), fontSize: 62 * U, lineHeight: 1.1, color: C.ink, opacity: vis ? 1 : 0}}>{tm}</div>
-									<div data-read="1" style={{position: 'absolute', left: px - 120 * U, width: 240 * U, top: (160 + (44 - lfs(lab)) * 0.5) * U, textAlign: 'center', fontFamily: fam(BODY), fontSize: lfs(lab) * U, lineHeight: 1.1, color: C.ink, opacity: vis ? 1 : 0, whiteSpace: 'nowrap'}}>{lab}</div>
+									<div data-read="1" style={{position: 'absolute', left: cyr(lab) && i === 0 ? 16 * U : cyr(lab) && i === n - 1 ? w - 256 * U : px - 120 * U, width: 240 * U, top: (160 + (44 - lfs(lab)) * 0.5) * U, textAlign: cyr(lab) && i === 0 ? 'left' : cyr(lab) && i === n - 1 ? 'right' : 'center', fontFamily: lfam(lab), fontSize: lfs(lab) * U, lineHeight: 1.1, color: C.ink, opacity: vis ? 1 : 0, whiteSpace: 'nowrap'}}>{lab}</div>
 								</React.Fragment>
 							);
 						})}
@@ -1568,8 +1574,16 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 											</g>
 										);
 									})() : null}
-									<rect data-mark="tag" x={-it.w / 2} y={-it.h / 2} width={it.w} height={it.h} rx={it.h * 0.08} fill="#FBF4E2" stroke={C.ink} strokeWidth={it.h * 0.03} style={{filter: `drop-shadow(0 ${it.h * 0.05}px ${it.h * 0.06}px rgba(0,0,0,0.45))`}} />
-									<text data-read="1" x={0} y={it.size * 0.36} textAnchor="middle" fontFamily={fam(it.font ?? HEAD)} fontSize={fitTo(it.text, fam(it.font ?? HEAD), it.size, it.w * 0.88)} fill={it.col ?? C.ink}>{it.text}</text>
+									{(() => {
+										// a longer (translated) word widens its tag; the letters keep their size
+										const tw = Math.max(it.w, measureText({text: it.text, fontFamily: fam(it.font ?? HEAD), fontSize: it.size}).width / 0.86);
+										return (
+											<>
+												<rect data-mark="tag" x={-tw / 2} y={-it.h / 2} width={tw} height={it.h} rx={it.h * 0.08} fill="#FBF4E2" stroke={C.ink} strokeWidth={it.h * 0.03} style={{filter: `drop-shadow(0 ${it.h * 0.05}px ${it.h * 0.06}px rgba(0,0,0,0.45))`}} />
+												<text data-read="1" x={0} y={it.size * 0.36} textAnchor="middle" fontFamily={fam(it.font ?? HEAD)} fontSize={it.size} fill={it.col ?? C.ink}>{it.text}</text>
+											</>
+										);
+									})()}
 								</g>
 							);
 						// a typed paper card lying in the picture; lines type in one after another (0.03 s per letter), hl gets a marker

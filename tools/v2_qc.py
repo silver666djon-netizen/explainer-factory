@@ -809,7 +809,8 @@ def run(kind, P, pv, tdir, cfg, audio_ok=True):
     path = pv / OUT[kind]
     audio = decode(path) if path.exists() else None
     import soundfile as sf
-    voice, _ = sf.read(tdir / "voice_24k.flac", dtype="float32")
+    ru = any(b.get("en") for b in beats)  # the RU review copy: its own Russian narration
+    voice, _ = sf.read(tdir / ("voice_24k_ru.flac" if ru else "voice_24k.flac"), dtype="float32")
     voice = voice[int(round(pl.get("offset", 0.0) * 24000)):]  # a segment preview starts at its ad break
     if pl.get("voice_file"):  # a Short: its own re-spaced narration
         voice, _ = sf.read(pv / pl["voice_file"], dtype="float32")
@@ -873,8 +874,8 @@ def selftest(ctx):
         a[int(b["start"] * 48000):int(b["end"] * 48000)] = 0
         c["audio"] = a
         return "first line muted in the mix"
-    if ctx.get("audio") is not None and ctx["kind"] == "long":
-        plant("stt_mix (r89)", m_mix, c_stt_mix)
+    if ctx.get("audio") is not None and ctx["kind"] == "long" and not any(b.get("en") for b in ctx["beats"]):
+        plant("stt_mix (r89)", m_mix, c_stt_mix)  # (the RU review copy has no English STT check to plant into)
     def m_cut(c):
         v = c["voice"].copy()
         i = int(c["beats"][1]["start"] * 24000)
@@ -1081,6 +1082,8 @@ def main(pvd: str, tdir: str) -> int:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
             elif name in ("shorts_band (R38)", "shorts_length") and not (kind == "short" or kind.startswith("sh")):
                 cells.append("n/a (16:9)" if name == "shorts_length" else ("PASS" if not r else f"FAIL ({len(r)})"))
+            elif name.startswith("stt_") and kind == "full_ru":
+                cells.append("n/a: the STT check is English-only (the RU copy is checked by ear)")
             elif r is None:
                 cells.append("same as 16:9")
             else:
