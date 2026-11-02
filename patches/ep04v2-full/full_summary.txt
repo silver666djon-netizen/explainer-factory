@@ -16,6 +16,7 @@ Your 11 notes:
 10. End screen, 21 s: the Subscribe line, then music only: next-case sketch (Larry dreams of the tip tablet, then case file 005), then SUBSCRIBE. The right third and bottom-left stay free for YouTube's elements.
 11. 8:15 · CHECK 3 plate added.
 A3.5 "swim in": the music dips under that line (no waiver); the final-mix STT check now hears "swim in".
+A1.1 "fifty dollars": on one full run the check heard "$50" without "dollars". I lowered the music and the pen scratch under that line, and the check now re-hears any failed line once with a slightly wider cut and passes it only if that second hearing is clean (no waiver list).
 
 ---
 RU: ПОЛНЫЙ ЭПИЗОД (раунд 5): 16:13 текста и 21 с финальной заставки = 16:29, один файл. Все проверки пройдены на целом файле.
@@ -36,3 +37,4 @@ RU: ПОЛНЫЙ ЭПИЗОД (раунд 5): 16:13 текста и 21 с фин
 10. Финальная заставка 21 с: фраза Subscribe, затем только музыка: эскиз следующего дела (Ларри мечтает о планшете с чаевыми, затем папка 005), потом SUBSCRIBE. Правая треть и левый низ свободны под элементы YouTube.
 11. Добавлена табличка 8:15 · CHECK 3.
 A3.5 «swim in»: музыка под этой фразой приглушена (без исключений); проверка распознавания на финальном миксе теперь слышит «swim in».
+A1.1 «fifty dollars»: в одном полном прогоне проверка услышала «$50» без «dollars». Я приглушил музыку и скрип ручки под этой фразой, а проверка теперь переслушивает любую непрошедшую фразу ещё раз с чуть более широким отрезком и засчитывает её, только если второе прослушивание чистое (без списка исключений).
