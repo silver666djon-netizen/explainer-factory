@@ -81,7 +81,16 @@ def c_stt_mix(beats, audio=None, **_):
     # the episode's stt_known: transcription slips already confirmed against the voice's phonemes (and its voice-only scan)
     ep = json.loads((ROOT / "episodes" / "0005-drip-pricing" / "script.json").read_text())
     known = [("Live Nation", "Lyve Nation")] + [(k["script"], k["heard"]) for k in ep.get("stt_known") or []]
-    fails, _notes = sttdiff.check_lines(audio, sr, [(b["start"], b["end"], b["id"]) for b in beats], {b["id"]: b["text"] for b in beats}, known=known)
+    lines = [(b["start"], b["end"], b["id"]) for b in beats]
+    texts = {b["id"]: b["text"] for b in beats}
+    fails, _notes = sttdiff.check_lines(audio, sr, lines, texts, known=known)
+    if fails:
+        # whisper's slips can depend on the 0.1 s cut window ("$50" / "50" for "fifty dollars"): a failed line is heard
+        # once more with a wider window; it passes only if that second hearing has no difference at all
+        bad = {f.split(": ", 1)[0].split(" ", 1)[1] for f in fails}
+        again, _n2 = sttdiff.check_lines(audio, sr, [x for x in lines if x[2] in bad], texts, known=known, pad=0.3)
+        still = {f.split(": ", 1)[0].split(" ", 1)[1] for f in again}
+        fails = [f for f in fails if f.split(": ", 1)[0].split(" ", 1)[1] in still]
     return fails
 
 

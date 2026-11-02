@@ -13,6 +13,10 @@ on:
         description: "optional: a previous run id whose rendered parts are reused (only the join, master and checks run again)"
         required: false
         default: ""
+      parts_run:
+        description: "optional: the run whose rendered parts are joined (default: from_run)"
+        required: false
+        default: ""
       remix:
         description: "with from_run: yes = export the plan + audio mix again (picture unchanged), then master and check"
         required: false
@@ -162,7 +166,7 @@ jobs:
           pattern: part-*
           merge-multiple: true
           path: parts
-          run-id: ${{ github.event.inputs.from_run || github.run_id }}
+          run-id: ${{ github.event.inputs.parts_run || github.event.inputs.from_run || github.run_id }}
           github-token: ${{ github.token }}
       - name: Join the parts (no re-encode)
         run: |
