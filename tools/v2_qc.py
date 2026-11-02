@@ -19,9 +19,24 @@ from factory import render as R  # noqa: E402
 from factory import sttdiff  # noqa: E402
 from factory.config import load_config  # noqa: E402
 
-OUT = {"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4", "a3": "cs_ep04v2_preview_a3.mp4", "a4": "cs_ep04v2_preview_a4.mp4", "full": "cs_ep04v2_full.mp4"}
-AUD = {"long": "long", "short": "short", "a2": "long", "a3": "long", "a4": "long", "full": "long"}  # which master spec a preview file follows
-COL = {"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9", "full": "full episode · 16:9"}
+class _Out(dict):
+    def __missing__(self, k):  # a Short: cs_ep04v2_sh1.mp4 ...
+        return f"cs_ep04v2_{k}.mp4"
+
+
+OUT = _Out({"long": "cs_ep04v2_preview2_long.mp4", "short": "cs_ep04v2_preview2_cold_open_9x16.mp4", "a2": "cs_ep04v2_preview_a2.mp4", "a3": "cs_ep04v2_preview_a3.mp4", "a4": "cs_ep04v2_preview_a4.mp4", "full": "cs_ep04v2_full.mp4"})
+class _Aud(dict):
+    def __missing__(self, k):
+        return "short" if k.startswith("sh") else "long"
+
+
+AUD = _Aud({"long": "long", "short": "short", "a2": "long", "a3": "long", "a4": "long", "full": "long"})    # which master spec a preview file follows
+class _Col(dict):
+    def __missing__(self, k):
+        return f"Short {k[2:]} · 9:16"
+
+
+COL = _Col({"long": "16:9", "short": "9:16", "a2": "Act 2 · 16:9", "a3": "Act 3 · 16:9", "a4": "Act 4 · 16:9", "full": "full episode · 16:9"})
 MIN_SHOT, MAX_SHOT = 1.4, 8.0
 FONTS = ROOT / "assets" / "fonts"
 
@@ -796,6 +811,8 @@ def run(kind, P, pv, tdir, cfg, audio_ok=True):
     import soundfile as sf
     voice, _ = sf.read(tdir / "voice_24k.flac", dtype="float32")
     voice = voice[int(round(pl.get("offset", 0.0) * 24000)):]  # a segment preview starts at its ad break
+    if pl.get("voice_file"):  # a Short: its own re-spaced narration
+        voice, _ = sf.read(pv / pl["voice_file"], dtype="float32")
     dom_all = json.loads((pv / "dom.json").read_text()) if (pv / "dom.json").exists() else {}
     ctx = dict(beats=beats, shots=data["shots"], data=data, captions=data["captions"], audio=audio, voice=voice,
                silences=pl["audio"]["silences"], sfx=pl["audio"]["sfx"], ink=ink_spans(data["shots"]), path=path, cfg=cfg, kind=AUD[kind],
@@ -1034,11 +1051,12 @@ def main(pvd: str, tdir: str) -> int:
     for kind in kinds:
         if (pv / f"v2_{kind}_silent.mp4").exists():
             master(pv, kind, cfg)
-    seg = next((k for k in ("a2", "a3", "a4", "full") if k in P), "p2")
-    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4", "full": "FULL EPISODE"}[seg]
+    seg = next((k for k in ("a2", "a3", "a4", "full") if k in P), "shorts" if any(k.startswith("sh") for k in P) else "p2")
+    title = {"p2": "PREVIEW 2", "a2": "PREVIEW · ACT 2", "a3": "PREVIEW · ACT 3", "a4": "PREVIEW · ACT 4", "full": "FULL EPISODE", "shorts": "SHORTS"}[seg]
     what = {"p2": "Cold open + Act 1 (to the first ad break), 16:9, and a 9:16 sample of the cold open.",
             "a2": "Act 2 (first ad break to the second), 16:9.", "a3": "Act 3 (second ad break to the third), 16:9.",
-            "a4": "Act 4 (third ad break to the end), 16:9.", "full": "The whole episode in one file (16:9), end screen included."}[seg]
+            "a4": "Act 4 (third ad break to the end), 16:9.", "full": "The whole episode in one file (16:9), end screen included.",
+            "shorts": "Seven Shorts, 9:16, <= 45 s each, looping, cut from the episode's own narration."}[seg]
     md = [f"# Ep.4 v2 · {title} · QC (picture-first)", "",
           what + " Remotion layer; Klot's stills, Ep.4 pictures and archive prints; any still not in yet is held on a labelled "
           "placeholder card or a tagged stand-in.", ""]
@@ -1049,7 +1067,7 @@ def main(pvd: str, tdir: str) -> int:
     md += ["| check | what | " + " | ".join(COL[k] for k in kinds) + " |", "|---|---|" + "---|" * len(kinds)]
     desc = {n: d for n, _f, d in CHECKS}
     desc["shorts_length"] = "a Short is <= 45 s"
-    for name in [n for n, *_ in CHECKS] + (["shorts_length"] if "short" in kinds else []):
+    for name in [n for n, *_ in CHECKS] + (["shorts_length"] if any(k == "short" or k.startswith("sh") for k in kinds) else []):
         cells = []
         for kind in kinds:
             r = allres[kind].get(name)
@@ -1057,7 +1075,7 @@ def main(pvd: str, tdir: str) -> int:
                 cells.append("n/a: judged on the 16:9 film; the 9:16 file is a layout sample")
             elif name == "shorts_length" and kind == "short" and r:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
-            elif name in ("shorts_band (R38)", "shorts_length") and kind != "short":
+            elif name in ("shorts_band (R38)", "shorts_length") and not (kind == "short" or kind.startswith("sh")):
                 cells.append("n/a (16:9)" if name == "shorts_length" else ("PASS" if not r else f"FAIL ({len(r)})"))
             elif r is None:
                 cells.append("same as 16:9")

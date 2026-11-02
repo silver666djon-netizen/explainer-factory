@@ -146,7 +146,7 @@ A4 = {
     "A4.6b/": W_(base="l8", cam=[[0.4, 0.5, 1.25], [0.38, 0.5, 1.36]],
                  overs=[W_(t="note", text="£3 = £4.2M", size=100, write_on="Three", x=0.58, y=0.24)]),
     "A4.7": W_(base="p13", cam=[[0.8, 0.3, 2.0], [0.82, 0.3, 2.15]], sheets=[img_sheet(5016, 2820, [TAG("UK", 4300, 470, 300, 200, 150, col=INK, static=True)])],
-               overs=[W_(t="stamp", text="STUBHUB UK · FINED · JUNE 2026", at_on="fined", x=0.4, y=0.62, size=62, paper=True)], sfx=[{"kind": "stamp", "on": "fined"}]),
+               overs=[W_(t="stamp", text="STUBHUB UK · FINED · JUNE 2026", at_on="StubHub's", x=0.4, y=0.62, size=62, paper=True)], sfx=[{"kind": "stamp", "on": "StubHub's"}]),
     "A4.8a": W_(base="p13", cam=[[0.5, 0.5, 1.04], [0.5, 0.5, 1.12]],
                 sheets=[img_sheet(5016, 2820, [TAG("UK", 4300, 470, 300, 200, 150, col=INK, static=True), TAG("USA", 1150, 1500, 380, 200, 150, col=INK, static=True), {"k": "route", "d": MAP_TO_US, "w": 16, "at_on": "America", "col": RED}])],
                 overs=[W_(t="stamp", text="USA · TOTAL UPFRONT · MAY 2025", at_on="May", x=0.5, y=0.72, size=60, paper=True)], sfx=[{"kind": "stamp", "on": "May"}]),

@@ -1,0 +1,36 @@
+name: 4K upload master (lanczos upscale)
+# Klot: YouTube upload master in 4K (YouTube gives 4K uploads its better codec tier). The 1080p release master is
+# upscaled with lanczos and encoded at a high, fixed bitrate (16 Mb/s: one release asset must stay under GitHub's 2 GB),
+# audio copied untouched. The 1080p master's own resolution is reported too.
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        required: true
+        default: ep04v2-full
+      file:
+        required: true
+        default: cs_ep04v2_full.mp4
+permissions:
+  contents: write
+jobs:
+  upscale:
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          f="${{ github.event.inputs.file }}"; out="${f%.mp4}_4k.mp4"
+          tools/rel.sh download "${{ github.event.inputs.tag }}" rel "$f"
+          src=$(ffprobe -v error -select_streams v -show_entries stream=width,height,r_frame_rate,bit_rate -of csv=p=0 "rel/$f")
+          echo "master: $src"
+          ffmpeg -v error -y -i "rel/$f" -vf "scale=3840:2160:flags=lanczos" -c:v libx264 -preset medium -profile:v high -level 5.1 -pix_fmt yuv420p \
+            -b:v 16M -maxrate 24M -bufsize 48M -g 60 -c:a copy -movflags +faststart "rel/$out"
+          dst=$(ffprobe -v error -select_streams v -show_entries stream=width,height,bit_rate -of csv=p=0 "rel/$out")
+          size=$(stat -c %s "rel/$out")
+          printf "1080p master %s: %s (width,height,fps,bit rate)\n4K upload master %s: %s, %s bytes\n" "$f" "$src" "$out" "$dst" "$size" | tee rel/masters.txt
+          tools/rel.sh upload "${{ github.event.inputs.tag }}" "rel/$out" rel/masters.txt

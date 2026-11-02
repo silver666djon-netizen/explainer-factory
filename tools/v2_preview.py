@@ -672,7 +672,7 @@ def _projq(q, u, v):
     return (a * u + b * v + x0) / w, (d * u + e * v + y0) / w
 
 
-def short_frame(s: dict, k: int = 0) -> None:
+def short_frame(s: dict, k: int = 0, compact: bool = False) -> None:
     """The 9:16 band (1080 x 1350): a laptop page fills the band's width (text big enough to read on a phone), a sheet
     plan is laid only on the part of the sheet the band shows; the picture always covers the band (never letterboxed)."""
     if s.get("base_kind") != "picture" or not s.get("iw"):
@@ -690,6 +690,29 @@ def short_frame(s: dict, k: int = 0) -> None:
         s["cam"] = [[cx, cy, z * 0.96], [cx, cy, z]]
         if s["screen"].get("mode") in ("fees", "total", "pay"):
             s["screen"]["fs"] = dict(SHORT_FS)
+        if s["screen"].get("mode") == "fees" and compact:  # a Short: fee lines + the joke label in two lines
+            s["screen"]["compact"] = True
+            for fe in s["screen"].get("fees", []):
+                lab = fe.get("label")
+                if lab and len(lab) > 20 and "\n" not in lab:
+                    sp = [i for i, c in enumerate(lab) if c == " "]
+                    i = min(sp, key=lambda i: abs(i - len(lab) / 2))
+                    fe["label"] = lab[:i] + "\n" + lab[i + 1:]
+        if compact:  # a Short: every line we want read >= 2.8 % of the band (cap height): bigger page type, the switch under the price
+            m = s["screen"].get("mode")
+            fs = dict(s["screen"].get("fs") or {})
+            if m == "bill":
+                s["screen"]["fs"] = {**fs, "os": max(fs.get("os", 0), 72), "row": max(fs.get("row", 0), 72), "sub": max(fs.get("sub", 0), 72), "big": fs.get("big", 200)}
+                if s["screen"].get("toggle"):
+                    s["screen"]["toggle"] = dict(s["screen"]["toggle"], y=330, size=72)
+            elif m in ("allin", "split", "anchor"):
+                s["screen"]["fs"] = {**fs, "os": max(fs.get("os", 0), 72), "row": max(fs.get("row", 0), 72)}
+            elif m == "seat":
+                s["screen"]["fs"] = {**fs, "seat": 72}
+            elif m == "versus":
+                s["screen"]["fs"] = {**fs, "lab": 72}
+            elif m == "fees":
+                s["screen"]["fs"] = {**s["screen"].get("fs", {}), "lab": 72}
         s["screen"]["ts"] = 1.25
     if s.get("plan"):
         # the visible part of the sheet at the camera's start (the push only narrows it): plan drawn there, 4 % inside
@@ -734,6 +757,9 @@ def segments(T: dict, seg: str) -> list[tuple[str, tuple[str, ...], float, float
         return [("a2", ("A2",), b[0], b[1])]
     if seg == "a3":
         return [("a3", ("A3",), b[1], b[2])]
+    if seg == "shorts":  # Klot's 7 Shorts (tools/v2_shorts.py)
+        from v2_shorts import SHORTS
+        return [(x["key"], tuple(sorted({b["act"] for b in T["beats"] if b["id"] in x["beats"]})), 0.0, 0.0) for x in SHORTS]
     if seg == "full":  # the whole episode in one file + the end screen (music only)
         return [("full", ("COLD", "A1", "A2", "A3", "A4"), 0.0, float(T.get("total") or max(x["end"] for x in T["beats"]) + 1.5))]
     if seg == "a4":
@@ -758,7 +784,24 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
         T = shift_T(T0, t_in) if t_in else T0
         voice = voice0[int(round(t_in * 24000)):]
         end = t_out - t_in
-        beats, shots = build(T, acts, end)
+        vfile = None
+        if kind.startswith("sh"):  # a Short: its lines re-spaced, its opener, its 9:16 overrides
+            from v2_shorts import SHORTS, short_T
+            sh = next(x for x in SHORTS if x["key"] == kind)
+            T, voice = short_T(T0, voice0, sh["beats"])
+            end = T["total"]
+            vfile = f"voice_{kind}.flac"
+            sf.write(O / vfile, voice, 24000)
+            first = next(k for k in S if k == sh["beats"][0] or k == sh["beats"][0] + "a")
+            patch = {first: sh["opener"], **sh.get("overrides", {})}
+            saved = {k: S[k] for k in patch}
+            S.update({k: dict(v, kind="pic") for k, v in patch.items()})
+            try:
+                beats, shots = build(T, acts, end)
+            finally:
+                S.update(saved)
+        else:
+            beats, shots = build(T, acts, end)
         if kind == "full":
             # Klot (locked): the end screen is the last 20-22 s: the Subscribe line, then music only. The last line's shot
             # ends 0.4 s after the voice; the next-case sketch and subscribe follow.
@@ -773,7 +816,8 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
                               "_ink": [], "clock": None, "face": spec.get("base") in FACES, "endscreen": True})
                 t += dur
             end = round(t, 3)
-        W, H = (1080, 1920) if kind == "short" else (1920, 1080)
+        vertical = kind == "short" or kind.startswith("sh")
+        W, H = (1080, 1920) if vertical else (1920, 1080)
         # pictures: Klot's still if it is in the repo, else an Ep.4 stand-in (tagged on screen), else a labelled placeholder
         for s in shots:
             if s["kind"] != "pic":
@@ -781,19 +825,19 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
             resolve_base(s, R, P)
             if s.get("cardcam"):
                 card_cam(s)
-            if kind == "short":
+            if vertical:
                 seen = sum(1 for x in shots[:shots.index(s)] if x.get("img") == s.get("img") and x.get("screen"))
-                short_frame(s, seen)
+                short_frame(s, seen, compact=kind != "short")
         stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg)
         data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + 18, "end": round(end, 3), "pal": PAL,
-                "band": BAND_9x16 if kind == "short" else None,
+                "band": BAND_9x16 if vertical else None,
                 "shots": [{k: v for k, v in s.items() if k != "_sfx"} for s in shots], "captions": captions(beats, kind),
                 "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a", "A3.1a", "A4.1")],
                 "fonts": {"Anton-Regular.ttf": "Anton-Regular", "ArchivoBlack-Regular.ttf": "ArchivoBlack-Regular",
                           "SpecialElite-Regular.ttf": "SpecialElite-Regular", "PermanentMarker-Regular.ttf": "PermanentMarker-Regular",
                           "PT_Serif-Web-Regular.ttf": "PT-Serif-Web-Regular"}}
         (P / f"v2_{kind}.json").write_text(json.dumps(data, ensure_ascii=False))
-        plans[kind] = {"data": data, "beats": beats, "shots": shots, "audio": {k: v for k, v in stats.items()}, "offset": t_in}
+        plans[kind] = {"data": data, "beats": beats, "shots": shots, "audio": {k: v for k, v in stats.items()}, "offset": t_in, "voice_file": vfile}
         print(kind, len(shots), "shots,", round(end, 2), "s", flush=True)
     (P / "hands").mkdir(exist_ok=True)
     for f in ("hand_ink_cuff.png", "hand_marker_cuff.png", "hand_stamp_cuff.png", "hand_white_cuff.png", "hand_yellow_cuff.png"):

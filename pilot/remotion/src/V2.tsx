@@ -206,7 +206,7 @@ const SeatMap: React.FC<{u: number; w: number; h: number; t: number; s: any; k: 
 				))}
 			</div>
 			{lit > 0 ? (
-			<div data-read="1" style={{position: 'absolute', left: w / 2 - 40 * u, top: h / 2 - 150 * u, opacity: lit, background: C.ink, color: C.paper, fontFamily: fam(BODY), fontSize: 50 * u, lineHeight: 1.2, padding: `${10 * u}px ${22 * u}px`, borderRadius: 10 * u, whiteSpace: 'nowrap'}}>{jumped ? 'ROW F · SEAT 12' : 'ROW G · SEAT 12'}</div>
+			<div data-read="1" style={{position: 'absolute', left: w / 2 - ((s.fs?.seat ?? 50) - 10) * u, top: h / 2 - 150 * u, opacity: lit, background: C.ink, color: C.paper, fontFamily: fam(BODY), fontSize: (s.fs?.seat ?? 50) * u, lineHeight: 1.2, padding: `${10 * u}px ${22 * u}px`, borderRadius: 10 * u, whiteSpace: 'nowrap'}}>{jumped ? 'ROW F · SEAT 12' : 'ROW G · SEAT 12'}</div>
 			) : null}
 		</AbsoluteFill>
 	);
@@ -328,23 +328,31 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 		const fs = {os: 24, row: 30, fee: 34, lab: 30, ...(s.fs || {})};
 		body = (
 			<AbsoluteFill style={{padding: `${(s.fs ? 26 : 34) * u}px ${(s.fs ? 50 : 60) * u}px`}}>
-				<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>ORDER SUMMARY</div>
-				<div style={{display: 'flex', justifyContent: 'space-between', marginTop: 10 * u, fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.2, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
-					<span data-read="1">TICKET · ROW G, SEAT 12</span>
-					<span data-read="1">$30</span>
-				</div>
+				{s.compact ? null : (
+					<>
+						<div data-read="1" style={{fontFamily: fam(BODY), fontSize: fs.os * u, color: C.mute, letterSpacing: 1.5 * u, lineHeight: 1.2}}>ORDER SUMMARY</div>
+						<div style={{display: 'flex', justifyContent: 'space-between', marginTop: 10 * u, fontFamily: fam(BODY), fontSize: fs.row * u, lineHeight: 1.2, color: C.ink, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
+							<span data-read="1">TICKET · ROW G, SEAT 12</span>
+							<span data-read="1">$30</span>
+						</div>
+					</>
+				)}
 				{s.fees.map((fe: any, i: number) => {
+					// 9:16 (compact): the fee lines without the order header; only the last joke label stays, so the page fits the band
+					const lastLab = Math.max(...s.fees.map((x: any, j: number) => (x.label ? j : -1)));
+					if (s.compact && fe.label && i !== lastLab) fe = {...fe, label: undefined};
 					const at = fe.at_ ?? -1;
 					if (t < at) return null;
 					const k = clamp((t - at) / 0.2, 0, 1);
 					const lab = fe.label ? (fe.label_ === undefined ? fe.label : fe.label.slice(0, clamp(Math.floor((t - fe.label_) / 0.04), 0, fe.label.length))) : '';
+					const labTxt = lab ? '↳ ' + lab.replace(/\n/g, '\n   ') : '';
 					return (
 						<div key={i} style={{marginTop: (s.fs ? 10 : 14) * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
 							<div style={{display: 'flex', justifyContent: 'space-between', fontFamily: fam(BODY), fontSize: fs.fee * u, lineHeight: 1.2, color: C.red, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
 								<span data-read="1">{fe.name}</span>
 								<span data-read="1">{fe.amt}</span>
 							</div>
-							{fe.label ? <div data-read="1" style={{fontFamily: fam(TYPE), fontSize: fs.lab * u, lineHeight: 1.15, color: C.ink, marginTop: 4 * u, minHeight: fs.lab * 1.15 * u, whiteSpace: 'pre'}}>{lab ? '↳ ' + lab : ''}</div> : null}
+							{fe.label ? <div data-read="1" style={{fontFamily: fam(TYPE), fontSize: fs.lab * u, lineHeight: 1.15, color: C.ink, marginTop: 4 * u, minHeight: fs.lab * 1.15 * u, whiteSpace: 'pre'}}>{labTxt}</div> : null}
 						</div>
 					);
 				})}
@@ -431,9 +439,9 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 		body = (
 			<AbsoluteFill>
 				<div data-read="1" style={{position: 'absolute', left: 70 * u, top: 90 * u, fontFamily: fam(HEAD), fontSize: 190 * u, color: C.green, opacity: 0.55}}>{s.left}</div>
-				<div data-read="1" style={{position: 'absolute', left: 64 * u, top: 340 * u, width: 440 * u, fontFamily: fam(BODY), fontSize: 46 * u, lineHeight: 1.1, color: C.mute}}>THE TAB HE CLOSED</div>
+				<div data-read="1" style={{position: 'absolute', left: 64 * u, top: 340 * u, width: 440 * u, fontFamily: fam(BODY), fontSize: (s.fs?.lab ?? 46) * u, lineHeight: 1.1, color: C.mute}}>THE TAB HE CLOSED</div>
 				<div data-read="1" style={{position: 'absolute', right: 90 * u, top: 90 * u, fontFamily: fam(HEAD), fontSize: 190 * u, color: C.red}}>{s.right}</div>
-				<div data-read="1" style={{position: 'absolute', right: 90 * u, top: 340 * u, width: 440 * u, textAlign: 'right', fontFamily: fam(BODY), fontSize: 46 * u, lineHeight: 1.1, color: C.ink}}>WHAT HE PAYS</div>
+				<div data-read="1" style={{position: 'absolute', right: 90 * u, top: 340 * u, width: 440 * u, textAlign: 'right', fontFamily: fam(BODY), fontSize: (s.fs?.lab ?? 46) * u, lineHeight: 1.1, color: C.ink}}>WHAT HE PAYS</div>
 				{k > 0 ? <div data-read="1" style={{position: 'absolute', left: 520 * u, top: 200 * u, fontFamily: fam(HEAD), fontSize: 110 * u, color: C.red, transform: `scale(${1.1 - 0.1 * k}) rotate(-8deg)`, border: `${6 * u}px solid ${C.red}`, padding: `0 ${18 * u}px`, borderRadius: 10 * u}}>{s.badge}</div> : null}
 			</AbsoluteFill>
 		);
@@ -1155,7 +1163,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 		case 'plate': {
 			const at = o.at_ ?? 0.2;
 			const k = sm((t - at) / 0.3);
-			const fs = 46 * U;
+			const fs = 46 * U * (short ? 2.25 : 1); // 9:16: the plate reads on a phone (cap >= 2.8 % of the band)
 			return k <= 0 ? null : (
 				<div data-read="1" data-mark="plate" style={{position: 'absolute', left: o.x * SW, top: o.y * SH, transform: 'translateX(-50%)', opacity: k, background: 'rgba(14,26,43,0.86)', border: `2px solid ${C.glow}`, color: C.paper,
 					fontFamily: fam(BODY), fontSize: fs, letterSpacing: 3 * U, padding: `${fs * 0.3}px ${fs * 0.6}px`, borderRadius: 8, whiteSpace: 'nowrap', zIndex: 30}}>{o.text}</div>
@@ -1420,7 +1428,7 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 						const n = clamp(Math.floor((t - a) / 0.03), 0, ln.length);
 						const hl = o.hl && ln.includes(o.hl);
 						return (
-							<div key={i} style={{position: 'absolute', left: 50 * U, top: 50 * U + i * lh, fontFamily: fam(TYPE), fontSize: (o.size ?? 46) * U * (i === 0 ? 1.0 : 0.9), color: i === 0 ? C.red : C.ink, whiteSpace: 'nowrap'}}>
+							<div key={i} data-read={o.read ? '1' : undefined} style={{position: 'absolute', left: 50 * U, top: 50 * U + i * lh, fontFamily: fam(TYPE), fontSize: (o.size ?? 46) * U * (i === 0 ? 1.0 : 0.9), color: i === 0 ? C.red : C.ink, whiteSpace: 'nowrap'}}>
 								{hl && n === ln.length ? <span style={{background: 'rgba(232,181,58,0.55)'}}>{ln.slice(0, n)}</span> : ln.slice(0, n)}
 							</div>
 						);
@@ -1479,7 +1487,7 @@ const KeyCard: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
 			{k > 0 ? (
 				<div style={{position: 'absolute', left: 0, width: SW, top: SH * 0.2, textAlign: 'center', transform: `scale(${1.1 - 0.1 * k})`}}>
-					<div data-read="1" style={{fontFamily: fam(BODY), fontSize: 60 * U, letterSpacing: 8 * U, color: C.glow}}>{s.sub}</div>
+					<div data-read="1" style={{fontFamily: fam(BODY), fontSize: (SH > SW ? 100 : 60) * U, letterSpacing: 8 * U, color: C.glow}}>{s.sub}</div>
 					<div data-read="1" style={{fontFamily: fam(HEAD), fontSize: Math.min(380 * U, (SW * 0.86) / (String(s.key).length * 0.5)), lineHeight: 1.1, color: '#FF8466'}}>{s.key}</div>
 				</div>
 			) : null}
