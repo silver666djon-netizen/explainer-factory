@@ -1,0 +1,41 @@
+name: Ep.4 v2 RU voice test (4 samples)
+# Klot r8: the same RU passage in 4 voices/models (tools/ru_voice_test.py), each line STT-checked in Russian; published to
+# the draft ep04v2-ru-voicetest and sent to Telegram as "CoinSense · EP04v2 · RU VOICE TEST". The key is never printed.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy requests pyyaml faster-whisper num2words 2>&1 | tail -2
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-ru-v1
+      - name: Four samples
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          set -o pipefail
+          python tools/ru_voice_test.py out 2>&1 | tee test.log
+          grep -E "^(account|voices|[A-D] ·)" test.log | python3 -c 'import sys; print("::notice title=ru voice test::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+      - name: Publish into the draft ep04v2-ru-voicetest
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files="out/ru_voice_test_A.mp3 out/ru_voice_test_B.mp3 out/ru_voice_test_C.mp3 out/ru_voice_test_D.mp3 out/ru_voice_test.md out/ru_voice_test_note.txt"
+          if tools/rel.sh id ep04v2-ru-voicetest >/dev/null 2>&1; then tools/rel.sh upload ep04v2-ru-voicetest $files
+          else gh release create ep04v2-ru-voicetest $files --title "CoinSense · EP04v2 · RU VOICE TEST" --notes "RU voice test (not for upload)." --prerelease --draft; fi
+      - name: Send to Telegram
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python tools/send_files.py out "CoinSense · EP04v2 · RU VOICE TEST" --text ru_voice_test_note.txt ru_voice_test_A.mp3 ru_voice_test_B.mp3 ru_voice_test_C.mp3 ru_voice_test_D.mp3 ru_voice_test.md
