@@ -716,6 +716,13 @@ def c_dial_run(shots=None, **_):
 MODERN = re.compile(r"\b(online|website|web site|app|laptop|internet|click|tab|screen)s?\b", re.I)
 
 
+def c_tool_touch(shots=None, **_):
+    """R49 (Klot r8): an object that acts on another (scissors, stamp, pen) touches its target in the picture. A tool drawn
+    by code over a still never touches anything (the old floating scissors over the bomb): it is not allowed."""
+    return [f"{s['id']}: code-drawn {o['t']} over the picture (the tool must touch its target in the still)"
+            for s in shots for o in (s.get("overs") or []) if o.get("t") in ("wires", "scissors")]
+
+
 def c_archive_era(shots=None, beats=None, **_):
     """R48: an archive photo only under a line about general behaviour (no date) or within +-10 years of the year spoken;
     its caption shows its real year; never a date plate of 1970 or later on a photo from before 1970."""
@@ -809,6 +816,7 @@ CHECKS = [
     ("plain_background", c_plain_background, "no object on a plain background"),
     ("dial_run", c_dial_run, "<= 2 s of dial close-ups in a row; wide safe <= 3.5 s"),
     ("end_screen", c_end_screen, "end screen 20-22 s, music only after the last line, YouTube zones free"),
+    ("tool_touch (R49)", c_tool_touch, "a tool acting on an object touches it in the still (no code-drawn scissors)"),
     ("archive_era (R48)", c_archive_era, "archive photo year within +-10 y of the line (or no date); real year in the caption; no modern plate"),
 ]
 NOT_APPLICABLE = {
@@ -1055,6 +1063,10 @@ def selftest(ctx):
         c["beats"] = [{"id": "X", "text": "August 2015. StubHub, the ticket resale site."}]
         return "Loew's 1939 under AUGUST 2015"
     plant("archive_era (R48)", m_era, lambda **k: c_archive_era(shots=k["shots"], beats=k["beats"]))
+    def m_tool(c):
+        c["shots"] = c["shots"] + [{"id": "planted", "overs": [{"t": "wires", "snip_": 0.5}]}]
+        return "code-drawn scissors floating over the bomb"
+    plant("tool_touch (R49)", m_tool, c_tool_touch)
     def m_end(c):
         c["beats"] = [{"id": "L", "start": 100.0, "end": 103.0, "text": "Subscribe."}]
         c["shots"] = [{"id": "L", "beat": "L", "start": 99.8, "end": 103.4}, {"id": "E", "beat": "END", "endscreen": True, "start": 103.4, "end": 109.0}]

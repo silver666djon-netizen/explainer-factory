@@ -92,7 +92,9 @@ S: dict[str, dict] = {
     "A1.8a": W_(base="s03", dur=4.8, cam=[[0.511, 0.5, 1.5], [0.6, 0.4, 1.9]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
     "A1.8b": W_(base="s04", cam=[[0.45, 0.45, 1.02], [0.36, 0.33, 1.3]]),
     "A1.J2a": W_(base="k5", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
-    "A1.J2b": W_(base="g05", cam=[[0.4, 0.55, 1.25], [0.4, 0.55, 1.32]], overs=[W_(t="wires", snip_on="wires", xa=0.12, xb=0.6, y=0.5)],
+    # Klot r8: real scissors around the red wire (still g11, its left edge extended 240 px so the handles keep a >= 4 % margin);
+    # a slow push toward the scissors and the wire, held to the end of the line. No code-drawn scissors (R49)
+    "A1.J2b": W_(base="g11", cam=[[0.48, 0.5, 1.0], [0.44, 0.55, 1.12]],
                  sfx=[{"kind": "snip", "on": "wires", "lead": -0.6}]),
     "A1.9a": W_(base="s01", cam=[[0.45, 0.5, 1.15], [0.4, 0.42, 1.5]],  # a face between screens (note 8): Larry typing
 
@@ -144,7 +146,7 @@ for _k, _v in list(S.items()):  # sfx inside a shot spec is the mixer's, not the
     _v.setdefault("kind", "pic")
 # logical stills -> Klot's file when it is in the repo, else an Ep.4 stand-in window (x0, y0, x1, y1 of the stand-in) or a placeholder
 KLOT = {"arch_loews": "ep04v2_arch_loews_1939", "arch_briggs": "ep04v2_arch_briggs_1942", "a1_glow": "ep04v2_a1_glow", "a1_wallet": "ep04v2_a1_wallet", "a4_seat": "ep04v2_a4_seat", "g01": "ep04v2_g01_blueprint",
-        "g04": "ep04v2_g04_daydream", "g05": "ep04v2_g05_bomb", "s01": "ep04v2_s01_flat_wide", "s02": "ep04v2_s02_over_shoulder",
+        "g04": "ep04v2_g04_daydream", "g05": "ep04v2_g05_bomb", "g11": "ep04v2_g11_bomb_scissors", "s01": "ep04v2_s01_flat_wide", "s02": "ep04v2_s02_over_shoulder",
         "s03": "ep04v2_s03_laptop_close", "s04": "ep04v2_s04_wall_clock", "s05": "ep04v2_s05_gulp", "s06": "ep04v2_s06_smug"}
 STANDIN = {"a1_glow": ("ep04v2_s01_flat_wide", [0.16, 0.14, 0.6, 0.6], "dark"), "s01": ("o4", [0.0, 0.0, 1.0, 1.0], "night"),
            "s02": ("m1b-blank", [0.08, 0.04, 0.92, 0.886], ""), "s03": ("m1b-blank", [0.275, 0.128, 0.726, 0.582], ""),

@@ -53,7 +53,7 @@ PF: dict[str, list] = {
     "A1.8": [sh(f"{S03} (close)", f"{SCR}: the hold timer slides in: 10:00 and ticking", "push-in to the timer", G),
              sh("ep04v2_s04_wall_clock (the kitchen clock, just there)", "-", "slow push", G, "T3")],
     "A1.J2": [sh("ep04v2_g05_bomb (Grok k5: fuse sparking)", "-", "slow push", K),
-              sh("ep04v2_g05_bomb (closer)", "a red wire and a blue wire run from the bomb; scissors hover between them", "push-in", G, "noise wobble")],
+              sh("ep04v2_g11_bomb_scissors (Klot r8: real scissors around the red wire)", "-", "slow push-in toward the scissors and the red wire", G)],
     "A1.9": [sh("ep04v2_s01_flat_wide (push in on Larry typing)", "typing taps on Name / Email / Card", "push-in", G),
              sh(f"{S03} (close on the card field)", f"{SCR}: sixteen digits typed as dots", "push-in", G)],
     "A1.10": [sh(f"{S02} (over the shoulder, push-in)", f"{SCR}: the checkout pages flick by: price list -> seat map -> card form", "push-in", G),
