@@ -31,8 +31,8 @@ def CARD(lines, size=50, hl=None, **k):
     return {"k": "paper", "lines": lines, "x": 500, "y": h / 2, "w": 1000, "h": h, "size": size, "hl": hl, **k}
 
 
-def card_sheet(q, lines, hl=None, at=0.15, **k):  # the shot gets cardcam=True: the camera is fitted to the card
-    c = CARD(lines, hl=hl, at=at)
+def card_sheet(q, lines, hl=None, at=0.15, style=None, **k):  # the shot gets cardcam=True: the camera is fitted to the card
+    c = CARD(lines, hl=hl, at=at, **({"style": style} if style else {}))
     return W_(q=q, W=1000, H=c["h"], items=[c], color=INK, card=True, **k)
 
 
@@ -43,6 +43,16 @@ P01_CARD = {
     "right": [[2650, 1880], [4580, 1930], [4570, 2560], [2600, 2540]],
     "journal_tilt": [[1300, 1240], [3400, 1360], [3320, 2000], [1170, 1880]],
     "front_centre": [[1500, 1940], [3560, 1910], [3640, 2540], [1420, 2580]],
+}
+# Klot r6 (variety pass): cards that leave the p01 desk (px of the 5016-wide picture frame, like P01_CARD)
+CARD_AT = {
+    "mug": [[2412, 1698], [4630, 1659], [4746, 2431], [2334, 2489]],          # ep04v2_a2_mug: the table, right of the mug
+    "mug_front": [[1891, 1987], [4148, 1958], [4225, 2682], [1833, 2720]],    # ep04v2_a2_mug: the table, in front (left of the tip tablet)
+    "calc_wall": [[232, 328], [1678, 318], [1688, 926], [222, 936]],    # ep04v2_a2_calculators: pinned on the wall above the desk
+    "corridor": [[3183, 2045], [4823, 2016], [4920, 2701], [3125, 2749]],     # ep04v2_g03_newspaper: the hotel corridor carpet, beside the newspaper
+    "bench": [[174, 1582], [2026, 1543], [2045, 2276], [154, 2315]],        # ep04v2_a3_courtroom: on the front of the judge's bench
+    "bench2": [[270, 1659], [1949, 1630], [1968, 2219], [251, 2257]],
+    "map": [[2219, 1350], [3955, 1312], [4013, 1949], [2180, 1987]],          # ep04v2_p13_paper_map: laid on the ocean, by Britain
 }
 SAFE = [(1167, 1092), (1683, 1087), (2200, 1083), (2728, 1087)]  # the four dials of ep04v2_a2_safe (px), r ~ 188
 DIAL_R = 186
@@ -155,7 +165,7 @@ A2 = {
     "A2.14a": W_(base="s05", cam=[[0.45, 0.4, 1.05], [0.45, 0.38, 1.15]]),
     "A2.14b": W_(base="key", key="≈21%", sub="MORE SPENT", at=0.05, cut_on="twenty-one"),
     "A2.15": W_(base="p01", cardcam=True, cam=[[0.33, 0.8, 1.9], [0.3, 0.83, 2.25]], sfx=[{"kind": "paper", "at": 0.1}],
-                sheets=[card_sheet(P01_CARD["front_left"], ["NBER w25186 · 2018", "Blake, Moshary, Sweeney", "& Tadelis: fees at the end,", "buyers spent ~21% more"], hl="~21% more")]),
+                sheets=[card_sheet(P01_CARD["front_left"], ["NBER w25186 · 2018", "Blake, Moshary, Sweeney", "& Tadelis: fees at the end,", "buyers spent ~21% more"], hl="~21% more", style="clip")]),
     "A2.16": W_(base="p06", cam=[[0.5, 0.45, 1.02], [0.48, 0.42, 1.12]],
                 sheets=[img_sheet(5016, 2823, [TAG("LARRY", 2400, 300, 520, 170, 120, at_on="Larry", arrow=[2440, 520], col=INK)])]),
     "A2.17a": W_(base="p06", cam=[[0.48, 0.42, 1.12], [0.5, 0.45, 1.0]],
@@ -178,8 +188,8 @@ A2 = {
     "A2.21c": W_(base="g04", cam=[[0.4, 0.36, 1.25], [0.42, 0.33, 1.4]],
                  insets=[W_(still="a4_seat", q=[[2001, 93], [3141, 93], [3141, 1077], [2001, 1077]], crop=[1300, 250, 3800, 2407], round=True)]),
     "A2.21d": W_(base="a1_wallet", cam=[[0.47, 0.5, 1.15], [0.47, 0.52, 1.3]]),
-    "A2.22a": W_(base="p01", cardcam=True, cam=[[0.78, 0.82, 1.9], [0.8, 0.84, 2.25]], sfx=[{"kind": "paper", "at": 0.1}],
-                 sheets=[card_sheet(P01_CARD["right"], ["KAHNEMAN · KNETSCH · THALER", "1990 · \"Experimental Tests of", "the Endowment Effect\""], hl="Endowment Effect")]),
+    "A2.22a": W_(base="a2_mug", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],  # Klot r6: on the mug's table
+                 sheets=[card_sheet(CARD_AT["mug"], ["KAHNEMAN · KNETSCH · THALER", "1990 · \"Experimental Tests of", "the Endowment Effect\""], hl="Endowment Effect")]),
     "A2.22b": W_(base="a2_mug", cam=[[0.45, 0.5, 1.02], [0.45, 0.48, 1.1]]),
     "A2.22c": W_(base="a2_mug", cam=[[0.55, 0.52, 1.25], [0.57, 0.52, 1.38]],
                  sheets=[img_sheet(5016, 2823, [TAG("SELL $7.12", 3500, 1050, 700, 220, 130, col=RED, at=0.1, arrow=[2760, 1420]),
@@ -196,8 +206,8 @@ A2 = {
                  overs=[W_(t="tags", items=["$18"], at_on=["Eighteen"], x=0.76, y=0.3, w=230, size=100)]),
     "A2.24c": W_(base="a1_wallet", cam=[[0.42, 0.36, 1.5], [0.4, 0.33, 1.7]],
                  overs=[W_(t="stamp", text="DECIDED", at_on="decided", x=0.78, y=0.5, size=96, paper=True)], sfx=[{"kind": "stamp", "on": "decided"}]),
-    "A2.25a": W_(base="p01", cardcam=True, cam=[[0.45, 0.58, 1.6], [0.43, 0.57, 1.9]], sfx=[{"kind": "paper", "at": 0.1}],
-                 sheets=[card_sheet(P01_CARD["journal_tilt"], ["TVERSKY & KAHNEMAN · 1981", "\"The Framing of Decisions and", "the Psychology of Choice\"", "Science 211"], hl="Science 211")]),
+    "A2.25a": W_(base="a2_calculators", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],  # Klot r6: pinned above the calculators
+                 sheets=[card_sheet(CARD_AT["calc_wall"], ["TVERSKY & KAHNEMAN · 1981", "\"The Framing of Decisions and", "the Psychology of Choice\"", "Science 211"], hl="Science 211")]),
     "A2.25b": W_(base="a2_calculators", cam=[[0.5, 0.5, 1.0], [0.62, 0.45, 1.3]]),
     # Klot r3/r4: $15 + 68% DRIVE on the small one, $125 + 29% DRIVE on the big one, both pairs on screen together from "far fewer"
     # to "doesn't think so" (three framings of the same desk); every tag >= 6 % inside
@@ -217,7 +227,7 @@ A2 = {
     "A2.J5": W_(base="p10", cam=[[0.38, 0.4, 1.3], [0.36, 0.38, 1.5]],
                 sheets=[W_(q=P10, W=700, H=400, color=INK, items=[T("MONDAY", 160, 62, 46, at_on="thinks", col=INK), T("GYM", 150, 175, 80, at_on="gym", col=INK),
                                                                  L("M 40 132 L 270 160", w=16, col=RED)])]),
-    "A2.26a": W_(base="a2_lookout", cam=[[0.35, 0.5, 1.05], [0.32, 0.5, 1.2]]),
+    "A2.26a": W_(base="m6", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.04]]),  # Klot r6 motion: m6 lookout (Grok, from a2_lookout)
     "A2.26b": W_(base="s04", cam=[[0.42, 0.42, 1.05], [0.42, 0.41, 1.3]], dial_time="8:18"),
     "A2.27a": W_(base="a2_safe", cam=[[0.4, 0.5, 1.05], [0.42, 0.5, 1.22]], dur=3.4, door=W_(box=[790, 439, 3185, 2295], hinge="right", at_on="click", dur=1.2),
                  sfx=[{"kind": "kachunk", "on": "click"}]),
@@ -229,7 +239,7 @@ A2 = {
                             plate=W_(box=[590, 112, 1300, 298], size=72, text="FEES:\nUPFRONT", text2="FEES:\nAT THE END", swap_on="result"))],
                  sfx=[{"kind": "kachunk", "on": "result", "lead": -0.25}]),
     "A2.28b": W_(base="p01", cardcam=True, cam=[[0.5, 0.8, 1.9], [0.5, 0.84, 2.3]], sfx=[{"kind": "paper", "at": 0.1}],
-                 sheets=[card_sheet(P01_CARD["front_centre"], ["NBER w25186 · p. 27", "1 SEPTEMBER 2015: the whole", "site switched to fees at", "the end, for everyone"], hl="fees at")]),
+                 sheets=[card_sheet(P01_CARD["front_centre"], ["NBER w25186 · p. 27", "1 SEPTEMBER 2015: the whole", "site switched to fees at", "the end, for everyone"], hl="fees at", style="clip")]),
     "A2.29": W_(base="a12clip", cam=[[0.5, 0.5, 1.02], [0.5, 0.5, 1.1]]),
     "A2.30": W_(base="p01", cam=[[0.75, 0.75, 1.8], [0.76, 0.75, 2.0]],
                 sheets=[W_(q=[[2980, 1980], [4320, 1960], [4500, 2700], [2900, 2720]], W=612, H=662, color=INK,

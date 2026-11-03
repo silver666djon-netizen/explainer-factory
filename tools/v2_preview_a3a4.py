@@ -3,7 +3,7 @@
 m2 mugshot, l2 ticket, l13 form, x1 switch, sub, the d5 archive, next_tablet) is replaced by Klot's stills / a place
 (plain_background); document cards mirror the narration only (no invented quotes); every lawsuit line carries ALLEGED.
 Archive photos: none in Acts 3-4 (R48: no 1940s photo under a 2019-2026 event)."""
-from v2_preview_a2 import (CARD, GREEN, INK, L, P01_CARD, RED, SAFE, T, TAG, W_, card_sheet, dials, img_sheet,  # noqa: F401
+from v2_preview_a2 import (CARD, CARD_AT, GREEN, INK, L, P01_CARD, RED, SAFE, T, TAG, W_, card_sheet, dials, img_sheet,  # noqa: F401
                            opened)
 
 CHALK = "#FBFAF5"
@@ -35,7 +35,7 @@ A3 = {
                          rows=[W_(name="CITY TAX", amt="$9", at_on="real"), W_(name="STATE TAX", amt="$6", at_on="taxes"),
                                W_(name="RESORT FEE", amt="$35", at_on="second", dim=True)]),
                sfx=[{"kind": "pop", "on": "second"}]),
-    "A3.4a": W_(base="a3_lineup", cam=[[0.5, 0.45, 1.02], [0.5, 0.43, 1.12]],
+    "A3.4a": W_(base="m7", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.0]], track="ep04v2_m7_lineup",  # Klot r6 motion: m7 lineup lights (Grok)
                 sheets=[img_sheet(5016, 2823, [dict(LINEUP_TAG, at_on="Name")])],
                 overs=[W_(t="stamp", text="SUSPECT", at_on="resort", x=0.2, y=0.15, size=90, paper=True)], sfx=[{"kind": "stamp", "on": "resort"}]),
     "A3.4b": W_(base="a3_lineup", cam=[[0.5, 0.31, 1.5], [0.5, 0.3, 1.6]],
@@ -52,14 +52,14 @@ A3 = {
     "A3.J6": W_(base="g02", cam=[[0.3, 0.36, 1.5], [0.28, 0.35, 1.65]],
                 sheets=[img_sheet(5016, 2823, [TAG("MONDAY: GYM", 700, 820, 660, 210, 120, col=INK, at_on="Monday"),
                                                TAG("+ A FEE", 700, 1090, 420, 190, 120, col=RED, at_on="fee")])]),
-    "A3.6": W_(base="c1", cam=[[0.4, 0.45, 1.3], [0.42, 0.45, 1.42]],
+    "A3.6": W_(base="m8", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.03]],  # Klot r6 motion: m8 lobby (Grok, from c1)
                overs=[W_(t="tags", items=["USES: NONE"], at_on=["none"], x=0.78, y=0.14, w=500, size=78, color=GREEN),
                       W_(t="tags", items=["PAYS: ALL OF IT"], at_on=["all"], x=0.78, y=0.32, w=560, size=78)]),
     # ---------------------------------------------------------------- Marriott (allegations; R48: our world + typeset cards)
     "A3.7a": W_(base="g03", cam=[[0.5, 0.45, 1.02], [0.48, 0.45, 1.12]],
                 overs=[W_(t="card", lines=["D.C. ATTORNEY GENERAL", "v. MARRIOTT", "LAWSUIT · 2019"], x=0.32, y=0.34, w=760, size=50, at=0.2)]),
-    "A3.7b": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],
-                sheets=[card_sheet(P01_CARD["right"], ["D.C. ATTORNEY GENERAL v.", "MARRIOTT · JULY 2019", "at least 189 hotels"], hl="189")]),
+    "A3.7b": W_(base="g03", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],  # Klot r6: a clipping on the corridor carpet
+                sheets=[card_sheet(CARD_AT["corridor"], ["D.C. ATTORNEY GENERAL v.", "MARRIOTT · JULY 2019", "at least 189 hotels"], hl="189", style="clip")]),
     "A3.7c": W_(base="g03", cam=[[0.62, 0.6, 1.6], [0.64, 0.62, 1.75]],
                 overs=[W_(t="tags", items=["189 HOTELS"], at_on=["eighty-nine"], x=0.3, y=0.12, w=520, h=250, size=96,
                           stamp=W_(text="ALLEGED", at_on="charged", size=74))], sfx=[{"kind": "stamp", "on": "charged"}]),
@@ -77,9 +77,10 @@ A3 = {
     "A3.10": W_(base="p12", cam=[[0.5, 0.7, 1.25], [0.5, 0.42, 1.25]]),
     "A3.11a": W_(base="a3_courtroom", cam=[[0.2, 0.4, 1.7], [0.22, 0.4, 1.85]],
                  overs=[W_(t="card", lines=["FTC + 7 STATES", "v. LIVE NATION", "& TICKETMASTER", "SEPTEMBER 2025"], x=0.68, y=0.4, w=700, size=50, at=0.2)]),
-    "A3.11b": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],
-                 sheets=[card_sheet(P01_CARD["journal"], ["FTC + 7 STATES v.", "LIVE NATION / TICKETMASTER", "lawsuit · Sept 2025", "ALLEGED, not proven"],
-                                    hl="ALLEGED", at_on="sued")]),
+    "A3.11b": W_(base="a3_courtroom", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}, {"kind": "stamp", "on": "sued"}],  # Klot r6: a court document on the bench
+                 sheets=[card_sheet(CARD_AT["bench"], style="court", lines= ["FTC + 7 STATES v.", "LIVE NATION / TICKETMASTER", "lawsuit · Sept 2025", "ALLEGED, not proven"],
+                                    hl="ALLEGED", at_on="sued")],
+                 overs=[W_(t="stamp", text="FILED", at_on="sued", x=0.76, y=0.68, size=90)]),
     "A3.12a": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],
                  sheets=[card_sheet(P01_CARD["right"], ["FTC COMPLAINT · ALLEGED", "fees run 24% to 44%", "of the total price"], hl="24% to 44%")]),
     "A3.12b": W_(base="key", key="$16.4BN", sub="MANDATORY FEES · ALLEGED", at=0.05, cut_on="sixteen"),
@@ -93,12 +94,13 @@ A3 = {
                  sheets=[card_sheet(P01_CARD["front_left"], ["ALLEGED RANGE: 24% - 44%", "LARRY: $18 of $48", "= 37.5%, inside it"], hl="37.5%",
                                     at_on="Thirty-seven")]),
     "A3.14a": W_(base="a3_courtroom", cam=[[0.5, 0.5, 1.0], [0.5, 0.48, 1.08]]),
-    "A3.14b": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}, {"kind": "stamp", "on": "goes"}],
-                 sheets=[card_sheet(P01_CARD["front_centre"], ["COURT ORDER · SEPT 2026", "motion to dismiss:", "the case goes on"])],
+    "A3.14b": W_(base="a3_courtroom", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}, {"kind": "stamp", "on": "goes"}],  # Klot r6: stamped court order
+                 sheets=[card_sheet(CARD_AT["bench2"], ["COURT ORDER · SEPT 2026", "motion to dismiss:", "the case goes on"], style="court")],
                  overs=[W_(t="stamp", text="DENIED", at_on="goes", x=0.7, y=0.6, size=100),
                         W_(t="plate", text="ALLEGED · UNTIL A COURT DECIDES", at_on="Until", x=0.5, y=0.08)]),
-    "A3.15": W_(base="a3_courtroom", cam=[[0.2, 0.4, 1.9], [0.17, 0.39, 2.3]], title=["THE DEFENCE", "IN DEFENCE OF THE ACCUSED"], title_over=True,
-                sfx=[{"kind": "kachunk", "at": 0.05}, {"kind": "kachunk", "on": "defence"}]),
+    "A3.15": W_(base="m9", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.04]], title=["THE DEFENCE", "IN DEFENCE OF THE ACCUSED"], title_over=True,
+                # Klot r6 motion: m9 gavel (Grok; its first frame held 1.9 s under the title, the strike at 4.0 s)
+                sfx=[{"kind": "kachunk", "at": 0.05}, {"kind": "kachunk", "on": "defence"}, {"kind": "stamp", "at": 4.0}]),
     # ---------------------------------------------------------------- the race
     "A3.16a": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],
                  sheets=[card_sheet(P01_CARD["journal"], ["STUBHUB'S OWN ACCOUNT", "2014: switched to all-in", "prices, every fee upfront"], hl="all-in")]),
@@ -134,8 +136,8 @@ A4 = {
     "A4.5a": W_(base="p13", cam=[[0.6, 0.4, 1.15], [0.64, 0.36, 1.35]],
                 sheets=[img_sheet(5016, 2820, [TAG("UK", 4300, 470, 300, 200, 150, col=INK, static=True), {"k": "route", "d": MAP_TO_UK, "w": 16, "at_on": "Britain", "col": RED}])],
                 overs=[W_(t="stamp", text="UK · APRIL 2025", at_on="April", x=0.55, y=0.56, size=80, paper=True)], sfx=[{"kind": "stamp", "on": "April"}]),
-    "A4.5b": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],
-                sheets=[card_sheet(P01_CARD["front_left"], ["UK · SINCE APRIL 2025", "the price must include", "every fee you can't avoid"], hl="every fee",
+    "A4.5b": W_(base="p13", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],  # Klot r6: laid on the map, by Britain
+                sheets=[card_sheet(CARD_AT["map"], ["UK · SINCE APRIL 2025", "the price must include", "every fee you can't avoid"], hl="every fee",
                                    at_on="price")]),
     "A4.6a": W_(base="l8", cam=[[0.5, 0.55, 1.05], [0.52, 0.56, 1.15]]),
     "A4.6b": W_(base="l8", cam=[[0.55, 0.55, 1.4], [0.57, 0.55, 1.52]],
@@ -228,8 +230,8 @@ A4 = {
     # ---------------------------------------------------------------- next case
     "A4.22a": W_(base="a2_mug", cam=[[0.62, 0.5, 1.1], [0.66, 0.5, 1.25]],
                  insets=[W_(still="next_tablet", q=[[3150, 750], [4420, 750], [4420, 2250], [3150, 2250]], crop=[418, 66, 958, 704])]),
-    "A4.22b": W_(base="p01", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],
-                 sheets=[card_sheet(P01_CARD["right"], ["PEW RESEARCH CENTER · 2023", "72% of Americans: tipping", "is expected in more places", "than five years ago"], hl="72%",
+    "A4.22b": W_(base="a2_mug", cardcam=True, sfx=[{"kind": "paper", "at": 0.1}],  # Klot r6: on the table, by the tip tablet
+                 sheets=[card_sheet(CARD_AT["mug_front"], ["PEW RESEARCH CENTER · 2023", "72% of Americans: tipping", "is expected in more places", "than five years ago"], hl="72%",
                                     at_on="Seventy-two")]),
     "A4.22c": W_(base="p01", cam=[[0.5, 0.6, 1.05], [0.5, 0.6, 1.15]], cut_on="We'll",
                  overs=[W_(t="case_folder", number="005", title="THE TIP SCREEN", slide_on="find", type_on=["find", "decided"])],
@@ -244,8 +246,9 @@ KLOT_A34 = {"a3_lineup": "ep04v2_a3_lineup", "g02": "ep04v2_g02_gym", "g03": "ep
             "a3_race": "ep04v2_a3_race", "a4_police": "ep04v2_a4_police", "g07": "ep04v2_g07_car", "g08": "ep04v2_g08_mirror", "g09": "ep04v2_g09_hotdog",
             "p12": "ep04v2_p12_ticket_stack", "p13": "ep04v2_p13_paper_map"}
 EP4_A34 = {"c1": "c1", "m2b": "m2b", "l5": "l5", "l8": "l8"}
-CLIPS_A34 = {"k2": "ep04v2_k2_race", "k3": "ep04v2_k3_police", "k4": "ep04v2_k4_seat", "k7": "ep04v2_k7_hotdog", "c1clip": "c1", "m2bclip": "m2b", "z0clip": "z0"}
-FACES_A34 = {"c1", "c1clip", "o4clip", "g09", "k4", "k7", "z0clip"}
+CLIPS_A34 = {"m1": "ep04v2_m1_gulp", "m4": "ep04v2_m4_smug", "m6": "ep04v2_m6_lookout", "m7": "ep04v2_m7_lineup", "m8": "ep04v2_m8_lobby",
+             "m9": "ep04v2_m9_gavel", "k2": "ep04v2_k2_race", "k3": "ep04v2_k3_police", "k4": "ep04v2_k4_seat", "k7": "ep04v2_k7_hotdog", "c1clip": "c1", "m2bclip": "m2b", "z0clip": "z0"}
+FACES_A34 = {"m1", "m4", "m8", "c1", "c1clip", "o4clip", "g09", "k4", "k7", "z0clip"}
 
 # ---------------------------------------------------------------- the end screen (Klot, locked): the last 20-22 s, music only:
 # the Subscribe line, a next-case sketch (~10 s), subscribe (~6-7 s); YouTube's zones stay free (right: the video element,

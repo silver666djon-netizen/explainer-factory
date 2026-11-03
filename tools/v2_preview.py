@@ -69,7 +69,7 @@ S: dict[str, dict] = {
                 overs=[W_(t="calendar_strip", days=["TUE", "WED", "THU", "FRI"], amount="$50", write_on="fifty", cx=0.7, cy=0.27, s=0.85)]),
     "A1.2a": W_(base="a10", cam=[[0.5, 0.55, 1.03], [0.5, 0.58, 1.15]], dream=True,
                 overs=[W_(t="plate", text="SATURDAY · 2 HOURS AWAY", at_on="Saturday", x=0.5, y=0.12)]),
-    "A1.2b": W_(base="s06", cam=[[0.42, 0.45, 1.02], [0.36, 0.42, 1.14]]),
+    "A1.2b": W_(base="m4", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.03]]),  # Klot r6 motion: m4 smug (Grok, from s06)
     "A1.3": W_(base="s02", cam=[[0.511, 0.5, 1.2], [0.511, 0.5, 1.6]],
                screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN", on="forty")], hl_on="Everything"), sfx=[{"kind": "tap", "on": "first"}]),
     "A1.4": W_(base="o4", cam=[[0.45, 0.5, 1.04], [0.42, 0.46, 1.16]],  # Klot r6: Larry, not the laptop
@@ -116,9 +116,9 @@ S: dict[str, dict] = {
                  overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at_on=["Facility", "Facility", "Processing"], x=0.84, y=0.2)],
                  sfx=[{"kind": "kachunk", "on": "Processing"}]),
     "A1.12": W_(base="key", key="$48", sub="TOTAL", at=0.15, sfx=[{"kind": "stab", "on": "Total"}]),
-    "A1.13": W_(base="s05", cam=[[0.5, 0.42, 1.15], [0.5, 0.38, 1.35]],
+    "A1.13": W_(base="m1", cam=[[0.5, 0.5, 1.0], [0.5, 0.48, 1.06]],  # Klot r6 motion: m1 gulp (Grok, from s05; its last frame held)
                 overs=[W_(t="bars_card", bars=[["FIRST", 30, "$30"], ["LAST", 48, "$48"]], x=0.8, y=0.62),
-                       W_(t="stamp", text="+60%", at_on="sixty", x=0.78, y=0.25, size=120)], sfx=[{"kind": "stamp", "on": "sixty"}]),
+                       W_(t="stamp", text="+60%", at_on="sixty", x=0.82, y=0.37, size=110)], sfx=[{"kind": "stamp", "on": "sixty"}]),
     "A1.14a": W_(base="s03", cam=[[0.511, 0.52, 1.5], [0.511, 0.52, 1.66]], screen=W_(mode="versus", left="$40", right="$48", badge="+$8", badge_on="eight"),
                  sfx=[{"kind": "pop", "on": "eight"}]),
     "A1.14b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.2], [0.5, 0.5, 1.35]],
@@ -426,6 +426,11 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
                 elif o.get("t") == "note" and "write_" in o:
                     ink.append((s0 + o["write_"], s0 + o["write_"] + len(o["text"]) * 0.075))
             ev = [{"kind": "marker", "t": round(a, 3), "dur": round(b - a, 3)} for a, b in ink]
+            for sh in spec.get("sheets", []):  # Klot r6: a typed card types with a typewriter's key-clack
+                for i in sh["items"]:
+                    if i["k"] == "paper" and not i.get("static") and i.get("lines"):
+                        n = sum(len(x) for x in i["lines"])
+                        ev.append({"kind": "typewriter", "t": round(s0 + i["t0"] + 0.3, 3), "dur": round(n * 0.03, 2)})
             for x in spec.pop("sfx", []):
                 at = (word_time(b, x["on"]) - x.get("lead", 0.0)) if "on" in x else s0 + x["at"]
                 ev.append({**x, "t": round(at, 3)})
@@ -514,6 +519,11 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
                 while t < e["t"] + e.get("dur", 1.0):
                     tl.add_sfx(t, "tap", seed=int(t * 100))
                     t += 0.11 + 0.05 * ((int(t * 100) * 7919) % 5) / 5
+            elif k == "typewriter":  # key strikes, a little uneven, -6 dB under the voice
+                t = e["t"]
+                while t < e["t"] + e.get("dur", 1.0):
+                    tl._add(tl.fx, t, A.sfx("type", seed=int(t * 100))[: int(0.1 * A.SR)] * A.db(-6))
+                    t += 0.085 + 0.04 * ((int(t * 100) * 7919) % 5) / 5
             elif k == "marker":
                 tl.add_sfx(e["t"], f"scribble:{e.get('dur', 0.6)}")
                 tl.log.append((e["t"], e["t"] + e.get("dur", 0.6), "ink"))
@@ -650,7 +660,8 @@ def resolve_base(s: dict, R: Path, P: Path) -> None:
             s["track"] = json.loads((EP / "v2" / "tracks" / f"{s['track']}.json").read_text())
             for sh in s.get("sheets", []):
                 sh["quad"] = [[x, y] for x, y in sh.pop("q")]
-                assert all(i.get("static") for i in sh["items"]), f"{s['id']}: ink on a clip must be static (no hand on a moving picture)"
+                assert all(i.get("static") or i["k"] in ("tag", "paper", "prop") for i in sh["items"]), \
+                    f"{s['id']}: ink on a clip must be static (no hand on a moving picture; a tag may pop in)"
         return
     screens = json.loads((EP / "v2" / "screens.json").read_text()) if (EP / "v2" / "screens.json").exists() else {}
     kp = _find(KLOT[b], R) if b in KLOT else None

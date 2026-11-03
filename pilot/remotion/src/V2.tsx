@@ -1591,21 +1591,36 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 						// a typed paper card lying in the picture; lines type in one after another (0.03 s per letter), hl gets a marker
 						let used = 0;
 						const lh = it.size * 1.3;
+						// Klot r6: not every card is the same desk card: a yellowed newspaper clipping (serif, torn edge) or a court document
+						const lf = it.style === 'clip' ? fam(SERIF) : fam(TYPE);
+						const torn = (() => {
+							const w2 = it.w / 2, h2 = it.h / 2, pts: string[] = [];
+							for (let q = 0; q <= 40; q++) pts.push(`${-w2 + (it.w * q) / 40},${-h2 + ((q * 7919) % 5) * 2.2}`);
+							for (let q = 0; q <= 14; q++) pts.push(`${w2 - ((q * 104729) % 4) * 2.5},${-h2 + (it.h * q) / 14}`);
+							for (let q = 40; q >= 0; q--) pts.push(`${-w2 + (it.w * q) / 40},${h2 - ((q * 15485863) % 5) * 2.4}`);
+							for (let q = 14; q >= 0; q--) pts.push(`${-w2 + ((q * 7907) % 4) * 2.5},${-h2 + (it.h * q) / 14}`);
+							return pts.join(' ');
+						})();
 						return (
 							<g key={i} transform={tf} opacity={clamp(kk * 2, 0, 1)} data-mark="tag">
-								<rect x={-it.w / 2} y={-it.h / 2} width={it.w} height={it.h} rx={8} fill="#FBF4E2" stroke={C.ink} strokeWidth={3} style={{filter: 'drop-shadow(0 10px 14px rgba(0,0,0,0.5))'}} />
+								{it.style === 'clip' ? (
+									<polygon points={torn} fill="#E8DCBE" stroke="#A8936A" strokeWidth={1.5} style={{filter: 'drop-shadow(0 10px 14px rgba(0,0,0,0.5))'}} />
+								) : (
+									<rect x={-it.w / 2} y={-it.h / 2} width={it.w} height={it.h} rx={it.style === 'court' ? 2 : 8} fill={it.style === 'court' ? '#FFFDF6' : '#FBF4E2'} stroke={C.ink} strokeWidth={3} style={{filter: 'drop-shadow(0 10px 14px rgba(0,0,0,0.5))'}} />
+								)}
+								{it.style === 'court' ? <rect x={-it.w / 2 + 14} y={-it.h / 2 + 14} width={it.w - 28} height={it.h - 28} fill="none" stroke={C.ink} strokeWidth={1.5} /> : null}
 								{it.lines.map((ln: string, j: number) => {
 									const a = it.t0 + 0.3 + used * 0.03;
 									used += ln.length;
 									const n = it.static ? ln.length : clamp(Math.floor((t - a) / 0.03), 0, ln.length);
 									const y = -it.h / 2 + it.size * 1.2 + j * lh;
 									const hl = it.hl && ln.includes(it.hl) && n === ln.length;
-									const tw = hl ? measureText({text: it.hl, fontFamily: fam(TYPE), fontSize: it.size}).width : 0;
-									const hx = hl ? measureText({text: ln.slice(0, ln.indexOf(it.hl)), fontFamily: fam(TYPE), fontSize: it.size}).width : 0;
+									const tw = hl ? measureText({text: it.hl, fontFamily: lf, fontSize: it.size}).width : 0;
+									const hx = hl ? measureText({text: ln.slice(0, ln.indexOf(it.hl)), fontFamily: lf, fontSize: it.size}).width : 0;
 									return (
 										<g key={j}>
 											{hl ? <rect x={-it.w / 2 + it.size * 0.8 + hx - 6} y={y - it.size * 0.8} width={tw + 12} height={it.size * 1.05} fill="rgba(232,181,58,0.6)" /> : null}
-											<text data-read="1" x={-it.w / 2 + it.size * 0.8} y={y} fontFamily={fam(TYPE)} fontSize={it.size} fill={j === 0 ? C.red : C.ink}>{ln.slice(0, n)}</text>
+											<text data-read="1" x={-it.w / 2 + it.size * 0.8} y={y} fontFamily={lf} fontSize={it.size} fontWeight={it.style === 'clip' && j === 0 ? 700 : 400} fill={j === 0 ? (it.style === 'clip' ? C.ink : C.red) : C.ink}>{ln.slice(0, n)}</text>
 										</g>
 									);
 								})}
