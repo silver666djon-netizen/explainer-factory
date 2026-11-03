@@ -1577,11 +1577,13 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 									{(() => {
 										// a longer (translated) word widens its tag; the letters keep their size
 										const tw = Math.max(it.w, measureText({text: it.text, fontFamily: fam(it.font ?? HEAD), fontSize: it.size}).width / 0.86);
+										// it grows away from the nearer edge of the picture (its outer edge stays where the English tag's was)
+										const gx = tw > it.w ? ((it.x > pl.W / 2 ? -1 : 1) * (tw - it.w)) / 2 : 0;
 										return (
-											<>
+											<g transform={`translate(${gx} 0)`}>
 												<rect data-mark="tag" x={-tw / 2} y={-it.h / 2} width={tw} height={it.h} rx={it.h * 0.08} fill="#FBF4E2" stroke={C.ink} strokeWidth={it.h * 0.03} style={{filter: `drop-shadow(0 ${it.h * 0.05}px ${it.h * 0.06}px rgba(0,0,0,0.45))`}} />
 												<text data-read="1" x={0} y={it.size * 0.36} textAnchor="middle" fontFamily={fam(it.font ?? HEAD)} fontSize={it.size} fill={it.col ?? C.ink}>{it.text}</text>
-											</>
+											</g>
 										);
 									})()}
 								</g>
