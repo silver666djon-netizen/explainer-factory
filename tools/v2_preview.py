@@ -918,7 +918,8 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
             end = T["total"]
             vfile = f"voice_{kind}.flac"
             sf.write(O / vfile, voice, 24000)
-            first = next(k for k in S if k == sh["beats"][0] or k == sh["beats"][0] + "a")
+            b0 = sh["beats"][0].split(">")[0]
+            first = next(k for k in S if k == b0 or k == b0 + "a")
             patch = {first: sh["opener"], **sh.get("overrides", {})}
             saved = {k: S[k] for k in patch}
             S.update({k: dict(v, kind="pic") for k, v in patch.items()})

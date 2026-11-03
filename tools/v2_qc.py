@@ -48,6 +48,22 @@ def master(pv: Path, kind: str, cfg: dict) -> Path:
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(silent), "-i", str(wav), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
                     "-af", R._master_af(loud, lim0), *R.AAC_ARGS, "-shortest", "-movflags", "+faststart", str(out)], check=True)
     R._gate_with_remaster(out, wav, loud, cfg, kind=AUD[kind], lim0=lim0)
+    # Klot r7: the encoded file lands on the target too (the wav calibration can read ~1 dB hot after AAC); one more
+    # constant-gain pass when the file reads more than 0.3 LU under the target and the true peak has room for it
+    target = (cfg.get("audio") or cfg).get("target_lufs", -14)
+    i, tp = R.measure_audio(out)
+    room = R._ceiling(cfg, AUD[kind]) - 0.3 - tp
+    if target - i > 0.3 and room > 0.1 and loud.startswith("volume="):
+        g = float(loud.split("=")[1].rstrip("dB")) + min(target - i, room)
+        loud2 = f"volume={g:.2f}dB"
+        tmp = out.with_suffix(".lufs.mp4")
+        subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(silent), "-i", str(wav), "-map", "0:v", "-map", "1:a", "-c:v", "copy",
+                        "-af", R._master_af(loud2, lim0), *R.AAC_ARGS, "-shortest", "-movflags", "+faststart", str(tmp)], check=True)
+        i2, tp2 = R.measure_audio(tmp)
+        if tp2 <= R._ceiling(cfg, AUD[kind]) and abs(target - i2) < abs(target - i):
+            tmp.replace(out)
+        else:
+            tmp.unlink()
     return out
 
 

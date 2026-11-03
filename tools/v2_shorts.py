@@ -27,9 +27,15 @@ SHORTS = [
        beats=["COLD.1", "COLD.2", "COLD.3", "COLD.4", "COLD.5", "COLD.6", "COLD.7"],
        opener=W_(base="s03", cam=[[0.511, 0.52, 1.6], [0.511, 0.52, 1.7]], screen=W_(mode="total", total="$48", total_=-1.0))),
     W_(key="sh2", title="A fee for charging you a fee", ru="Плата за то, что с вас берут плату",
-       beats=["A1.11", "A1.J3", "A1.12", "A1.13", "A1.14"],
-       opener=W_(base="s05", cam=[[0.62, 0.45, 1.04], [0.62, 0.45, 1.0]],
-                 overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.0, 0.0, 0.0], x=0.8, y=0.14, w=260, size=96)])),
+       # Klot r7: opens on "Service fee: eight dollars — for the service of charging you a fee." ("8:18. Next screen." cut);
+       # the first frame shows Larry's whole face; the +60% stamp >= 6 % inside the frame
+       beats=["A1.11>Service", "A1.J3", "A1.12", "A1.13", "A1.14"],
+       opener=W_(base="s05", cam=[[0.36, 0.45, 1.04], [0.36, 0.45, 1.0]],
+                 # Klot r7: the whole face, the three fee tags in a row on the jacket below it
+                 overs=[W_(t="tags", items=[x], at=[0.0], x=cx, y=0.74, w=230, size=100) for x, cx in (("+$8", 0.2), ("+$6", 0.5), ("+$4", 0.8))]),
+       # the gulp clip fills the 9:16 band with his face: the +60% stamp lands on a cream tag on the hat, clear of the face
+       overrides={"A1.13": W_(base="m1", cam=[[0.5, 0.5, 1.0], [0.5, 0.48, 1.06]],
+                              overs=[W_(t="stamp", text="+60%", at_on="sixty", x=0.7, y=0.165, size=105, paper=True)], sfx=[{"kind": "stamp", "on": "sixty"}])}),
     W_(key="sh3", title="StubHub's 12-day experiment", ru="12-дневный эксперимент StubHub",
        beats=["A2.7", "A2.9", "A2.10", "A2.12", "A2.14"],
        opener=W_(base="a5", cam=[[0.3, 0.45, 1.25], [0.3, 0.45, 1.32]],
@@ -47,18 +53,17 @@ SHORTS = [
                               sfx=[{"kind": "pop", "on": "fourteen"}]),"A2.9b": W_(base="s02", cam=[[0.511, 0.5, 1.45], [0.511, 0.5, 1.6]],
                               screen=W_(mode="allin", price="$48", sub="FEES INCLUDED", head="CHECKOUT A"))}),
     W_(key="sh5", title="Same mug, twice the price", ru="Та же кружка — вдвое дороже",
-       beats=["A2.21", "A2.22"],
+       beats=["A2.22"],  # Klot r7: opens on "In a famous 1990 experiment…" ("Lock two:" and its line cut); ends "It was just theirs."
        opener=W_(base="a2_mug", cam=[[0.57, 0.52, 1.3], [0.58, 0.52, 1.38]], sheets=[img_sheet(5016, 2823, MUG_TAGS(True))]),
-       overrides={"A2.22c": W_(base="a2_mug", cam=[[0.56, 0.52, 1.25], [0.58, 0.52, 1.38]], sheets=[img_sheet(5016, 2823, MUG_TAGS(False))]),"A2.22a": W_(base="p01", cam=[[0.5, 0.55, 1.1], [0.5, 0.55, 1.18]],
-                               overs=[card(["KAHNEMAN · KNETSCH", "· THALER · 1990", "the endowment effect"], hl="endowment effect")])}),
+       overrides={"A2.22c": W_(base="a2_mug", cam=[[0.56, 0.52, 1.25], [0.58, 0.52, 1.38]], sheets=[img_sheet(5016, 2823, MUG_TAGS(False))]),
+                  # Klot r7: it ends close on the mug's two prices, so the loop back to the opening frame is seamless
+                  "A2.22d": W_(base="a2_mug", cam=[[0.63, 0.42, 1.6], [0.63, 0.42, 1.7]], sheets=[img_sheet(5016, 2823, MUG_TAGS(True))])}),
     W_(key="sh6", title="$5 is $5. Your brain disagrees", ru="$5 — это $5. Мозг не согласен",
-       beats=["A2.24", "A2.25", "A2.J5"],
+       beats=["A2.25"],  # Klot r7: opens on "Psychologists showed this back in 1981…"; ends "Your brain doesn't think so." (Lock four and the DECIDED shot cut)
        opener=W_(base="a2_calculators", cam=[[0.2, 0.55, 1.2], [0.2, 0.55, 1.28]],
                  sheets=[img_sheet(5016, 2823, [TAG("$15", 840, 1350, 330, 210, 150, col=INK, static=True),
                                                 TAG("68% DRIVE", 840, 1650, 620, 190, 110, col=GREEN, static=True)])]),
        overrides={
-           "A2.25a": W_(base="p01", cam=[[0.5, 0.55, 1.1], [0.5, 0.55, 1.18]],
-                        overs=[card(["TVERSKY & KAHNEMAN", "1981 · Science 211", "framing of decisions"], hl="Science 211")]),
            "A2.25c": W_(base="a2_calculators", cam=[[0.2, 0.52, 1.1], [0.18, 0.52, 1.18]],
                         sheets=[img_sheet(5016, 2823, [TAG("$15", 840, 1350, 330, 210, 150, col=INK, at_on="fifteen"),
                                                        TAG("68% DRIVE", 840, 1650, 620, 190, 110, col=GREEN, at_on="calculator")])]),
@@ -68,19 +73,26 @@ SHORTS = [
            "A2.J5": W_(base="p10", cam=[[0.27, 0.4, 1.3], [0.26, 0.38, 1.45]],
                        sheets=[W_(q=P10, W=700, H=400, color=INK, items=[T("MONDAY", 160, 62, 46, at_on="thinks", col=INK), T("GYM", 150, 175, 80, at_on="gym", col=INK),
                                                                         L("M 40 132 L 270 160", w=16, col=RED)])]),
+           # Klot r7: it ends on the $125 calculator and its tags, then loops to the $15 one
+           "A2.25f": W_(base="a2_calculators", dur=1.6, cam=[[0.64, 0.5, 1.0], [0.64, 0.5, 1.05]],
+                        sheets=[img_sheet(5016, 2823, [TAG("$125", 3250, 900, 420, 210, 150, col=INK, static=True),
+                                                       TAG("29% DRIVE", 3250, 1230, 620, 190, 110, col=RED, static=True)])]),
            "A2.25e": W_(base="a2_calculators", cam=[[0.42, 0.62, 1.05], [0.42, 0.64, 1.1]],
                         overs=[W_(t="note", text="$5 = $5", size=130, color=INK, write_on="Five#3", x=0.3, y=0.24)]),
        }),
     W_(key="sh7", title="The resort fee lineup", ru="Опознание курортного сбора",
-       beats=["A3.2", "A3.3", "A3.4", "A3.5", "A3.6"],
+       beats=["A3.4", "A3.5", "A3.6"],  # Klot r7: opens on "Name: the resort fee."; ends "Larry will pay for all of it."
        opener=W_(base="a3_lineup", cam=[[0.5, 0.42, 1.02], [0.5, 0.41, 1.1]],
-                 sheets=[img_sheet(5016, 2823, [TAG("THE RESORT FEE", 2508, 420, 1100, 230, 150, col=RED, static=True)])]),
+                 sheets=[img_sheet(5016, 2823, [TAG("THE RESORT FEE", 2508, 420, 1100, 230, 150, col=RED, static=True)])],
+                 overs=[W_(t="stamp", text="SUSPECT", at_on="resort", x=0.5, y=0.3, size=90, paper=True)], sfx=[{"kind": "stamp", "on": "resort"}]),
        overrides={"A3.2b": W_(base="s03", cam=[[0.511, 0.52, 1.5], [0.511, 0.53, 1.66]], cut_on="booking",
                               screen=W_(mode="bill", head="HOTEL · 1 NIGHT", big="$99", sub="/ NIGHT",
                                         rows=[W_(name="TAXES AND FEES", amt="$50", at_on="line", hl=True, hl_on="Taxes")]),
-                              sfx=[{"kind": "pop", "on": "line"}]),"A3.4a": W_(base="a3_lineup", cam=[[0.5, 0.42, 1.02], [0.5, 0.41, 1.1]],
-                              sheets=[img_sheet(5016, 2823, [TAG("THE RESORT FEE", 2508, 420, 1100, 230, 150, col=RED, at_on="Name")])],
-                              overs=[W_(t="stamp", text="SUSPECT", at_on="resort", x=0.5, y=0.3, size=90, paper=True)], sfx=[{"kind": "stamp", "on": "resort"}]),
+                              sfx=[{"kind": "pop", "on": "line"}]),
+                  # 9:16: the lobby clip ends close on Larry; the two tags sit left of him, clear of his face
+                  "A3.6": W_(base="m8", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.03]],
+                             overs=[W_(t="tags", items=["USES: NONE"], at_on=["none"], x=0.27, y=0.46, w=440, size=74, color=GREEN),
+                                    W_(t="tags", items=["PAYS: ALL OF IT"], at_on=["all"], x=0.29, y=0.56, w=480, size=74)]),
                   "A3.4b": W_(base="a3_lineup", cam=[[0.5, 0.31, 1.5], [0.5, 0.3, 1.6]],
                               sheets=[img_sheet(5016, 2823, [TAG("THE RESORT FEE", 2508, 420, 1100, 230, 150, col=RED, static=True),
                                                              T("AMENITY FEE", 2508, 640, 105, at_on="Aliases", col=INK), T("DESTINATION FEE", 2508, 755, 105, col=INK)])])}),
@@ -110,6 +122,21 @@ def short_T(T: dict, voice, ids: list[str], sr: int = 24000):
     import numpy as np
     order = [b["id"] for b in T["beats"]]
     src = {b["id"]: b for b in T["beats"]}
+    # Klot r7: "A1.11>Service" = that line from its word "Service" on (an existing take, cut in the pause before the word)
+    trimmed = [x for x in ids if ">" in x]
+    ids = [x.split(">")[0] for x in ids]
+    for x in trimmed:
+        bid, w0 = x.split(">")
+        b = json.loads(json.dumps(src[bid]))
+        ws = b["words"]
+        i = next(j for j, w in enumerate(ws) if w[0].startswith(w0))
+        cut = (ws[i - 1][2] + ws[i][1]) / 2 if i and ws[i][1] - ws[i - 1][2] > 0.1 else max(0.0, ws[i][1] - 0.03)
+        b["words"] = [[w, round(a - cut, 3), round(z - cut, 3)] for w, a, z in ws[i:]]
+        b["start"] = round(b["start"] + cut, 3)
+        b["text"] = " ".join(w[0] for w in b["words"])
+        for k in ("heard", "diff", "takes"):
+            b.pop(k, None)
+        src[bid] = b
     R = json.loads(json.dumps(T))
     beats, t, pos = [], 0.45, {}
     for k, bid in enumerate(ids):
