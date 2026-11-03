@@ -42,10 +42,10 @@ LOC_A2B = "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Libr
 W_ = lambda **k: k  # noqa: E731
 S: dict[str, dict] = {
     "COLD.1": W_(base="k1", cam=[[0.5, 0.5, 1.02], [0.6, 0.52, 1.25]]),
-    "COLD.2": W_(base="s01", cam=[[0.45, 0.5, 1.04], [0.52, 0.5, 1.1]],
+    "COLD.2": W_(base="s01", cam=[[0.45, 0.5, 1.04], [0.52, 0.5, 1.1]], cont=True,
                  overs=[W_(t="icons_strip", items=["mask", "car", "megaphone"], cross_on=["masks", "car", "raised"], y=0.58)],
                  sfx=[{"kind": "pop", "on": "masks"}, {"kind": "pop", "on": "getaway"}, {"kind": "pop", "on": "raised"}]),
-    "COLD.3a": W_(base="s02", cam=[[0.5, 0.45, 1.0], [0.52, 0.42, 1.12]], screen=W_(mode="form", fill=[0.1, 0.95]),
+    "COLD.3a": W_(base="s01", cam=[[0.52, 0.5, 1.1], [0.3, 0.42, 1.75]],  # Klot r6: the wide kitchen; the push carries on in to Larry typing
                   sfx=[{"kind": "typing", "at": 0.3, "dur": 2.4}]),
     "COLD.3b": W_(base="s03", cam=[[0.5, 0.45, 1.05], [0.58, 0.55, 1.35]], screen=W_(mode="form", fill=[1, 1], tick_on="ticked", thanks_on="thank"),
                   sfx=[{"kind": "tap", "on": "ticked"}, {"kind": "tap", "on": "thank"}]),
@@ -72,8 +72,8 @@ S: dict[str, dict] = {
     "A1.2b": W_(base="s06", cam=[[0.42, 0.45, 1.02], [0.36, 0.42, 1.14]]),
     "A1.3": W_(base="s02", cam=[[0.511, 0.5, 1.2], [0.511, 0.5, 1.6]],
                screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN", on="forty")], hl_on="Everything"), sfx=[{"kind": "tap", "on": "first"}]),
-    "A1.4": W_(base="s03", cam=[[0.511, 0.52, 1.2], [0.56, 0.5, 1.55]],
-               screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30", on="thirty")], active=1), sfx=[{"kind": "tap", "on": "second"}]),
+    "A1.4": W_(base="o4", cam=[[0.45, 0.5, 1.04], [0.42, 0.46, 1.16]],  # Klot r6: Larry, not the laptop
+               overs=[W_(t="tags", items=["$30"], at_on=["thirty"], x=0.84, y=0.12, w=260, size=110)], sfx=[{"kind": "pop", "on": "thirty"}]),
     "A1.5a": W_(base="s01", cam=[[0.42, 0.4, 1.4], [0.38, 0.34, 1.9]],  # a face between screens (Klot note 8): push in on Larry
                 overs=[W_(t="tags", items=["+$10 SAVED"], at_on=["Ten"], x=0.78, y=0.12, w=440, size=76, color="#2E6B4F")],
                 sfx=[{"kind": "tap", "on": "closes"}, {"kind": "ding", "on": "Ten"}]),
@@ -82,13 +82,14 @@ S: dict[str, dict] = {
     "A1.J1a": W_(base="g04", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.12]]),
     "A1.J1b": W_(base="g04", cam=[[0.52, 0.4, 1.3], [0.52, 0.36, 1.5]], overs=[W_(t="pop", at_on="won't", x=0.63, y=0.47)],
                  sfx=[{"kind": "pop", "on": "won't"}]),
-    "A1.6a": W_(base="s03", cam=[[0.511, 0.52, 1.2], [0.42, 0.45, 1.7]], screen=W_(mode="tabs", tabs=[W_(price="$40", tag="ALL-IN"), W_(price="$30")], active=1, single=True)),
+    "A1.6a": W_(base="s01", cam=[[0.32, 0.52, 1.25], [0.3, 0.55, 1.5]],  # Klot r6: a big cream $30 tag beside the laptop (the scale stays Lock 4's)
+                overs=[W_(t="tags", items=["$30"], at_on=["Thirty"], x=0.76, y=0.4, w=380, size=170)], sfx=[{"kind": "pop", "on": "Thirty"}]),
     "A1.6b": W_(base="a1_glow", cam=[[0.5, 0.45, 1.0], [0.46, 0.42, 1.14]],  # a face between screens (note 8)
                 overs=[W_(t="slots", slots_on="three", x=0.8, y=0.22)], sfx=[{"kind": "pop", "on": "three"}]),
     "A1.7a": W_(base="s02", cam=[[0.511, 0.5, 1.3], [0.511, 0.5, 1.6]], screen=W_(mode="seat", seat="G12", fly_on="Row", light_on="12"),
                 sfx=[{"kind": "whoosh", "on": "Row"}, {"kind": "pop", "on": "12"}]),
     "A1.7b": W_(base="a10clip", cam=[[0.5, 0.5, 1.0], [0.5, 0.55, 1.08]]),
-    "A1.8a": W_(base="s03", cam=[[0.511, 0.5, 1.5], [0.6, 0.4, 1.9]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
+    "A1.8a": W_(base="s03", dur=4.8, cam=[[0.511, 0.5, 1.5], [0.6, 0.4, 1.9]], screen=W_(mode="timer", timer_on="clock", secs=600), sfx=[{"kind": "pop", "on": "clock"}]),
     "A1.8b": W_(base="s04", cam=[[0.45, 0.45, 1.02], [0.36, 0.33, 1.3]]),
     "A1.J2a": W_(base="k5", cam=[[0.5, 0.5, 1.02], [0.5, 0.48, 1.15]]),
     "A1.J2b": W_(base="g05", cam=[[0.4, 0.55, 1.25], [0.4, 0.55, 1.32]], overs=[W_(t="wires", snip_on="wires", xa=0.12, xb=0.6, y=0.5)],
@@ -107,12 +108,13 @@ S: dict[str, dict] = {
     "A1.11b": W_(base="s03", cam=[[0.511, 0.52, 1.8], [0.5, 0.55, 2.1]],  # push in on the screen while the joke is spoken (note 5)
                  screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE", label_on="service#2")]),
                  sfx=[{"kind": "typing", "on": "service#2", "dur": 1.4}]),
-    "A1.J3a": W_(base="s03", cam=[[0.511, 0.52, 1.72], [0.5, 0.57, 2.1]], hold_on="fees",  # the screen stays until the joke ends
+    "A1.J3a": W_(base="s03", cam=[[0.511, 0.52, 1.72], [0.5, 0.57, 2.1]],  # Klot r6: the gulp takes over on "Processing"
                  screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE"),
-                                              W_(name="FACILITY FEE", amt="$6", at_on="Facility"),
-                                              W_(name="PROCESSING", amt="$4", at_on="Processing", label="TO PROCESS THE OTHER FEES", label_on="process#2")]),
-                 sfx=[{"kind": "kachunk", "on": "Facility"}, {"kind": "kachunk", "on": "Processing"}, {"kind": "typing", "on": "process#2", "dur": 1.1}]),
-    "A1.J3b": W_(base="s05", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.12]], overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.05, 0.25, 0.45], x=0.84, y=0.2)]),
+                                              W_(name="FACILITY FEE", amt="$6", at_on="Facility")]),
+                 sfx=[{"kind": "kachunk", "on": "Facility"}]),
+    "A1.J3b": W_(base="s05", cut_on="Processing", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.14]],
+                 overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at_on=["Facility", "Facility", "Processing"], x=0.84, y=0.2)],
+                 sfx=[{"kind": "kachunk", "on": "Processing"}]),
     "A1.12": W_(base="key", key="$48", sub="TOTAL", at=0.15, sfx=[{"kind": "stab", "on": "Total"}]),
     "A1.13": W_(base="s05", cam=[[0.5, 0.42, 1.15], [0.5, 0.38, 1.35]],
                 overs=[W_(t="bars_card", bars=[["FIRST", 30, "$30"], ["LAST", 48, "$48"]], x=0.8, y=0.62),
@@ -121,8 +123,9 @@ S: dict[str, dict] = {
                  sfx=[{"kind": "pop", "on": "eight"}]),
     "A1.14b": W_(base="a1_wallet", cam=[[0.5, 0.5, 1.2], [0.5, 0.5, 1.35]],
                  overs=[W_(t="note", text="$2 LEFT", sub="UNTIL FRIDAY", size=104, write_on="two", x=0.6, y=0.24)]),
-    "A1.15a": W_(base="s02", cam=[[0.511, 0.5, 1.5], [0.56, 0.45, 1.68]], screen=W_(mode="timer", timer_=0.0, secs=360)),
-    "A1.15b": W_(base="a4_seat", cam=[[0.5, 0.55, 1.08], [0.5, 0.58, 1.2]], dream=True),
+    "A1.15a": W_(base="a1_glow", cam=[[0.45, 0.45, 1.02], [0.42, 0.42, 1.14]],  # Klot r6: a face, the hold as a tag
+                 overs=[W_(t="tags", items=["HELD FOR 6:00"], at_on=["Six"], x=0.8, y=0.12, w=520, size=80)], sfx=[{"kind": "pop", "on": "Six"}]),
+    "A1.15b": W_(base="k4", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.0]], dream=True),  # Klot r6: the k4 seat clip, reused
     "A1.16": W_(base="s03", cam=[[0.511, 0.52, 1.62], [0.56, 0.58, 1.85]], screen=W_(mode="pay", press_on="presses"), sfx=[{"kind": "tap", "on": "presses"}]),
     "A1.17a": W_(base="s04", cam=[[0.42, 0.5, 1.1], [0.41, 0.48, 1.18]],
                  overs=[W_(t="timeline_strip", steps=[["8:12", "TABS"], ["8:13", "SEAT"], ["8:14", "CLOCK"], ["8:16", "CARD"], ["8:18", "FEES"], ["8:19", "PAY"]], at=0.2, y=0.58)]),

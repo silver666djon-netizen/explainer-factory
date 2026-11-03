@@ -128,7 +128,8 @@ A4 = {
     "A4.J9": W_(base="k6", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.06]]),
     # ---------------------------------------------------------------- the cops on both sides of the ocean
     "A4.4a": W_(base="a4_police", cam=[[0.3, 0.4, 1.6], [0.3, 0.38, 1.75]], pulse=W_(x=52, y=27, at=0.1, k=0.5)),
-    "A4.4b": W_(base="p13", cam=[[0.5, 0.5, 1.02], [0.5, 0.5, 1.08]], cut_on="On",
+    "A4.4b": W_(base="k3", cut_on="cops", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.0]]),  # Klot r6: the first 2 s of k3 on "the cops finally showed up"
+    "A4.4c": W_(base="p13", cam=[[0.5, 0.5, 1.02], [0.5, 0.5, 1.08]], cut_on="On",
                 sheets=[img_sheet(5016, 2820, [TAG("USA", 1150, 1500, 380, 200, 150, col=INK, at_on="both"), TAG("UK", 4300, 470, 300, 200, 150, col=INK, at_on="ocean")])]),
     "A4.5a": W_(base="p13", cam=[[0.6, 0.4, 1.15], [0.64, 0.36, 1.35]],
                 sheets=[img_sheet(5016, 2820, [TAG("UK", 4300, 470, 300, 200, 150, col=INK, static=True), {"k": "route", "d": MAP_TO_UK, "w": 16, "at_on": "Britain", "col": RED}])],
