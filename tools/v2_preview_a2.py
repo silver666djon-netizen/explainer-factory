@@ -174,7 +174,7 @@ A2 = {
     "A2.17b": W_(base="arch_concert", cam=[[0.5, 0.5, 1.0], [0.5, 0.55, 1.1]], caption="Audience at a concert given by Marian Anderson, Chicago, Illinois, 1941 · " + LIB),
     # ---------------------------------------------------------------- the four locks (per lock: dial <= 1.5 s -> story -> click)
     "A2.18a": W_(base="a2_safe", cam=[[0.4, 0.45, 1.02], [0.38, 0.45, 1.1]], title=["THE SAFE IN YOUR HEAD", "HOW THE LOCK WAS PICKED"]),
-    "A2.18b": W_(base="p07", cam=[[0.5, 0.5, 1.02], [0.6, 0.5, 1.14]]),
+    "A2.18b": W_(base="m5", cam=[[0.5, 0.5, 1.0], [0.5, 0.5, 1.03]]),  # Klot r6 motion: m5 dollars walk out (Grok, from p07)
     "A2.19a": W_(base="a2_safe", cam=[[0.4, 0.45, 1.05], [0.39, 0.45, 1.12]], dur=3.0,
                  sheets=[img_sheet(5016, 2823, [dict(x, static=False, at=0.3 + 0.18 * i) for i, x in enumerate(SAFE_TAGS)])], sfx=[{"kind": "tick", "at": 1.0}]),
     "A2.19b": W_(base="s03", cam=[[0.5, 0.52, 1.55], [0.45, 0.5, 1.75]],

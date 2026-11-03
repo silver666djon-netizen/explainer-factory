@@ -246,7 +246,7 @@ KLOT_A34 = {"a3_lineup": "ep04v2_a3_lineup", "g02": "ep04v2_g02_gym", "g03": "ep
             "a3_race": "ep04v2_a3_race", "a4_police": "ep04v2_a4_police", "g07": "ep04v2_g07_car", "g08": "ep04v2_g08_mirror", "g09": "ep04v2_g09_hotdog",
             "p12": "ep04v2_p12_ticket_stack", "p13": "ep04v2_p13_paper_map"}
 EP4_A34 = {"c1": "c1", "m2b": "m2b", "l5": "l5", "l8": "l8"}
-CLIPS_A34 = {"m1": "ep04v2_m1_gulp", "m4": "ep04v2_m4_smug", "m6": "ep04v2_m6_lookout", "m7": "ep04v2_m7_lineup", "m8": "ep04v2_m8_lobby",
+CLIPS_A34 = {"m5": "ep04v2_m5_dollars", "m1": "ep04v2_m1_gulp", "m4": "ep04v2_m4_smug", "m6": "ep04v2_m6_lookout", "m7": "ep04v2_m7_lineup", "m8": "ep04v2_m8_lobby",
              "m9": "ep04v2_m9_gavel", "k2": "ep04v2_k2_race", "k3": "ep04v2_k3_police", "k4": "ep04v2_k4_seat", "k7": "ep04v2_k7_hotdog", "c1clip": "c1", "m2bclip": "m2b", "z0clip": "z0"}
 FACES_A34 = {"m1", "m4", "m8", "c1", "c1clip", "o4clip", "g09", "k4", "k7", "z0clip"}
 
