@@ -131,10 +131,25 @@ def sample(voice_id: str, model: str) -> tuple[np.ndarray, list[dict]]:
     return np.concatenate([np.zeros(int(0.3 * SR), np.float32)] + parts), rep
 
 
-def find_voice(name: str) -> dict:
-    vs = VD.get("/v2/voices", page_size=100, search=name).get("voices", []) or VD.get("/v2/voices", page_size=100).get("voices", [])
-    hit = [v for v in vs if name.lower() in (v.get("name") or "").lower()]
+ALIASES = {"Дмитрий": ["дмитрий", "dmitr", "дима"], "Николай": ["николай", "nikola", "nicola", "коля"]}
+
+
+def all_voices() -> list[dict]:
+    out, tok = [], None
+    for _ in range(20):
+        j = VD.get("/v2/voices", page_size=100, **({"next_page_token": tok} if tok else {}))
+        out += j.get("voices", [])
+        tok = j.get("next_page_token")
+        if not j.get("has_more") or not tok:
+            break
+    return out
+
+
+def find_voice(name: str, vs: list[dict]) -> dict:
+    keys = ALIASES.get(name, [name.lower()])
+    hit = [v for v in vs if any(k in (v.get("name") or "").lower() for k in keys)]
     if not hit:
+        print("account voices (not premade):", [v.get("name") for v in vs if v.get("category") != "premade"], flush=True)
         raise SystemExit(f"no voice named like {name!r} in the account")
     return hit[0]
 
@@ -153,7 +168,8 @@ def main(out: str) -> int:
     print(f"account: {acc['characters_left']} characters left; this test needs up to ~{need}", flush=True)
     if acc["characters_left"] < need:
         raise SystemExit("not enough ElevenLabs characters for the test")
-    dm, nk = find_voice("Дмитрий"), find_voice("Николай")
+    vs = all_voices()
+    dm, nk = find_voice("Дмитрий", vs), find_voice("Николай", vs)
     print("voices:", "Принц Нур", NUR, "|", dm["name"], dm["voice_id"], "|", nk["name"], nk["voice_id"], flush=True)
     res = {}
     res["A"] = ("Принц Нур", "eleven_multilingual_v2", *sample(NUR, "v2"))
