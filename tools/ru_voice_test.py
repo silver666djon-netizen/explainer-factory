@@ -93,6 +93,7 @@ def hear(x: np.ndarray) -> str:
 def norm(t: str) -> list[str]:
     from num2words import num2words
     t = re.sub(r"\[[^\]]*\]", " ", t).replace("́", "").lower().replace("ё", "е")
+    t = t.replace("№", " номер ")  # whisper writes «Дело № 4»: not a dropped word
     t = re.sub(r"(\d+)[:.](\d+)", r"\1 \2", t)
     t = re.sub(r"\d+", lambda m: " " + num2words(int(m.group()), lang="ru") + " ", t)
     return re.findall(r"[а-яa-z]+", t)
