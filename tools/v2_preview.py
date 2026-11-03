@@ -42,7 +42,7 @@ LOC_A2B = "Waiting to buy tickets, Radio City Music Hall, New York, 1942 · Libr
 W_ = lambda **k: k  # noqa: E731
 S: dict[str, dict] = {
     "COLD.1": W_(base="k1", cam=[[0.5, 0.5, 1.02], [0.6, 0.52, 1.25]]),
-    "COLD.2": W_(base="s01", cam=[[0.45, 0.5, 1.04], [0.52, 0.5, 1.1]], cont=True,
+    "COLD.2": W_(base="s01", cam=[[0.45, 0.5, 1.04], [0.52, 0.5, 1.1]],
                  overs=[W_(t="icons_strip", items=["mask", "car", "megaphone"], cross_on=["masks", "car", "raised"], y=0.58)],
                  sfx=[{"kind": "pop", "on": "masks"}, {"kind": "pop", "on": "getaway"}, {"kind": "pop", "on": "raised"}]),
     "COLD.3a": W_(base="s01", cam=[[0.52, 0.5, 1.1], [0.3, 0.42, 1.75]],  # Klot r6: the wide kitchen; the push carries on in to Larry typing

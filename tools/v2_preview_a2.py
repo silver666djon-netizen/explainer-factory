@@ -49,7 +49,7 @@ CARD_AT = {
     "mug": [[2412, 1698], [4630, 1659], [4746, 2431], [2334, 2489]],          # ep04v2_a2_mug: the table, right of the mug
     "mug_front": [[1891, 1987], [4148, 1958], [4225, 2682], [1833, 2720]],    # ep04v2_a2_mug: the table, in front (left of the tip tablet)
     "calc_wall": [[232, 328], [1678, 318], [1688, 926], [222, 936]],    # ep04v2_a2_calculators: pinned on the wall above the desk
-    "corridor": [[3183, 2045], [4823, 2016], [4920, 2701], [3125, 2749]],     # ep04v2_g03_newspaper: the hotel corridor carpet, beside the newspaper
+    "corridor": [[2547, 1900], [4225, 1871], [4302, 2527], [2489, 2566]],     # ep04v2_g03_newspaper: the hotel corridor carpet, beside the newspaper
     "bench": [[174, 1582], [2026, 1543], [2045, 2276], [154, 2315]],        # ep04v2_a3_courtroom: on the front of the judge's bench
     "bench2": [[270, 1659], [1949, 1630], [1968, 2219], [251, 2257]],
     "map": [[2219, 1350], [3955, 1312], [4013, 1949], [2180, 1987]],          # ep04v2_p13_paper_map: laid on the ocean, by Britain
