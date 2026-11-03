@@ -1,0 +1,17 @@
+7 Shorts · 9:16 · each ends on its last picture and loops · all checks PASS (qc_preview_shorts.md)
+7 шортсов · 9:16 · каждый заканчивается своей картинкой и зацикливается · все проверки пройдены
+
+1 · The $18 heist — 43.5 s
+    (Ограбление на $18)
+2 · A fee for charging you a fee — 34.4 s
+    (Плата за то, что с вас берут плату)
+3 · StubHub's 12-day experiment — 43.1 s
+    (12-дневный эксперимент StubHub)
+5 · Same mug, twice the price — 29.7 s
+    (Та же кружка — вдвое дороже)
+6 · $5 is $5. Your brain disagrees — 38.2 s
+    (5 долларов — это 5 долларов. Мозг не согласен)
+7 · The resort fee lineup — 42.3 s
+    (Опознание курортного сбора)
+10 · Three checks before you press Pay — 41.1 s
+    (Три проверки перед кнопкой «Оплатить»)
