@@ -6,12 +6,17 @@ name: Ep.4 v2 RU voice plan B (Voice Changer)
 on:
   workflow_dispatch:
     inputs:
+      tg_file:
+        description: "Telegram file id of the recording (sent to the bot; the bot starts this run)"
+        required: false
+        default: ""
       key:
-        description: "one-time decryption key (hex)"
-        required: true
+        description: "or: one-time decryption key (hex) for an encrypted recording in the repo"
+        required: false
+        default: ""
       file:
-        description: "encrypted recording in the repo"
-        required: true
+        description: "the encrypted recording in the repo (with key)"
+        required: false
         default: "refs/planb/klot_cold_open.enc"
 permissions:
   contents: write
@@ -30,8 +35,27 @@ jobs:
         with:
           path: ~/.cache/huggingface
           key: whisper-medium-ru-v1
-      - name: Decrypt the recording (stays on the runner)
-        run: python tools/planb_crypt.py dec "${{ github.event.inputs.file }}" "$RUNNER_TEMP/klot_rec"
+      - name: Fetch the recording (stays on the runner)
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, requests
+          ev = json.load(open(os.environ["GITHUB_EVENT_PATH"]))["inputs"]
+          out = os.path.join(os.environ["RUNNER_TEMP"], "klot_rec")
+          if ev.get("tg_file"):
+              tok = os.environ["TELEGRAM_BOT_TOKEN"].strip()
+              info = requests.get(f"https://api.telegram.org/bot{tok}/getFile", params={"file_id": ev["tg_file"]}, timeout=60).json()
+              assert info.get("ok"), "Telegram getFile failed"
+              r = requests.get(f"https://api.telegram.org/file/bot{tok}/{info['result']['file_path']}", timeout=300)
+              r.raise_for_status()
+              open(out, "wb").write(r.content)
+              print("recording from Telegram:", len(r.content), "bytes,", info["result"]["file_path"].rsplit(".", 1)[-1])
+          else:
+              import subprocess
+              subprocess.run(["python", "tools/planb_crypt.py", "dec", ev["file"], out], check=True)
+              print("recording decrypted:", os.path.getsize(out), "bytes")
+          PY
       - name: Voice Changer
         env:
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}

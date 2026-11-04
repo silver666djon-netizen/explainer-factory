@@ -102,6 +102,19 @@ async function onMessage(msg, env) {
   const st = await state(env);
   const text = (msg.text || msg.caption || "").trim();
 
+  // ---- a voice recording (Klot r9, RU plan B): never stored in the (public) repo. The bot only starts the Voice Changer
+  // workflow with the Telegram file id; the runner downloads the file with the bot token, converts it, and throws it away.
+  const rec = msg.voice || msg.audio || (msg.document && /^audio\//.test(msg.document.mime_type || "") ? msg.document : null);
+  if (rec) {
+    if (rec.file_size && rec.file_size > 20 * 1024 * 1024) {
+      await tg(env, "sendMessage", { chat_id: chat, text: "Запись больше 20 МБ — Telegram не даёт ботам скачивать такие. Пришли короче или в m4a/mp3." });
+      return;
+    }
+    await dispatch(env, "ru-plan-b.yml", { tg_file: rec.file_id });
+    await tg(env, "sendMessage", { chat_id: chat, text: "🎙 Запись получил. Перевожу в голос Принца Нура (Voice Changer) — результат придёт сюда как «RU VOICE · PLAN B»." });
+    return;
+  }
+
   // ---- files: images -> episodes/<slug>/images/<key>.<ext>, videos -> episodes/<slug>/clips/<key>.mp4
   const doc = msg.document, video = msg.video, photo = msg.photo ? msg.photo[msg.photo.length - 1] : null;
   if (doc || video || photo) {
