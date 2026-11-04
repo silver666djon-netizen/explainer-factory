@@ -43,8 +43,22 @@ jobs:
           import json, os, requests
           ev = json.load(open(os.environ["GITHUB_EVENT_PATH"]))["inputs"]
           out = os.path.join(os.environ["RUNNER_TEMP"], "klot_rec")
+          tok = os.environ["TELEGRAM_BOT_TOKEN"].strip()
+          if not ev.get("tg_file") and not ev.get("key"):
+              # the latest voice / audio message Klot sent to the bot (getUpdates; works while the bot has no webhook)
+              up = requests.get(f"https://api.telegram.org/bot{tok}/getUpdates", params={"limit": 100, "timeout": 0}, timeout=60).json()
+              assert up.get("ok"), f"Telegram getUpdates: {up.get('description')}"
+              recs = []
+              for u in up["result"]:
+                  m = u.get("message") or {}
+                  f = m.get("voice") or m.get("audio") or (m.get("document") if (m.get("document") or {}).get("mime_type", "").startswith("audio/") else None)
+                  if f:
+                      recs.append((m["date"], f["file_id"], f.get("duration")))
+              assert recs, "no voice / audio message in the bot's chat (send the recording to the bot, then run again)"
+              recs.sort()
+              ev["tg_file"] = recs[-1][1]
+              print(f"latest recording in the bot chat: {recs[-1][2]} s ({len(recs)} found)")
           if ev.get("tg_file"):
-              tok = os.environ["TELEGRAM_BOT_TOKEN"].strip()
               info = requests.get(f"https://api.telegram.org/bot{tok}/getFile", params={"file_id": ev["tg_file"]}, timeout=60).json()
               assert info.get("ok"), "Telegram getFile failed"
               r = requests.get(f"https://api.telegram.org/file/bot{tok}/{info['result']['file_path']}", timeout=300)
