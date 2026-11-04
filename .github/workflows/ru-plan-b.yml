@@ -1,0 +1,59 @@
+name: Ep.4 v2 RU voice plan B (Voice Changer)
+# Klot r9: his own reading of the RU cold open -> Принц Нур (ElevenLabs Voice Changer, eleven_multilingual_sts_v2), his
+# timing kept, light denoise only; STT check; draft ep04v2-voicetest2 + Telegram "CoinSense · EP04v2 · RU VOICE · PLAN B"
+# next to VOICE TEST 2 Take 1 / Take 2. The recording arrives AES-encrypted (refs/planb/*.enc); the one-time key is the
+# input "key", read from the event file (never printed); the decrypted file never leaves the runner.
+on:
+  workflow_dispatch:
+    inputs:
+      key:
+        description: "one-time decryption key (hex)"
+        required: true
+      file:
+        description: "encrypted recording in the repo"
+        required: true
+        default: "refs/planb/klot_cold_open.enc"
+permissions:
+  contents: write
+jobs:
+  planb:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy requests pyyaml faster-whisper num2words cryptography 2>&1 | tail -2
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-ru-v1
+      - name: Decrypt the recording (stays on the runner)
+        run: python tools/planb_crypt.py dec "${{ github.event.inputs.file }}" "$RUNNER_TEMP/klot_rec"
+      - name: Voice Changer
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          set -o pipefail
+          python tools/ru_plan_b.py "$RUNNER_TEMP/klot_rec" out 2>&1 | tee planb.log
+          grep -E "^(recording|PLAN B)" planb.log | python3 -c 'import sys; print("::notice title=plan b::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+          rm -f "$RUNNER_TEMP/klot_rec"
+      - name: Publish into the draft ep04v2-voicetest2 (draft = private)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files="out/ru_plan_b_nur.mp3 out/ru_plan_b_klot_source.mp3 out/ru_plan_b.md out/ru_plan_b_note.txt"
+          if tools/rel.sh id ep04v2-voicetest2 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-voicetest2 $files
+          else gh release create ep04v2-voicetest2 $files --title "CoinSense · EP04v2 · VOICE TEST 2" --notes "Voice tests (not for upload)." --prerelease --draft; fi
+      - name: Send to Telegram (with VOICE TEST 2 Take 1 / Take 2 for comparison)
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          tools/rel.sh download ep04v2-voicetest2 out "voice_test2_1.mp3" "voice_test2_2.mp3" || true
+          files="ru_plan_b_nur.mp3 ru_plan_b_klot_source.mp3"
+          for f in voice_test2_1.mp3 voice_test2_2.mp3; do [ -f "out/$f" ] && files="$files $f"; done
+          python tools/send_files.py out "CoinSense · EP04v2 · RU VOICE · PLAN B" --text ru_plan_b_note.txt $files ru_plan_b.md
