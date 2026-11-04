@@ -32,10 +32,11 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls out/voice_test2_*.mp3 out/voice_test2.md out/voice_test2_note.txt out/voice_changer_probe.mp3 2>/dev/null)
+          files=$(ls out/voice_test2_*.mp3 out/voice_test2.md out/voice_test2_note.txt out/voice_changer_probe.mp3 2>/dev/null || true)
           if tools/rel.sh id ep04v2-voicetest2 >/dev/null 2>&1; then tools/rel.sh upload ep04v2-voicetest2 $files
           else gh release create ep04v2-voicetest2 $files --title "CoinSense · EP04v2 · VOICE TEST 2" --notes "Voice test 2 (not for upload)." --prerelease --draft; fi
       - name: Send to Telegram
+        if: always()
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
