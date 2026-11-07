@@ -1,0 +1,106 @@
+name: Remotion upgrade check (4.0.290 -> 4.0.541, Ep.4 v2 QC unchanged?)
+# Tooling v2, item 1: re-runs every QC check and self-test of the Ep.4 v2 full episode with the upgraded toolchain on the
+# EXISTING master (cs_ep04v2_full.mp4 from the draft ep04v2-full; nothing is re-rendered or re-published there), and
+# renders the same 12 V2 frames with 4.0.290 and with 4.0.541 to compare pixels. Report -> draft tooling-v2.
+on:
+  workflow_dispatch:
+    inputs:
+      base:
+        description: "the commit whose pilot/remotion is the 4.0.290 baseline"
+        required: false
+        default: "909098f"
+permissions:
+  contents: write
+env:
+  SEG: full
+concurrency:
+  group: remotion-upgrade-check
+  cancel-in-progress: false
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 200
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - name: Python packages
+        run: pip install -q -r requirements.txt soundfile 2>&1 | tail -3
+      - name: Fonts
+        run: |
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf \
+                   ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
+          # the RU review copy's Cyrillic fallbacks (same build: condensed, black, typewriter, marker)
+          for pair in ofl/ptsansnarrow/PT_Sans-Narrow-Web-Bold.ttf:PTSansNarrow-Bold.ttf ofl/russoone/RussoOne-Regular.ttf:RussoOne-Regular.ttf \
+                      ofl/ptmono/PTM55FT.ttf:PTMono-Regular.ttf ofl/neucha/Neucha.ttf:Neucha-Regular.ttf; do
+            [ -f "assets/fonts/${pair##*:}" ] || curl -fsSL -o "assets/fonts/${pair##*:}" "$base/${pair%%:*}" || echo "font download failed: $pair"
+          done
+      - name: Voice, timings, Ep.4 frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download ep04v2-preview1 rel timings.json voice_24k.flac
+          tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2-*.png" "archive-a2b-*.png" "m1b-*.png" "l1-*.png" "n1-*.png" "n4-*.png" "a4-*.png" "l5-*.png" "l8-*.png"
+          if [ "$SEG" = full_ru ]; then tools/rel.sh download ep04v2-ru rel timings_ru.json voice_24k_ru.flac; fi
+      - name: Export the plan + audio mix
+        run: |
+          set -o pipefail
+          python tools/v2_preview.py rel pilot/remotion/public pv $SEG 2>&1 | tee export.log \
+            || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: whisper-medium-v1
+          restore-keys: kokoro-
+      - name: More Python packages (STT, DOM checks)
+        run: pip install -q faster-whisper opencv-python-headless playwright 2>&1 | tail -2 && python -m playwright install --with-deps chromium 2>&1 | tail -1
+      - name: The existing master + its QC report (baseline)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download ep04v2-full base qc_preview_full.md cs_ep04v2_full.mp4
+          cp base/cs_ep04v2_full.mp4 pv/cs_ep04v2_full.mp4
+      - name: Remotion 4.0.541 (new) install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -2 && npx remotion versions 2>&1 | tail -6
+      - name: DOM sampling + every QC check and self-test (4.0.541 tree)
+        run: |
+          E=$(find pilot/remotion/node_modules -path '*esbuild/bin/esbuild' -type f 2>/dev/null | head -1)
+          python tools/v2_dom_qc.py pilot/remotion/public pv "$E" 2>&1 | tail -5
+          python tools/v2_qc.py pv rel > qc.log 2>&1 || true
+          tail -n 30 qc.log
+          mkdir -p out && cp pv/qc_preview_full.md out/qc_after_upgrade.md
+          python tools/upgrade_compare.py qc base/qc_preview_full.md out/qc_after_upgrade.md out/upgrade_check.md
+      - name: The same 12 frames with 4.0.541 and with 4.0.290
+        run: |
+          F=$(python3 -c "import json; print(json.load(open('pilot/remotion/public/v2_full.json'))['frames'])")
+          FR=$(python3 -c "print(' '.join(str(int($F * k / 13)) for k in range(1, 13)))")
+          cd pilot/remotion
+          s0=$(date +%s); for f in $FR; do npx remotion still src/index.ts V2 ../../new/f$(printf %06d $f).png --frame=$f --props='{"name":"v2_full"}' --log=error; done; echo "new: $(( $(date +%s) - s0 )) s"
+          cd ../..
+          mkdir -p /tmp/old && git archive ${{ github.event.inputs.base || '909098f' }} pilot/remotion | tar -x -C /tmp/old
+          cp -r pilot/remotion/public /tmp/old/pilot/remotion/public
+          cd /tmp/old/pilot/remotion && grep '"remotion"' package.json && npm install --no-audit --no-fund 2>&1 | tail -2
+          s0=$(date +%s); for f in $FR; do npx remotion still src/index.ts V2 $GITHUB_WORKSPACE/old/f$(printf %06d $f).png --frame=$f --props='{"name":"v2_full"}' --log=error; done; echo "old: $(( $(date +%s) - s0 )) s"
+          cd $GITHUB_WORKSPACE && python tools/upgrade_compare.py stills old new out/upgrade_check.md
+          cat out/upgrade_check.md | python3 -c 'import sys; print("::notice title=upgrade check::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
+      - name: Publish into the draft tooling-v2
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls out/upgrade_check.md out/qc_after_upgrade.md 2>/dev/null || true)
+          [ -n "$files" ] || exit 0
+          if tools/rel.sh id tooling-v2 >/dev/null 2>&1; then tools/rel.sh upload tooling-v2 $files
+          else gh release create tooling-v2 $files --title "CoinSense · TOOLING V2" --notes "Tooling v2 (not for upload)." --prerelease --draft; fi
