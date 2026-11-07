@@ -119,6 +119,10 @@ def prep(audio_dir: str, outdir: str) -> int:
     hf.mkdir(parents=True)
     html = (ROOT / "vendor/hyperframes/registry/blocks/hw-scribble-transition/hw-scribble-transition.html").read_text()
     html = html.replace("color: null, // css color", "color: \"#a8231c\", // css color (CoinSense red ink)")
+    # Klot (frame review): full red cover <= 0.25 s. Upstream clears from 1.42 s (cover ~0.55 s); ours from 1.10 s
+    for a, b in (("}, 1.42);", "}, 1.10);"), ("1.42 + 0.035 * i", "1.10 + 0.035 * i"), ("}, 2.17);", "}, 1.85);")):
+        assert html.count(a) == 1, a
+        html = html.replace(a, b)
     (hf / "index.html").write_text(html)
     global HF_CLI
     code, sec, out = sh(["npx", "-y", HF_CLI, "--version"], log=log, timeout=600)
@@ -138,15 +142,14 @@ def prep(audio_dir: str, outdir: str) -> int:
         rep["overlay"]["alpha"] = webm_alpha(PUB / "overlay.webm")
     # 4. audio from the ElevenLabs test (draft tooling-v2)
     A_ = Path(audio_dir)
-    for f in ("theme_noir_jazz_20s.mp3", "sfx_rubber_stamp.mp3"):
-        if (A_ / f).exists():
-            shutil.copy(A_ / f, PUB / f)
-            if (A_ / (f + ".json")).exists():
-                shutil.copy(A_ / (f + ".json"), PUB / (f + ".json"))
+    for f in sorted(A_.glob("*.mp3")):
+        shutil.copy(f, PUB / f.name)
+        if Path(str(f) + ".json").exists():
+            shutil.copy(str(f) + ".json", PUB / (f.name + ".json"))
     rep["audio"] = {f: (PUB / f).exists() for f in ("theme_noir_jazz_20s.mp3", "sfx_rubber_stamp.mp3")}
-    cfg = {"lottie": "tooling/stamp.json" if rep["lottie"]["ok"] else None, "lottieAt": 0.7, "flap": {"from": "$30", "to": "$48", "startAt": 0.6}}
+    cfg = {"lottie": "tooling/stamp.json" if rep["lottie"]["ok"] else None, "flap": {"from": "$30", "to": "$48", "startAt": 0.6}}
     (PUB / "test.json").write_text(json.dumps(cfg))
-    # 5. where the stamp lands inside the Lottie: the first frame the stamp's area reaches 90 % of its final coverage
+    # 5. Lottie support (LottieProbe composition; the Lottie stamp itself was refused for episodes: off-style)
     bundle(log)
     if rep["lottie"]["ok"]:
         fr = O / "lottie_frames"
@@ -160,7 +163,6 @@ def prep(audio_dir: str, outdir: str) -> int:
             # the stamp has landed at the first frame after which its coverage stays within 3 % of the frame of the final
             # coverage (a stamp scales / drops in, then sits still): that frame is the impact, where the SFX goes
             slam = next((i for i in range(len(cov)) if all(abs(c - fin) <= 0.03 for c in cov[i:])), 0)
-            cfg["stampHit"] = round(cfg["lottieAt"] + slam / 30.0, 3)
             rep["lottie"].update({"render_seconds": sec, "hit_frame": slam, "coverage_final": round(fin, 3),
                                   "coverage": [round(c, 3) for c in cov]})
             strip = [Image.open(p).convert("RGBA").resize((120, 120)) for p in sorted(fr.glob("*.png"))[::3]]
@@ -179,12 +181,15 @@ def webm_alpha(path: Path) -> dict:
     tmp = Path("/tmp/hf/alpha")
     shutil.rmtree(tmp, ignore_errors=True)
     tmp.mkdir(parents=True)
-    subprocess.run(["ffmpeg", "-v", "error", "-c:v", "libvpx-vp9", "-i", str(path), "-vf", "fps=10,scale=480:-1,format=rgba", str(tmp / "%03d.png")], check=False)
+    subprocess.run(["ffmpeg", "-v", "error", "-c:v", "libvpx-vp9", "-i", str(path), "-vf", "scale=480:-1,format=rgba", str(tmp / "%03d.png")], check=False)
     cov = [float((np.asarray(Image.open(p))[..., 3] > 128).mean()) for p in sorted(tmp.glob("*.png"))]
     if not cov:
         return {"ok": False, "why": "no frames decoded"}
-    return {"ok": cov[0] < 0.02 and max(cov) > 0.97 and cov[-1] < 0.02, "first": round(cov[0], 3), "max": round(max(cov), 3),
-            "last": round(cov[-1], 3), "frames": len(cov), "coverage_10fps": [round(c, 2) for c in cov]}
+    full = [i for i, c in enumerate(cov) if c >= 0.995]  # frames (30 fps) where the red covers the whole frame
+    full_s = round(len(full) / 30.0, 3)
+    return {"ok": cov[0] < 0.02 and max(cov) > 0.97 and cov[-1] < 0.02 and 0 < full_s <= 0.25, "first": round(cov[0], 3), "max": round(max(cov), 3),
+            "last": round(cov[-1], 3), "frames": len(cov), "full_cover_frames": [full[0], full[-1]] if full else None, "full_cover_s": full_s,
+            "coverage_every3": [round(c, 2) for c in cov[::3]]}
 
 
 # ------------------------------------------------------------------ render + checks
@@ -232,7 +237,7 @@ def render(outdir: str) -> int:
     nv = shutil.which("nvidia-smi") is not None
     res["gpu"] = f"/dev/dri: {'present' if dri else 'absent'}; nvidia-smi: {'present' if nv else 'absent'}; display adapters: {vga or 'none'}"
     # per element: render it alone over its active frames, time it, check it
-    spans = {"effects": (0, 89), "title": (0, 89), "circle": (20, 80), "overlay": (55, 130), "flap": (90, 179), "wipe": (155, 185), "lottie": (162, 239)}
+    spans = {"effects": (0, 89), "title": (0, 89), "circle": (20, 80), "overlay": (55, 130), "flap": (90, 179), "wipe": (155, 185), "stamp": (162, 239)}
     for el, (a, b) in spans.items():
         code, sec, out = remotion(["render", "src/index.ts", "ToolingTest", str(O / f"el_{el}.mp4"), f"--props={json.dumps({'only': el})}",
                                    f"--frames={a}-{b}", "--muted", "--concurrency=4"], O, log)
@@ -240,7 +245,7 @@ def render(outdir: str) -> int:
         res[el] = {"render_ok": code == 0, "seconds": sec, "frames": b - a + 1, "log": err}
     # checks (stills)
     S = lambda n, f, p, c="ToolingTest": still(O, n, f, p, log, c)  # noqa: E731
-    PHOTO, TAG, LOT = (142, 232, 998, 828), (1180, 500, 1800, 860), (1230, 250, 1790, 810)
+    PHOTO, TAG = (150, 240, 990, 820), (1180, 500, 1800, 860)
     try:
         on, off = S("effects_on", 40, {"only": "effects"}), S("effects_off", 40, {"only": "effects", "fx": False})
         bg = (1100, 900, 1880, 1060)
@@ -248,7 +253,18 @@ def render(outdir: str) -> int:
                                    "paper_mad_vs_plain": round(mad(on, off, bg), 2),
                                    "speckle_dark_px": round(float((on[900:1060, 1100:1880, :3].mean(axis=2) < 90).mean()), 4) if on is not None else -1}
         c = res["effects"]["check"]
-        res["effects"]["ok"] = res["effects"]["render_ok"] and c["halftone_hf_on"] > 1.5 * max(c["halftone_hf_off"], 0.5) and c["paper_mad_vs_plain"] > 2 and c["speckle_dark_px"] > 0.0005
+        # Klot (frame review): the photo must stay readable. The halftone print against the plain photo, 8x smaller (what the
+        # eye reads as the picture): structure (correlation), contrast (std ratio) and brightness (mean shift)
+        def small(a):
+            x0, y0, x1, y1 = PHOTO
+            g = a[y0:y1, x0:x1, :3].mean(axis=2)
+            h, w = g.shape[0] // 8, g.shape[1] // 8
+            return g[: h * 8, : w * 8].reshape(h, 8, w, 8).mean(axis=(1, 3))
+        a_, b_ = small(on), small(off)
+        c.update({"readable_corr": round(float(np.corrcoef(a_.ravel(), b_.ravel())[0, 1]), 3), "contrast_ratio": round(float(a_.std() / max(b_.std(), 1e-6)), 3),
+                  "mean_shift": round(float(a_.mean() - b_.mean()), 1)})
+        res["effects"]["ok"] = (res["effects"]["render_ok"] and c["halftone_hf_on"] > 1.2 * max(c["halftone_hf_off"], 0.5) and c["paper_mad_vs_plain"] > 2
+                                and c["speckle_dark_px"] > 0.0005 and c["readable_corr"] >= 0.95 and c["contrast_ratio"] >= 0.85 and abs(c["mean_shift"]) <= 25)
     except Exception as e:  # noqa: BLE001
         res["effects"]["ok"], res["effects"]["check"] = False, str(e)
     try:
@@ -265,23 +281,48 @@ def render(outdir: str) -> int:
     except Exception as e:  # noqa: BLE001
         res["circle"]["ok"], res["circle"]["check"] = False, str(e)
     try:
-        o0, o1, o2 = S("overlay_before", 55, {"only": "overlay"}), S("overlay_full", 92, {"only": "overlay"}), S("overlay_after", 130, {"only": "overlay"})
         full = (0, 0, 1920, 1080)
-        res["overlay"]["check"] = {"red_before": round(red(o0, full), 3), "red_full_cover": round(red(o1, full), 3), "red_after": round(red(o2, full), 3)}
+        o0, o2 = S("overlay_before", 55, {"only": "overlay"}), S("overlay_after", 130, {"only": "overlay"})
+        cut = [S(f"overlay_cut_{f}", f, {"only": "overlay"}) for f in (89, 90)]  # the A -> B hard cut is at frame 90
+        al = json.loads((O / "prep.json").read_text()).get("overlay", {}).get("alpha", {}) if (O / "prep.json").exists() else {}
+        res["overlay"]["check"] = {"red_before": round(red(o0, full), 3), "red_at_cut": [round(red(x, full), 3) for x in cut], "red_after": round(red(o2, full), 3),
+                                   "full_cover_s": al.get("full_cover_s"), "full_cover_frames_local": al.get("full_cover_frames")}
         c = res["overlay"]["check"]
-        res["overlay"]["ok"] = res["overlay"]["render_ok"] and c["red_full_cover"] > 0.95 and c["red_before"] < 0.01 and c["red_after"] < 0.01
+        res["overlay"]["ok"] = (res["overlay"]["render_ok"] and min(c["red_at_cut"]) > 0.98 and c["red_before"] < 0.01 and c["red_after"] < 0.01
+                                and c["full_cover_s"] is not None and 0 < c["full_cover_s"] <= 0.25)
     except Exception as e:  # noqa: BLE001
         res["overlay"]["ok"], res["overlay"]["check"] = False, str(e)
     try:
         f = cfg["flap"]
         s30 = S("flap_static30", 120, {"only": "flap", "flap": {"from": f["from"], "to": f["from"], "startAt": 0}})
         s48 = S("flap_static48", 120, {"only": "flap", "flap": {"from": f["to"], "to": f["to"], "startAt": 0}})
-        a0, am, a1 = S("flap_start", 95, {"only": "flap"}), S("flap_mid", 115, {"only": "flap"}), S("flap_end", 175, {"only": "flap"})
+        # Klot (frame review): the board never rests on a number that is not $30 or $48 (no intermediate value held > 2 frames).
+        # Every frame of B (90-161), against the two static boards: a run of >= 3 identical frames must be $30 or $48.
+        fd = O / "flap_frames"
+        shutil.rmtree(fd, ignore_errors=True)
+        fd.mkdir()
+        remotion(["render", "src/index.ts", "ToolingTest", str(fd), "--sequence", "--image-format=png", "--frames=90-161", f"--props={json.dumps({'only': 'flap'})}"], fd, log)
         box = (560, 300, 1360, 700)
-        res["flap"]["check"] = {"start_vs_$30": round(mad(a0, s30, box), 2), "end_vs_$48": round(mad(a1, s48, box), 2),
-                                "mid_vs_$30": round(mad(am, s30, box), 2), "mid_vs_$48": round(mad(am, s48, box), 2)}
+        F_ = [np.asarray(Image.open(p).convert("RGBA")).astype(np.float32) for p in sorted(fd.glob("*.png"))]
+        same = [mad(F_[i], F_[i - 1], box) < 0.3 for i in range(1, len(F_))]
+        runs, k = [], 0
+        while k < len(F_):
+            j = k
+            while j + 1 < len(F_) and same[j]:
+                j += 1
+            runs.append((k, j))
+            k = j + 1
+        bad = []
+        for a, b in runs:
+            if b - a + 1 >= 3:
+                d30, d48 = mad(F_[a], s30, box), mad(F_[a], s48, box)
+                if d30 >= 0.5 and d48 >= 0.5:
+                    bad.append(f"frames {90 + a}-{90 + b} hold a value that is neither $30 nor $48")
+        moving = [f"{90 + a}-{90 + b}" for a, b in runs if b - a + 1 < 3]
+        res["flap"]["check"] = {"frames": len(F_), "start_vs_$30": round(mad(F_[0], s30, box), 2), "end_vs_$48": round(mad(F_[-1], s48, box), 2),
+                                "rests": [f"{90 + a}-{90 + b}" for a, b in runs if b - a + 1 >= 3], "in_motion": moving, "intermediate_rests": bad}
         c = res["flap"]["check"]
-        res["flap"]["ok"] = res["flap"]["render_ok"] and c["start_vs_$30"] < 0.5 and c["end_vs_$48"] < 0.5 and c["mid_vs_$30"] > 0.3 and c["mid_vs_$48"] > 0.3
+        res["flap"]["ok"] = res["flap"]["render_ok"] and len(F_) == 72 and c["start_vs_$30"] < 0.5 and c["end_vs_$48"] < 0.5 and not bad
     except Exception as e:  # noqa: BLE001
         res["flap"]["ok"], res["flap"]["check"] = False, str(e)
     try:
@@ -293,13 +334,20 @@ def render(outdir: str) -> int:
     except Exception as e:  # noqa: BLE001
         res["wipe"]["ok"], res["wipe"]["check"] = False, str(e)
     try:
-        hit = int(round((A_START_C() + cfg.get("stampHit", 1.0)) * 30))
-        l0, l1 = S("lottie_before", 170, {"only": "lottie"}), S("lottie_after", min(239, hit + 15), {"only": "lottie"})
-        d = mad(l0, l1, LOT)
-        res["lottie"]["check"] = {"box_change_mad": round(d, 2), "stamp_hit_s": round(A_START_C() + cfg.get("stampHit", 0), 2)}
-        res["lottie"]["ok"] = res["lottie"]["render_ok"] and d > 3
+        # R49: the rubber face reaches the paper on the very frame the imprint appears, and the imprint stays
+        CF = contact_frame()
+        sb, s1, sc, sa = (S(f"stamp_{n}", f, {"only": "stamp"}) for n, f in (("before", CF - 6), ("pre", CF - 1), ("contact", CF), ("after", CF + 30)))
+        BOX = (1144, 624, 1616, 806)  # the imprint (440 x 150 at 1160, 640) with room for the document's -2.5 deg tilt
+        STRIP = (1170, 768, 1590, 798)  # where the rubber face sits when it presses (the imprint's bottom edge)
+        UPPER = (1170, 700, 1590, 755)  # the imprint's lettering band: not inked before contact
+        res["stamp"]["check"] = {"contact_frame": CF, "contact_s": round(CF / 30, 3), "imprint_before": round(red(sb, BOX), 4),
+                                 "ink_band_1_frame_before": round(red(s1, UPPER), 4), "rubber_on_paper_at_contact": round(red(sc, STRIP), 3),
+                                 "rubber_on_paper_1_frame_before": round(red(s1, STRIP), 3), "imprint_after": round(red(sa, BOX), 4)}
+        c = res["stamp"]["check"]
+        res["stamp"]["ok"] = (res["stamp"]["render_ok"] and c["imprint_before"] < 0.003 and c["ink_band_1_frame_before"] < 0.003
+                              and c["rubber_on_paper_at_contact"] > 0.5 and c["rubber_on_paper_1_frame_before"] < 0.2 and c["imprint_after"] > 0.03)
     except Exception as e:  # noqa: BLE001
-        res["lottie"]["ok"], res["lottie"]["check"] = False, str(e)
+        res["stamp"]["ok"], res["stamp"]["check"] = False, str(e)
     # the Remotion port of the same HyperFrames block, against the CLI render: alpha masks frame by frame (all 66),
     # IoU at the best time shift (a constant offset between the two clocks is reported, not hidden)
     try:
@@ -333,8 +381,8 @@ def render(outdir: str) -> int:
     # the full composition
     code, sec, out = remotion(["render", "src/index.ts", "ToolingTest", str(O / "tooling_silent.mp4"), "--muted", "--concurrency=4", "--crf=18"], O, log)
     res["full"] = {"render_ok": code == 0, "seconds": sec, "frames": 240}
-    # the mix: the theme under the whole piece, the stamp on the Lottie's hit
-    hit_s = A_START_C() + cfg.get("stampHit", 1.0)
+    # the mix: the theme under the whole piece, the stamp SFX's own onset on the contact frame
+    hit_s = contact_frame() / 30.0 - onset(PUB / "sfx_rubber_stamp.mp3")
     th, st = PUB / "theme_noir_jazz_20s.mp3", PUB / "sfx_rubber_stamp.mp3"
     if th.exists() and st.exists() and (O / "tooling_silent.mp4").exists():
         fc = (f"[1:a]atrim=0:8,asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=7.1:d=0.9,volume=0.55[m];"
@@ -343,7 +391,8 @@ def render(outdir: str) -> int:
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(O / "tooling_silent.mp4"), "-i", str(th), "-i", str(st), "-filter_complex", fc,
                         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", "8", "-movflags", "+faststart",
                         str(O / "tooling_test.mp4")], check=True)
-        res["audio"] = {"ok": True, "stamp_at_s": round(hit_s, 2), **loud(O / "tooling_test.mp4")}
+        L = loud(O / "tooling_test.mp4")
+        res["audio"] = {"ok": L["lufs"] is not None and abs(L["lufs"] + 14) <= 1.0 and L["true_peak"] <= -1.0, "stamp_onset_at_s": round(contact_frame() / 30.0, 3), **L}
     else:
         if (O / "tooling_silent.mp4").exists():
             shutil.copy(O / "tooling_silent.mp4", O / "tooling_test.mp4")
@@ -357,6 +406,29 @@ def A_START_C() -> float:
     return (90 + 90 - 18) / 30.0  # scene C starts at 5.4 s
 
 
+STAMP_HIT = 0.95  # = ToolingTest.tsx STAMP_HIT (s into C)
+
+
+def contact_frame() -> int:
+    """The first frame on which the rubber face touches the paper (RubberStamp.tsx: t >= hitAt)."""
+    import math
+    return 162 + math.ceil(STAMP_HIT * 30 - 1e-9)
+
+
+def onset(p: Path) -> float:
+    """Seconds from the start of an SFX file to its attack (first 5 ms window within 20 dB of the peak)."""
+    if not p.exists():
+        return 0.0
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(p), "-ac", "1", "-ar", "48000", "-f", "s16le", "-"], capture_output=True).stdout
+    x = np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
+    if not len(x):
+        return 0.0
+    w = 240
+    e = np.sqrt(np.convolve(x * x, np.ones(w) / w, mode="valid"))
+    k = int(np.argmax(e > e.max() * 0.1))
+    return k / 48000.0
+
+
 def loud(p: Path) -> dict:
     r = subprocess.run(["ffmpeg", "-hide_banner", "-i", str(p), "-af", "ebur128=peak=true", "-f", "null", "-"], capture_output=True, text=True).stderr
     i = re.findall(r"I:\s+(-?[\d.]+) LUFS", r)
@@ -367,7 +439,8 @@ def loud(p: Path) -> dict:
 # ------------------------------------------------------------------ report
 LABEL = {"effects": "@remotion/effects halftone + paper + speckle", "title": "Special Elite title (@remotion/google-fonts)",
          "circle": "red-ink rough-notation circle", "overlay": "HyperFrames transparent WebM overlay (hw-scribble-transition, CLI)",
-         "flap": "split-flap $30 -> $48 (Remotion port)", "wipe": "clockWipe transition", "lottie": "Lottie icon (LottieFiles approved stamp)"}
+         "flap": "split-flap $30 -> $48 (Remotion port, straight flip)", "wipe": "clockWipe transition",
+         "stamp": "flat 1950s rubber stamp hits the statement, leaves its imprint (R49)"}
 
 
 def sheet(O: Path) -> None:
@@ -393,14 +466,14 @@ def sheet(O: Path) -> None:
     for i, (t, im) in enumerate(tiles):
         x, y = 10 + (i % 4) * (w + 10), 60 + (i // 4) * (h + 30)
         S.paste(im, (x, y))
-        what = "A" if t < 3 else ("B" if t < 5.4 else ("wipe" if t < 6 else "C"))
+        what = "A" if t < 3 else ("B" if t < 5.4 else ("wipe" if t < 6 else "C + stamp"))
         if 2.0 <= t <= 4.2:
             what += " + scribble overlay"
         d.text((x + 4, y + h + 3), f"{t:.2f} s · {what}", fill=(220, 210, 190), font=F)
     S.save(O / "tooling_test_sheet.png")
 
 
-TEST_ASSETS = ["tooling/photo.jpg", "tooling/overlay.webm", "tooling/stamp.json", "font:special elite", "font:courier prime",
+TEST_ASSETS = ["tooling/photo.jpg", "tooling/overlay.webm", "font:special elite", "font:courier prime",
                "theme_noir_jazz_20s.mp3", "sfx_rubber_stamp.mp3"]
 
 
@@ -416,7 +489,7 @@ def ingest_test_assets() -> tuple[list[str], list[str]]:
     if side.exists():
         m = json.loads(side.read_text())
         AL.upsert({"file": "tooling/stamp", "kind": "lottie", "source_url": m["page"], "licence": m["licence"], "date": m["fetched"],
-                   "attribution": f"{m['title']} by {m['author']} (LottieFiles)", "notes": f"file {m['url']}"})
+                   "attribution": f"{m['title']} by {m['author']} (LottieFiles)", "notes": f"file {m['url']}; Lottie probe only — refused for episodes (off-style, Klot)"})
     AL.upsert({"file": "tooling/overlay", "kind": "overlay", "source_url": "vendor/hyperframes/registry/blocks/hw-scribble-transition",
                "licence": "rendered from Apache-2.0 code (HyperFrames, HeyGen); output is ours", "date": date.today().isoformat(),
                "attribution": "HyperFrames hw-scribble-transition (Apache-2.0) · CREDITS", "notes": f"{HF_CLI} render --format webm; colour #a8231c"})
@@ -449,7 +522,7 @@ def report(outdir: str, probe: str) -> int:
             extra = extra[:400]
         md.append(f"| {lab} | {yn(r.get('ok'))} | {r.get('seconds', '?')} s for {r.get('frames', '?')} frames | {json.dumps(r.get('check'), ensure_ascii=False)}{extra} |")
     a = res.get("audio", {})
-    md.append(f"| theme + stamp SFX (ElevenLabs) | {yn(a.get('ok'))} | mixed after the render | stamp at {a.get('stamp_at_s')} s; master {a.get('lufs')} LUFS, TP {a.get('true_peak')} dBTP |")
+    md.append(f"| theme + stamp SFX (ElevenLabs) | {yn(a.get('ok'))} | mixed after the render | stamp SFX onset on the contact frame ({a.get('stamp_onset_at_s')} s); master {a.get('lufs')} LUFS integrated, true peak {a.get('true_peak')} dBTP |")
     f = res.get("full", {})
     md += ["", f"Full 8 s composition (240 frames, all elements): {'OK' if f.get('render_ok') else 'FAILED'} in {f.get('seconds', '?')} s.", ""]
     g = res.get("gsap_port", {})
@@ -464,13 +537,24 @@ def report(outdir: str, probe: str) -> int:
     md += ["", f"Photo for the halftone: LoC item {LOC_ID} through tools/archives.py: {'OK' if ph.get('ok') else 'FAILED'} · {ph.get('title', '')} · "
            f"item date {ph.get('date', '?')} · {ph.get('licence', ph.get('error', ''))}"]
     lt = prep_.get("lottie", {})
-    md += [f"Lottie: {LOTTIE['title']} by {LOTTIE['author']} ({LOTTIE['page']}), {LOTTIE['licence']} · {lt}"]
+    md += [f"Lottie support (LottieProbe composition, not in the film): {'renders' if lt.get('coverage_final') else 'FAILED'} in {lt.get('render_seconds', '?')} s. "
+           f"The LottieFiles Approved Stamp itself is refused for episodes (modern isometric, off-style)."]
     md += ["", f"asset_license check on this test's assets: {'PASS' if not miss else 'FAIL: ' + ', '.join(miss)}" + (f" (incomplete: {'; '.join(inc)})" if inc else "")]
     (O / "tooling_test.md").write_text("\n".join(md) + "\n", encoding="utf-8")
-    short = ["Per element (renders without a GPU · time alone):"] + [
+    ov = (prep_.get("overlay") or {}).get("alpha") or {}
+    fc = res.get("flap", {}).get("check") or {}
+    ef = res.get("effects", {}).get("check") or {}
+    st = res.get("stamp", {}).get("check") or {}
+    short = [f"Loudness: {a.get('lufs')} LUFS integrated, true peak {a.get('true_peak')} dBTP (target -14 LUFS, TP <= -1.0).",
+             "Frame-review fixes:",
+             f"a. halftone: 3 px screen over the plain photo; readable (structure {ef.get('readable_corr')}, contrast {ef.get('contrast_ratio')}x, brightness {ef.get('mean_shift')})",
+             f"b. split-flap: straight $30 -> $48; rests only on {fc.get('rests')}; intermediate rests: {len(fc.get('intermediate_rests') or [])}",
+             f"c. scribble: full red cover {ov.get('full_cover_s')} s (cap 0.25 s), the cut inside it",
+             f"d. stamp: flat 1950s rubber stamp, touches the paper on frame {st.get('contact_frame')} ({st.get('contact_s')} s) where the PAID imprint appears; stamp SFX on that frame",
+             "Per element (renders without a GPU · time rendered alone):"] + [
         f"- {LABEL[e]}: {yn(res.get(e, {}).get('ok'))} · {res.get(e, {}).get('seconds', '?')} s" for e in LABEL] + [
-        f"- theme + stamp SFX: {yn(a.get('ok'))} · {a.get('lufs')} LUFS",
-        f"Full 8 s render: {f.get('seconds', '?')} s. gsap port matches CLI: {yn(g.get('ok'))}."]
+        f"- theme + stamp SFX (ElevenLabs): {yn(a.get('ok'))}",
+        f"Full 8 s render: {f.get('seconds', '?')} s."]
     if pr.get("archives"):
         short += ["Archive APIs from Actions: " + "; ".join(f"{x['source']} {'reachable' if x.get('reachable') else 'NOT reachable'}" for x in pr["archives"])]
     (O / "tooling_test_note.txt").write_text("\n".join(short) + "\n", encoding="utf-8")

@@ -19,23 +19,31 @@ export type SplitFlapProps = {
 	cellWidth?: number;
 	fontFamily?: string;
 	glyphColor?: string;
+	/** Klot (frame review): the board must never rest on a number that means something in the story. `straight`: every
+	 * cell falls ONE flap, straight from its `from` glyph to its target, all cells at the same time (no stagger, no drum
+	 * walk), so no intermediate value is ever readable. Default true; the drum walk (`straight: false`) is kept for boards
+	 * whose intermediate values are harmless. */
+	straight?: boolean;
 };
 
-export const flapSteps = (from: string, to: string, alphabet = FLAP_ALPHABET) => {
+export const flapSteps = (from: string, to: string, alphabet = FLAP_ALPHABET, straight = true) => {
 	const N = alphabet.length;
 	const n = Math.max(from.length, to.length);
 	const pad = (s: string) => s.padStart(n, ' ');
 	return [...pad(to)].map((ch, i) => {
 		const a = Math.max(0, alphabet.indexOf(pad(from)[i]));
 		const b = Math.max(0, alphabet.indexOf(ch));
-		return {start: a, steps: (b - a + N) % N};
+		return {start: a, target: b, steps: straight ? (a === b ? 0 : 1) : (b - a + N) % N};
 	});
 };
 
 /** Seconds until the last cell has landed (local to the board's start). */
 export const flapLandsAt = (p: SplitFlapProps) => {
-	const st = flapSteps(p.from, p.to, p.alphabet);
-	return (p.startAt ?? 0) + Math.max(...st.map((c, i) => i * (p.cellStagger ?? 0.12) + c.steps * (p.flipDuration ?? 0.11)));
+	const straight = p.straight ?? true;
+	const st = flapSteps(p.from, p.to, p.alphabet, straight);
+	const stagger = straight ? 0 : (p.cellStagger ?? 0.12);
+	const dur = straight ? (p.flipDuration ?? 0.22) : (p.flipDuration ?? 0.11);
+	return (p.startAt ?? 0) + Math.max(...st.map((c, i) => i * stagger + c.steps * dur));
 };
 
 const Face: React.FC<{char: string; half: 'top' | 'bot'; w: number; h: number; font: string; color: string; style?: React.CSSProperties}> = ({
@@ -65,14 +73,15 @@ export const SplitFlap: React.FC<SplitFlapProps> = (p) => {
 	const {fps} = useVideoConfig();
 	const alphabet = p.alphabet ?? FLAP_ALPHABET;
 	const N = alphabet.length;
-	const flipDur = p.flipDuration ?? 0.11;
-	const stagger = p.cellStagger ?? 0.12;
+	const straight = p.straight ?? true;
+	const flipDur = straight ? (p.flipDuration ?? 0.22) : (p.flipDuration ?? 0.11);
+	const stagger = straight ? 0 : (p.cellStagger ?? 0.12);
 	const w = p.cellWidth ?? 190;
 	const h = Math.round(w * 1.45);
 	const font = p.fontFamily ?? 'monospace';
 	const color = p.glyphColor ?? '#f1e6cc';
 	const t = frame / fps - (p.startAt ?? 0);
-	const cells = flapSteps(p.from, p.to, alphabet);
+	const cells = flapSteps(p.from, p.to, alphabet, straight);
 	return (
 		<div style={{display: 'flex', gap: 14}}>
 			{cells.map((c, i) => {
@@ -83,8 +92,9 @@ export const SplitFlap: React.FC<SplitFlapProps> = (p) => {
 					count = c.steps;
 					pr = 0;
 				}
-				const out = alphabet.charAt((c.start + count) % N);
-				const inc = alphabet.charAt((c.start + count + 1) % N);
+				// straight: the one flap goes from the start glyph straight to the target; drum: to the next glyph on the drum
+				const out = straight ? alphabet.charAt(count >= 1 ? c.target : c.start) : alphabet.charAt((c.start + count) % N);
+				const inc = straight ? alphabet.charAt(c.target) : alphabet.charAt((c.start + count + 1) % N);
 				const flipping = count < c.steps && pr > 0;
 				const theta = 180 * pr * pr;
 				const shade = 1 - 0.5 * Math.sin((theta * Math.PI) / 180);

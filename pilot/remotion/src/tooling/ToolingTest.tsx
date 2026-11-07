@@ -5,7 +5,8 @@
 //               the A -> B hard cut sits under its full-coverage window
 //   3.0-6.0  B  split-flap board $30 -> $48 (our Remotion port of HyperFrames split-flap-board)
 //   5.4-6.0     clockWipe (@remotion/transitions) B -> C
-//   5.4-8.0  C  paper card, Special Elite line, a LottieFiles "approved" stamp (@remotion/lottie); the stamp SFX on its hit
+//   5.4-8.0  C  paper card, Special Elite line, a box-office statement; a flat 1950s rubber stamp hits it at 6.35 s and
+//               leaves its PAID imprint (RubberStamp.tsx; the Lottie stamp was refused in the frame review); the stamp SFX on the hit
 // Audio (the ElevenLabs theme + stamp SFX) is mixed after the render (tools/tooling_test.py), as in the episode pipeline.
 // `only` renders one element alone (for the per-element timing and checks); `fx: false` drops the effects and `font:
 // 'fallback'` the web fonts, so the checks can compare each element against its own absence.
@@ -13,14 +14,15 @@ import React from 'react';
 import {AbsoluteFill, Img, OffthreadVideo, Sequence, Solid, interpolate, staticFile, useCurrentFrame} from 'remotion';
 import {TransitionSeries, linearTiming} from '@remotion/transitions';
 import {clockWipe} from '@remotion/transitions/clock-wipe';
+import {none} from '@remotion/transitions/none';
 import {halftone} from '@remotion/effects/halftone';
 import {paper} from '@remotion/effects/paper';
 import {speckle} from '@remotion/effects/speckle';
 import {Circle} from '@remotion/rough-notation';
-import {Lottie} from '@remotion/lottie';
 import {loadFont as loadSpecialElite} from '@remotion/google-fonts/SpecialElite';
 import {loadFont as loadCourierPrime} from '@remotion/google-fonts/CourierPrime';
 import {SplitFlap} from './SplitFlap';
+import {RubberStampOnDocument} from './RubberStamp';
 
 // loaded on first use (not at import), so the episode compositions in the same bundle never fetch these fonts
 let FONTS: {SE: string; CP: string} | null = null;
@@ -33,11 +35,10 @@ const fonts = () => {
 };
 
 export type ToolingProps = {
-	only?: 'all' | 'effects' | 'title' | 'circle' | 'overlay' | 'flap' | 'wipe' | 'lottie';
+	only?: 'all' | 'effects' | 'title' | 'circle' | 'overlay' | 'flap' | 'wipe' | 'stamp';
 	fx?: boolean;
 	font?: 'web' | 'fallback';
-	lottie?: any; // animation JSON (loaded in calculateMetadata)
-	lottieAt?: number; // seconds into C
+	stampHit?: number; // seconds into C: the rubber face touches the paper
 	flap?: {from: string; to: string; startAt: number};
 };
 
@@ -48,6 +49,7 @@ export const WIPE = 18; // 5.4-6.0 s
 export const C_LEN = 78; // 5.4-8.0 s
 export const TOTAL = A_LEN + B_LEN + C_LEN - WIPE; // 240
 export const SCRIBBLE_AT = 60; // 2.0 s
+export const STAMP_HIT = 0.95; // s into C (C starts at 5.4 s): contact at 6.35 s
 
 const INK = '#a8231c';
 const CREAM = '#efe4cb';
@@ -77,8 +79,16 @@ const SceneA: React.FC<{p: ToolingProps}> = ({p}) => {
 			{on(p, 'effects') ? (
 				<div data-el="photo" style={{position: 'absolute', left: 120, top: 210, width: 900, height: 640, background: '#f7f1e3', padding: 22,
 					transform: 'rotate(-2deg)', boxShadow: '0 22px 40px rgba(0,0,0,0.35)'}}>
-					<Img src={staticFile('tooling/photo.jpg')} style={{width: 856, height: 596, objectFit: 'cover', display: 'block'}}
-						effects={fx ? [halftone({colorMode: 'source', shape: 'circle', dotSize: 7, dotSpacing: 7, rotation: 15})] : []} />
+					{/* Klot (frame review): the photo stays readable — the plain print underneath, a fine halftone screen
+					    (3 px dots) multiplied over it at 45 %: the printed-dot texture without losing faces or midtones */}
+					<div style={{position: 'relative', width: 856, height: 596}}>
+						<Img src={staticFile('tooling/photo.jpg')} style={{position: 'absolute', inset: 0, width: 856, height: 596, objectFit: 'cover', display: 'block'}} />
+						{fx ? (
+							<Img src={staticFile('tooling/photo.jpg')} style={{position: 'absolute', inset: 0, width: 856, height: 596, objectFit: 'cover', display: 'block',
+								mixBlendMode: 'multiply', opacity: 0.45}}
+								effects={[halftone({colorMode: 'solid', dotColor: '#2b231b', shape: 'circle', dotSize: 3, dotSpacing: 3.4, rotation: 15})]} />
+						) : null}
+					</div>
 				</div>
 			) : null}
 			{on(p, 'title') ? (
@@ -120,21 +130,17 @@ const SceneB: React.FC<{p: ToolingProps}> = ({p}) => {
 
 const SceneC: React.FC<{p: ToolingProps}> = ({p}) => {
 	const {SE} = fonts();
-	const at = Math.round((p.lottieAt ?? 0.7) * FPS);
+	const {CP} = fonts();
 	return (
 		<AbsoluteFill>
-			{on(p, 'lottie') || on(p, 'effects') || on(p, 'title') ? <PaperBg p={p} seed={23} /> : <AbsoluteFill style={{background: CREAM}} />}
+			{on(p, 'stamp') || on(p, 'effects') || on(p, 'title') ? <PaperBg p={p} seed={23} /> : <AbsoluteFill style={{background: CREAM}} />}
 			{on(p, 'title') ? (
 				<div style={{position: 'absolute', left: 160, top: 400, width: 980, fontFamily: p.font === 'fallback' ? 'monospace' : SE, fontSize: 96, lineHeight: 1.15, color: '#1f1a14'}}>
 					+$18 IN FEES.
 				</div>
 			) : null}
-			{on(p, 'lottie') && p.lottie ? (
-				<Sequence from={at} layout="none">
-					<div data-el="lottie" style={{position: 'absolute', left: 1230, top: 250, width: 560, height: 560}}>
-						<Lottie animationData={p.lottie} loop={false} style={{width: 560, height: 560}} />
-					</div>
-				</Sequence>
+			{on(p, 'stamp') ? (
+				<RubberStampOnDocument hitAt={p.stampHit ?? STAMP_HIT} word="PAID" font={p.font === 'fallback' ? 'monospace' : CP} docFont={p.font === 'fallback' ? 'monospace' : CP} />
 			) : null}
 		</AbsoluteFill>
 	);
@@ -150,12 +156,9 @@ export const ToolingTest: React.FC<ToolingProps> = (p) => {
 				<TransitionSeries.Sequence durationInFrames={B_LEN}>
 					<SceneB p={p} />
 				</TransitionSeries.Sequence>
-				{on(p, 'wipe') ? (
-					<TransitionSeries.Transition presentation={clockWipe({width: 1920, height: 1080})} timing={linearTiming({durationInFrames: WIPE})} />
-				) : (
-					<TransitionSeries.Transition presentation={clockWipe({width: 1920, height: 1080})} timing={linearTiming({durationInFrames: 1})} />
-				)}
-				<TransitionSeries.Sequence durationInFrames={on(p, 'wipe') ? C_LEN : C_LEN - WIPE + 1}>
+				{/* the same timing in every mode (C always starts at 5.4 s); without the wipe element, C simply cuts in */}
+				<TransitionSeries.Transition presentation={on(p, 'wipe') ? clockWipe({width: 1920, height: 1080}) : none()} timing={linearTiming({durationInFrames: WIPE})} />
+				<TransitionSeries.Sequence durationInFrames={C_LEN}>
 					<SceneC p={p} />
 				</TransitionSeries.Sequence>
 			</TransitionSeries>

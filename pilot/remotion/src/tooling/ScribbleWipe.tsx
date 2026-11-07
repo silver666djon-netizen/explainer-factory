@@ -18,8 +18,9 @@ const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 const in2 = (t: number) => t * t;
 const out2 = (t: number) => 1 - (1 - t) * (1 - t);
 
-export const ScribbleWipe: React.FC<{color?: string; bands?: number; seed?: number; strokeScale?: number}> = ({
-	color = '#a8231c', bands = 7, seed = 17, strokeScale = 1,
+// clearAt / hideAt: upstream 1.42 / 2.17 s. Klot (frame review): full red cover <= 0.25 s, so ours clears from 1.10 s.
+export const ScribbleWipe: React.FC<{color?: string; bands?: number; seed?: number; strokeScale?: number; clearAt?: number; hideAt?: number}> = ({
+	color = '#a8231c', bands = 7, seed = 17, strokeScale = 1, clearAt = 1.1, hideAt = 1.85,
 }) => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
@@ -41,16 +42,16 @@ export const ScribbleWipe: React.FC<{color?: string; bands?: number; seed?: numb
 		}
 		return out;
 	}, [bands, bandH, seed, strokeScale]);
-	if (t >= 2.17) return null;
-	const solid = t < 0.8 ? 0 : t < 0.92 ? (t - 0.8) / 0.12 : t < 1.42 ? 1 : t < 1.57 ? 1 - (t - 1.42) / 0.15 : 0;
+	if (t >= hideAt) return null;
+	const solid = t < 0.8 ? 0 : t < 0.92 ? (t - 0.8) / 0.12 : t < clearAt ? 1 : t < clearAt + 0.15 ? 1 - (t - clearAt) / 0.15 : 0;
 	return (
 		<AbsoluteFill style={{overflow: 'hidden'}}>
 			<svg viewBox={`0 0 ${W} ${H}`} style={{position: 'absolute', inset: 0, width: '100%', height: '100%'}}>
 				{paths.map((p, i) => {
 					const sign = i % 2 ? -1 : 1;
 					const on = in2(clamp01((t - 0.04 * i) / 0.55)); // 0 -> 1 draws the band on
-					const off = out2(clamp01((t - (1.42 + 0.035 * i)) / 0.5)); // 0 -> 1 draws it off the other way
-					const offset = t < 1.42 + 0.035 * i ? sign * p.len * (1 - on) : -sign * p.len * off;
+					const off = out2(clamp01((t - (clearAt + 0.035 * i)) / 0.5)); // 0 -> 1 draws it off the other way
+					const offset = t < clearAt + 0.035 * i ? sign * p.len * (1 - on) : -sign * p.len * off;
 					return (
 						<path key={i} d={p.d} strokeWidth={p.w} fill="none" stroke={color} strokeLinecap="round" strokeLinejoin="round"
 							strokeDasharray={p.len} strokeDashoffset={offset} />
