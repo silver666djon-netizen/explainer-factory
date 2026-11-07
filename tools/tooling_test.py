@@ -119,8 +119,8 @@ def prep(audio_dir: str, outdir: str) -> int:
     hf.mkdir(parents=True)
     html = (ROOT / "vendor/hyperframes/registry/blocks/hw-scribble-transition/hw-scribble-transition.html").read_text()
     html = html.replace("color: null, // css color", "color: \"#a8231c\", // css color (CoinSense red ink)")
-    # Klot (frame review): full red cover <= 0.25 s. Upstream clears from 1.42 s (cover ~0.55 s); ours from 1.10 s
-    for a, b in (("}, 1.42);", "}, 1.10);"), ("1.42 + 0.035 * i", "1.10 + 0.035 * i"), ("}, 2.17);", "}, 1.85);")):
+    # Klot (frame review): full red cover <= 0.25 s. Upstream clears from 1.42 s (cover ~0.55 s); ours from 1.00 s (1.10 s measured 0.33 s)
+    for a, b in (("}, 1.42);", "}, 1.00);"), ("1.42 + 0.035 * i", "1.00 + 0.035 * i"), ("}, 2.17);", "}, 1.75);")):
         assert html.count(a) == 1, a
         html = html.replace(a, b)
     (hf / "index.html").write_text(html)
@@ -147,7 +147,7 @@ def prep(audio_dir: str, outdir: str) -> int:
         if Path(str(f) + ".json").exists():
             shutil.copy(str(f) + ".json", PUB / (f.name + ".json"))
     rep["audio"] = {f: (PUB / f).exists() for f in ("theme_noir_jazz_20s.mp3", "sfx_rubber_stamp.mp3")}
-    cfg = {"lottie": "tooling/stamp.json" if rep["lottie"]["ok"] else None, "flap": {"from": "$30", "to": "$48", "startAt": 0.6}}
+    cfg = {"lottie": "tooling/stamp.json" if rep["lottie"]["ok"] else None, "flap": {"from": "$30", "to": "$48", "startAt": 1.3}}  # flips at 4.3 s, after the scribble has cleared
     (PUB / "test.json").write_text(json.dumps(cfg))
     # 5. Lottie support (LottieProbe composition; the Lottie stamp itself was refused for episodes: off-style)
     bundle(log)

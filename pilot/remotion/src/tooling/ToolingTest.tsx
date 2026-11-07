@@ -115,7 +115,7 @@ const SceneA: React.FC<{p: ToolingProps}> = ({p}) => {
 
 const SceneB: React.FC<{p: ToolingProps}> = ({p}) => {
 	const {SE, CP} = fonts();
-	const fl = p.flap ?? {from: '$30', to: '$48', startAt: 0.6};
+	const fl = p.flap ?? {from: '$30', to: '$48', startAt: 1.3}; // flips at 4.3 s, once the scribble has cleared
 	return (
 		<AbsoluteFill style={{background: 'radial-gradient(120% 90% at 50% 42%, #2c2721 0%, #15120f 62%, #0b0a08 100%)', alignItems: 'center', justifyContent: 'center'}}>
 			{on(p, 'flap') ? (

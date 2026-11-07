@@ -18,9 +18,9 @@ const clamp01 = (x: number) => Math.max(0, Math.min(1, x));
 const in2 = (t: number) => t * t;
 const out2 = (t: number) => 1 - (1 - t) * (1 - t);
 
-// clearAt / hideAt: upstream 1.42 / 2.17 s. Klot (frame review): full red cover <= 0.25 s, so ours clears from 1.10 s.
+// clearAt / hideAt: upstream 1.42 / 2.17 s. Klot (frame review): full red cover <= 0.25 s, so ours clears from 1.00 s (1.10 s measured 0.33 s of cover).
 export const ScribbleWipe: React.FC<{color?: string; bands?: number; seed?: number; strokeScale?: number; clearAt?: number; hideAt?: number}> = ({
-	color = '#a8231c', bands = 7, seed = 17, strokeScale = 1, clearAt = 1.1, hideAt = 1.85,
+	color = '#a8231c', bands = 7, seed = 17, strokeScale = 1, clearAt = 1.0, hideAt = 1.75,
 }) => {
 	const frame = useCurrentFrame();
 	const {fps} = useVideoConfig();
