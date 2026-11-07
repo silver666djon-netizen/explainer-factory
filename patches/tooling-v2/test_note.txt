@@ -1,0 +1,12 @@
+Picture QC passed on GitHub Actions (no GPU; Chrome on SwiftShader). Silent: the theme + stamp SFX wait for two ElevenLabs key permissions (Sound Effects, Music).
+
+Per element (renders without a GPU / time rendered alone):
+- @remotion/effects halftone + paper + speckle: yes / 19.5 s (90 frames)
+- Special Elite title: yes / 5.4 s
+- red-ink rough-notation circle: yes / 4.4 s
+- HyperFrames transparent WebM overlay (CLI, scribble wipe): yes / 8.1 s + 16.3 s CLI render
+- split-flap $30 -> $48 (our port): yes / 6.1 s
+- clockWipe: yes / 3.8 s
+- Lottie stamp (LottieFiles): yes / 8.5 s
+- full 8 s composition: 42.5 s
+Archive APIs from Actions: LoC, Smithsonian, Commons, Prelinger all reachable (LoC item downloads are rate-limited from Actions: 429).
