@@ -13,6 +13,8 @@ R="${GITHUB_REPOSITORY:-silver666djon-netizen/explainer-factory}"
 cmd="$1"; tag="$2"; shift 2
 rid() { gh api "repos/$R/releases?per_page=100" --paginate -q ".[] | select(.tag_name == \"$tag\") | .id" | sort -n | head -1; }  # the oldest, if a draft got duplicated
 id=$(rid)
+# newer gh refuses to print a text asset with terminal escape codes (render logs) unless told to
+ESC=""; gh api --help 2>/dev/null | grep -q -- --allow-escape-sequences && ESC="--allow-escape-sequences"
 case "$cmd" in
   id) [ -n "$id" ] && echo "$id" || exit 1 ;;
   url) [ -n "$id" ] || exit 1; gh api "repos/$R/releases/$id" -q .html_url ;;
@@ -22,7 +24,7 @@ case "$cmd" in
     gh api "repos/$R/releases/$id/assets?per_page=100" --paginate -q '.[] | "\(.id) \(.name)"' | while read aid name; do
       ok=0; if [ $# -eq 0 ]; then ok=1; fi
       for g in "$@"; do case "$name" in $g) ok=1 ;; esac; done
-      if [ $ok = 1 ]; then gh api "repos/$R/releases/assets/$aid" -H "Accept: application/octet-stream" > "$dir/$name"; fi
+      if [ $ok = 1 ]; then gh api "repos/$R/releases/assets/$aid" -H "Accept: application/octet-stream" $ESC > "$dir/$name"; fi
     done ;;
   upload)
     [ -n "$id" ] || { echo "no release $tag" >&2; exit 1; }
