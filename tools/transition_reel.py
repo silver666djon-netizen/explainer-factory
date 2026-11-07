@@ -60,8 +60,8 @@ def main(audio_dir: str, outdir: str) -> int:
         (T.PUB / "test.json").write_text(json.dumps({"lottie": None}))
     T.bundle(log)
     t0 = time.time()
-    code, sec, out = T.remotion(["render", "src/index.ts", "TransitionReel", str(O / "reel_silent.mp4"), "--muted", "--concurrency=4", "--crf=18"], O, log)
-    res: dict = {"render_ok": code == 0, "render_seconds": sec, "errors": [l for l in out.splitlines() if re.search(r"(?i)error|fail", l)][:8]}
+    code, sec, out = T.remotion(["render", "src/index.ts", "TransitionReel", str(O / "reel_silent.mp4"), "--muted", "--concurrency=3", "--crf=18", "--timeout=240000"], O, log)  # the collage draws A six times (each with its halftone layer)
+    res: dict = {"render_ok": code == 0, "render_seconds": sec, "errors": [re.sub(r"\x1b\[[0-9;]*m", "", l) for l in out.splitlines() if re.search(r"(?i)error|fail", l)][:8]}
     if code:
         (O / "reel.json").write_text(json.dumps(res, indent=1))
         print(out[-4000:])
