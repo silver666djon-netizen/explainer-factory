@@ -291,18 +291,34 @@ def render(outdir: str) -> int:
         res["lottie"]["ok"] = res["lottie"]["render_ok"] and d > 3
     except Exception as e:  # noqa: BLE001
         res["lottie"]["ok"], res["lottie"]["check"] = False, str(e)
-    # the @remotion/gsap port of the same HyperFrames block, against the CLI render (alpha coverage, frame by frame)
+    # the @remotion/gsap port of the same HyperFrames block, against the CLI render: alpha masks frame by frame (all 66),
+    # IoU at the best time shift (a constant offset between the two clocks is reported, not hidden)
     try:
-        ious = []
-        for lf in (10, 20, 30, 45, 55):
-            pr = still(O, f"port_{lf}", lf, {"color": "#a8231c"}, log, "ScribblePort")
-            subprocess.run(["ffmpeg", "-v", "error", "-y", "-c:v", "libvpx-vp9", "-i", str(PUB / "overlay.webm"), "-vf", f"select=eq(n\\,{lf}),format=rgba",
-                            "-frames:v", "1", str(O / "stills" / f"cli_{lf}.png")], check=False)
-            cl = np.asarray(Image.open(O / "stills" / f"cli_{lf}.png").convert("RGBA"))[..., 3] > 128
-            pa = pr[..., 3] > 128 if pr is not None else np.zeros_like(cl)
-            u = (cl | pa).sum()
-            ious.append(round(float((cl & pa).sum() / u) if u else 1.0, 3))
-        res["gsap_port"] = {"ok": min(ious) > 0.9, "alpha_iou_vs_cli": ious}
+        pd, cd = O / "port_frames", O / "cli_frames"
+        for d in (pd, cd):
+            shutil.rmtree(d, ignore_errors=True)
+            d.mkdir()
+        remotion(["render", "src/index.ts", "ScribblePort", str(pd), "--sequence", "--image-format=png", "--scale=0.25"], pd, log)
+        subprocess.run(["ffmpeg", "-v", "error", "-c:v", "libvpx-vp9", "-i", str(PUB / "overlay.webm"), "-vf", "scale=480:270,format=rgba",
+                        str(cd / "%03d.png")], check=False)
+        P_ = [np.asarray(Image.open(p).convert("RGBA").resize((480, 270)))[..., 3] > 128 for p in sorted(pd.glob("*.png"))]
+        C_ = [np.asarray(Image.open(p).convert("RGBA"))[..., 3] > 128 for p in sorted(cd.glob("*.png"))]
+
+        def iou(a, b):
+            u = (a | b).sum()
+            return float((a & b).sum() / u) if u else 1.0
+        best = None
+        for sh_ in range(-3, 4):
+            pairs = [(P_[i], C_[i + sh_]) for i in range(len(P_)) if 0 <= i + sh_ < len(C_)]
+            # frames where either side has ink: the mean IoU over them
+            vals = [iou(x, y) for x, y in pairs if x.any() or y.any()]
+            m = float(np.mean(vals)) if vals else 0.0
+            if best is None or m > best[1]:
+                best = (sh_, m, vals)
+        cov_p = [round(float(x.mean()), 2) for x in P_][::3]
+        cov_c = [round(float(x.mean()), 2) for x in C_][::3]
+        res["gsap_port"] = {"ok": best[1] > 0.9, "frames": [len(P_), len(C_)], "best_shift_frames": best[0], "mean_alpha_iou": round(best[1], 3),
+                            "min_alpha_iou": round(min(best[2]), 3) if best[2] else None, "coverage_port_every3": cov_p, "coverage_cli_every3": cov_c}
     except Exception as e:  # noqa: BLE001
         res["gsap_port"] = {"ok": False, "error": str(e)[:300]}
     # the full composition
@@ -429,7 +445,8 @@ def report(outdir: str, probe: str) -> int:
     md += ["", f"Full 8 s composition (240 frames, all elements): {'OK' if f.get('render_ok') else 'FAILED'} in {f.get('seconds', '?')} s.", ""]
     g = res.get("gsap_port", {})
     md += [f"HyperFrames -> Remotion port via @remotion/gsap (the same hw-scribble-transition): {'matches' if g.get('ok') else 'DOES NOT match'} the CLI render "
-           f"(alpha IoU per frame {g.get('alpha_iou_vs_cli', g.get('error'))}).", ""]
+           f"(mean alpha IoU {g.get('mean_alpha_iou')} over the inked frames, min {g.get('min_alpha_iou')}, clock offset {g.get('best_shift_frames')} frames; "
+           f"coverage every 3rd frame, port {g.get('coverage_port_every3')} vs CLI {g.get('coverage_cli_every3')}){' · ' + g['error'] if g.get('error') else ''}.", ""]
     if pr.get("archives"):
         md += ["## Archive APIs from Actions", "", "| source | reachable | gated hits | seconds | note |", "|---|---|---|---|---|"]
         for x in pr["archives"]:

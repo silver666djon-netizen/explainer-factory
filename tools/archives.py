@@ -88,14 +88,18 @@ def loc_item(ident: str) -> dict:
     # the largest JPEG of the item's own files (not the related-items carousels)
     best, bw = None, -1
     for r in j.get("resources", []) or []:
-        for group in r.get("files", []) or []:
+        files = r.get("files") if isinstance(r.get("files"), list) else []  # the search endpoint gives a count here
+        for group in files:
             for f in group if isinstance(group, list) else [group]:
                 u = isinstance(f, dict) and f.get("url")
                 if u and re.search(r"\.jpe?g(\?|$)", u) and int(f.get("width") or 0) > bw:
                     best, bw = u, int(f.get("width") or 0)
     if not best:
         for u in it.get("image_url") or []:
-            best = u.split("#")[0]
+            m = re.search(r"#h=(\d+)&w=(\d+)", u)
+            w = int(m.group(2)) if m else 0
+            if re.search(r"\.jpe?g", u) and w > bw:
+                best, bw = u.split("#")[0], w
     d = it.get("date") or it.get("created_published_date") or ""
     title = it.get("title") or ""
     creator = ", ".join(it.get("contributor_names") or it.get("creators") or []) if isinstance(it.get("contributor_names"), list) else ""
