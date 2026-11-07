@@ -388,7 +388,7 @@ def render(outdir: str) -> int:
     if th.exists() and st.exists() and (O / "tooling_silent.mp4").exists():
         # the theme sits under; it dips 5 dB around the stamp so the hit reads clearly (6 dB+ above the bed)
         d0, d1 = contact_frame() / 30.0 - 0.08, contact_frame() / 30.0 + 0.45
-        fc = (f"[1:a]atrim=0:8,asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=7.1:d=0.9,volume=0.42,"
+        fc = (f"[1:a]atrim=0:8,asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=7.1:d=0.9,volume=0.35,"
               f"volume=enable='between(t,{d0:.3f},{d1:.3f})':volume=0.56[m];"
               f"[2:a]adelay={int(hit_s * 1000)}|{int(hit_s * 1000)},volume=1.0[s];[m][s]amix=inputs=2:normalize=0:duration=first,"
               f"loudnorm=I=-14:TP=-2.0:LRA=11[a]")  # -2.0 so the AAC file stays under the channel's -1.5 dBTP
@@ -421,27 +421,26 @@ def contact_frame() -> int:
 
 
 def hit_over_bed(p: Path, at: float) -> dict:
-    """The stamp's loudest 50 ms (from the contact on) against the bed just before it (RMS, dB)."""
+    """The stamp's loudest 25 ms around the contact against the music bed before the dip (RMS, dB)."""
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(p), "-ac", "1", "-ar", "48000", "-f", "s16le", "-"], capture_output=True).stdout
     x = np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
     r = lambda a, b: 20 * np.log10(np.sqrt(np.mean(x[int(a * 48000):int(b * 48000)] ** 2)) + 1e-9)  # noqa: E731
-    hit = max(r(at + k * 0.025, at + k * 0.025 + 0.05) for k in range(6))
+    hit = max(r(at - 0.02 + k * 0.005, at + 0.005 + k * 0.005) for k in range(12))  # loudest 25 ms around the contact
     bed = r(at - 0.6, at - 0.1)
     return {"stamp_peak_rms_db": round(float(hit), 1), "bed_before_db": round(float(bed), 1), "stamp_over_bed_db": round(float(hit - bed), 1)}
 
 
 def onset(p: Path) -> float:
-    """Seconds from the start of an SFX file to its attack (first 5 ms window within 20 dB of the peak)."""
+    """Seconds from the start of an SFX file to its loudest 10 ms (the impact)."""
     if not p.exists():
         return 0.0
     raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(p), "-ac", "1", "-ar", "48000", "-f", "s16le", "-"], capture_output=True).stdout
     x = np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
     if not len(x):
         return 0.0
-    w = 240
+    w = 480  # 10 ms: the slam itself (the loudest instant), which must land on the contact frame
     e = np.sqrt(np.convolve(x * x, np.ones(w) / w, mode="valid"))
-    k = int(np.argmax(e > e.max() * 0.1))
-    return k / 48000.0
+    return (int(np.argmax(e)) + w // 2) / 48000.0
 
 
 def loud(p: Path) -> dict:
