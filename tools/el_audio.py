@@ -28,7 +28,7 @@ PERMS = {"sound_generation": "Sound Effects: Access", "music_generation": "Music
 THEME = ("1950s cool jazz, noir detective, brushed drums, upright bass, muted trumpet, no vocals. Medium-slow swing, "
          "smoky late-night office, a short memorable trumpet motif stated twice, ends on a resolved chord.")
 SFX = [  # (file stem, prompt, seconds)
-    ("sfx_rubber_stamp", "A single heavy rubber stamp slammed hard onto paper on a wooden desk, close-up, dry room, one hit, no reverb", 1.0),
+    ("sfx_rubber_stamp", "Close-up foley: a wooden office rubber stamp slammed hard onto a paper document on a wooden desk, a sharp loud thud with a short paper slap, single impact, dry studio", 1.0),
     ("sfx_safe_dial", "Close-up of an old steel safe combination dial turning: a run of crisp small mechanical clicks, then one heavier click, dry", 2.0),
     ("sfx_typewriter_burst", "A quick burst of typing on a 1950s manual typewriter, about eight fast keystrokes, close microphone, dry office", 1.5),
     ("sfx_case_folder_slap", "A thick cardboard case-file folder with papers inside slapped down flat onto a wooden desk, one hit, dry", 1.0),
@@ -113,7 +113,20 @@ def make(kind: str, out: Path, prompt: str, seconds: float, plan: str = "") -> d
     return meta
 
 
-def test(outdir: str) -> int:
+MIN_PEAK_DB = -20.0  # a sound effect that peaks lower than this came back (nearly) silent: made again once
+
+
+def make_checked(kind: str, out: Path, prompt: str, seconds: float) -> dict:
+    m = make(kind, out, prompt, seconds)
+    if kind == "sfx" and (m.get("peak_db") is None or m["peak_db"] < MIN_PEAK_DB):
+        first = m
+        m = make(kind, out, prompt + ", loud and clear, close microphone", seconds)
+        m["retake_of"] = {"peak_db": first.get("peak_db"), "credits_used": first.get("credits_used")}
+        Path(str(out) + ".json").write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    return m
+
+
+def test(outdir: str, only: str = "") -> int:
     O = Path(outdir)
     O.mkdir(parents=True, exist_ok=True)
     start, acc = used()
@@ -121,9 +134,11 @@ def test(outdir: str) -> int:
              f"{acc['characters_left']} credits left before the test"]
     rows, missing = [], []
     jobs = [("music", "theme_noir_jazz_20s", THEME, 20.0)] + [("sfx", s, p, d) for s, p, d in SFX]
+    if only:
+        jobs = [j for j in jobs if j[1] in only.split(",")]
     for kind, stem, prompt, sec in jobs:
         try:
-            m = make(kind, O / f"{stem}.mp3", prompt, sec)
+            m = make_checked(kind, O / f"{stem}.mp3", prompt, sec)
             rows.append(m)
             v = f" · vocals heard: {m['vocals_heard'] or 'none'}" if kind == "music" else ""
             lines.append(f"{stem}: {m['seconds']} s (asked {sec}), peak {m['peak_db']} dB, {m['credits_used']} credits{v}")
@@ -142,7 +157,7 @@ def test(outdir: str) -> int:
 
 def main(argv: list[str]) -> int:
     if argv[0] == "test":
-        return test(argv[1])
+        return test(argv[1], argv[2] if len(argv) > 2 else "")
     kind, out, prompt = argv[0], Path(argv[1]), argv[2]
     sec = float(argv[3]) if len(argv) > 3 else (2.0 if kind == "sfx" else 30.0)
     print(json.dumps(make(kind, out, prompt, sec), indent=1, ensure_ascii=False))

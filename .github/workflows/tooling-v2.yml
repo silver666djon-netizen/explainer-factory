@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
     inputs:
       audio:
-        description: "auto = generate the ElevenLabs test audio only if the draft does not have it yet; yes = generate again; no = skip"
+        description: "auto = generate the ElevenLabs test audio only if the draft does not have it yet; yes = generate again; no = skip; or file stems (comma-separated) to make only those again"
         required: false
         default: "auto"
       test:
@@ -88,7 +88,8 @@ jobs:
           have=no; if tools/rel.sh assets $TAG 2>/dev/null | cut -f2 | grep -qx theme_noir_jazz_20s.mp3; then have=yes; fi
           if [ "$mode" = no ] || { [ "$mode" = auto ] && [ "$have" = yes ]; }; then
             echo "audio: reusing the draft's files (mode $mode)"; echo "made=no" >> "$GITHUB_OUTPUT"; exit 0; fi
-          python tools/el_audio.py test out/audio 2>&1 | tee out/el.log
+          only=""; case "$mode" in yes|auto) ;; *) only="$mode" ;; esac   # e.g. audio=sfx_rubber_stamp makes only that file again
+          python tools/el_audio.py test out/audio "$only" 2>&1 | tee out/el.log
           echo "made=yes" >> "$GITHUB_OUTPUT"
       - name: Probe summary
         if: always()
