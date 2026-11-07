@@ -30,7 +30,8 @@ CAP = {"Anton-Regular": 0.859, "ArchivoBlack-Regular": 0.688, "SpecialElite-Regu
 def bundle(work: Path, esbuild: str) -> None:
     nm = ROOT / "pilot" / "remotion" / "node_modules"
     alias = [f"--alias:remotion={H / 'mock' / 'remotion.js'}", f"--alias:@remotion/layout-utils={H / 'mock' / 'layout.js'}",
-             f"--alias:@remotion/noise={H / 'mock' / 'noise.js'}", f"--alias:@remotion/paths={H / 'mock' / 'paths.js'}"]
+             f"--alias:@remotion/noise={H / 'mock' / 'noise.js'}", f"--alias:@remotion/paths={H / 'mock' / 'paths.js'}",
+             f"--alias:@remotion/rough-notation={H / 'mock' / 'rough.js'}"]
     env = dict(os.environ, NODE_PATH=f"{nm}:{os.environ.get('NODE_PATH', '')}")
     subprocess.run([esbuild, str(H / "entry.jsx"), "--bundle", f"--outfile={work / 'out.js'}", *alias, "--loader:.tsx=tsx",
                     "--jsx=automatic", "--log-level=warning", f"--resolve-extensions=.tsx,.ts,.jsx,.js"], check=True, env=env, cwd=str(H))
