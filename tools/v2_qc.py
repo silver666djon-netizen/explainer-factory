@@ -391,6 +391,7 @@ def c_picture_first(shots=None, data=None, **_):
     a placeholder for a still not yet delivered counts as NOT a picture."""
     tot = sum(s["end"] - s["start"] for s in shots) or 1
     flat = sum(s["end"] - s["start"] for s in shots if s.get("base_kind") == "flat") + sum(1.9 for s in shots if s.get("title"))
+    flat += sum(x["n"] / 30.0 for x in (data or {}).get("transitions") or [] if x["type"] == "folder")  # the act titles on the folder
     miss = sum(s["end"] - s["start"] for s in shots if s.get("base_kind") == "missing" or s["kind"] in ("missing",))
     old = sum(s["end"] - s["start"] for s in shots if s["kind"] not in ("pic", "missing", "still", "archive", "clip"))
     pic = 1 - (flat + miss + old) / tot
@@ -839,6 +840,78 @@ def c_end_screen(shots=None, beats=None, data=None, dom=None, **_):
     return sorted(set(out))
 
 
+HOUSE = {"folder": ("act",), "torn": ("scene",), "halftone": ("scene",), "iris": ("time_jump", "case_closed"), "burn": ("archive",)}
+
+
+def c_house_transitions(data=None, beats=None, **_):
+    """Klot (transition reel, Nov 7): only house transitions, each in its role — the case folder at an act change (carrying
+    the act title), torn paper / halftone at scene changes inside an act, the iris at a time jump or at "Case closed",
+    film burn only into an archive picture; one transition per cut; hard cuts stay the most common edit."""
+    if not data:
+        return []
+    shots = data["shots"]
+    idx = {s["id"]: i for i, s in enumerate(shots)}
+    text = {b["id"]: b.get("text", "") for b in (beats or [])}
+    out, seen, n_cut = [], set(), 0
+    for x in data.get("transitions") or []:
+        sid, ty, role = x.get("shot"), x.get("type"), x.get("role")
+        if ty not in HOUSE:
+            out.append(f"{sid}: '{ty}' is not a house transition (rejected or unknown)")
+            continue
+        if role not in HOUSE[ty]:
+            out.append(f"{sid}: {ty} used for '{role}' (its role: {', '.join(HOUSE[ty])})")
+        i = idx.get(sid)
+        if i is None:
+            out.append(f"{sid}: transition on a shot that is not in the plan")
+            continue
+        s, prev = shots[i], shots[i - 1] if i > 0 else None
+        if not x.get("inside"):
+            n_cut += 1
+            if sid in seen:
+                out.append(f"{sid}: more than one transition on one cut")
+            seen.add(sid)
+            if prev is None:
+                out.append(f"{sid}: a transition into the first shot")
+                continue
+        if ty == "folder" and (prev is None or prev["act"] == s["act"]):
+            out.append(f"{sid}: case folder inside an act (act changes only)")
+        if ty == "folder" and not (x.get("title") and all(x["title"])):
+            out.append(f"{sid}: case folder without the act title")
+        if ty in ("torn", "halftone") and prev is not None and prev["act"] != s["act"]:
+            out.append(f"{sid}: {ty} at an act change (the case folder's job)")
+        if ty == "iris" and role == "time_jump" and not s.get("rewind"):
+            out.append(f"{sid}: iris 'time jump' on a shot with no time jump")
+        if ty == "iris" and role == "case_closed" and not (prev and "case closed" in text.get(prev.get("beat"), "").lower()):
+            out.append(f"{sid}: iris 'case closed' not after the Case closed line")
+        if ty == "burn" and not (str(s.get("base", "")).startswith("arch_") or s.get("kind") == "archive"):
+            out.append(f"{sid}: film burn into a picture that is not an archive / past-date moment")
+    cuts = max(0, len(shots) - 1)
+    if n_cut and n_cut * 2 > cuts:
+        out.append(f"{n_cut} transitions on {cuts} cuts: hard cuts must stay the most common edit")
+    return out
+
+
+KIT_BEDS = ("cs_bed_tension", "cs_bed_investigation", "cs_bed_irony", "cs_bed_resolution")
+
+
+def c_sound_kit(plan_kind=None, data=None, **_):
+    """R52: the underscore comes from the channel kit's beds; every episode has the sting and the outro; the narration sits
+    above the music (music and kit pieces ducked >= 10 dB under the voice)."""
+    if not plan_kind:
+        return ["no plan to read the mix from"]
+    au = plan_kind.get("audio") or {}
+    kit = {k[1] for k in au.get("kit") or []}
+    music = set(au.get("music") or [])
+    out = [f"bed '{m}' is not a kit bed" for m in sorted(music - kit - {"cs_sting", "cs_outro"}) if m not in KIT_BEDS]
+    episode = any(s.get("endscreen") for s in (data or {}).get("shots", []))
+    if episode:
+        out += [f"the {k[3:]} is missing from the mix" for k in ("cs_sting", "cs_outro") if k not in kit]
+    for k in ("music_under_voice_db", "kit_under_voice_db"):
+        if au.get(k) is not None and au[k] > -10:
+            out.append(f"{k} {au[k]} dB: the narration must sit above the music (<= -10 dB)")
+    return out
+
+
 CHECKS = [
     ("picture_first (R41)", c_picture_first, "picture base >= 85% of screen time, <= 4 key numbers"),
     ("decode", c_decode, "file decodes end to end without an error"),
@@ -879,6 +952,8 @@ CHECKS = [
     ("asset_license (R50)", c_asset_license, "every asset used has a row in docs/ASSET_LICENSES.md (release-blocking)"),
     ("prop_text", c_prop_text, "text on props (receipts, statements, cards) we want read: cap >= 2.8 % of the frame"),
     ("clip_native (R51)", c_clip_native, "AI clips at native speed (no slow-mo stretch); > 5 s of clip only with a stated reason"),
+    ("house_transitions", c_house_transitions, "only house transitions, each in its role; one per cut; hard cuts most common"),
+    ("sound_kit (R52)", c_sound_kit, "kit beds under the narration; the sting and the outro in every episode; voice above music"),
 ]
 NOT_APPLICABLE = {
     "hand_over_ink (R37), one hand at a time (rules 1-5)": "by construction (ink only behind the nib, one hand at a time, pen colour = ink colour); the hand's position against the faces is checked (hand_over_face, from the rendered DOM)",
@@ -1156,6 +1231,31 @@ def selftest(ctx):
         return "a 3.4 s clip stretched to 4 s (0.85x)"
     plant("clip_native (R51)", m_r51, lambda **k: c_clip_native(shots=k["shots"], data=k["data"]))
     plant("archive_era (R48) item date", m_era_item, lambda **k: c_archive_era(shots=k["shots"], beats=k["beats"]))
+    def m_fold(c):
+        sh = [dict(id="x1", act="A2", beat="A2.1", start=0.0, end=5.0), dict(id="x2", act="A2", beat="A2.2", start=5.0, end=10.0),
+              dict(id="x3", act="A2", beat="A2.3", start=10.0, end=15.0)]
+        c["data"] = dict(c["data"] or {}, shots=sh, transitions=[{"shot": "x2", "type": "folder", "role": "act", "title": ["ACT 2", "THE LAB"]}])
+        return "a case folder in the middle of an act"
+    plant("house_transitions (folder mid-act)", m_fold, lambda **k: c_house_transitions(data=k["data"], beats=k["beats"]))
+    def m_rej(c):
+        sh = [dict(id="x1", act="A2", beat="A2.1", start=0.0, end=5.0), dict(id="x2", act="A2", beat="A2.2", start=5.0, end=10.0),
+              dict(id="x3", act="A2", beat="A2.3", start=10.0, end=15.0)]
+        c["data"] = dict(c["data"] or {}, shots=sh, transitions=[{"shot": "x2", "type": "ink", "role": "scene"}])
+        return "the rejected ink bleed"
+    plant("house_transitions (rejected)", m_rej, lambda **k: c_house_transitions(data=k["data"], beats=k["beats"]))
+    def m_bed(c):
+        pk = copy.deepcopy(c.get("plan_kind") or {"audio": {}})
+        pk.setdefault("audio", {})["music"] = list(pk["audio"].get("music") or []) + ["ub_night_spot"]
+        c["plan_kind"] = pk
+        return "an old Uppbeat bed instead of a kit bed"
+    plant("sound_kit (R52) bed", m_bed, lambda **k: c_sound_kit(plan_kind=k["plan_kind"], data=k["data"]))
+    def m_nosting(c):
+        pk = copy.deepcopy(c.get("plan_kind") or {"audio": {}})
+        pk.setdefault("audio", {})["kit"] = [k for k in pk["audio"].get("kit") or [] if k[1] != "cs_sting"]
+        c["plan_kind"] = pk
+        c["data"] = dict(c["data"] or {}, shots=list((c["data"] or {}).get("shots", [])) + [{"id": "END.x", "endscreen": True}])
+        return "an episode without the sting"
+    plant("sound_kit (R52) sting", m_nosting, lambda **k: c_sound_kit(plan_kind=k["plan_kind"], data=k["data"]))
     return rows
 
 

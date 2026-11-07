@@ -132,7 +132,7 @@ def used_assets(plan_kind: dict) -> list[str]:
         out.add("music:" + m)
     for ev in au.get("sfx") or []:
         kind, _, arg = str(ev[2]).partition(":")
-        out.add(f"music:{arg}" if kind == "stab" else f"sfx:{kind}")
+        out.add(f"music:{arg}" if kind in ("stab", "kit") else f"sfx:{kind}")
     out.add("voice:" + ("ru" if any(b.get("en") for b in plan_kind.get("beats") or []) else "en"))
     if any("_ink" in s or s.get("overs") for s in data.get("shots") or []):
         out.add("hands/hand.png")  # V2.tsx draws ink, stamps and cuts with the hand images in public/hands

@@ -31,11 +31,20 @@ SHORTS = [
        # the first frame shows Larry's whole face; the +60% stamp >= 6 % inside the frame
        beats=["A1.11>Service", "A1.J3", "A1.12", "A1.13", "A1.14"],
        opener=W_(base="s05", cam=[[0.36, 0.45, 1.04], [0.36, 0.45, 1.0]],
-                 # Klot r7: the whole face, the three fee tags in a row on the jacket below it
-                 overs=[W_(t="tags", items=[x], at=[0.0], x=cx, y=0.74, w=230, size=100) for x, cx in (("+$8", 0.2), ("+$6", 0.5), ("+$4", 0.8))]),
-       # the gulp clip fills the 9:16 band with his face: the +60% stamp lands on a cream tag on the hat, clear of the face
-       overrides={"A1.13": W_(base="m1", cam=[[0.5, 0.5, 1.0], [0.5, 0.48, 1.06]],
-                              overs=[W_(t="stamp", text="+60%", at_on="sixty", x=0.7, y=0.165, size=105, paper=True)], sfx=[{"kind": "stamp", "on": "sixty"}])}),
+                 # Klot r7: the whole face, the three fee tags in a row on the jacket below it (Nov 7: bigger)
+                 overs=[W_(t="tags", items=[x], at=[0.0], x=cx, y=0.72, w=300, size=140, big=True) for x, cx in (("+$8", 0.2), ("+$6", 0.5), ("+$4", 0.8))]),
+       overrides={
+           # Klot (Nov 7): the gulp's fee tags bigger (they were small in the top-right)
+           "A1.J3b": W_(base="s05", cut_on="process#2", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.14]],
+                        overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.0, 0.0, 0.0], x=0.845, y=0.1, w=340, size=150, big=True)]),
+           # Klot (Nov 7): the 4 s navy $48 card becomes the split-flap board $30 -> $48, on screen <= 1.5 s; it lands on
+           # "forty-eight" and the gulp takes over (the rest of the line runs under it)
+           "A1.12": W_(base="key", key="$48", sub="TOTAL", at=0.0, flap=W_(frm="$30", at=0.3), start_on="forty-eight", start_lead=0.2, max_len=1.5,
+                       sfx=[{"kind": "kachunk", "at": 0.3}, {"kind": "stab", "on": "forty-eight"}]),
+           # the gulp clip fills the band with his face: the +60% stamp lands in the space beside the face (Nov 7: off the hat);
+           # the camera drifts right with the face so that space stays clear
+           "A1.13": W_(base="m1", cam=[[0.5, 0.5, 1.0], [0.62, 0.5, 1.0]],
+                       overs=[W_(t="stamp", text="+60%", at_on="sixty", x=0.84, y=0.6, size=105, paper=True)], sfx=[{"kind": "stamp", "on": "sixty"}])}),
     W_(key="sh3", title="StubHub's 12-day experiment", ru="12-дневный эксперимент StubHub",
        beats=["A2.7", "A2.9", "A2.10", "A2.12", "A2.14"],
        opener=W_(base="a5", cam=[[0.3, 0.45, 1.25], [0.3, 0.45, 1.32]],

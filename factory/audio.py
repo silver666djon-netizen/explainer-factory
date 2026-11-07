@@ -254,7 +254,9 @@ def _decode(path: Path) -> np.ndarray:
     if path not in _MUSIC_CACHE:
         raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(path), "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"],
                              check=True, capture_output=True).stdout
-        a = _even_out(_trim_quiet_ends(np.frombuffer(raw, dtype=np.float32).copy()))
+        a = np.frombuffer(raw, dtype=np.float32).copy()
+        if not _kit(path):  # the channel kit (R52) is used as made: its beds are seamless loops, its sting/outro whole pieces
+            a = _even_out(_trim_quiet_ends(a))
         rms = float(np.sqrt(np.mean(a.astype(np.float64) ** 2))) if a.size else 0.0
         a = a * (db(-20) / rms) if rms > 0 else a  # every cue at the same loudness (RMS -20 dBFS)
         _MUSIC_CACHE[path] = np.clip(a, -0.99, 0.99)
@@ -316,11 +318,17 @@ def _load_music(total: float) -> np.ndarray | None:
     return music * _env(n, 1.5, 3.0)
 
 
+def _kit(path: Path) -> bool:
+    return Path(path).stem.startswith("cs_")
+
+
 def _looped(src: np.ndarray, n: int, xfade: float = 2.0) -> np.ndarray:
     """Repeats a track to length n; each repeat crossfades 2 s of the end into the start (no click, no jump)."""
     if len(src) >= n:
         return src[:n]
     f = min(int(xfade * SR), len(src) // 4)
+    if f == 0:
+        return np.tile(src, int(np.ceil(n / max(1, len(src)))))[:n]
     out = src.copy()
     ramp = np.linspace(0, 1, f, dtype=np.float32)
     while len(out) < n:
@@ -351,7 +359,7 @@ def _cue_track(n: int, cues: list[tuple[float, str]], fade: float = 1.6, align_e
         last = k + 1 >= len(cues)
         if last and align_end and cue not in pos and len(src) >= need:
             start = len(src) - need  # the track's own ending lands on the last frame
-        seg = _looped(src, start + need)[start : start + need]
+        seg = _looped(src, start + need, xfade=0.0 if _kit(path) else 2.0)[start : start + need]  # a kit bed loops seamlessly as is
         pos[cue] = (start + need) % max(1, len(src))
         env = np.ones(need, dtype=np.float32)
         fi = min(f, need // 2)
@@ -374,6 +382,7 @@ class Timeline:
         self.fx = np.zeros(self.n, dtype=np.float32)
         self.hits = np.zeros(self.n, dtype=np.float32)    # impacts (stamp, hit, cash…): set to -6 dB under voice peaks
         self.stings = np.zeros(self.n, dtype=np.float32)
+        self.kit: list = []  # (at, clip, gap dB, under-voice dB): the channel sound kit's sting / outro (add_kit)
         self.cues: list[tuple[float, str]] = []
         self.log: list[tuple[float, float, str]] = []  # (start, end, kind) of every sfx: QC sfx_sync reads it
         self.voice_lines: list[tuple[float, float, str]] = []  # (start, end, beat id): one narration line (qc.stt_diff)
@@ -393,6 +402,17 @@ class Timeline:
         clip = clip * _env(len(clip), 0.005, 0.9)
         clip = clip / (np.abs(clip).max() + 1e-9)  # peak 1.0: scaled against the voice in mix()
         self._add(self.stings, max(0.0, at), clip)
+
+    def add_kit(self, at: float, name: str, gap_db: float = -6.0, under_db: float = -13.0, fade_in: float = 0.01, fade_out: float = 0.6) -> None:
+        """A piece of the channel sound kit played whole (R52: the sting, the outro): leveled against the narration like the
+        music (gap_db in the gaps, under_db while the narrator speaks, so the narration always sits above it)."""
+        path = music_file(name)
+        self.log.append((at, at + 8.0, f"kit:{name}"))
+        if path is None:
+            return
+        clip = _decode(path).copy()
+        clip = clip * _env(len(clip), fade_in, fade_out)
+        self.kit.append((max(0.0, at), clip, gap_db, under_db))
 
     def add_stab(self, at: float, name: str, dur: float = 0.55) -> None:
         """A short brass stab (the head of a sting, quick fade): a number card's stamp."""
@@ -475,6 +495,15 @@ class Timeline:
             gain = gain * dip
             out = out + music * gain
         out = out + self.stings * v_peak * db(self.cfg.get("sting_db", -6)) * (1 - speaking * (1 - db(-4)))
+        for at, clip, gap_db, under_db in self.kit:
+            i = int(at * SR)
+            j = min(self.n, i + len(clip))
+            if j <= i:
+                continue
+            c = clip[: j - i]
+            c_rms = float(np.sqrt(np.mean(c[np.abs(c) > 1e-4] ** 2))) if np.any(np.abs(c) > 1e-4) else 1.0
+            g = v_rms * db(gap_db) / max(c_rms, 1e-6) * (1 - speaking[i:j] * (1 - db(under_db - gap_db))) * dip[i:j]
+            out[i:j] += c * g
         peak = np.abs(out).max()
         if peak > 0.98:
             out = out / peak * 0.98

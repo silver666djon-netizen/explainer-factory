@@ -88,8 +88,14 @@ def contrast(img: np.ndarray, box, col) -> float | None:
 def times_for(data: dict) -> list[tuple[float, bool]]:
     """(t, screenshot?) — one settled frame per shot (0.3 s before its cut) and every 0.1 s while a hand is on screen."""
     out = []
-    for s in data["shots"]:
-        out.append((round(max(s["start"] + 0.05, s["end"] - 0.3), 3), True))
+    trans = data.get("transitions") or []
+    # an iris that starts before the cut (it closes on the outgoing shot): that shot settles before the iris begins
+    early = {x["shot"]: x["pre"] / data["fps"] for x in trans if x.get("pre") and x["type"] != "folder"}
+    ids = [s["id"] for s in data["shots"]]
+    for i, s in enumerate(data["shots"]):
+        nxt = ids[i + 1] if i + 1 < len(ids) else None
+        end = s["end"] - early.get(nxt, 0.0)
+        out.append((round(max(s["start"] + 0.05, end - 0.3), 3), True))
         spans = list(s.get("_ink", []))
         for o in s.get("overs", []):  # stamp hands
             at = o.get("at_") if o.get("t") == "stamp" else o.get("stamp_") if o.get("t") == "namecard" else None
@@ -101,6 +107,9 @@ def times_for(data: dict) -> list[tuple[float, bool]]:
                 if s["start"] <= t < s["end"]:
                     out.append((round(t, 2), False))
                 t += 0.1
+    for x in trans:  # the case folder at its held moment: the act title on it is text we want read (2.8 %, contrast, 6 % margin)
+        if x["type"] == "folder":
+            out.append((round(x["at"] - x["pre"] / data["fps"] + x["n"] / 2 / data["fps"], 3), True))
     return sorted(set(out))
 
 

@@ -170,8 +170,11 @@ A4 = {
                  plan=W_(mode="static", extra=[T("TOTAL, UPFRONT", 500, 300, 64, at_on="only")])),
     # ---------------------------------------------------------------- the rewind: Tuesday, done right
     "A4.12a": W_(base="o4clip", cam=[[0.5, 0.48, 1.05], [0.52, 0.46, 1.12]], overs=[W_(t="plate", text="TUE · 8:19 PM", at=0.2, x=0.78, y=0.08)]),
+    # Klot (Nov 7): the time jump 8:19 -> 8:12 is an iris (house transition 6) with the rewind sound: the iris closes on
+    # 8:19 from "rewind", opens on the hands spinning back, landing on 8:12
     "A4.12b": W_(base="s04", cam=[[0.42, 0.42, 1.12], [0.42, 0.41, 1.3]], dial_time="8:12", cut_on="So",
-                 rewind={"from": "8:19", "at_on": "rewind", "dur": 1.4}, sfx=[{"kind": "whoosh", "on": "rewind"}]),
+                 iris=W_(at_on="rewind", dur=1.2), rewind={"from": "8:19", "at_on": "rewind", "delay": 0.5, "dur": 1.0},
+                 sfx=[{"kind": "whoosh", "on": "rewind"}]),
     "A4.13a": W_(base="s01", cam=[[0.85, 0.41, 3.2], [0.85, 0.41, 3.35]],
                  insets=[dict(X1_INSET, from_on="switch", flip=3.95, plate=W_(box=[590, 112, 1300, 298], size=72, text="ALL-IN:\nOFF", text2="ALL-IN:\nON", swap_on="switch"))],
                  overs=[W_(t="plate", text="8:12 · CHECK 1", at=0.2, x=0.5, y=0.08)], sfx=[{"kind": "kachunk", "on": "switch", "lead": -0.25}]),

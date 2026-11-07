@@ -6,6 +6,9 @@ import {AbsoluteFill, Easing, Img, OffthreadVideo, Sequence, continueRender, del
 import {evolvePath, getLength, getPointAtLength} from '@remotion/paths';
 import {noise2D} from '@remotion/noise';
 import {fitText, measureText} from '@remotion/layout-utils';
+import {Circle} from '@remotion/rough-notation';
+import {CaseFolder, Iris, Transitioned} from './HouseTransitions';
+import {SplitFlap} from './tooling/SplitFlap';
 
 const C = {night: '#0E1A2B', night2: '#16263D', glow: '#9FD8FF', paper: '#F3E9D2', paper2: '#E6D8B9', ink: '#1E1B18', red: '#B23421', accent: '#E8B53A', green: '#2E6B4F', mute: '#57534C'};
 const HEAD = 'Anton-Regular';
@@ -28,7 +31,6 @@ const sm = (p: number) => {
 	return q * q * (3 - 2 * q);
 };
 const io = Easing.inOut(Easing.cubic);
-const WIPE = 18;
 
 const useFontsReady = (fonts: Record<string, string>) => {
 	const [handle] = useState(() => delayRender('v2 fonts'));
@@ -360,7 +362,15 @@ const ScreenView: React.FC<P & {embed?: boolean}> = ({s, t, dur, SW, SH, u, embe
 						<div key={i} style={{marginTop: (s.fs ? 10 : 14) * u, transform: `scale(${1.1 - 0.1 * k})`, transformOrigin: '0% 50%'}}>
 							<div style={{display: 'flex', justifyContent: 'space-between', fontFamily: fam(BODY), fontSize: fs.fee * u, lineHeight: 1.2, color: C.red, borderBottom: `${2 * u}px dashed ${C.mute}`, paddingBottom: 6 * u}}>
 								<span data-read="1">{fe.name}</span>
-								<span data-read="1">{fe.amt}</span>
+								{fe.circle || fe.circle_ !== undefined ? (
+									// Klot (Nov 7): a red-ink circle goes round the fee as it is read (rough notation, no hand)
+									<Circle progress={fe.circle ? 1 : clamp((t - fe.circle_) / 0.45, 0, 1)} color="#a8231c" strokeWidth={5 * u} roughness={1.4} iterations={2}
+										padding={{left: 16 * u, right: 16 * u, top: 8 * u, bottom: 8 * u}}>
+										<span data-read="1">{fe.amt}</span>
+									</Circle>
+								) : (
+									<span data-read="1">{fe.amt}</span>
+								)}
 							</div>
 							{fe.label ? <div data-read="1" style={{fontFamily: fam(TYPE), fontSize: fs.lab * u, lineHeight: 1.15, color: C.ink, marginTop: 4 * u, minHeight: fs.lab * 1.15 * u, whiteSpace: 'pre'}}>{labTxt}</div> : null}
 						</div>
@@ -1305,9 +1315,11 @@ const Overlay: React.FC<{o: any; t: number; dur: number; SW: number; SH: number;
 						const at = (o.at_ ?? o.at)[i];
 						if (at === undefined || t < at) return null;
 						const k = clamp((t - at) / 0.2, 0, 1);
+						// `big` (Klot, Fee Short): a taller tag for a bigger figure, the stack spaced to match
+						const th = o.big ? Math.round((o.size ?? 84) * 1.45) : 130;
 						return (
-							<Paper key={i} x={o.x * SW - ((o.w ?? 220) / 2) * U} y={o.y * SH + i * 160 * U} w={(o.w ?? 220) * U} h={(i === 0 && o.h ? o.h : 130) * U} k={1} rot={i % 2 ? 3 : -3}>
-								<div data-read="1" style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: fitTo(x, fam(HEAD), (o.size ?? 84) * U, ((o.w ?? 220) - 44) * U), lineHeight: `${125 * U}px`, color: o.color ?? C.red, transform: `scale(${1.1 - 0.1 * k})`, whiteSpace: 'nowrap'}}>{x}</div>
+							<Paper key={i} x={o.x * SW - ((o.w ?? 220) / 2) * U} y={o.y * SH + i * (th + 30) * U} w={(o.w ?? 220) * U} h={(i === 0 && o.h ? o.h : th) * U} k={1} rot={i % 2 ? 3 : -3}>
+								<div data-read="1" style={{textAlign: 'center', fontFamily: fam(HEAD), fontSize: fitTo(x, fam(HEAD), (o.size ?? 84) * U, ((o.w ?? 220) - 44) * U), lineHeight: `${(th - 5) * U}px`, color: o.color ?? C.red, transform: `scale(${1.1 - 0.1 * k})`, whiteSpace: 'nowrap'}}>{x}</div>
 								{i === 0 && o.stamp && o.stamp.at_ !== undefined ? (
 									<Stamp text={o.stamp.text} at={o.stamp.at_} t={t} x={((o.w ?? 220) / 2) * U} y={(125 + ((o.h ?? 130) - 125) / 2) * U} size={(o.stamp.size ?? 70) * U} rot={-6} />
 								) : null}
@@ -1502,6 +1514,19 @@ const KeyCard: React.FC<P> = ({s, t, dur, SW, SH, u}) => {
 	const U = Math.min(SW / 1920, SH / 1080);
 	const at = s.at_ ?? s.at ?? 0.15;
 	const k = t >= at ? clamp((t - at) / 0.2, 0, 1) : 0;
+	if (s.flap) {
+		// Klot (Nov 7, Fee Short): the total as the split-flap board, $30 -> $48 in one straight flip (never resting between)
+		const cw = SH > SW ? SW * 0.26 : SW * 0.13;
+		return (
+			<AbsoluteFill>
+				<NightBg t={t} dur={dur} SW={SW} SH={SH} />
+				<div style={{position: 'absolute', left: 0, width: SW, top: SH * 0.22, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 40 * U}}>
+					<div data-read="1" style={{fontFamily: fam(BODY), fontSize: (SH > SW ? 100 : 60) * U, letterSpacing: 8 * U, color: C.glow}}>{s.sub}</div>
+					<SplitFlap from={s.flap.frm} to={String(s.key)} startAt={s.flap.at ?? 0.3} cellWidth={cw} fontFamily={fam(HEAD)} glyphColor="#FF8466" />
+				</div>
+			</AbsoluteFill>
+		);
+	}
 	return (
 		<AbsoluteFill>
 			<NightBg t={t} dur={dur} SW={SW} SH={SH} />
@@ -1743,7 +1768,7 @@ const DialHands: React.FC<{d: {c: number[]; r: number}; time: string; t: number;
 		// REWIND (Act 4): the clock shows rew.from, then at rew.at_ the hands spin back to time (minute hand: two extra turns)
 		const [fh, fm] = String(rew.from).split(':').map(Number);
 		const a = fh * 60 + fm, b = h * 60 + m;
-		const k = rew.at_ === undefined ? 1 : io(clamp((t - rew.at_) / (rew.dur ?? 1.4), 0, 1));
+		const k = rew.at_ === undefined ? 1 : io(clamp((t - rew.at_ - (rew.delay ?? 0)) / (rew.dur ?? 1.4), 0, 1));
 		const cur = a + (b - a) * k;
 		h = Math.floor(cur / 60);
 		m = cur - h * 60;
@@ -2009,11 +2034,28 @@ const ShotBody: React.FC<{s: any; SW: number; SH: number; u: number; dur: number
 	}
 };
 
-const Wiped: React.FC<{W: number; H: number; on: boolean; children: React.ReactNode}> = ({W, H, on, children}) => {
+// a shot inside a house transition: entering for its first frames, exiting for the frames it runs on past its own end
+const InTransition: React.FC<{enter?: any; exit?: any; len0: number; W: number; H: number; children: React.ReactNode}> = ({enter, exit, len0, W, H, children}) => {
 	const f = useCurrentFrame();
-	if (!on || f >= WIPE) return <AbsoluteFill>{children}</AbsoluteFill>;
-	const p = f / WIPE;
-	return <AbsoluteFill style={{clipPath: wipeClip(p, W, H)}}>{children}</AbsoluteFill>;
+	if (enter && f < enter.n - enter.pre) return <Transitioned kind={enter.type} dir="entering" p={(f + enter.pre) / enter.n} W={W} H={H}>{children}</Transitioned>;
+	if (exit && f >= len0 - exit.pre) return <Transitioned kind={exit.type} dir="exiting" p={(f - (len0 - exit.pre)) / exit.n} W={W} H={H}>{children}</Transitioned>;
+	return <AbsoluteFill>{children}</AbsoluteFill>;
+};
+
+// a time jump inside one shot (the Act 4 rewind): the iris closes on the picture and opens on it again (Klot, Nov 7)
+const ShotIris: React.FC<{s: any; W: number; H: number; children: React.ReactNode}> = ({s, W, H, children}) => {
+	const f = useCurrentFrame();
+	const {fps} = useVideoConfig();
+	const ir = s.iris;
+	if (!ir || ir.at_ === undefined) return <AbsoluteFill>{children}</AbsoluteFill>;
+	const p = (f / fps - ir.at_) / (ir.dur ?? 1.2);
+	if (p < 0 || p >= 1) return <AbsoluteFill>{children}</AbsoluteFill>;
+	return <Iris dir="both" p={p} W={W} H={H}>{children}</Iris>;
+};
+
+const FolderAt: React.FC<{x: any; SW: number; SH: number}> = ({x, SW, SH}) => {
+	const f = useCurrentFrame();
+	return <CaseFolder f={f} n={x.n} fin={x.in} fout={x.out} W={SW} H={SH} title={(x.title || ['', '']).map((l: string) => tr(l))} font={fam(TYPE)} titleFont={fam(TYPE)} />;
 };
 
 export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data}) => {
@@ -2033,7 +2075,11 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 	// the 9:16 band is square: the code-drawn objects are drawn larger there so they read on a phone
 	const u = short ? Math.min(SW / 1400, SH / 800) : Math.min(SW / 1920, SH / 1080);
 	const t = f / fps;
-	const wipeAt = new Set((data.wipes || []).map((x: number) => Math.round(x * fps)));
+	// house transitions (Klot, Nov 7): folder = an overlay over the act cut; halftone / torn / iris = the two shots blended
+	const trans: any[] = data.transitions || [];
+	const between = new Map<string, any>(trans.filter((x: any) => x.type !== 'folder' && !x.inside).map((x: any) => [x.shot, x]));
+	const folders = trans.filter((x: any) => x.type === 'folder');
+	const coveredBy = (g: number) => folders.find((x: any) => g >= Math.round(x.at * fps) - x.pre + x.in && g < Math.round(x.at * fps) - x.pre + x.n - x.out);
 	const shots = data.shots;
 	const cur = shots.find((s: any) => t >= s.start && t < s.end) || shots[shots.length - 1];
 	return (
@@ -2043,24 +2089,39 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 				{shots.map((s: any, i: number) => {
 					const from = Math.round(s.start * fps);
 					const next = shots[i + 1];
-					const nextWipe = next && wipeAt.has(Math.round(next.start * fps));
-					const to = Math.round(s.end * fps) + (nextWipe ? WIPE : 0);
+					const enter = between.get(s.id);
+					const exit = next ? between.get(next.id) : undefined;
+					const len0 = Math.round(s.end * fps) - from;
+					const to = Math.round(s.end * fps) + (exit ? exit.n - exit.pre : 0);
 					const dur = s.end - s.start;
+					// the outgoing sheet of a torn-paper cut lies on top of the incoming shot while it tears away
+					const tearing = exit && exit.type === 'torn' && f >= from + len0 - exit.pre;
+					// a shot under the case folder is not drawn while the folder covers the whole frame
+					const hidden = !!coveredBy(f);
 					return (
 						<Sequence key={s.id} from={from} durationInFrames={Math.max(1, to - from)} layout="none">
-							<div style={{position: 'absolute', left: 0, top: 0, width: SW, height: SH, zIndex: i}}>
-								<Wiped W={SW} H={SH} on={wipeAt.has(from)}>
-									<ShotBody s={s} SW={SW} SH={SH} u={u} dur={dur} short={short} band={band} />
-								</Wiped>
+							<div style={{position: 'absolute', left: 0, top: 0, width: SW, height: SH, zIndex: tearing ? 2 * i + 3 : 2 * i, visibility: hidden ? 'hidden' : 'visible'}}>
+								<InTransition enter={enter} exit={exit} len0={len0} W={SW} H={SH}>
+									<ShotIris s={s} W={SW} H={SH}>
+										<ShotBody s={s} SW={SW} SH={SH} u={u} dur={dur} short={short} band={band} />
+									</ShotIris>
+								</InTransition>
 							</div>
 						</Sequence>
 					);
 				})}
+				{folders.map((x: any) => (
+					<Sequence key={'folder' + x.shot} from={Math.round(x.at * fps) - x.pre} durationInFrames={x.n} layout="none">
+						<div style={{position: 'absolute', left: 0, top: 0, width: SW, height: SH, zIndex: 2 * shots.length + 10}}>
+							<FolderAt x={x} SW={SW} SH={SH} />
+						</div>
+					</Sequence>
+				))}
 
 			</div>
 			<div style={{position: 'absolute', left: 0, top: 0, width: W, height: H, zIndex: 10}}>
 			{cur && cur.caption ? <CaptionPlate text={cur.caption} W={W} H={H} short={short} t={t - cur.start} /> : null}
-			{cur && cur.clock && !(cur.title && t - cur.start < 2.0) ? <Clock label={cur.clock} W={W} H={H} t={t} /> : null}
+			{cur && cur.clock && !(cur.title && t - cur.start < 2.0) && !(cur.folder && t < cur.folder[1]) && !folders.some((x: any) => f >= Math.round(x.at * fps) - x.pre && f < Math.round(x.at * fps) - x.pre + x.n) ? <Clock label={cur.clock} W={W} H={H} t={t} /> : null}
 			<Subs caps={data.captions} W={W} H={H} t={t} short={short} />
 			{data.watermark ? (
 				<div style={{position: 'absolute', left: '50%', top: Math.round(H * 0.012), transform: 'translateX(-50%)', background: 'rgba(178,52,33,0.92)', color: '#FFF', fontFamily: fam(BODY),

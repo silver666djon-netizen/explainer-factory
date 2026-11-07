@@ -1,0 +1,104 @@
+name: Ep.4 v2 stills (check frames before a full render)
+# Exports the plan (tools/v2_preview.py, segment full or shorts) and renders single frames of the V2 composition at the
+# given times, plus a labelled contact sheet, into the draft ep04v2-stills. A cheap look at new work (transitions, circles,
+# the split-flap) before the long renders. No audio, no Telegram.
+on:
+  workflow_dispatch:
+    inputs:
+      seg:
+        description: "plans to export, comma-separated: full, shorts"
+        required: false
+        default: "full"
+      at:
+        description: "comma-separated plan:seconds, e.g. full:57.4,full:170.2,sh2:15.3"
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: v2-stills
+  cancel-in-progress: false
+jobs:
+  stills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - name: Python packages
+        run: pip install -q -r requirements.txt soundfile 2>&1 | tail -3
+      - name: Fonts
+        run: |
+          base=https://github.com/google/fonts/raw/main
+          for f in ofl/anton/Anton-Regular.ttf ofl/archivoblack/ArchivoBlack-Regular.ttf apache/permanentmarker/PermanentMarker-Regular.ttf \
+                   ofl/ptserif/PT_Serif-Web-Regular.ttf apache/specialelite/SpecialElite-Regular.ttf; do
+            [ -f "assets/fonts/$(basename $f)" ] || curl -fsSL -o "assets/fonts/$(basename $f)" "$base/$f" || echo "font download failed: $f"
+          done
+      - name: Voice, timings, Ep.4 frames
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tools/rel.sh download ep04v2-preview1 rel timings.json voice_24k.flac
+          tools/rel.sh download frames-0005-drip-pricing rel/frames "a5-*.png" "archive-a2-*.png" "archive-a2b-*.png" "m1b-*.png" "l1-*.png" "n1-*.png" "n4-*.png" "a4-*.png" "l5-*.png" "l8-*.png"
+      - name: Export the plan
+        run: |
+          IFS=',' read -ra SEGS <<< "${{ github.event.inputs.seg }}"
+          for g in "${SEGS[@]}"; do python tools/v2_preview.py rel pilot/remotion/public pv "$g" 2>&1 | tail -12; done
+      - name: Remotion install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -3
+      - name: Stills
+        working-directory: pilot/remotion
+        run: |
+          mkdir -p ../../stills
+          npx remotion bundle src/index.ts --out-dir=/tmp/rbundle --log=error
+          IFS=',' read -ra AT <<< "${{ github.event.inputs.at }}"
+          for x in "${AT[@]}"; do
+            k=${x%%:*}; t=${x#*:}
+            f=$(python3 -c "print(round(float('$t')*30))")
+            npx remotion still /tmp/rbundle V2 "../../stills/${k}_$(printf %07.2f $t).png" --frame=$f --props="{\"name\":\"v2_$k\"}" --log=error || echo "still failed: $x"
+          done
+          ls ../../stills
+      - name: Contact sheet
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageDraw, ImageFont
+          fs = sorted(Path("stills").glob("*.png"))
+          tw = 640
+          ims = []
+          for f in fs:
+              im = Image.open(f).convert("RGB")
+              h = round(im.height * tw / im.width)
+              ims.append((f.stem, im.resize((tw, h))))
+          cols = 3
+          rows = [ims[i:i + cols] for i in range(0, len(ims), cols)]
+          H = sum(max(im.height for _, im in r) + 40 for r in rows) + 10
+          S = Image.new("RGB", (cols * (tw + 10) + 10, H), (22, 20, 18))
+          d = ImageDraw.Draw(S)
+          try:
+              font = ImageFont.truetype("assets/fonts/Anton-Regular.ttf", 26)
+          except Exception:
+              font = ImageFont.load_default()
+          y = 10
+          for r in rows:
+              for j, (name, im) in enumerate(r):
+                  x = 10 + j * (tw + 10)
+                  d.text((x, y), name, fill=(240, 228, 200), font=font)
+                  S.paste(im, (x, y + 34))
+              y += max(im.height for _, im in r) + 40
+          S.save("stills/check_stills.png")
+          PY
+      - name: Publish into the draft ep04v2-stills
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls stills/*.png)
+          if tools/rel.sh id ep04v2-stills >/dev/null 2>&1; then tools/rel.sh upload ep04v2-stills $files
+          else gh release create ep04v2-stills $files --title "CoinSense · EP04v2 · STILLS" --notes "Check frames (draft, not for upload)." --prerelease --draft; fi

@@ -108,15 +108,17 @@ S: dict[str, dict] = {
     "A1.11a": W_(base="a1_glow", cam=[[0.45, 0.42, 1.1], [0.4, 0.38, 1.35]],  # a face between screens (note 8)
                  overs=[W_(t="tags", items=["+$8"], at_on=["Service"], x=0.78, y=0.2)], sfx=[{"kind": "kachunk", "on": "Service"}]),
     "A1.11b": W_(base="s03", cam=[[0.511, 0.52, 1.8], [0.5, 0.55, 2.1]],  # push in on the screen while the joke is spoken (note 5)
-                 screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE", label_on="service#2")]),
+                 # Klot (Nov 7): at 8:18 a red-ink circle goes round each fee as it is read (rough notation, no hand)
+                 screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", circle_on="eight", label="FOR THE SERVICE OF CHARGING YOU A FEE", label_on="service#2")]),
                  sfx=[{"kind": "typing", "on": "service#2", "dur": 1.4}]),
     "A1.J3a": W_(base="s03", cam=[[0.511, 0.52, 1.72], [0.5, 0.57, 2.1]],  # Klot r6: the gulp takes over on "Processing"
-                 screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", label="FOR THE SERVICE OF CHARGING YOU A FEE"),
-                                              W_(name="FACILITY FEE", amt="$6", at_on="Facility")]),
-                 sfx=[{"kind": "kachunk", "on": "Facility"}]),
-    "A1.J3b": W_(base="s05", cut_on="Processing", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.14]],
-                 overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at_on=["Facility", "Facility", "Processing"], x=0.84, y=0.2)],
-                 sfx=[{"kind": "kachunk", "on": "Processing"}]),
+                 screen=W_(mode="fees", fees=[W_(name="SERVICE FEE", amt="$8", circle=True, label="FOR THE SERVICE OF CHARGING YOU A FEE"),
+                                              W_(name="FACILITY FEE", amt="$6", at_on="Facility", circle_on="six"),
+                                              W_(name="PROCESSING", amt="$4", at_on="Processing", circle_on="four")]),
+                 sfx=[{"kind": "kachunk", "on": "Facility"}, {"kind": "kachunk", "on": "Processing"}]),
+    # Klot (Nov 7): the screen stays until the third fee is circled; the gulp takes over on "…to process the other fees"
+    "A1.J3b": W_(base="s05", cut_on="process#2", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.14]],
+                 overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.0, 0.0, 0.0], x=0.84, y=0.2)]),
     "A1.12": W_(base="key", key="$48", sub="TOTAL", at=0.15, sfx=[{"kind": "stab", "on": "Total"}]),
     "A1.13": W_(base="m1", cam=[[0.5, 0.5, 1.0], [0.5, 0.48, 1.06]],  # Klot r6 motion: m1 gulp (Grok, from s05; its last frame held)
                 overs=[W_(t="bars_card", bars=[["FIRST", 30, "$30"], ["LAST", 48, "$48"]], x=0.8, y=0.62),
@@ -307,7 +309,7 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
             s = hit[beats[i - 1]["id"]]["at"]  # the picture cuts on the brass hit; the silence holds the next card
         first = S.get(b["id"] + ("a" if len(cur[b["id"]]) > 1 else "")) or S.get(b["id"] + "/") or {}
         if i > 0 and "start_on" in first:  # Klot r6: the picture arrives with its key word, not on the line's lead-in
-            s = max(s, word_time(b, first["start_on"]) - 0.5)
+            s = max(s, word_time(b, first["start_on"]) - first.get("start_lead", 0.5))
         if i > 0 and b["act"] != beats[i - 1]["act"]:  # a new act (the full file): its title arrives on the ad break
             brk = [k["at"] for k in T.get("breaks", []) if beats[i - 1]["end"] - 0.5 <= k["at"] <= b["start"]]
             if brk:
@@ -329,6 +331,12 @@ def build(T: dict, acts: tuple[str, ...], end_t: float) -> tuple[list[dict], lis
             vis[i + 1] -= d  # the next picture arrives early (a pre-lap)
         elif prv_ok:
             vis[i] += d  # the previous picture holds a little into this line
+    # max_len: a one-shot beat whose picture must stay short (the Fee Short's split-flap total, <= 1.5 s) hands the rest of
+    # its line to the next picture (a pre-lap)
+    for i in range(len(beats) - 1):
+        sp = S.get(beats[i]["id"]) or {}
+        if nsh[i] == 1 and "max_len" in sp and vis[i + 1] - vis[i] > sp["max_len"] and beats[i + 1]["act"] == beats[i]["act"]:
+            vis[i + 1] = vis[i] + sp["max_len"]
     shots, clock = [], None
     for i, b in enumerate(beats):
         clock = CLOCK.get(b["id"], clock)
@@ -484,33 +492,57 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
         tl.add_voice(b["start"], voice[i:j], 24000, tag=b["id"])
     hits = [h for h in T["hits"] if any(h["line"] == b["id"] for b in beats)]
     acts = {a["act"]: a["start"] for a in T["acts"]}
-    beds = {"COLD": "ub_ticking_tension", "A1": "ub_night_spot", "A2": "ub_mechanisms_of_action", "A3": "ub_usual_suspects", "A4": "ub_clock_is_ticking"}
-    act_at = sorted((a["start"], a["act"]) for a in T["acts"])
+    # R52 (Klot, Nov 7): the underscore comes from the channel sound kit's loop beds — tension under the cold open and
+    # Act 1 (checkout, the ticking clock), investigation under the lab and the cops, light irony under the gang, and
+    # resolution from the rewind ("So let's rewind Larry's Tuesday") to the end
+    beds = {"COLD": "cs_bed_tension", "A1": "cs_bed_tension", "A2": "cs_bed_investigation", "A3": "cs_bed_irony", "A4": "cs_bed_investigation"}
+    order = [b["id"] for b in T["beats"]]
+    post = set(order[order.index("A4.13"):]) if "A4.13" in order else set()  # the right way: after the rewind
+    changes = []  # (t, bed): where the bed changes inside this file
+    first = beats[0] if beats else None
+    changes.append((0.0, "cs_bed_resolution" if first and first["id"] in post else beds.get(first["act"] if first else "COLD", "cs_bed_tension")))
+    for a0, act in sorted((a["start"], a["act"]) for a in T["acts"]):
+        if 0 < a0 < end_t and any(bb["act"] == act for bb in beats):
+            changes.append((a0, beds.get(act, changes[-1][1])))
+    rw = next((bb for bb in beats if bb["id"] == "A4.12"), None)
+    if rw:
+        changes.append((word_time(rw, "rewind"), "cs_bed_resolution"))
+    changes.sort()
 
-    def bed_at(t):  # the bed of the act playing at t (a preview segment or the full episode)
-        cur = beats[0]["act"] if beats else "COLD"
-        for a0, act in act_at:
-            if a0 <= t + 1e-3 and any(bb["act"] == act for bb in beats):
-                cur = act
-        return beds.get(cur, "ub_ticking_tension")
-    bed = bed_at(0.0)
-    tl.music_cue(0.0, bed)
-    for a0, act in act_at:
-        if 0 < a0 < end_t and any(bb["act"] == act for bb in beats) and act != "A1":
-            tl.music_cue(a0, beds.get(act, bed))
+    def bed_at(t):  # the bed playing at t (a preview segment, a Short or the full episode)
+        cur = changes[0][1]
+        for a0, bd in changes:
+            if a0 <= t + 1e-3:
+                cur = bd
+        return cur
+    for a0, bd in changes:
+        tl.music_cue(a0, bd)
+    # R52: the sting on "Case file number …" (the bed stops for it and comes back as it dies away)
+    sting = next((bb for bb in beats if bb["id"] == "COLD.9"), None)
+    sting_at = word_time(sting, "Case") if sting else None
+    if sting_at is not None:
+        tl.add_kit(sting_at - 0.05, "cs_sting", gap_db=-4.0, under_db=-12.0, fade_out=0.8)
     # Klot r4: the music dips under a line the final-mix STT check could not hear cleanly (A3.5 "swim in")
     for bb in beats:
         if bb["id"] in DIP_LINES:
             tl.dips.append((bb["start"] - 0.2, bb["end"] + 0.2, DIP_LINES[bb["id"]]))
     silences = []
     for h in hits:
-        tl.add_stab(h["at"], "ub_sting_brass", dur=T["hit_len"])
+        # R52: "Case closed." is hit with the outro's opening chord; the other hits keep the brass stab
+        tl.add_stab(h["at"], "cs_outro" if h["line"] == "A4.20" else "ub_sting_brass", dur=T["hit_len"])
         s0 = max(h["at"] + T["hit_len"], h.get("silence_from", 0.0))  # the second of silence comes after the line
         silences.append((s0, s0 + 1.0))
         tl.music_cue(h["at"] + 0.2, "none")
-        tl.music_cue(s0 + 1.0, bed_at(s0 + 1.0))
-    if "A1" in acts and 0.0 <= acts["A1"] < end_t:  # only when Act 1 starts inside this file
-        tl.music_cue(acts["A1"], "ub_night_spot")
+        back = s0 + 1.0
+        if sting_at is not None and back <= sting_at + 0.5:  # the sting follows this silence: the bed returns as it dies away
+            tl.music_cue(sting_at - 0.05, "none")
+            back = sting_at + 3.2
+        tl.music_cue(back, bed_at(back))
+    end_screen = [sh for sh in shots if sh.get("endscreen")]
+    if end_screen:  # R52: the outro closes the end screen — its final chord rings out on the last frame
+        o_at = end_t - 8.0
+        tl.music_cue(o_at + 0.6, "none")
+        tl.add_kit(o_at, "cs_outro", gap_db=-6.0, under_db=-13.0, fade_in=0.05, fade_out=1.2)
     for sh in shots:
         for e in sh["_sfx"]:
             k = e["kind"]
@@ -537,12 +569,19 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
         t = bt[TICKS[0]]["start"]
         while t < bt[TICKS[1]]["start"] - 1.0:
             tl._add(tl.fx, t, A.sfx("tick") * A.db(-24))
+            tl.log.append((t, t + 0.05, "tick"))
             t += 1.0
     if all(x in bt for x in HEART):
         t = bt[HEART[0]]["start"]
         while t < bt[HEART[1]]["start"] - 1.2:
             tl._add(tl.fx, t, heartbeat() * A.db(-12))
+            tl.log.append((t, t + 0.85, "heartbeat"))
             t += 0.92
+    cues = []
+    for t, c in sorted(tl.cues):  # one cue per change (the same bed twice in a row would crossfade into itself)
+        if not cues or cues[-1][1] != c:
+            cues.append((t, c))
+    tl.cues = cues
     x = tl.mix()
     # designed silences: nothing at all (voice, music, foley) for the second after each brass hit
     for a, b in silences:
@@ -557,7 +596,48 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
     x[-fade:] *= np.linspace(1, 0, fade)
     A.write_wav(out, x)
     return {"silences": silences, "voice_lines": tl.voice_lines, "voice_edits": tl.voice_edits, "sfx": tl.log,
-            "music": sorted({c for _t, c in tl.cues if c and c != "none"})}  # for the asset_license check
+            "music": sorted({c for _t, c in tl.cues if c and c != "none"} | {str(e[2]).split(":", 1)[1] for e in tl.log if str(e[2]).startswith("kit:")}),
+            "kit": [[round(e[0], 3), str(e[2]).split(":", 1)[1]] for e in tl.log if str(e[2]).startswith("kit:")],
+            "music_under_voice_db": cfg["audio"].get("music_under_voice_db", -14), "kit_under_voice_db": -12.0}  # asset_license / sound_kit
+
+
+# House transitions (Klot, transition reel, Nov 7): case folder = act changes (it carries the act title), torn paper and
+# halftone dissolve = scene changes inside acts (alternating), iris = time jumps and the final "Case closed". At most one
+# transition per cut; hard cuts stay the most common edit. Frames at 30 fps. "pre": the transition starts that many
+# frames before the incoming shot (the folder covers the cut; the iris closes before it and opens after it).
+ACT_FIRST = ("A1.1a", "A2.1a", "A3.1a", "A4.1")
+SCENE_CHANGES = ["COLD.6", "A1.J1a", "A1.15a", "A1.19a", "A2.4", "A2.J4a", "A2.22a", "A2.25a", "A3.6", "A3.11a", "A3.17",
+                 "A4.2a", "A4.3", "A4.16a", "A4.22a"]  # first shots of a new scene (a new place / picture), between lines
+FOLDER_IN, FOLDER_OUT, FOLDER_LEN = 13, 13, 72  # 0.43 s in, ~1.5 s held with the act title, 0.43 s out
+SCENE_LEN, IRIS_LEN = 24, 36
+
+
+def house_transitions(shots: list[dict], beats: list[dict]) -> list[dict]:
+    out = []
+    ends = sorted(b["end"] for b in beats)
+    by_id = {s["id"]: i for i, s in enumerate(shots)}
+    for sid in ACT_FIRST:
+        if sid not in by_id or by_id[sid] == 0:
+            continue
+        s = shots[by_id[sid]]
+        prev_voice = max([e for e in ends if e <= s["start"] + 1e-3] or [s["start"] - 0.5])
+        pre = min(1.2, max(0.5, s["start"] - (prev_voice + 0.3)))  # A1 follows the cold open's last line: lead in after it
+        out.append({"at": s["start"], "shot": sid, "type": "folder", "role": "act", "n": FOLDER_LEN, "pre": round(pre * FPS),
+                    "in": FOLDER_IN, "out": FOLDER_OUT, "title": s.pop("title", None)})
+        s.pop("title_over", None)
+        s["folder"] = [round(s["start"] - pre, 3), round(s["start"] - pre + FOLDER_LEN / FPS, 3)]
+    k = 0
+    for sid in SCENE_CHANGES:
+        if sid in by_id and by_id[sid] > 0:
+            out.append({"at": shots[by_id[sid]]["start"], "shot": sid, "type": ("halftone", "torn")[k % 2], "role": "scene", "n": SCENE_LEN, "pre": 0})
+            k += 1
+    for i, s in enumerate(shots):
+        if (s.get("iris") or {}).get("at_") is not None:  # a time jump inside one shot (the rewind): the iris closes and opens on the same picture
+            out.append({"at": round(s["start"] + s["iris"]["at_"], 3), "shot": s["id"], "type": "iris", "role": "time_jump", "inside": True,
+                        "n": round(s["iris"]["dur"] * FPS), "pre": 0})
+    if "A4.21a" in by_id:  # "Case closed." -> the verdict: the iris closes in the silence after the hit and opens on the next line
+        out.append({"at": shots[by_id["A4.21a"]]["start"], "shot": "A4.21a", "type": "iris", "role": "case_closed", "n": IRIS_LEN, "pre": IRIS_LEN // 2})
+    return sorted(out, key=lambda x: x["at"])
 
 
 def short_from(shots: list[dict]) -> list[dict]:
@@ -958,12 +1038,17 @@ def main(rel: str, pub: str, outd: str, seg: str = "p2") -> int:
             if vertical:
                 seen = sum(1 for x in shots[:shots.index(s)] if x.get("img") == s.get("img") and x.get("screen"))
                 short_frame(s, seen, compact=kind != "short")
+        trans = house_transitions(shots, beats) if kind in ("full", "full_ru") else []  # Shorts keep hard cuts
+        for tr in trans:  # the folder lands with a paper slap; the torn paper rips
+            if tr["type"] in ("folder", "torn"):
+                sh = next(x for x in shots if x["id"] == tr["shot"])
+                sh["_sfx"].append({"kind": "paper", "t": round(tr["at"] - tr["pre"] / FPS + (0.4 if tr["type"] == "folder" else 0.05), 3)})
         loop = kind.startswith("sh")  # a Short loops: it ends on its last picture, no tail
         stats = mix(T, beats, shots, end, voice, O / f"mix_{kind}.wav", cfg, tail=0.0 if loop else 0.6)
         data = {"W": W, "H": H, "fps": FPS, "frames": int(round(end * FPS)) + (0 if loop else 18), "end": round(end, 3), "pal": PAL,
                 "band": BAND_9x16 if vertical else None,
                 "shots": [{k: v for k, v in s.items() if k != "_sfx"} for s in shots], "captions": captions(beats, kind),
-                "acts": [a for a in T["acts"] if a["act"] in acts], "wipes": [s["start"] for s in shots if s["id"] in ("A1.1a", "A2.1a", "A3.1a", "A4.1")],
+                "acts": [a for a in T["acts"] if a["act"] in acts], "transitions": trans,
                 "fonts": {"Anton-Regular.ttf": "Anton-Regular", "ArchivoBlack-Regular.ttf": "ArchivoBlack-Regular",
                           "SpecialElite-Regular.ttf": "SpecialElite-Regular", "PermanentMarker-Regular.ttf": "PermanentMarker-Regular",
                           "PT_Serif-Web-Regular.ttf": "PT-Serif-Web-Regular"}}
