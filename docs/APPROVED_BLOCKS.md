@@ -12,7 +12,7 @@ item may be used in tests only.
 | @remotion/transitions clockWipe | transition | pending | tooling-v2.yml test render | | |
 | SplitFlap.tsx (port of HyperFrames split-flap-board) | block | pending | tooling-v2.yml test render | | |
 | HyperFrames hw-scribble-transition via the CLI (transparent WebM) | block | pending | tooling-v2.yml test render | | |
-| ScribbleWipe.tsx (the same block through @remotion/gsap) | block | pending | tooling-v2.yml test render (alpha IoU vs the CLI render) | | |
+| ScribbleWipe.tsx (Remotion port of the same block, GSAP timeline written out) | block | pending | tooling-v2.yml test render (alpha IoU vs the CLI render) | | |
 | @remotion/lottie + LottieFiles "Approved Stamp" (Anu Menon) | asset source | pending | tooling-v2.yml test render | | Lottie Simple License |
 | @remotion/google-fonts Special Elite, Courier Prime | font | pending | tooling-v2.yml test render | | Latin only: no Cyrillic (RU copies keep their Cyrillic fallbacks) |
 | @remotion/google-fonts Playfair Display | font | pending | — | | covers Cyrillic |

@@ -89,8 +89,17 @@ def prep(audio_dir: str, outdir: str) -> int:
                     raise
         rep["photo"] = {"ok": True, "seconds": round(time.time() - t0, 1), "title": m["title"], "date": m["item_date"], "licence": m["licence"]}
     except Exception as e:  # noqa: BLE001
-        rep["photo"] = {"ok": False, "error": str(e)[:300]}
-        Image.new("RGB", (1200, 840), (120, 110, 100)).save(PUB / "photo.jpg")
+        # loc.gov rate-limits GitHub's runners (429): use the same item fetched by the same tool from the review session
+        keep = ROOT / "assets/tooling/loc_2017745251_loews_1939.jpg"
+        if keep.exists():
+            shutil.copy(keep, PUB / "photo.jpg")
+            shutil.copy(str(keep) + ".license.json", PUB / "photo.jpg.license.json")
+            m = json.loads((PUB / "photo.jpg.license.json").read_text())
+            rep["photo"] = {"ok": True, "via": "tools/archives.py run outside Actions (loc.gov answered 429 here)", "actions_error": str(e)[:160],
+                            "title": m["title"], "date": m["item_date"], "licence": m["licence"]}
+        else:
+            rep["photo"] = {"ok": False, "error": str(e)[:300]}
+            Image.new("RGB", (1200, 840), (120, 110, 100)).save(PUB / "photo.jpg")
     # 2. the Lottie stamp (.lottie = zip with animations/*.json)
     try:
         data = A._get(LOTTIE["url"], binary=True)
@@ -291,7 +300,7 @@ def render(outdir: str) -> int:
         res["lottie"]["ok"] = res["lottie"]["render_ok"] and d > 3
     except Exception as e:  # noqa: BLE001
         res["lottie"]["ok"], res["lottie"]["check"] = False, str(e)
-    # the @remotion/gsap port of the same HyperFrames block, against the CLI render: alpha masks frame by frame (all 66),
+    # the Remotion port of the same HyperFrames block, against the CLI render: alpha masks frame by frame (all 66),
     # IoU at the best time shift (a constant offset between the two clocks is reported, not hidden)
     try:
         pd, cd = O / "port_frames", O / "cli_frames"
@@ -444,7 +453,7 @@ def report(outdir: str, probe: str) -> int:
     f = res.get("full", {})
     md += ["", f"Full 8 s composition (240 frames, all elements): {'OK' if f.get('render_ok') else 'FAILED'} in {f.get('seconds', '?')} s.", ""]
     g = res.get("gsap_port", {})
-    md += [f"HyperFrames -> Remotion port via @remotion/gsap (the same hw-scribble-transition): {'matches' if g.get('ok') else 'DOES NOT match'} the CLI render "
+    md += [f"HyperFrames -> Remotion port (ScribbleWipe.tsx, the same hw-scribble-transition, its GSAP timeline written out per frame): {'matches' if g.get('ok') else 'DOES NOT match'} the CLI render "
            f"(mean alpha IoU {g.get('mean_alpha_iou')} over the inked frames, min {g.get('min_alpha_iou')}, clock offset {g.get('best_shift_frames')} frames; "
            f"coverage every 3rd frame, port {g.get('coverage_port_every3')} vs CLI {g.get('coverage_cli_every3')}){' · ' + g['error'] if g.get('error') else ''}.", ""]
     if pr.get("archives"):
