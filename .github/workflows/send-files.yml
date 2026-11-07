@@ -33,4 +33,5 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           tools/rel.sh download "${{ github.event.inputs.tag }}" rel
+          cp patches/${{ github.event.inputs.tag }}/*.txt rel/ 2>/dev/null || true  # a reviewed note kept in the repo
           python tools/send_files.py rel "${{ github.event.inputs.header }}" ${{ github.event.inputs.text && format('--text {0}', github.event.inputs.text) || '' }} ${{ github.event.inputs.files }}
