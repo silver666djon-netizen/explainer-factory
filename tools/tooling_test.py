@@ -386,14 +386,18 @@ def render(outdir: str) -> int:
     hit_s = contact_frame() / 30.0 - onset(PUB / "sfx_rubber_stamp.mp3")
     th, st = PUB / "theme_noir_jazz_20s.mp3", PUB / "sfx_rubber_stamp.mp3"
     if th.exists() and st.exists() and (O / "tooling_silent.mp4").exists():
-        fc = (f"[1:a]atrim=0:8,asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=7.1:d=0.9,volume=0.55[m];"
+        # the theme sits under; it dips 5 dB around the stamp so the hit reads clearly (6 dB+ above the bed)
+        d0, d1 = contact_frame() / 30.0 - 0.08, contact_frame() / 30.0 + 0.45
+        fc = (f"[1:a]atrim=0:8,asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=7.1:d=0.9,volume=0.42,"
+              f"volume=enable='between(t,{d0:.3f},{d1:.3f})':volume=0.56[m];"
               f"[2:a]adelay={int(hit_s * 1000)}|{int(hit_s * 1000)},volume=1.0[s];[m][s]amix=inputs=2:normalize=0:duration=first,"
               f"loudnorm=I=-14:TP=-2.0:LRA=11[a]")  # -2.0 so the AAC file stays under the channel's -1.5 dBTP
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(O / "tooling_silent.mp4"), "-i", str(th), "-i", str(st), "-filter_complex", fc,
                         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", "8", "-movflags", "+faststart",
                         str(O / "tooling_test.mp4")], check=True)
         L = loud(O / "tooling_test.mp4")
-        res["audio"] = {"ok": L["lufs"] is not None and abs(L["lufs"] + 14) <= 1.0 and L["true_peak"] <= -1.5, "stamp_onset_at_s": round(contact_frame() / 30.0, 3), **L}
+        L.update(hit_over_bed(O / "tooling_test.mp4", contact_frame() / 30.0))
+        res["audio"] = {"ok": L["lufs"] is not None and abs(L["lufs"] + 14) <= 1.0 and L["true_peak"] <= -1.5 and L["stamp_over_bed_db"] >= 6, "stamp_onset_at_s": round(contact_frame() / 30.0, 3), **L}
     else:
         if (O / "tooling_silent.mp4").exists():
             shutil.copy(O / "tooling_silent.mp4", O / "tooling_test.mp4")
@@ -414,6 +418,16 @@ def contact_frame() -> int:
     """The first frame on which the rubber face touches the paper (RubberStamp.tsx: t >= hitAt)."""
     import math
     return 162 + math.ceil(STAMP_HIT * 30 - 1e-9)
+
+
+def hit_over_bed(p: Path, at: float) -> dict:
+    """The stamp's loudest 50 ms (from the contact on) against the bed just before it (RMS, dB)."""
+    raw = subprocess.run(["ffmpeg", "-v", "error", "-i", str(p), "-ac", "1", "-ar", "48000", "-f", "s16le", "-"], capture_output=True).stdout
+    x = np.frombuffer(raw, np.int16).astype(np.float32) / 32768.0
+    r = lambda a, b: 20 * np.log10(np.sqrt(np.mean(x[int(a * 48000):int(b * 48000)] ** 2)) + 1e-9)  # noqa: E731
+    hit = max(r(at + k * 0.025, at + k * 0.025 + 0.05) for k in range(6))
+    bed = r(at - 0.6, at - 0.1)
+    return {"stamp_peak_rms_db": round(float(hit), 1), "bed_before_db": round(float(bed), 1), "stamp_over_bed_db": round(float(hit - bed), 1)}
 
 
 def onset(p: Path) -> float:
@@ -546,7 +560,7 @@ def report(outdir: str, probe: str) -> int:
     fc = res.get("flap", {}).get("check") or {}
     ef = res.get("effects", {}).get("check") or {}
     st = res.get("stamp", {}).get("check") or {}
-    short = [f"Loudness: {a.get('lufs')} LUFS integrated, true peak {a.get('true_peak')} dBTP (channel standard: -14 LUFS, true peak <= -1.5 dBTP).",
+    short = [f"Loudness: {a.get('lufs')} LUFS integrated, true peak {a.get('true_peak')} dBTP (channel standard: -14 LUFS, true peak <= -1.5 dBTP); the stamp hit {a.get('stamp_over_bed_db')} dB over the music bed.",
              "Frame-review fixes:",
              f"a. halftone: 3 px screen over the plain photo; readable (structure {ef.get('readable_corr')}, contrast {ef.get('contrast_ratio')}x, brightness {ef.get('mean_shift')})",
              f"b. split-flap: straight $30 -> $48; rests only on {fc.get('rests')}; intermediate rests: {len(fc.get('intermediate_rests') or [])}",
