@@ -9,6 +9,10 @@ on:
         description: "the commit whose pilot/remotion is the 4.0.290 baseline"
         required: false
         default: "909098f"
+      only_stills:
+        description: "yes = skip the QC re-run, only the 12-frame old/new comparison (with diff crops)"
+        required: false
+        default: "no"
 permissions:
   contents: write
 env:
@@ -59,13 +63,16 @@ jobs:
           python tools/v2_preview.py rel pilot/remotion/public pv $SEG 2>&1 | tee export.log \
             || { tail -n 25 export.log | python3 -c 'import sys; print("::error title=export::" + sys.stdin.read()[-4000:].replace("%","%25").replace("\n","%0A"))'; exit 1; }
       - uses: actions/cache@v4
+        if: github.event.inputs.only_stills != 'yes'
         with:
           path: ~/.cache/huggingface
           key: whisper-medium-v1
           restore-keys: kokoro-
       - name: More Python packages (STT, DOM checks)
+        if: github.event.inputs.only_stills != 'yes'
         run: pip install -q faster-whisper opencv-python-headless playwright 2>&1 | tail -2 && python -m playwright install --with-deps chromium 2>&1 | tail -1
       - name: The existing master + its QC report (baseline)
+        if: github.event.inputs.only_stills != 'yes'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -75,6 +82,7 @@ jobs:
         working-directory: pilot/remotion
         run: npm install --no-audit --no-fund 2>&1 | tail -2 && npx remotion versions 2>&1 | tail -6
       - name: DOM sampling + every QC check and self-test (4.0.541 tree)
+        if: github.event.inputs.only_stills != 'yes'
         run: |
           E=$(find pilot/remotion/node_modules -path '*esbuild/bin/esbuild' -type f 2>/dev/null | head -1)
           python tools/v2_dom_qc.py pilot/remotion/public pv "$E" 2>&1 | tail -5
@@ -93,14 +101,14 @@ jobs:
           cp -r pilot/remotion/public /tmp/old/pilot/remotion/public
           cd /tmp/old/pilot/remotion && grep '"remotion"' package.json && npm install --no-audit --no-fund 2>&1 | tail -2
           s0=$(date +%s); for f in $FR; do npx remotion still src/index.ts V2 $GITHUB_WORKSPACE/old/f$(printf %06d $f).png --frame=$f --props='{"name":"v2_full"}' --log=error; done; echo "old: $(( $(date +%s) - s0 )) s"
-          cd $GITHUB_WORKSPACE && python tools/upgrade_compare.py stills old new out/upgrade_check.md
+          cd $GITHUB_WORKSPACE && mkdir -p out && python tools/upgrade_compare.py stills old new out/upgrade_check.md
           cat out/upgrade_check.md | python3 -c 'import sys; print("::notice title=upgrade check::" + sys.stdin.read()[-3800:].replace("%","%25").replace("\n","%0A"))'
       - name: Publish into the draft tooling-v2
         if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls out/upgrade_check.md out/qc_after_upgrade.md 2>/dev/null || true)
+          files=$(ls out/upgrade_check.md out/qc_after_upgrade.md out/diff_*.png 2>/dev/null || true)
           [ -n "$files" ] || exit 0
           if tools/rel.sh id tooling-v2 >/dev/null 2>&1; then tools/rel.sh upload tooling-v2 $files
           else gh release create tooling-v2 $files --title "CoinSense · TOOLING V2" --notes "Tooling v2 (not for upload)." --prerelease --draft; fi

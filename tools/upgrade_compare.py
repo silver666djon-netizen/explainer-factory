@@ -69,6 +69,22 @@ def stills(old: str, new: str, out: str) -> int:
             continue
         d = np.abs(a - c)
         worst = max(worst, float(d.mean()))
+        # where it differs: old | new | diff (x8) side by side, for the eye
+        m = (d.max(axis=2) > 8)
+        ys, xs = np.nonzero(m)
+        if len(ys):
+            y0, y1 = max(0, ys.min() - 40), min(a.shape[0], ys.max() + 40)
+            x0, x1 = max(0, xs.min() - 40), min(a.shape[1], xs.max() + 40)
+            crop = lambda z: Image.fromarray(np.clip(z[y0:y1, x0:x1], 0, 255).astype(np.uint8))  # noqa: E731
+            tiles = [crop(c), crop(a), crop(np.minimum(d * 8, 255))]
+            W = sum(t.width for t in tiles) + 20
+            S = Image.new("RGB", (W, tiles[0].height), (30, 30, 30))
+            x = 0
+            for t in tiles:
+                S.paste(t, (x, 0))
+                x += t.width + 10
+            S.thumbnail((2400, 1200))
+            S.save(Path(out).parent / f"diff_{p.stem}.png")
         lines.append(f"| {p.stem} | {d.mean():.3f} | {int(d.max())} | {float((d.max(axis=2) > 8).mean()) * 100:.2f} % |")
     lines += ["", f"Worst mean difference: {worst:.3f} (identical = 0; < 0.5 is invisible encoder-level noise)."]
     with open(out, "a") as fh:
