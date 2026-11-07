@@ -1,0 +1,49 @@
+name: Channel sound kit (ElevenLabs Music, R52)
+# The CoinSense sound kit (Klot, Nov 7): a 4 s sting, an 8 s outro and four ~60 s loop beds (tension, investigation, light
+# irony, resolution), same instruments and motif as the approved theme. Made once with ElevenLabs Music (music_v1,
+# force_instrumental), the beds folded into seamless loops, every file with its licence sidecar. Published to the draft
+# sound-kit; the files are then committed to assets/music and logged in docs/ASSET_LICENSES.md. No Telegram here.
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: "optional: comma-separated stems to make again (e.g. cs_bed_irony); empty = the whole kit"
+        required: false
+        default: ""
+permissions:
+  contents: write
+concurrency:
+  group: sound-kit
+  cancel-in-progress: false
+env:
+  TAG: sound-kit
+jobs:
+  kit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy requests faster-whisper 2>&1 | tail -2
+      - name: Make the kit
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        run: |
+          set -o pipefail
+          python tools/el_audio.py kit out/kit "${{ github.event.inputs.only }}" 2>&1 | tee out_kit.log
+      - name: Summary
+        if: always()
+        run: |
+          [ -f out/kit/kit.txt ] && echo "::notice title=sound kit::$(sed -e 's/%/%25/g' out/kit/kit.txt | sed -e ':a;N;$!ba;s/\n/%0A/g')" || true
+      - name: Publish into the draft sound-kit
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls out/kit/*.mp3 out/kit/*.json out/kit/kit.txt 2>/dev/null || true)
+          [ -n "$files" ] || exit 0
+          if tools/rel.sh id $TAG >/dev/null 2>&1; then tools/rel.sh upload $TAG $files
+          else gh release create $TAG $files --title "CoinSense · SOUND KIT" --notes "Channel sound kit (R52): sting, outro, 4 loop beds. ElevenLabs Music." --prerelease --draft; fi
