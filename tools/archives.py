@@ -25,6 +25,7 @@ import urllib.request
 from datetime import date
 from pathlib import Path
 
+MAX_429 = 3  # how many times a 429 is waited out (the tooling test sets 0: loc.gov 429s GitHub runners for long)
 UA = {"User-Agent": "CoinSense-archive-fetch/2.0 (educational explainer videos; github.com/silver666djon-netizen/explainer-factory)"}
 
 
@@ -38,7 +39,9 @@ def _get(url: str, binary: bool = False, timeout: int = 120):
             return data if binary else json.loads(data.decode("utf-8"))
         except urllib.error.HTTPError as e:  # noqa: PERF203
             last = e
-            if e.code == 429:  # loc.gov rate limit: back off for real
+            if e.code == 429:  # loc.gov rate limit: back off for real (MAX_429 retries)
+                if a >= MAX_429:
+                    raise
                 time.sleep(15 * (a + 1))
                 continue
             if e.code in (500, 502, 503, 504):

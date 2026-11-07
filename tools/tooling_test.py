@@ -79,13 +79,14 @@ def prep(audio_dir: str, outdir: str) -> int:
     t0 = time.time()
     try:
         m = None
-        for wait in (0, 30, 60, 90):  # loc.gov answers 429 for a while after a burst (the probe's searches)
+        A.MAX_429 = 0  # loc.gov keeps answering 429 to GitHub's runners: one try, then the session-fetched copy
+        for wait in (0,):
             time.sleep(wait)
             try:
                 m = A.fetch("loc", LOC_ID, str(PUB / "photo.jpg"), register=False)
                 break
             except Exception as e:  # noqa: BLE001
-                if "429" not in str(e) or wait == 90:
+                if "429" not in str(e) or wait == 0:
                     raise
         rep["photo"] = {"ok": True, "seconds": round(time.time() - t0, 1), "title": m["title"], "date": m["item_date"], "licence": m["licence"]}
     except Exception as e:  # noqa: BLE001
@@ -387,12 +388,12 @@ def render(outdir: str) -> int:
     if th.exists() and st.exists() and (O / "tooling_silent.mp4").exists():
         fc = (f"[1:a]atrim=0:8,asetpts=PTS-STARTPTS,afade=t=in:d=0.4,afade=t=out:st=7.1:d=0.9,volume=0.55[m];"
               f"[2:a]adelay={int(hit_s * 1000)}|{int(hit_s * 1000)},volume=1.0[s];[m][s]amix=inputs=2:normalize=0:duration=first,"
-              f"loudnorm=I=-14:TP=-1.5:LRA=11[a]")
+              f"loudnorm=I=-14:TP=-2.0:LRA=11[a]")  # -2.0 so the AAC file stays under the channel's -1.5 dBTP
         subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(O / "tooling_silent.mp4"), "-i", str(th), "-i", str(st), "-filter_complex", fc,
                         "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-t", "8", "-movflags", "+faststart",
                         str(O / "tooling_test.mp4")], check=True)
         L = loud(O / "tooling_test.mp4")
-        res["audio"] = {"ok": L["lufs"] is not None and abs(L["lufs"] + 14) <= 1.0 and L["true_peak"] <= -1.0, "stamp_onset_at_s": round(contact_frame() / 30.0, 3), **L}
+        res["audio"] = {"ok": L["lufs"] is not None and abs(L["lufs"] + 14) <= 1.0 and L["true_peak"] <= -1.5, "stamp_onset_at_s": round(contact_frame() / 30.0, 3), **L}
     else:
         if (O / "tooling_silent.mp4").exists():
             shutil.copy(O / "tooling_silent.mp4", O / "tooling_test.mp4")
@@ -545,7 +546,7 @@ def report(outdir: str, probe: str) -> int:
     fc = res.get("flap", {}).get("check") or {}
     ef = res.get("effects", {}).get("check") or {}
     st = res.get("stamp", {}).get("check") or {}
-    short = [f"Loudness: {a.get('lufs')} LUFS integrated, true peak {a.get('true_peak')} dBTP (target -14 LUFS, TP <= -1.0).",
+    short = [f"Loudness: {a.get('lufs')} LUFS integrated, true peak {a.get('true_peak')} dBTP (channel standard: -14 LUFS, true peak <= -1.5 dBTP).",
              "Frame-review fixes:",
              f"a. halftone: 3 px screen over the plain photo; readable (structure {ef.get('readable_corr')}, contrast {ef.get('contrast_ratio')}x, brightness {ef.get('mean_shift')})",
              f"b. split-flap: straight $30 -> $48; rests only on {fc.get('rests')}; intermediate rests: {len(fc.get('intermediate_rests') or [])}",
