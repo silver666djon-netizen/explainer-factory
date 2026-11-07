@@ -2100,7 +2100,7 @@ export const V2: React.FC<{name: string; data?: any; debug?: string}> = ({data})
 					const hidden = !!coveredBy(f);
 					return (
 						<Sequence key={s.id} from={from} durationInFrames={Math.max(1, to - from)} layout="none">
-							<div style={{position: 'absolute', left: 0, top: 0, width: SW, height: SH, zIndex: tearing ? 2 * i + 3 : 2 * i, visibility: hidden ? 'hidden' : 'visible'}}>
+							<div data-covered={hidden ? '1' : undefined} style={{position: 'absolute', left: 0, top: 0, width: SW, height: SH, zIndex: tearing ? 2 * i + 3 : 2 * i, visibility: hidden ? 'hidden' : 'visible'}}>
 								<InTransition enter={enter} exit={exit} len0={len0} W={SW} H={SH}>
 									<ShotIris s={s} W={SW} H={SH}>
 										<ShotBody s={s} SW={SW} SH={SH} u={u} dur={dur} short={short} band={band} />

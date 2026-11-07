@@ -25,7 +25,7 @@ window.collect = () => {
 		return {tip: [pr.left + +el.dataset.tx, pr.top + +el.dataset.ty], sh: +el.dataset.sh, src: el.getAttribute('src')};
 	});
 	const stampHands = [...document.querySelectorAll('img[data-stamphand]')].filter(vis).map((el) => box(el.getBoundingClientRect()));
-	const faces = [...document.querySelectorAll('[data-face]')].map((el) => ({kind: el.dataset.face, box: box(el.getBoundingClientRect())}));
+	const faces = [...document.querySelectorAll('[data-face]')].filter((el) => !el.closest('[data-covered]')).map((el) => ({kind: el.dataset.face, box: box(el.getBoundingClientRect())}));
 	const marks = [...document.querySelectorAll('[data-mark]')].filter(vis).map((el) => ({kind: el.dataset.mark, box: box(el.getBoundingClientRect()), text: (el.textContent || '').trim().slice(0, 40)}));
 	const reads = [...document.querySelectorAll('[data-read]')].filter(vis).filter((el) => (el.textContent || '').trim()).map((el) => {
 		const r = el.getBoundingClientRect();

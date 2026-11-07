@@ -36,7 +36,7 @@ SHORTS = [
        overrides={
            # Klot (Nov 7): the gulp's fee tags bigger (they were small in the top-right)
            "A1.J3b": W_(base="s05", cut_on="process#2", cam=[[0.5, 0.45, 1.02], [0.5, 0.42, 1.14]],
-                        overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.0, 0.0, 0.0], x=0.845, y=0.1, w=340, size=150, big=True)]),
+                        overs=[W_(t="tags", items=["+$8", "+$6", "+$4"], at=[0.0, 0.0, 0.0], x=0.83, y=0.1, w=340, size=150, big=True)]),
            # Klot (Nov 7): the 4 s navy $48 card becomes the split-flap board $30 -> $48, on screen <= 1.5 s; it lands on
            # "forty-eight" and the gulp takes over (the rest of the line runs under it)
            "A1.12": W_(base="key", key="$48", sub="TOTAL", at=0.0, flap=W_(frm="$30", at=0.3), start_on="forty-eight", start_lead=0.2, max_len=1.5,
@@ -44,7 +44,7 @@ SHORTS = [
            # the gulp clip fills the band with his face: the +60% stamp lands in the space beside the face (Nov 7: off the hat);
            # the camera drifts right with the face so that space stays clear
            "A1.13": W_(base="m1", cam=[[0.5, 0.5, 1.0], [0.62, 0.5, 1.0]],
-                       overs=[W_(t="stamp", text="+60%", at_on="sixty", x=0.84, y=0.6, size=105, paper=True)], sfx=[{"kind": "stamp", "on": "sixty"}])}),
+                       overs=[W_(t="stamp", text="+60%", at_on="sixty", x=0.825, y=0.6, size=105, paper=True)], sfx=[{"kind": "stamp", "on": "sixty"}])}),
     W_(key="sh3", title="StubHub's 12-day experiment", ru="12-дневный эксперимент StubHub",
        beats=["A2.7", "A2.9", "A2.10", "A2.12", "A2.14"],
        opener=W_(base="a5", cam=[[0.3, 0.45, 1.25], [0.3, 0.45, 1.32]],
