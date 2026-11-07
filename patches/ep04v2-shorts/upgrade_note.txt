@@ -1,0 +1,8 @@
+Fee Short (A fee for charging you a fee), rebuilt:
+- The 4 s navy $48 card is now the split-flap board $30 -> $48, on screen 1.5 s; it lands on "forty-eight".
+- +60% moved off the hat into the space beside the face.
+- Fee tags bigger (opener and the gulp shot), all 6 % inside the frame.
+- Red-ink circles on $8, $6, $4 as they are read.
+
+All 7 Shorts were rebuilt (the music is now the R52 kit beds in every Short); only this one changed in picture. Shorts keep hard cuts.
+Loudness -14.1 to -14.2 LUFS, true peak -2.6 to -2.8 dBTP. All checks pass.

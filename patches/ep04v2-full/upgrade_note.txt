@@ -1,0 +1,18 @@
+Ep.4 v2 upgrade (EN; RU untouched). Review copy in 4 parts (split at the ad breaks), contact sheet attached.
+
+House transitions:
+- Case folder at the 4 act changes, carrying the act title (ACT 1 THE MARK ... ACT 4 THE COPS AND THE ESCAPE). Label cap height 5-6 % of the frame, tab inside the 6 % margin (checked).
+- Torn paper / halftone at 15 scene changes inside the acts (alternating). About 190 of 209 cuts stay hard cuts.
+- Iris: the rewind 8:19 -> 8:12 (closes on 8:19, opens on the hands spinning back, rewind sound) and after "Case closed." (closes in the silence, opens on "The verdict").
+- Film burn not used (no archive moment needed it).
+
+Music (R52 kit):
+- Sting on "Case file number four", outro chord on "Case closed" and the full outro ending the end screen.
+- Beds: tension (cold open, Act 1), investigation (Act 2, Act 4 to the rewind), light irony (Act 3), resolution (from the rewind to the end).
+- Kept: brass hits, the 1 s silences, heartbeat, ticks, rewind whoosh. There are no sirens in Ep.4 v2.
+- Every cue has a row in ASSET_LICENSES.md.
+
+8:18: red-ink circles go round $8, $6 and $4 as each is read (no hand). The screen now shows PROCESSING $4 too; the gulp cuts in on "to process the other fees".
+
+QC: all checks pass (R51 n/a for Ep.4), incl. new house_transitions and sound_kit with planted-bug self-tests.
+Loudness: -14.3 LUFS, true peak -1.7 dBTP. 4K master rebuilt from this file.
