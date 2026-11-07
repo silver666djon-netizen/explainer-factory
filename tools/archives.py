@@ -58,10 +58,9 @@ def loc_item(ident: str) -> dict:
     url = ident if ident.startswith("http") else f"https://www.loc.gov/item/{ident}/"
     j = _get(url.split("?")[0].rstrip("/") + "/?fo=json")
     it = j.get("item", {})
-    rights = " ".join(it.get("rights_advisory") or []) if isinstance(it.get("rights_advisory"), list) else str(it.get("rights_advisory") or "")
-    rights += " " + " ".join(it.get("rights") or []) if isinstance(it.get("rights"), list) else ""
-    partof = json.dumps(j.get("item", {}).get("partof") or j.get("partof") or "").lower()
-    free = "free to use" in partof or "no known restrictions" in rights.lower()
+    rights = _txt(it.get("rights_advisory"))
+    partof = json.dumps(it.get("partof") or j.get("partof") or "").lower()
+    free = "free to use and reuse" in partof or LOC_FREE.match(rights) is not None
     # the largest JPEG of the item's own files (not the related-items carousels)
     best, bw = None, -1
     for r in j.get("resources", []) or []:
@@ -78,19 +77,30 @@ def loc_item(ident: str) -> dict:
     creator = ", ".join(it.get("contributor_names") or it.get("creators") or []) if isinstance(it.get("contributor_names"), list) else ""
     return {"source": "Library of Congress", "id": it.get("id") or ident, "source_url": url, "file_url": best,
             "title": title, "creator": creator, "item_date": str(d), "year": year_of(d),
-            "licence": "No known restrictions on publication (LoC Free to Use and Reuse)" if free else ("NOT FREE: " + rights.strip()[:120]),
+            "licence": ("No known restrictions on publication (LoC" + (", FSA/OWI" if "farm security" in rights.lower() else "") + ")") if free else ("NOT FREE: " + rights.strip()[:120]),
             "licence_url": "https://www.loc.gov/free-to-use/", "ok": bool(free and best),
             "attribution": f"{title} · Library of Congress" + (f", {creator}" if creator else "")}
 
 
+# "No known restrictions [on publication]." — and NOT the HABS/HAER variant ("...on images made by the U.S. Government;
+# images copied from other sources may be restricted"), which is checked per image, so it is refused here
+# (FSA/OWI items say "No known restrictions. For information, see U.S. Farm Security Administration/...": free)
+LOC_FREE = re.compile(r"\s*no known restrictions(?! on images made by the u\.s\. government)", re.I)
+
+
+def _txt(v) -> str:
+    return " ".join(str(x) for x in v) if isinstance(v, list) else str(v or "")
+
+
 def loc_search(q: str, n: int = 10) -> list[dict]:
-    j = _get("https://www.loc.gov/photos/?" + urllib.parse.urlencode({"q": q, "fo": "json", "c": max(n * 2, 10)}))
+    j = _get("https://www.loc.gov/photos/?" + urllib.parse.urlencode({"q": q, "fo": "json", "c": max(n * 4, 25)}))
     out = []
-    for r in j.get("results", [])[: n * 2]:
-        rights = " ".join(r.get("rights_advisory") or []) if isinstance(r.get("rights_advisory"), list) else str(r.get("rights_advisory") or "")
-        if "no known restrictions" not in rights.lower() and "free to use" not in json.dumps(r.get("partof") or "").lower():
+    for r in j.get("results", []):
+        it = r.get("item") if isinstance(r.get("item"), dict) else {}
+        rights = _txt(it.get("rights_advisory") or r.get("rights_advisory"))
+        if not LOC_FREE.match(rights) and "free to use and reuse" not in json.dumps(r.get("partof") or "").lower():
             continue
-        out.append({"id": r.get("id"), "title": r.get("title"), "item_date": r.get("date"), "licence": "No known restrictions"})
+        out.append({"id": r.get("id"), "title": r.get("title"), "item_date": r.get("date"), "licence": rights.strip()[:60]})
     return out[:n]
 
 
@@ -177,17 +187,18 @@ def commons_item(title: str) -> dict:
 
 
 # ---------------------------------------------------------------- Internet Archive, Prelinger (public domain only)
-def _pd(lic: str) -> bool:
-    return bool(re.search(r"publicdomain/(mark|zero)", lic or ""))
+def _pd(lic: str, rights: str = "") -> bool:
+    """Public Domain Mark, CC0, or the old CC public-domain dedication (creativecommons.org/licenses/publicdomain/)."""
+    return bool(re.search(r"publicdomain", lic or "")) or (not lic and bool(re.search(r"(?i)\bpublic domain\b", rights or "")))
 
 
 def prelinger_search(q: str, n: int = 10) -> list[dict]:
     j = _get("https://archive.org/advancedsearch.php?" + urllib.parse.urlencode(
         [("q", f"collection:prelinger AND ({q})"), ("fl[]", "identifier"), ("fl[]", "title"), ("fl[]", "date"), ("fl[]", "year"),
-         ("fl[]", "licenseurl"), ("rows", n * 4), ("output", "json")]))
+         ("fl[]", "licenseurl"), ("fl[]", "rights"), ("rows", n * 4), ("output", "json")]))
     docs = (j.get("response") or {}).get("docs", [])
     return [{"id": d["identifier"], "title": d.get("title"), "item_date": d.get("date") or d.get("year"),
-             "licence": d.get("licenseurl")} for d in docs if _pd(d.get("licenseurl", ""))][:n]
+             "licence": d.get("licenseurl") or _txt(d.get("rights"))[:60]} for d in docs if _pd(d.get("licenseurl", ""), _txt(d.get("rights")))][:n]
 
 
 def prelinger_item(ident: str) -> dict:
@@ -203,11 +214,11 @@ def prelinger_item(ident: str) -> dict:
         if pick:
             break
     d = md.get("date") or md.get("year") or ""
-    ok = _pd(lic) and "prelinger" in [str(c).lower() for c in cols] and bool(pick)
+    ok = _pd(lic, _txt(md.get("rights"))) and "prelinger" in [str(c).lower() for c in cols] and bool(pick)
     return {"source": "Internet Archive · Prelinger Archives", "id": ident, "source_url": f"https://archive.org/details/{ident}",
             "file_url": f"https://archive.org/download/{ident}/{urllib.parse.quote(pick['name'])}" if pick else None,
             "title": md.get("title", ""), "creator": md.get("creator", "") if isinstance(md.get("creator"), str) else "",
-            "item_date": str(d), "year": year_of(d), "licence": ("Public Domain Mark 1.0" if "mark" in lic else "CC0 1.0") if ok else f"NOT PD: {lic or 'no licence'}",
+            "item_date": str(d), "year": year_of(d), "licence": ("Public Domain Mark 1.0" if "mark" in lic else "CC0 1.0" if "zero" in lic else "Public domain (CC public-domain dedication)" if lic else "Public domain (item rights statement)") if ok else f"NOT PD: {lic or 'no licence'}",
             "licence_url": lic, "ok": ok, "attribution": f"{md.get('title', '')} ({d}) · Prelinger Archives via Internet Archive"}
 
 

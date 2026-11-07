@@ -758,6 +758,25 @@ def c_archive_era(shots=None, beats=None, **_):
     return out
 
 
+def c_clip_native(shots=None, data=None, **_):
+    """R51 (Klot, Nov 7): an AI clip plays at its native speed (no slow-motion stretch: rate 1.0); a beat that needs more
+    time holds the last frame with a slow push-in or cuts to a still; a clip used for more than 5 s carries its reason
+    ("long_reason") from the shot list. Applies to plans made under R51 (data["r51"]); Ep.4 v2 predates it."""
+    if not (data or {}).get("r51"):
+        return []
+    out = []
+    for s in shots or []:
+        if not s.get("video"):
+            continue
+        r = float(s.get("rate", 1.0))
+        if abs(r - 1.0) > 0.005:
+            out.append(f"{s['id']}: {s['video']} slowed to {r:.2f}x (R51: native speed only)")
+        used = (s["end"] - s["start"]) * r
+        if used > 5.05 and not s.get("long_reason"):
+            out.append(f"{s['id']}: {used:.1f} s of AI clip with no reason in the shot list (R51: > 5 s only where needed)")
+    return out
+
+
 def c_asset_license(plan_kind=None, **_):
     """Tooling v2 / R50: every asset the render uses (pictures, clips, fonts, music, SFX, voice, overlays, Lottie) has a
     row in docs/ASSET_LICENSES.md. Release-blocking. Rows without the AI model / licence / item date are reported as
@@ -837,6 +856,7 @@ CHECKS = [
     ("tool_touch (R49)", c_tool_touch, "a tool acting on an object touches it in the still (no code-drawn scissors)"),
     ("archive_era (R48)", c_archive_era, "archive photo year (the item's own date) within +-10 y of the line (or no date); real year in the caption; no modern plate"),
     ("asset_license (R50)", c_asset_license, "every asset used has a row in docs/ASSET_LICENSES.md (release-blocking)"),
+    ("clip_native (R51)", c_clip_native, "AI clips at native speed (no slow-mo stretch); > 5 s of clip only with a stated reason"),
 ]
 NOT_APPLICABLE = {
     "hand_over_ink (R37), one hand at a time (rules 1-5)": "by construction (ink only behind the nib, one hand at a time, pen colour = ink colour); the hand's position against the faces is checked (hand_over_face, from the rendered DOM)",
@@ -1104,6 +1124,11 @@ def selftest(ctx):
                        "caption": "Hotel sign, Cooperstown, New York, 1937 · Library of Congress"}]
         c["beats"] = [{"id": "X", "text": "In 1958 the law changed."}]
         return "the register's 1937 item under a line about 1958 (no plan year)"
+    def m_r51(c):
+        c["data"] = dict(c["data"], r51=True)
+        c["shots"] = [{"id": "planted", "video": "v2/planted_clip.mp4", "start": 0.0, "end": 4.0, "rate": 0.85}]
+        return "a 3.4 s clip stretched to 4 s (0.85x)"
+    plant("clip_native (R51)", m_r51, lambda **k: c_clip_native(shots=k["shots"], data=k["data"]))
     plant("archive_era (R48) item date", m_era_item, lambda **k: c_archive_era(shots=k["shots"], beats=k["beats"]))
     return rows
 
@@ -1154,6 +1179,8 @@ def main(pvd: str, tdir: str) -> int:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
             elif name in ("shorts_band (R38)", "shorts_length", "short_loop") and not (kind == "short" or kind.startswith("sh")):
                 cells.append("n/a (16:9)" if name in ("shorts_length", "short_loop") else ("PASS" if not r else f"FAIL ({len(r)})"))
+            elif name == "clip_native (R51)" and not (P[kind].get("data") or {}).get("r51"):
+                cells.append("n/a: this plan predates R51 (Nov 7)")
             elif name.startswith("stt_") and kind == "full_ru":
                 cells.append("n/a: the STT check is English-only (the RU copy is checked by ear)")
             elif r is None:
