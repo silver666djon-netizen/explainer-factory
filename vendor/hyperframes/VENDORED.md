@@ -25,6 +25,6 @@ Brand check: no third-party brand, logo or trademark in any vendored item (the o
 - split-flap-board -> `pilot/remotion/src/tooling/SplitFlap.tsx` (pure function of time; same drum walk and flap law).
 - hw-scribble-transition -> `pilot/remotion/src/tooling/ScribbleWipe.tsx` (the original GSAP timeline through @remotion/gsap).
 The rest: port on first use (R50: its own test render passes QC first). Fallback for any item: the hyperframes CLI
-(`npx @hyperframes/cli@0.9.19 render <dir> --format webm`, transparent) composited as an `<OffthreadVideo transparent>`.
+(`npx hyperframes@0.9.19 render <dir> --format webm`, transparent) composited as an `<OffthreadVideo transparent>`.
 Telemetry is always off: `HYPERFRAMES_NO_TELEMETRY=1` + `DO_NOT_TRACK=1` + `hyperframes telemetry disable`; never run
 `hyperframes events` or `feedback` (the skills mention them).

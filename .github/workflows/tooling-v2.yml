@@ -75,7 +75,7 @@ jobs:
         run: |
           python tools/archives.py probe out/archives.json || true
           code=$(curl -s -o /dev/null -w "%{http_code}" "https://assets-v2.lottiefiles.com/a/35c0e3d5-a81c-4361-961b-d5ef7a71429e/A4svAPaEV9.lottie"); echo "lottiefiles: HTTP $code" | tee out/lottie_http.txt
-          (npx -y @hyperframes/cli@0.9.19 --version 2>&1 | tail -1) | tee out/hyperframes_version.txt
+          (npx -y hyperframes@0.9.19 --version || npx -y hyperframes@latest --version 2>&1 | tail -1) | tee out/hyperframes_version.txt
           [ -n "$SI_API_KEY" ] && echo "SI_API_KEY: set" || echo "SI_API_KEY: not set (DEMO_KEY used)"
       - name: ElevenLabs Sound Effects + Music test
         id: el
@@ -177,7 +177,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls out/tooling_test.mp4 out/tooling_test_sheet.png out/tooling_test.md out/render.json out/prep.json out/ASSET_LICENSES_after_test.md out/prep.log out/render.log 2>/dev/null || true)
+          files=$(ls out/tooling_test.mp4 out/tooling_test_sheet.png out/tooling_test.md out/render.json out/prep.json out/ASSET_LICENSES_after_test.md out/prep.log out/render.log out/lottie_strip.png 2>/dev/null || true)
           [ -n "$files" ] || exit 0
           if tools/rel.sh id $TAG >/dev/null 2>&1; then tools/rel.sh upload $TAG $files
           else gh release create $TAG $files --title "CoinSense · TOOLING V2" --notes "Tooling v2 (not for upload)." --prerelease --draft; fi

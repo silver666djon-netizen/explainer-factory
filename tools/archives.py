@@ -57,9 +57,30 @@ def year_of(s) -> int | None:
 
 
 # ---------------------------------------------------------------- Library of Congress
+def _loc_record(url: str, ident: str) -> dict:
+    """The item JSON; when loc.gov rate-limits the item endpoint (429, seen from GitHub Actions), the same record from
+    the search endpoint (its result carries the item block: rights_advisory, date, image_url)."""
+    try:
+        return _get(url.split("?")[0].rstrip("/") + "/?fo=json")
+    except Exception as e:  # noqa: BLE001
+        if "429" not in str(e):
+            raise
+        num = re.sub(r"\D", "", ident.rstrip("/").rsplit("/", 1)[-1])
+        j = _get("https://www.loc.gov/photos/?" + urllib.parse.urlencode({"q": num, "fo": "json", "c": 25}))
+        r = next((r for r in j.get("results", []) if str(r.get("id", "")).rstrip("/").endswith(num)), None)
+        if not r:
+            raise
+        it = dict(r.get("item") or {})
+        it.setdefault("title", r.get("title"))
+        it.setdefault("date", r.get("date"))
+        it["image_url"] = r.get("image_url") or it.get("image_url") or []
+        it["id"] = r.get("id")
+        return {"item": it, "resources": r.get("resources") or [], "partof": r.get("partof")}
+
+
 def loc_item(ident: str) -> dict:
     url = ident if ident.startswith("http") else f"https://www.loc.gov/item/{ident}/"
-    j = _get(url.split("?")[0].rstrip("/") + "/?fo=json")
+    j = _loc_record(url, ident)
     it = j.get("item", {})
     rights = _txt(it.get("rights_advisory"))
     partof = json.dumps(it.get("partof") or j.get("partof") or "").lower()
