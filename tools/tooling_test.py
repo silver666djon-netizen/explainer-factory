@@ -50,13 +50,26 @@ def sh(cmd: list[str], cwd: Path | None = None, log: Path | None = None, timeout
     return r.returncode, round(time.time() - t0, 1), out
 
 
+ENTRY = "src/index.ts"
+
+
+def bundle(log: Path) -> None:
+    """Bundle once (every still/render then reuses it instead of re-bundling)."""
+    global ENTRY
+    code, sec, out = sh(["npx", "remotion", "bundle", "src/index.ts", "--out-dir", "/tmp/rbundle"], cwd=RM, log=log)
+    if code == 0 and Path("/tmp/rbundle/index.html").exists():
+        ENTRY = "/tmp/rbundle"
+    print(f"bundle: {'ok' if ENTRY != 'src/index.ts' else 'failed, using src/index.ts'} ({sec} s)", flush=True)
+
+
 def remotion(args: list[str], out: Path, log: Path) -> tuple[int, float, str]:
+    args = [ENTRY if a == "src/index.ts" else a for a in args]
     return sh(["npx", "remotion", *args, *GL, "--log=error"], cwd=RM, log=log)
 
 
 # ------------------------------------------------------------------ prep
 def prep(audio_dir: str, outdir: str) -> int:
-    O = Path(outdir)
+    O = Path(outdir).resolve()
     O.mkdir(parents=True, exist_ok=True)
     PUB.mkdir(parents=True, exist_ok=True)
     log = O / "prep.log"
@@ -65,7 +78,15 @@ def prep(audio_dir: str, outdir: str) -> int:
     # 1. the photo, through the new LoC fetcher (licence gate + sidecar with the item date)
     t0 = time.time()
     try:
-        m = A.fetch("loc", LOC_ID, str(PUB / "photo.jpg"), register=False)
+        m = None
+        for wait in (0, 30, 60, 90):  # loc.gov answers 429 for a while after a burst (the probe's searches)
+            time.sleep(wait)
+            try:
+                m = A.fetch("loc", LOC_ID, str(PUB / "photo.jpg"), register=False)
+                break
+            except Exception as e:  # noqa: BLE001
+                if "429" not in str(e) or wait == 90:
+                    raise
         rep["photo"] = {"ok": True, "seconds": round(time.time() - t0, 1), "title": m["title"], "date": m["item_date"], "licence": m["licence"]}
     except Exception as e:  # noqa: BLE001
         rep["photo"] = {"ok": False, "error": str(e)[:300]}
@@ -91,11 +112,15 @@ def prep(audio_dir: str, outdir: str) -> int:
     html = html.replace("color: null, // css color", "color: \"#a8231c\", // css color (CoinSense red ink)")
     (hf / "index.html").write_text(html)
     code, sec, out = sh(["npx", "-y", HF_CLI, "--version"], log=log, timeout=600)
-    rep["hyperframes_cli"] = {"version": out.strip().splitlines()[-1] if out.strip() else "?", "install_seconds": sec}
+    rep["hyperframes_cli"] = {"exit": code, "install_seconds": sec, "out": [l for l in out.strip().splitlines() if l.strip()][-8:]}
+    if code:  # print the reason (npm / engine / CLI) into the job log
+        print("hyperframes CLI --version failed:\n" + out[-3000:], flush=True)
     sh(["npx", "-y", HF_CLI, "telemetry", "disable"], log=log, timeout=120)
     code, sec, out = sh(["npx", "-y", HF_CLI, "render", str(hf), "--format", "webm", "--fps", "30", "-o", str(PUB / "overlay.webm")], log=log, timeout=1200)
-    rep["overlay"] = {"ok": code == 0 and (PUB / "overlay.webm").exists(), "seconds": sec,
-                      "summary": " | ".join(l.strip() for l in out.splitlines() if re.search(r"capture|gpu|Render|encode|✗|Fix:", l))[-600:]}
+    rep["overlay"] = {"ok": code == 0 and (PUB / "overlay.webm").exists(), "seconds": sec, "exit": code,
+                      "summary": " | ".join(l.strip() for l in out.splitlines() if re.search(r"capture|gpu|Render|encode|✗|Fix:|rror", l))[-900:]}
+    if not rep["overlay"]["ok"]:
+        print("hyperframes render failed:\n" + out[-4000:], flush=True)
     if rep["overlay"]["ok"]:
         rep["overlay"]["alpha"] = webm_alpha(PUB / "overlay.webm")
     # 4. audio from the ElevenLabs test (draft tooling-v2)
@@ -109,6 +134,7 @@ def prep(audio_dir: str, outdir: str) -> int:
     cfg = {"lottie": "tooling/stamp.json" if rep["lottie"]["ok"] else None, "lottieAt": 0.7, "flap": {"from": "$30", "to": "$48", "startAt": 0.6}}
     (PUB / "test.json").write_text(json.dumps(cfg))
     # 5. where the stamp lands inside the Lottie: the first frame the stamp's area reaches 90 % of its final coverage
+    bundle(log)
     if rep["lottie"]["ok"]:
         fr = O / "lottie_frames"
         code, sec, out = remotion(["render", "src/index.ts", "LottieProbe", str(fr), "--sequence", "--image-format=png"], fr, log)
@@ -177,13 +203,16 @@ def hf_energy(a, box) -> float:
 
 
 def render(outdir: str) -> int:
-    O = Path(outdir)
+    O = Path(outdir).resolve()
     O.mkdir(parents=True, exist_ok=True)
     log = O / "render.log"
     cfg = json.loads((PUB / "test.json").read_text())
     res: dict = {}
-    code, sec, out = sh(["npx", "remotion", "gpu", "--gl=swangle"], cwd=RM, log=log)
-    res["gpu"] = " ".join(l.strip() for l in out.splitlines() if re.search(r"(?i)gl_renderer|webgl|gpu|swiftshader|angle|vulkan|video decode|rasterization", l))[:700]
+    bundle(log)
+    dri = Path("/dev/dri").exists()
+    vga = subprocess.run("lspci 2>/dev/null | grep -iE 'vga|3d|display' || true", shell=True, capture_output=True, text=True).stdout.strip()
+    nv = shutil.which("nvidia-smi") is not None
+    res["gpu"] = f"/dev/dri: {'present' if dri else 'absent'}; nvidia-smi: {'present' if nv else 'absent'}; display adapters: {vga or 'none'}"
     # per element: render it alone over its active frames, time it, check it
     spans = {"effects": (0, 89), "title": (0, 89), "circle": (20, 80), "overlay": (55, 130), "flap": (90, 179), "wipe": (155, 185), "lottie": (162, 239)}
     for el, (a, b) in spans.items():
@@ -366,7 +395,7 @@ def ingest_test_assets() -> tuple[list[str], list[str]]:
 
 
 def report(outdir: str, probe: str) -> int:
-    O = Path(outdir)
+    O = Path(outdir).resolve()
     miss, inc = ingest_test_assets()
     prep_ = json.loads((O / "prep.json").read_text()) if (O / "prep.json").exists() else {}
     res = json.loads((O / "render.json").read_text()) if (O / "render.json").exists() else {}

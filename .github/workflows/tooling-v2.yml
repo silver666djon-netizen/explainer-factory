@@ -177,7 +177,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          files=$(ls out/tooling_test.mp4 out/tooling_test_sheet.png out/tooling_test.md out/render.json out/prep.json out/ASSET_LICENSES_after_test.md 2>/dev/null || true)
+          files=$(ls out/tooling_test.mp4 out/tooling_test_sheet.png out/tooling_test.md out/render.json out/prep.json out/ASSET_LICENSES_after_test.md out/prep.log out/render.log 2>/dev/null || true)
           [ -n "$files" ] || exit 0
           if tools/rel.sh id $TAG >/dev/null 2>&1; then tools/rel.sh upload $TAG $files
           else gh release create $TAG $files --title "CoinSense · TOOLING V2" --notes "Tooling v2 (not for upload)." --prerelease --draft; fi

@@ -38,7 +38,10 @@ def _get(url: str, binary: bool = False, timeout: int = 120):
             return data if binary else json.loads(data.decode("utf-8"))
         except urllib.error.HTTPError as e:  # noqa: PERF203
             last = e
-            if e.code in (429, 500, 502, 503, 504):
+            if e.code == 429:  # loc.gov rate limit: back off for real
+                time.sleep(15 * (a + 1))
+                continue
+            if e.code in (500, 502, 503, 504):
                 time.sleep(3 + 4 * a)
                 continue
             raise
