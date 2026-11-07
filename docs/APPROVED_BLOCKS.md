@@ -11,10 +11,7 @@ item may be used in tests only.
 | @remotion/rough-notation Circle (red ink) | effect | APPROVED | tooling-v2 run 42364382643 | 2026-11-07 | |
 | @remotion/transitions clockWipe | transition | APPROVED | tooling-v2 run 42364382643 | 2026-11-07 | |
 | SplitFlap.tsx (port of HyperFrames split-flap-board) | block | APPROVED | tooling-v2 run 42377153886: straight flip, every frame checked: rests only on $30 and $48 | 2026-11-07 | |
-| HyperFrames hw-scribble-transition via the CLI (transparent WebM) | block | APPROVED | tooling-v2 run 42377153886: clears from 1.00 s, full red cover 0.233 s (cap 0.25 s), the cut inside it | 2026-11-07 | |
-| ScribbleWipe.tsx (Remotion port of the same block, GSAP timeline written out) | block | not yet | tooling-v2 run 42364382643: same coverage curve within ~2 frames, mean alpha IoU 0.74 (< 0.9) | 2026-11-07 | |
 | @remotion/lottie (support) | toolchain | APPROVED | tooling-v2 run 42377153886 (LottieProbe renders without a GPU) | 2026-11-07 | for other icons; each Lottie file still needs its own row and test |
-| LottieFiles "Approved Stamp" (Anu Menon) | asset | REFUSED for episodes | Klot's frame review | 2026-11-07 | modern isometric, lavender paper: off-style for 1950s print |
 | RubberStamp.tsx (flat 1950s rubber stamp + PAID imprint) | block | APPROVED | tooling-v2 run 42377153886: rubber on the paper on the frame the imprint appears (R49); SFX impact on that frame | 2026-11-07 | |
 | @remotion/google-fonts Special Elite, Courier Prime | font | APPROVED | tooling-v2 run 42364382643 | 2026-11-07 | Latin only: no Cyrillic (RU copies keep their Cyrillic fallbacks) |
 | @remotion/google-fonts Playfair Display | font | pending | — | | covers Cyrillic |
@@ -26,3 +23,11 @@ item may be used in tests only.
 | Wikimedia Commons fetcher | asset source | pending | tooling-v2.yml probe | | PD / CC0 / CC BY / CC BY-SA; attribution stored |
 | Internet Archive Prelinger fetcher (public domain only) | asset source | pending | tooling-v2.yml probe | | |
 | the other 21 vendored HyperFrames items | block | not tested | — | | port or CLI-render on first use, each with its own test |
+
+## Rejected — never in episodes
+
+| item | kind | rejected by | date | why |
+|---|---|---|---|---|
+| HyperFrames hw-scribble-transition (red scribble wipe; CLI render and the ScribbleWipe.tsx port) | transition | Klot, tooling test 2 review | 2026-11-07 | off-style for CoinSense |
+| LottieFiles "Approved Stamp" (Anu Menon) | asset | Klot, tooling test 1 review | 2026-11-07 | modern isometric, lavender paper: off-style for 1950s print |
+

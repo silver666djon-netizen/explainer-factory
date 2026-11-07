@@ -279,4 +279,10 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
     pans and the new effects instead of generating video.
   - The shot list states the **exact length of every AI video clip** (seconds), so exactly that length is generated and
     nothing more.
+- **Props with text (Klot, tooling test 2)** — a receipt, statement, card or any prop whose text we want read obeys the
+  2.8 % cap-height rule like every other read line (the statement in tooling test 2 was ~2 %: too small). Show the prop
+  larger or push in on it. Code-drawn props mark their lines `data-read`; picture props declare `read_cap` (cap height of
+  their smallest read line, in the prop's own units) and the release check **prop_text** measures it on the settled frame.
+- **Rejected looks** are listed in docs/APPROVED_BLOCKS.md ("Rejected — never in episodes"): the red scribble wipe and the
+  isometric Lottie stamp.
 

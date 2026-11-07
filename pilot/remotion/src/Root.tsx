@@ -5,6 +5,7 @@ import {Reel, WIPE_FRAMES} from './Reel';
 import {V2} from './V2';
 import {ToolingTest, TOTAL} from './tooling/ToolingTest';
 import {ScribbleWipe} from './tooling/ScribbleWipe';
+import {TransitionReel, REEL_FRAMES, SAMPLE} from './tooling/TransitionReel';
 import {Lottie} from '@remotion/lottie';
 import {AbsoluteFill} from 'remotion';
 
@@ -47,6 +48,8 @@ export const RemotionRoot: React.FC = () => (
 			defaultProps={{name: 'v2_long'} as any} calculateMetadata={metaV2} />
 		<Composition id="ToolingTest" component={ToolingTest as any} width={1920} height={1080} fps={30} durationInFrames={TOTAL}
 			defaultProps={{only: 'all', fx: true, font: 'web'} as any} calculateMetadata={metaTooling} />
+		<Composition id="TransitionReel" component={TransitionReel as any} width={1920} height={1080} fps={30} durationInFrames={REEL_FRAMES}
+			defaultProps={{} as any} calculateMetadata={async ({props}: any) => ({durationInFrames: props.only ? SAMPLE : REEL_FRAMES})} />
 		<Composition id="ScribblePort" component={ScribbleWipe as any} width={1920} height={1080} fps={30} durationInFrames={66}
 			defaultProps={{color: '#a8231c'} as any} />
 		<Composition id="LottieProbe" component={LottieProbe as any} width={480} height={480} fps={30} durationInFrames={30}

@@ -23,7 +23,7 @@ Brand check: no third-party brand, logo or trademark in any vendored item (the o
 
 ## Ports (our code, Remotion)
 - split-flap-board -> `pilot/remotion/src/tooling/SplitFlap.tsx` (pure function of time; same drum walk and flap law).
-- hw-scribble-transition -> `pilot/remotion/src/tooling/ScribbleWipe.tsx` (its GSAP timeline written out per frame: same tweens, eases, staggers; a first version through @remotion/gsap stayed on one pose in renders on the Actions runner).
+- hw-scribble-transition -> REJECTED by Klot (off-style), never in episodes; `pilot/remotion/src/tooling/ScribbleWipe.tsx` (its GSAP timeline written out per frame: same tweens, eases, staggers; a first version through @remotion/gsap stayed on one pose in renders on the Actions runner).
 The rest: port on first use (R50: its own test render passes QC first). Fallback for any item: the hyperframes CLI
 (`npx hyperframes@0.9.19 render <dir> --format webm`, transparent) composited as an `<OffthreadVideo transparent>`.
 Telemetry is always off: `HYPERFRAMES_NO_TELEMETRY=1` + `DO_NOT_TRACK=1` + `hyperframes telemetry disable`; never run

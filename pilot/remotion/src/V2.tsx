@@ -1555,7 +1555,10 @@ const SheetPlanInk: React.FC<{pl: any; t: number; id: string}> = ({pl, t, id}) =
 						if (it.k === 'prop')
 							return (
 								<g key={i} transform={tf} opacity={clamp(kk * 2, 0, 1)}>
-									<image href={staticFile(it.src)} x={-it.w / 2} y={-it.h / 2} width={it.w} height={it.h} style={{filter: `drop-shadow(${it.w * 0.01}px ${it.w * 0.02}px ${it.w * 0.015}px rgba(0,0,0,0.5))`}} />
+									{/* read_cap: the smallest text we want read on this prop, as its cap height in the prop's own units (it.h
+									    tall); the release check prop_text measures it on screen (no effect on the picture) */}
+									<image href={staticFile(it.src)} x={-it.w / 2} y={-it.h / 2} width={it.w} height={it.h}
+										data-propread={it.read_cap ?? undefined} data-proph={it.read_cap ? it.h : undefined} style={{filter: `drop-shadow(${it.w * 0.01}px ${it.w * 0.02}px ${it.w * 0.015}px rgba(0,0,0,0.5))`}} />
 								</g>
 							);
 						if (it.k === 'tag')

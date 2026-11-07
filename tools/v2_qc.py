@@ -596,6 +596,27 @@ def c_text_size_contrast(dom=None, **_):
     return out
 
 
+def c_prop_text(dom=None, **_):
+    """Klot (tooling test 2): text on a prop (a receipt, a statement, a card) obeys the same 2.8 % rule as any text we want
+    read. A prop with such text declares read_cap in the plan (cap height of its smallest read line, in the prop's own units);
+    the DOM sampler measures it on the settled frame. Show the prop larger or push in until it passes."""
+    if not dom:
+        return ["no dom.json (DOM sampling did not run)"]
+    fr = _frame(dom)
+    need = 0.028 * (fr[3] - fr[1])
+    out = []
+    for smp in dom["samples"]:
+        if not smp.get("shotpic"):
+            continue
+        for r in smp.get("propReads") or []:
+            area = max(1.0, (r["box"][2] - r["box"][0]) * (r["box"][3] - r["box"][1]))
+            if _inter(r["box"], fr) < 0.5 * area:
+                continue
+            if r["cap"] < need - 0.5:
+                out.append(f"{smp['shot']}: prop {r['src']} smallest read line {r['cap']:.0f} px cap height < {need:.0f} px (2.8 %)")
+    return out
+
+
 def c_edge_margin(dom=None, **_):
     """Klot: every mark, tag, plate and stamp sits >= 6 % inside the frame (9:16: the picture band), on the settled frame."""
     if not dom:
@@ -856,6 +877,7 @@ CHECKS = [
     ("tool_touch (R49)", c_tool_touch, "a tool acting on an object touches it in the still (no code-drawn scissors)"),
     ("archive_era (R48)", c_archive_era, "archive photo year (the item's own date) within +-10 y of the line (or no date); real year in the caption; no modern plate"),
     ("asset_license (R50)", c_asset_license, "every asset used has a row in docs/ASSET_LICENSES.md (release-blocking)"),
+    ("prop_text", c_prop_text, "text on props (receipts, statements, cards) we want read: cap >= 2.8 % of the frame"),
     ("clip_native (R51)", c_clip_native, "AI clips at native speed (no slow-mo stretch); > 5 s of clip only with a stated reason"),
 ]
 NOT_APPLICABLE = {
@@ -1124,6 +1146,10 @@ def selftest(ctx):
                        "caption": "Hotel sign, Cooperstown, New York, 1937 · Library of Congress"}]
         c["beats"] = [{"id": "X", "text": "In 1958 the law changed."}]
         return "the register's 1937 item under a line about 1958 (no plan year)"
+    def m_prop(c):
+        c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [smp(propReads=[{"src": "planted_receipt.png", "box": [800, 400, 1100, 700], "cap": 0.02 * 1080}])]}
+        return "a receipt whose smallest line is 2 % of the frame"
+    plant("prop_text", m_prop, c_prop_text)
     def m_r51(c):
         c["data"] = dict(c["data"], r51=True)
         c["shots"] = [{"id": "planted", "video": "v2/planted_clip.mp4", "start": 0.0, "end": 4.0, "rate": 0.85}]
@@ -1179,6 +1205,8 @@ def main(pvd: str, tdir: str) -> int:
                 cells.append("n/a: this is the full cold open as a 9:16 layout sample, not a Short")
             elif name in ("shorts_band (R38)", "shorts_length", "short_loop") and not (kind == "short" or kind.startswith("sh")):
                 cells.append("n/a (16:9)" if name in ("shorts_length", "short_loop") else ("PASS" if not r else f"FAIL ({len(r)})"))
+            elif name == "prop_text" and not any(sm.get("propReads") for sm in (((ctxs[kind] or {}).get("dom") or {}).get("samples") or [])):
+                cells.append("n/a: no prop declares text to read (read_cap)")
             elif name == "clip_native (R51)" and not (P[kind].get("data") or {}).get("r51"):
                 cells.append("n/a: this plan predates R51 (Nov 7)")
             elif name.startswith("stt_") and kind == "full_ru":

@@ -31,6 +31,9 @@ def main(argv):
         if f.suffix == ".mp4" and f.stat().st_size < LIMIT:
             with open(f, "rb") as fh:
                 _api("sendVideo", data={"caption": f"{head} · {f.name}"[:1000], "supports_streaming": "true"}, files={"video": (f.name, fh)})
+        elif f.suffix in (".mp3", ".m4a") and f.stat().st_size < LIMIT:  # a playable audio track in the chat
+            with open(f, "rb") as fh:
+                _api("sendAudio", data={"caption": f"{head} · {f.name}"[:1000], "title": f.stem}, files={"audio": (f.name, fh)})
         elif f.stat().st_size < LIMIT:
             send_document(f, f"{head} · {f.name}")
         else:

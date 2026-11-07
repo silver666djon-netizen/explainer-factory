@@ -26,7 +26,7 @@ import {RubberStampOnDocument} from './RubberStamp';
 
 // loaded on first use (not at import), so the episode compositions in the same bundle never fetch these fonts
 let FONTS: {SE: string; CP: string} | null = null;
-const fonts = () => {
+export const fonts = () => {
 	if (!FONTS) {
 		FONTS = {SE: loadSpecialElite('normal', {weights: ['400'], subsets: ['latin']}).fontFamily,
 			CP: loadCourierPrime('normal', {weights: ['700'], subsets: ['latin']}).fontFamily};
@@ -67,7 +67,7 @@ const PaperBg: React.FC<{p: ToolingProps; seed: number}> = ({p, seed}) => {
 	);
 };
 
-const SceneA: React.FC<{p: ToolingProps}> = ({p}) => {
+export const SceneA: React.FC<{p: ToolingProps}> = ({p}) => {
 	const {SE} = fonts();
 	const f = useCurrentFrame();
 	const fx = p.fx !== false && on(p, 'effects');
@@ -113,7 +113,7 @@ const SceneA: React.FC<{p: ToolingProps}> = ({p}) => {
 	);
 };
 
-const SceneB: React.FC<{p: ToolingProps}> = ({p}) => {
+export const SceneB: React.FC<{p: ToolingProps}> = ({p}) => {
 	const {SE, CP} = fonts();
 	const fl = p.flap ?? {from: '$30', to: '$48', startAt: 1.3}; // flips at 4.3 s, once the scribble has cleared
 	return (

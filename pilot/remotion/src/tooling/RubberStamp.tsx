@@ -87,12 +87,12 @@ export const RubberStampOnDocument: React.FC<RubberStampProps & {docFont: string
 			{/* the document: a box-office statement, typewritten */}
 			<div style={{position: 'absolute', left: 1040, top: 150, width: 680, height: 780, background: '#f4ead2', transform: `translateY(${docShake}px) rotate(${DOC_TILT}deg)`,
 				boxShadow: '0 18px 36px rgba(0,0,0,0.28)', border: '2px solid #d8c7a2', padding: '56px 52px', fontFamily: docFont, color: '#2a221a', fontSize: 30, lineHeight: 1.75}}>
-				<div style={{fontSize: 34, letterSpacing: 3, marginBottom: 26}}>BOX OFFICE · STATEMENT</div>
-				<div>1 SEAT .............. $30.00</div>
-				<div>SERVICE FEE .......... $8.00</div>
-				<div>FACILITY FEE ......... $6.00</div>
-				<div>PROCESSING ........... $4.00</div>
-				<div style={{borderTop: '2px solid #2a221a', marginTop: 14, paddingTop: 10}}>TOTAL ............... $48.00</div>
+				<div data-read style={{fontSize: 34, letterSpacing: 3, marginBottom: 26}}>BOX OFFICE · STATEMENT</div>
+				<div data-read>1 SEAT .............. $30.00</div>
+				<div data-read>SERVICE FEE .......... $8.00</div>
+				<div data-read>FACILITY FEE ......... $6.00</div>
+				<div data-read>PROCESSING ........... $4.00</div>
+				<div data-read style={{borderTop: '2px solid #2a221a', marginTop: 14, paddingTop: 10}}>TOTAL ............... $48.00</div>
 			</div>
 			<div style={{position: 'absolute', inset: 0, transformOrigin: TILT.transformOrigin, transform: `translateY(${docShake}px) ${TILT.transform}`}}>
 			{t >= hitAt ? <Imprint word={word} font={font} /> : null}

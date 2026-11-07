@@ -43,5 +43,10 @@ window.collect = () => {
 		const col = svg ? (el.getAttribute('fill') || cs.fill) : cs.color;
 		return {text: el.textContent.trim().slice(0, 40), box: box(r), fs, scale, fam, col};
 	});
-	return {hands, stampHands, faces, marks, reads};
+	// props with text we want read (plan: read_cap = cap height of the smallest such line, in the prop's own units)
+	const propReads = [...document.querySelectorAll('[data-propread]')].filter(vis).map((el) => {
+		const r = el.getBoundingClientRect();
+		return {src: (el.getAttribute('href') || '').split('/').pop(), box: box(r), cap: (+el.dataset.propread / +el.dataset.proph) * r.height};
+	});
+	return {hands, stampHands, faces, marks, reads, propReads};
 };

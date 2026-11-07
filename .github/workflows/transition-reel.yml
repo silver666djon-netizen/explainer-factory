@@ -1,0 +1,46 @@
+name: Transition sample reel (8 options)
+# Klot, after tooling test 2: the 8 house-transition candidates on the test's two scenes, the theme underneath, a contact
+# sheet -> draft tooling-v2. Sent to Telegram with send-files.yml after review.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: transition-reel
+  cancel-in-progress: false
+env:
+  HYPERFRAMES_NO_TELEMETRY: "1"
+  DO_NOT_TRACK: "1"
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy pillow requests 2>&1 | tail -2
+      - name: Font for the contact sheet
+        run: curl -fsSL -o assets/fonts/SpecialElite-Regular.ttf https://github.com/google/fonts/raw/main/apache/specialelite/SpecialElite-Regular.ttf || true
+      - name: Remotion install
+        working-directory: pilot/remotion
+        run: npm install --no-audit --no-fund 2>&1 | tail -2
+      - name: The theme (from the ElevenLabs test)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/rel.sh download tooling-v2 rel theme_noir_jazz_20s.mp3
+      - name: Render + checks + mix + contact sheet
+        run: python tools/transition_reel.py rel out 2>&1 | tail -40
+      - name: Publish into the draft tooling-v2
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls out/transition_reel.mp4 out/transition_reel_sheet.png out/transition_reel.md out/transition_reel_note.txt out/reel.json out/reel.log 2>/dev/null || true)
+          [ -n "$files" ] && tools/rel.sh upload tooling-v2 $files
+          cat out/transition_reel.md 2>/dev/null | python3 -c 'import sys; print("::notice title=reel::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'

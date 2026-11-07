@@ -132,6 +132,7 @@ async def sample(port: int, data: dict, name: str) -> list[dict]:
             else:
                 rec.pop("reads", None)
                 rec.pop("marks", None)
+                rec.pop("propReads", None)
             rec["shotpic"] = shot
             res.append(rec)
         await b.close()
