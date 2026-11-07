@@ -727,10 +727,17 @@ def c_archive_era(shots=None, beats=None, **_):
     """R48: an archive photo only under a line about general behaviour (no date) or within +-10 years of the year spoken;
     its caption shows its real year; never a date plate of 1970 or later on a photo from before 1970."""
     from v2_preview_a2 import ARCHIVE_YEAR
+    import asset_license as AL
+    rows = AL.load()
     text = {b["id"]: b["text"] for b in (beats or [])}
     out = []
     for s in shots:
-        y = ARCHIVE_YEAR.get(s.get("base"))
+        # tooling v2: the photo's year is the archive item's own date (docs/ASSET_LICENSES.md, from the fetcher's sidecar)
+        reg = next((AL.find(s[k], rows) for k in ("img", "video") if s.get(k)), None)
+        ry = AL.year_of_row(reg) if reg and reg.get("kind") == "archive" else None
+        y = ry if ry is not None else ARCHIVE_YEAR.get(s.get("base"))
+        if ry is not None and ARCHIVE_YEAR.get(s.get("base")) not in (None, ry):
+            out.append(f"{s['id']}: the plan says {ARCHIVE_YEAR[s['base']]}, the archive item is dated {ry}")
         if y is None:
             m = re.search(r"\b(1[89]\d\d)\b[^·]*· Library of Congress", s.get("caption") or "")
             y = int(m.group(1)) if m else None
@@ -749,6 +756,17 @@ def c_archive_era(shots=None, beats=None, **_):
         if s.get("caption") and str(y) not in s["caption"]:
             out.append(f"{s['id']}: the caption does not show the photo's year {y}")
     return out
+
+
+def c_asset_license(plan_kind=None, **_):
+    """Tooling v2 / R50: every asset the render uses (pictures, clips, fonts, music, SFX, voice, overlays, Lottie) has a
+    row in docs/ASSET_LICENSES.md. Release-blocking. Rows without the AI model / licence / item date are reported as
+    incomplete (asset_license_incomplete, not blocking)."""
+    import asset_license as AL
+    if not plan_kind:
+        return ["no plan to read the assets from"]
+    miss, _inc = AL.check(AL.used_assets(plan_kind))
+    return [f"{m}: no row in docs/ASSET_LICENSES.md" for m in miss]
 
 
 END_MIN, END_MAX = 20.0, 22.0
@@ -817,7 +835,8 @@ CHECKS = [
     ("dial_run", c_dial_run, "<= 2 s of dial close-ups in a row; wide safe <= 3.5 s"),
     ("end_screen", c_end_screen, "end screen 20-22 s, music only after the last line, YouTube zones free"),
     ("tool_touch (R49)", c_tool_touch, "a tool acting on an object touches it in the still (no code-drawn scissors)"),
-    ("archive_era (R48)", c_archive_era, "archive photo year within +-10 y of the line (or no date); real year in the caption; no modern plate"),
+    ("archive_era (R48)", c_archive_era, "archive photo year (the item's own date) within +-10 y of the line (or no date); real year in the caption; no modern plate"),
+    ("asset_license (R50)", c_asset_license, "every asset used has a row in docs/ASSET_LICENSES.md (release-blocking)"),
 ]
 NOT_APPLICABLE = {
     "hand_over_ink (R37), one hand at a time (rules 1-5)": "by construction (ink only behind the nib, one hand at a time, pen colour = ink colour); the hand's position against the faces is checked (hand_over_face, from the rendered DOM)",
@@ -850,7 +869,7 @@ def run(kind, P, pv, tdir, cfg, audio_ok=True):
     dom_all = json.loads((pv / "dom.json").read_text()) if (pv / "dom.json").exists() else {}
     ctx = dict(beats=beats, shots=data["shots"], data=data, captions=data["captions"], audio=audio, voice=voice,
                silences=pl["audio"]["silences"], sfx=pl["audio"]["sfx"], ink=ink_spans(data["shots"]), path=path, cfg=cfg, kind=AUD[kind],
-               dom=dom_all.get(kind))
+               dom=dom_all.get(kind), plan_kind=pl)
     res = {}
     for name, fn, _desc in CHECKS:
         if kind == "short" and name.startswith("stt_mix"):
@@ -1074,6 +1093,18 @@ def selftest(ctx):
         c["dom"] = {"W": 1920, "H": 1080, "band": None, "samples": [smp(t=105.0, marks=[{"kind": "tag", "text": "SUBSCRIBE", "box": [1500, 300, 1800, 420]}])]}
         return "a 9 s end screen with a tag in the video-element zone"
     plant("end_screen", m_end, c_end_screen)
+    def m_lic(c):
+        pk = copy.deepcopy(c.get("plan_kind") or {"data": {"shots": []}, "audio": {}, "beats": []})
+        pk.setdefault("data", {}).setdefault("shots", []).append({"id": "planted", "img": "v2/planted_unlicensed_still.jpg"})
+        c["plan_kind"] = pk
+        return "a still with no row in ASSET_LICENSES.md"
+    plant("asset_license (R50)", m_lic, c_asset_license)
+    def m_era_item(c):
+        c["shots"] = [{"id": "planted", "beat": "X", "base": "arch_cooperstown_x", "img": "v2/ep04v2_arch_cooperstown_1937.jpg",
+                       "caption": "Hotel sign, Cooperstown, New York, 1937 · Library of Congress"}]
+        c["beats"] = [{"id": "X", "text": "In 1958 the law changed."}]
+        return "the register's 1937 item under a line about 1958 (no plan year)"
+    plant("archive_era (R48) item date", m_era_item, lambda **k: c_archive_era(shots=k["shots"], beats=k["beats"]))
     return rows
 
 
@@ -1141,6 +1172,9 @@ def main(pvd: str, tdir: str) -> int:
     shots0 = P[kinds[0]]["data"]["shots"]
     miss = sorted({s.get("missing") or s.get("file") for s in shots0 if s.get("base_kind") == "missing" or s["kind"] == "missing"})
     sti = sorted({f"{s['standin']['for']} -> {('Klot ' if s['standin']['src'].startswith('s0') else 'Ep.4 ') + s['standin']['src']}" for s in shots0 if s.get("standin")})
+    import asset_license as AL
+    inc = sorted({x for k in kinds for x in AL.check(AL.used_assets(P[k]))[1]})
+    md += ["", f"Asset register (docs/ASSET_LICENSES.md): {len(inc)} rows incomplete (not blocking): " + ("; ".join(inc) or "none")]
     md += ["", "Stand-ins (tagged on screen): " + ("; ".join(sti) or "none")]
     md += ["", "Placeholders (Klot's stills not in yet): " + (", ".join(f"{m}.png" for m in miss) or "none")]
     for kind in kinds:

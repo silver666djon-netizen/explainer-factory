@@ -556,7 +556,8 @@ def mix(T: dict, beats: list[dict], shots: list[dict], end_t: float, voice: np.n
     fade = int((1.0 if tail else 0.3) * A.SR)  # a looping Short: only the music's last 0.3 s (the voice ends 0.4 s before)
     x[-fade:] *= np.linspace(1, 0, fade)
     A.write_wav(out, x)
-    return {"silences": silences, "voice_lines": tl.voice_lines, "voice_edits": tl.voice_edits, "sfx": tl.log}
+    return {"silences": silences, "voice_lines": tl.voice_lines, "voice_edits": tl.voice_edits, "sfx": tl.log,
+            "music": sorted({c for _t, c in tl.cues if c and c != "none"})}  # for the asset_license check
 
 
 def short_from(shots: list[dict]) -> list[dict]:

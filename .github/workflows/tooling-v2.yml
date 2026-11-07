@@ -1,0 +1,300 @@
+name: Tooling v2 (probe + 8 s test render)
+# Klot, tooling upgrade v2 (Nov 7). Two jobs, both on the hosted runner (no GPU):
+#  probe: npm metadata of remotion 4.0.541 + every @remotion/* package we add (licence, peers), the Cyrillic coverage of the
+#         four Google fonts, reachability of the four archive APIs, the LottieFiles download, the HyperFrames CLI, and the
+#         ElevenLabs Sound Effects + Music test (20 s theme + 4 SFX; credits reported) -> draft tooling-v2.
+#  test:  the 8 s 1080p ToolingTest composition: every element rendered alone + checked + timed, the full render, the mix,
+#         a contact sheet -> draft tooling-v2. Nothing goes to Telegram from here: it is sent with send-files.yml after review.
+# ELEVENLABS_API_KEY / SI_API_KEY are read from secrets and never printed. HyperFrames and Remotion telemetry are off.
+on:
+  workflow_dispatch:
+    inputs:
+      audio:
+        description: "auto = generate the ElevenLabs test audio only if the draft does not have it yet; yes = generate again; no = skip"
+        required: false
+        default: "auto"
+      test:
+        description: "run the test render (yes/no)"
+        required: false
+        default: "yes"
+permissions:
+  contents: write
+concurrency:
+  group: tooling-v2
+  cancel-in-progress: false
+env:
+  HYPERFRAMES_NO_TELEMETRY: "1"
+  DO_NOT_TRACK: "1"
+  TAG: tooling-v2
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy requests pillow faster-whisper 2>&1 | tail -2
+      - name: npm metadata (4.0.541, licences, peers)
+        run: |
+          mkdir -p out
+          python3 - <<'PY'
+          import json, subprocess
+          pk = ["remotion", "@remotion/cli"] + ["@remotion/" + n for n in ["effects", "rough-notation", "transitions", "light-leaks", "elevenlabs", "captions",
+                "layout-utils", "paths", "noise", "motion-blur", "gsap", "lottie", "three", "google-fonts", "sfx"]]
+          rows = []
+          for p in pk:
+              r = subprocess.run(["npm", "view", f"{p}@4.0.541", "version", "license", "peerDependencies", "--json"], capture_output=True, text=True)
+              try:
+                  j = json.loads(r.stdout or "{}")
+              except Exception:
+                  j = {"error": (r.stderr or r.stdout)[:200]}
+              latest = subprocess.run(["npm", "view", p, "dist-tags.latest"], capture_output=True, text=True).stdout.strip()
+              rows.append({"package": p, "has_4.0.541": j.get("version") == "4.0.541", "license": j.get("license"), "peers": j.get("peerDependencies"), "latest": latest})
+              print(json.dumps(rows[-1]))
+          json.dump(rows, open("out/npm.json", "w"), indent=1)
+          PY
+      - name: Google fonts - Cyrillic coverage (from @remotion/google-fonts 4.0.541)
+        run: |
+          mkdir -p /tmp/gf && cd /tmp/gf && npm init -y >/dev/null && npm i --no-audit --no-fund @remotion/google-fonts@4.0.541 >/dev/null 2>&1
+          node -e '
+          const out = {};
+          for (const n of ["SpecialElite","CourierPrime","PlayfairDisplay","AbrilFatface"]) {
+            const m = require("@remotion/google-fonts/" + n); const i = m.getInfo();
+            out[i.fontFamily] = {subsets: i.subsets, cyrillic: i.subsets.includes("cyrillic")};
+          }
+          console.log(JSON.stringify(out, null, 1)); require("fs").writeFileSync(process.env.GITHUB_WORKSPACE + "/out/fonts.json", JSON.stringify(out, null, 1));'
+      - name: Archive APIs + LottieFiles + HyperFrames CLI reachability
+        env:
+          SI_API_KEY: ${{ secrets.SI_API_KEY }}
+        run: |
+          python tools/archives.py probe out/archives.json || true
+          code=$(curl -s -o /dev/null -w "%{http_code}" "https://assets-v2.lottiefiles.com/a/35c0e3d5-a81c-4361-961b-d5ef7a71429e/A4svAPaEV9.lottie"); echo "lottiefiles: HTTP $code" | tee out/lottie_http.txt
+          (npx -y @hyperframes/cli@0.9.19 --version 2>&1 | tail -1) | tee out/hyperframes_version.txt
+          [ -n "$SI_API_KEY" ] && echo "SI_API_KEY: set" || echo "SI_API_KEY: not set (DEMO_KEY used)"
+      - name: ElevenLabs Sound Effects + Music test
+        id: el
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          mode="${{ github.event.inputs.audio || 'auto' }}"
+          have=no; if tools/rel.sh assets $TAG 2>/dev/null | cut -f2 | grep -qx theme_noir_jazz_20s.mp3; then have=yes; fi
+          if [ "$mode" = no ] || { [ "$mode" = auto ] && [ "$have" = yes ]; }; then
+            echo "audio: reusing the draft's files (mode $mode)"; echo "made=no" >> "$GITHUB_OUTPUT"; exit 0; fi
+          python tools/el_audio.py test out/audio 2>&1 | tee out/el.log
+          echo "made=yes" >> "$GITHUB_OUTPUT"
+      - name: Probe summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          O = Path("out"); s = {}
+          for k in ("npm", "fonts", "archives"):
+              p = O / f"{k}.json"
+              s[k] = json.loads(p.read_text()) if p.exists() else None
+          s["lottie_http"] = (O / "lottie_http.txt").read_text().strip() if (O / "lottie_http.txt").exists() else None
+          s["hyperframes"] = (O / "hyperframes_version.txt").read_text().strip() if (O / "hyperframes_version.txt").exists() else None
+          s["audio_test"] = (O / "audio" / "audio_test.txt").read_text() if (O / "audio" / "audio_test.txt").exists() else None
+          s["remotion_version"] = "4.0.541"
+          (O / "probe.json").write_text(json.dumps(s, indent=1, ensure_ascii=False))
+          lines = ["npm 4.0.541: " + ", ".join(f"{r['package']} {'ok' if r['has_4.0.541'] else 'MISSING'} ({r['license']})" for r in (s["npm"] or []))]
+          lines += ["fonts: " + "; ".join(f"{k}: {'Cyrillic' if v['cyrillic'] else 'no Cyrillic'}" for k, v in (s["fonts"] or {}).items())]
+          lines += ["archives: " + "; ".join(f"{a['source']} {'reachable' if a['reachable'] else 'NOT reachable'} ({a.get('gated_hits', 0)} hits)" for a in (s["archives"] or []))]
+          lines += [f"lottiefiles: {s['lottie_http']} · hyperframes: {s['hyperframes']}"]
+          print("::notice title=probe::" + " | ".join(lines).replace("%", "%25").replace("\n", "%0A"))
+          if s["audio_test"]:
+              print("::notice title=ElevenLabs audio test::" + s["audio_test"].replace("%", "%25").replace("\n", "%0A"))
+          PY
+      - name: Publish into the draft tooling-v2
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls out/probe.json out/audio/*.mp3 out/audio/*.json out/audio/audio_test.txt 2>/dev/null || true)
+          [ -n "$files" ] || exit 0
+          if tools/rel.sh id $TAG >/dev/null 2>&1; then tools/rel.sh upload $TAG $files
+          else gh release create $TAG $files --title "CoinSense · TOOLING V2" --notes "Tooling v2: probe, ElevenLabs audio test, 8 s test render (not for upload)." --prerelease --draft; fi
+  test:
+        description: "run the test render (yes/no)"
+        required: false
+        default: "yes"
+permissions:
+  contents: write
+concurrency:
+  group: tooling-v2
+  cancel-in-progress: false
+env:
+  HYPERFRAMES_NO_TELEMETRY: "1"
+  DO_NOT_TRACK: "1"
+  TAG: tooling-v2
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy requests pillow faster-whisper 2>&1 | tail -2
+      - name: npm metadata (4.0.541, licences, peers)
+        run: |
+          mkdir -p out
+          python3 - <<'PY'
+          import json, subprocess
+          pk = ["remotion", "@remotion/cli"] + ["@remotion/" + n for n in ["effects", "rough-notation", "transitions", "light-leaks", "elevenlabs", "captions",
+                "layout-utils", "paths", "noise", "motion-blur", "gsap", "lottie", "three", "google-fonts", "sfx"]]
+          rows = []
+          for p in pk:
+              r = subprocess.run(["npm", "view", f"{p}@4.0.541", "version", "license", "peerDependencies", "--json"], capture_output=True, text=True)
+              try:
+                  j = json.loads(r.stdout or "{}")
+              except Exception:
+                  j = {"error": (r.stderr or r.stdout)[:200]}
+              latest = subprocess.run(["npm", "view", p, "dist-tags.latest"], capture_output=True, text=True).stdout.strip()
+              rows.append({"package": p, "has_4.0.541": j.get("version") == "4.0.541", "license": j.get("license"), "peers": j.get("peerDependencies"), "latest": latest})
+              print(json.dumps(rows[-1]))
+          json.dump(rows, open("out/npm.json", "w"), indent=1)
+          PY
+      - name: Google fonts - Cyrillic coverage (from @remotion/google-fonts 4.0.541)
+        run: |
+          mkdir -p /tmp/gf && cd /tmp/gf && npm init -y >/dev/null && npm i --no-audit --no-fund @remotion/google-fonts@4.0.541 >/dev/null 2>&1
+          node -e '
+          const out = {};
+          for (const n of ["SpecialElite","CourierPrime","PlayfairDisplay","AbrilFatface"]) {
+            const m = require("@remotion/google-fonts/" + n); const i = m.getInfo();
+            out[i.fontFamily] = {subsets: i.subsets, cyrillic: i.subsets.includes("cyrillic")};
+          }
+          console.log(JSON.stringify(out, null, 1)); require("fs").writeFileSync(process.env.GITHUB_WORKSPACE + "/out/fonts.json", JSON.stringify(out, null, 1));'
+      - name: Archive APIs + LottieFiles + HyperFrames CLI reachability
+        env:
+          SI_API_KEY: ${{ secrets.SI_API_KEY }}
+        run: |
+          python tools/archives.py probe out/archives.json || true
+          code=$(curl -s -o /dev/null -w "%{http_code}" "https://assets-v2.lottiefiles.com/a/35c0e3d5-a81c-4361-961b-d5ef7a71429e/A4svAPaEV9.lottie"); echo "lottiefiles: HTTP $code" | tee out/lottie_http.txt
+          (npx -y @hyperframes/cli@0.9.19 --version 2>&1 | tail -1) | tee out/hyperframes_version.txt
+          [ -n "$SI_API_KEY" ] && echo "SI_API_KEY: set" || echo "SI_API_KEY: not set (DEMO_KEY used)"
+      - name: ElevenLabs Sound Effects + Music test
+        id: el
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          mode="${{ github.event.inputs.audio || 'auto' }}"
+          have=no; if tools/rel.sh assets $TAG 2>/dev/null | cut -f2 | grep -qx theme_noir_jazz_20s.mp3; then have=yes; fi
+          if [ "$mode" = no ] || { [ "$mode" = auto ] && [ "$have" = yes ]; }; then
+            echo "audio: reusing the draft's files (mode $mode)"; echo "made=no" >> "$GITHUB_OUTPUT"; exit 0; fi
+          python tools/el_audio.py test out/audio 2>&1 | tee out/el.log
+          echo "made=yes" >> "$GITHUB_OUTPUT"
+      - name: Probe summary
+        if: always()
+        run: |
+          python3 - <<'PY'
+          import json, os
+          from pathlib import Path
+          O = Path("out"); s = {}
+          for k in ("npm", "fonts", "archives"):
+              p = O / f"{k}.json"
+              s[k] = json.loads(p.read_text()) if p.exists() else None
+          s["lottie_http"] = (O / "lottie_http.txt").read_text().strip() if (O / "lottie_http.txt").exists() else None
+          s["hyperframes"] = (O / "hyperframes_version.txt").read_text().strip() if (O / "hyperframes_version.txt").exists() else None
+          s["audio_test"] = (O / "audio" / "audio_test.txt").read_text() if (O / "audio" / "audio_test.txt").exists() else None
+          s["remotion_version"] = "4.0.541"
+          (O / "probe.json").write_text(json.dumps(s, indent=1, ensure_ascii=False))
+          lines = ["npm 4.0.541: " + ", ".join(f"{r['package']} {'ok' if r['has_4.0.541'] else 'MISSING'} ({r['license']})" for r in (s["npm"] or []))]
+          lines += ["fonts: " + "; ".join(f"{k}: {'Cyrillic' if v['cyrillic'] else 'no Cyrillic'}" for k, v in (s["fonts"] or {}).items())]
+          lines += ["archives: " + "; ".join(f"{a['source']} {'reachable' if a['reachable'] else 'NOT reachable'} ({a.get('gated_hits', 0)} hits)" for a in (s["archives"] or []))]
+          lines += [f"lottiefiles: {s['lottie_http']} · hyperframes: {s['hyperframes']}"]
+          print("::notice title=probe::" + " | ".join(lines).replace("%", "%25").replace("\n", "%0A"))
+          if s["audio_test"]:
+              print("::notice title=ElevenLabs audio test::" + s["audio_test"].replace("%", "%25").replace("\n", "%0A"))
+          PY
+      - name: Publish into the draft tooling-v2
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls out/probe.json out/audio/*.mp3 out/audio/*.json out/audio/audio_test.txt 2>/dev/null || true)
+          [ -n "$files" ] || exit 0
+          if tools/rel.sh id $TAG >/dev/null 2>&1; then tools/rel.sh upload $TAG $files
+          else gh release create $TAG $files --title "CoinSense · TOOLING V2" --notes "Tooling v2: probe, ElevenLabs audio test, 8 s test render (not for upload)." --prerelease --draft; fi
+      - name: Send the audio test to Telegram
+        if: steps.el.outputs.made == 'yes'
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          cd out/audio && ls *.mp3 > /dev/null 2>&1 || exit 0
+          python ../../tools/send_files.py . "CoinSense · TOOLING V2 · AUDIO TEST" --text audio_test.txt $(ls *.mp3)
+  test:
+    needs: probe
+    if: always() && github.event.inputs.test != 'no'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: sudo apt-get update -q && sudo apt-get install -y -q ffmpeg
+      - run: pip install -q numpy requests pillow 2>&1 | tail -2
+      - name: Fonts for the contact sheet
+        run: curl -fsSL -o assets/fonts/SpecialElite-Regular.ttf https://github.com/google/fonts/raw/main/apache/specialelite/SpecialElite-Regular.ttf || true
+      - name: Remotion 4.0.541 install + typecheck
+        working-directory: pilot/remotion
+        run: |
+          set -o pipefail
+          s0=$(date +%s); npm install --no-audit --no-fund 2>&1 | tail -3; echo "npm install: $(( $(date +%s) - s0 )) s"
+          npx remotion versions 2>&1 | tail -25
+          npx tsc --noEmit -p . 2>&1 | tail -40 || true
+      - name: Draft audio + probe
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/rel.sh download $TAG rel "*.mp3" "*.mp3.json" probe.json || true
+      - name: Prep (LoC photo, Lottie, HyperFrames overlay, Lottie hit)
+        run: python tools/tooling_test.py prep rel out 2>&1 | tail -60
+      - name: Render + checks
+        run: python tools/tooling_test.py render out 2>&1 | tail -120
+      - name: Report
+        if: always()
+        run: |
+          python tools/tooling_test.py report out rel/probe.json 2>&1 | tail -60
+          tail -c 3500 out/tooling_test.md | python3 -c 'import sys; print("::notice title=tooling test::" + sys.stdin.read().replace("%","%25").replace("\n","%0A"))'
+          cp docs/ASSET_LICENSES.md out/ASSET_LICENSES_after_test.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: tooling-test
+          path: |
+            out/*.mp4
+            out/*.md
+            out/*.json
+            out/*.log
+            out/*.png
+            out/stills
+          retention-days: 7
+      - name: Publish into the draft tooling-v2
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          files=$(ls out/tooling_test.mp4 out/tooling_test_sheet.png out/tooling_test.md out/render.json out/prep.json out/ASSET_LICENSES_after_test.md 2>/dev/null || true)
+          [ -n "$files" ] || exit 0
+          if tools/rel.sh id $TAG >/dev/null 2>&1; then tools/rel.sh upload $TAG $files
+          else gh release create $TAG $files --title "CoinSense · TOOLING V2" --notes "Tooling v2 (not for upload)." --prerelease --draft; fi

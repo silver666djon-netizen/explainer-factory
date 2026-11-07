@@ -259,5 +259,24 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
 - **repeat_shot** — the same picture with the same framing at most twice in any 60 s. **dial_run**: ≤ 2 s of dial close-ups in a row (dial turns in a medium shot, the click in a close-up).
 - **ui_state_consistency** — checkout A ($48, fees included) and checkout B ($30, fees at the end) look the same in every shot. **card_not_empty**: a key-number card shows its number within 0.3 s.
 - **plain_background** — no object on a plain cream background (act titles and ≤ 4 key numbers excepted): every object sits in a picture of a place.
-- **R48 archive_era** — an archive photo only under a line about general behaviour (no date) or within ±10 years of the event spoken about; its caption shows the photo's real date; never a modern date plate on an old photo. Modern dated events use our illustrated world or a typeset document card. Never generate a photoreal "archive" or news photo.
+- **R48 archive_era** — an archive photo only under a line about general behaviour (no date) or within ±10 years of the event spoken about (the photo's year is the archive item's own date, stored by tools/archives.py and in docs/ASSET_LICENSES.md); its caption shows the photo's real date; never a modern date plate on an old photo. Modern dated events use our illustrated world or a typeset document card. Never generate a photoreal "archive" or news photo.
 - **R49 tool_touch** (Klot r8) — an object that acts on another object (scissors, stamp, pen) touches its target in frame. The tool is in the still (or a clip), never drawn by code floating near it; a stamp lands on its paper or tag.
+
+## Tooling v2 rules (Klot, Nov 7)
+
+- **R50 approved_blocks** — a new block, effect or asset source enters an episode only after its own test render passes
+  QC; the list of what passed is docs/APPROVED_BLOCKS.md (with the run that proved it). **asset_license** (release-blocking,
+  planted-bug self-test): every asset a render uses — archive files, Lottie files, fonts, music, SFX, voices and
+  AI-generated pictures and clips (with the model) — has a row in docs/ASSET_LICENSES.md (file, source URL, licence,
+  date, attribution); an asset without a row blocks the release. Archive files come only through tools/archives.py
+  (licence gate + the item's own date). Lottie: only LottieFiles animations whose licence allows commercial use.
+  @remotion/sfx is not used (no clear licence for its sounds).
+- **R51 shot timing and generation budget** —
+  - AI video inserts default to **3–4 s**. Each clip is planned at its native length: no slow-motion stretching. A beat
+    that needs more screen time is extended with a hold on the last frame plus a slow push-in, or a cut to a still.
+  - Long AI clips (**over 5 s**) only where the scene truly needs continuous motion; the shot list marks them with the reason.
+  - Prefer many stills — images are far cheaper than video. Animate stills with parallax (layered images), push-ins,
+    pans and the new effects instead of generating video.
+  - The shot list states the **exact length of every AI video clip** (seconds), so exactly that length is generated and
+    nothing more.
+
