@@ -1,0 +1,18 @@
+{
+ "file": "cs_outro.mp3",
+ "kind": "music",
+ "provider": "ElevenLabs",
+ "model": "music_v1",
+ "prompt": "1950s cool jazz, noir detective, upright bass, brushed drums, muted trumpet, no vocals, no singing, no voices. The CoinSense theme: a short memorable three-note muted-trumpet motif, smoky late-night detective office. An 8-second closing outro for 'case closed' and the end screen: the trumpet plays the motif once more, slower, walking bass resolves, brushed drums stop, ends on a warm resolved final chord that rings out.",
+ "asked_seconds": 8.0,
+ "seconds": 8.02,
+ "peak_db": -1.3,
+ "mean_db": -16.6,
+ "generated": "2026-11-07",
+ "plan": "creator",
+ "commercial_use": true,
+ "credits_used": 0,
+ "cost_headers": {},
+ "licence": "ElevenLabs output, paid plan: commercial use allowed (ElevenLabs Terms / Eleven Music terms)",
+ "vocals_heard": ""
+}

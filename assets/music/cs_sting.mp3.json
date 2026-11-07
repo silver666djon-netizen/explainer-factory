@@ -1,0 +1,18 @@
+{
+ "file": "cs_sting.mp3",
+ "kind": "music",
+ "provider": "ElevenLabs",
+ "model": "music_v1",
+ "prompt": "1950s cool jazz, noir detective, upright bass, brushed drums, muted trumpet, no vocals, no singing, no voices. The CoinSense theme: a short memorable three-note muted-trumpet motif, smoky late-night detective office. A 4-second opening sting for a case-file title card: a sharp upright-bass pluck and a brushed cymbal swell, the muted trumpet states the three-note motif once, ends on a held minor chord. Short, punchy.",
+ "asked_seconds": 4.0,
+ "seconds": 4.02,
+ "peak_db": -1.3,
+ "mean_db": -15.1,
+ "generated": "2026-11-07",
+ "plan": "creator",
+ "commercial_use": true,
+ "credits_used": 0,
+ "cost_headers": {},
+ "licence": "ElevenLabs output, paid plan: commercial use allowed (ElevenLabs Terms / Eleven Music terms)",
+ "vocals_heard": ""
+}

@@ -283,6 +283,23 @@ any FAIL blocks the release. Bugs they came from: docs/REGRESSION_CHECKS.md.
   2.8 % cap-height rule like every other read line (the statement in tooling test 2 was ~2 %: too small). Show the prop
   larger or push in on it. Code-drawn props mark their lines `data-read`; picture props declare `read_cap` (cap height of
   their smallest read line, in the prop's own units) and the release check **prop_text** measures it on the settled frame.
-- **Rejected looks** are listed in docs/APPROVED_BLOCKS.md ("Rejected — never in episodes"): the red scribble wipe and the
-  isometric Lottie stamp.
+- **Rejected looks** are listed in docs/APPROVED_BLOCKS.md ("Rejected — never in episodes"): the red scribble wipe, the
+  isometric Lottie stamp, the page turn, the paper collage and the ink bleed.
+- **House transitions (Klot, transition reel)** — each has one role:
+  - **case folder (8)**: act changes only; the folder carries the act title (label text ≥ 2.8 % of frame height, the tab
+    inside the 6 % edge margin);
+  - **torn paper (2)** and **halftone dissolve (1)**: scene changes inside acts — the default transitions;
+  - **iris (6)**: time jumps (the rewind) and the final "Case closed";
+  - **film burn (7)**: optional, only for archive / past-date moments.
+  No more than one transition type per cut. **Hard cuts stay allowed and remain the most common edit.** Release check
+  **house_transitions** (planted-bug self-test): every transition in the plan is a house one used in its role, a folder
+  only at an act start, an iris only at a time jump or "Case closed", and hard cuts outnumber transitions.
+- **R52 channel sound kit** — the 20 s noir-jazz theme (upright bass, brushed drums, muted trumpet, no vocals) is the
+  CoinSense signature; the kit made from it (ElevenLabs Music, `tools/el_audio.py kit`, files `assets/music/cs_*.mp3`):
+  a 4 s **sting** ("Case file number …"), an 8 s **outro** ("Case closed" and the end screen) and four loopable ~60 s
+  **underscore beds** — tension (checkout, ticking clock), investigation (lab, research), light irony (jokes, Larry),
+  resolution (rewind, the right way). Every episode uses the sting and the outro; the underscore comes from the kit beds
+  (episode-specific colour can be added on top); **narration always sits above the music**. Release check **sound_kit**
+  (planted-bug self-test): the sting and the outro are in the mix, every bed is a kit bed or rides on one, and every cue
+  has a row in docs/ASSET_LICENSES.md.
 

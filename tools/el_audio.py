@@ -193,29 +193,63 @@ def _write(path: Path, x, sr: int = 44100) -> None:
                     "-b:a", "192k", str(path)], input=x.astype("float32").tobytes(), check=True)
 
 
+def _env10(z, sr: int = 44100):
+    import numpy as np
+    h = int(0.01 * sr)
+    m = len(z) // h
+    return np.sqrt((z[: m * h].reshape(m, h) ** 2).mean(1) + 1e-12)
+
+
+def find_loop(z, sr: int = 44100, want: float = LOOP_S) -> tuple[float, float, float]:
+    """Loop points on the beat: the (start a, length n) with n near `want` whose following seconds look most like the
+    loop's own first seconds (correlation of the 10 ms level envelopes over 4 s). Only the music part is used: the
+    model's intro is skipped and its ending (where the level falls away) is cut off. -> (a, n, score)."""
+    import numpy as np
+    e = _env10(z, sr)
+    db = 20 * np.log10(e)
+    ref = np.median(db[: int(want * 100)])
+    live = np.where(db > ref - 12)[0]
+    end = (live[-1] + 1) / 100.0 if len(live) else len(z) / sr  # the music still plays until here
+    L = 400  # 4 s of envelope
+    best = (-2.0, 0.0, want)
+    for a in np.arange(0.5, 6.01, 0.05):
+        for n in np.arange(want - 10.0, want + 2.01, 0.01):  # 'about 60 s': whole bars of the bed
+            if a + n + 4.2 > end:
+                continue
+            i, j = int(round(a * 100)), int(round((a + n) * 100))
+            u, v = db[i:i + L], db[j:j + L]
+            if len(v) < L:
+                continue
+            c = float(np.corrcoef(u, v)[0, 1])
+            if c > best[0]:
+                best = (c, float(a), float(n))
+    return best[1], best[2], round(best[0], 3)
+
+
 def loop(raw: Path, out: Path, sr: int = 44100) -> dict:
-    """Fold a generated bed into a seamless LOOP_S loop: skip the first LOOP_HEAD s (the model's intro), keep LOOP_S s, and
-    crossfade (equal power) the LOOP_XF s that follow the loop into its first LOOP_XF s — so the loop's last sample runs
-    straight on into its first. Returns the seam check: the level jump across the seam vs the bed's own frame-to-frame jumps."""
+    """Fold a generated bed into a seamless ~LOOP_S loop: loop points found on the beat (find_loop), then the 1 s that
+    follows the loop crossfaded (equal power) into its first second — so the loop's last sample runs straight on into its
+    first. Returns the seam check: level difference across the seam and the envelope correlation of the loop points."""
     import numpy as np
     x = _pcm(raw, sr)
-    a, n, xf = int(LOOP_HEAD * sr), int(LOOP_S * sr), int(LOOP_XF * sr)
-    if len(x) < a + n + xf:  # shorter than asked: keep what there is, no intro skip
-        a = max(0, len(x) - n - xf)
-        n = min(n, len(x) - a - xf)
+    a_s, n_s, score = find_loop(x.mean(1), sr)
+    a, n, xf = int(a_s * sr), int(n_s * sr), int(1.0 * sr)
     y = x[a:a + n].copy()
     t = np.linspace(0, np.pi / 2, xf)[:, None]
     y[:xf] = x[a:a + xf] * np.sin(t) + x[a + n:a + n + xf] * np.cos(t)
     _write(out, y, sr)
-    # seam check on 50 ms RMS frames: the jump from the last frame to the first, against the bed's typical jump
-    f = int(0.05 * sr)
     z = _pcm(out, sr).mean(1)
-    rms = np.sqrt(np.convolve(z ** 2, np.ones(f) / f, "valid")[::f] + 1e-12)
-    db = 20 * np.log10(rms)
-    jumps = np.abs(np.diff(db))
-    seam = float(abs(db[0] - db[-1]))
-    return {"loop_seconds": round(len(z) / sr, 2), "seam_jump_db": round(seam, 2), "typical_jump_db": round(float(np.percentile(jumps, 95)), 2),
-            "seam_ok": seam <= max(3.0, float(np.percentile(jumps, 95))), "level_spread_db": round(float(np.percentile(db, 95) - np.percentile(db, 10)), 1)}
+    # the loop played twice: the level around the seam vs. the level elsewhere (0.5 s windows)
+    zz = np.concatenate([z, z])
+    w = int(0.5 * sr)
+    lv = lambda k: 20 * np.log10(np.sqrt(np.mean(zz[k:k + w] ** 2)) + 1e-9)
+    seam = float(lv(len(z)) - lv(len(z) - w))  # level step across the seam (0.5 s windows) ...
+    xm = x.mean(1)
+    lx = lambda k: 20 * np.log10(np.sqrt(np.mean(xm[k:k + w] ** 2)) + 1e-9)
+    natural = float(lx(a + n) - lx(a + n - w))  # ... and the step the music itself makes at that point (it plays on)
+    return {"loop_seconds": round(len(z) / sr, 2), "loop_from_s": round(a_s, 2), "loop_points_match": score,
+            "seam_step_db": round(seam, 2), "music_step_db": round(natural, 2),
+            "seam_ok": bool(score >= 0.85 and abs(seam - natural) <= 3.0)}
 
 
 def kit(outdir: str, only: str = "") -> int:
@@ -232,11 +266,11 @@ def kit(outdir: str, only: str = "") -> int:
             src = O / f"{stem}_raw.mp3" if what == "bed" else out
             m = make("music", src, prompt, sec)
             if what == "bed":
-                m.update(loop(src, out), file=out.name, raw_file=src.name, loop_from_s=LOOP_HEAD, loop_crossfade_s=LOOP_XF)
+                m.update(loop(src, out), file=out.name, raw_file=src.name, loop_crossfade_s=1.0)
                 m.update({k: v for k, v in probe(out).items()})
                 Path(str(out) + ".json").write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
             rows.append(m)
-            extra = f", loop {m['loop_seconds']} s, seam jump {m['seam_jump_db']} dB (typical {m['typical_jump_db']}) {'OK' if m['seam_ok'] else 'CHECK'}" if what == "bed" else ""
+            extra = f", loop {m['loop_seconds']} s, loop points match {m['loop_points_match']}, seam step {m['seam_step_db']} dB (the music's own {m['music_step_db']}) {'OK' if m['seam_ok'] else 'CHECK'}" if what == "bed" else ""
             lines.append(f"{stem}: {m['seconds']} s (asked {sec:g}), peak {m['peak_db']} dB, {m['credits_used']} credits{extra}"
                          f" · vocals heard: {m.get('vocals_heard') or 'none'}")
         except PermissionMissing as e:
@@ -251,7 +285,26 @@ def kit(outdir: str, only: str = "") -> int:
     return 0 if len(rows) == len(jobs) else 1
 
 
+def reloop(outdir: str) -> int:
+    """Fold the kit's raw beds into loops again (no generation, no credits); updates the loops' sidecars."""
+    O = Path(outdir)
+    for stem, _p, _s, what in KIT:
+        if what != "bed" or not (O / f"{stem}_raw.mp3").exists():
+            continue
+        side = Path(str(O / f"{stem}.mp3") + ".json")
+        m = json.loads(side.read_text()) if side.exists() else {}
+        for k in ("loop_from_s", "loop_crossfade_s", "seam_jump_db", "typical_jump_db", "seam_step_db", "music_step_db", "seam_ok", "loop_seconds", "loop_points_match"):
+            m.pop(k, None)
+        m.update(loop(O / f"{stem}_raw.mp3", O / f"{stem}.mp3"), loop_crossfade_s=1.0)
+        m.update(probe(O / f"{stem}.mp3"))
+        side.write_text(json.dumps(m, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+        print(stem, {k: m[k] for k in ("loop_seconds", "loop_from_s", "loop_points_match", "seam_step_db", "music_step_db", "seam_ok")})
+    return 0
+
+
 def main(argv: list[str]) -> int:
+    if argv[0] == "reloop":
+        return reloop(argv[1])
     if argv[0] == "kit":
         return kit(argv[1], argv[2] if len(argv) > 2 else "")
     if argv[0] == "test":
@@ -264,3 +317,4 @@ def main(argv: list[str]) -> int:
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv[1:]))
+
