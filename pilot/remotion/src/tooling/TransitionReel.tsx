@@ -276,7 +276,8 @@ const Iris: React.FC<PP> = ({children, presentationDirection, presentationProgre
 	const r = presentationDirection === 'exiting' ? R * closing : R * opening;
 	const show = presentationDirection === 'exiting' ? p < 0.45 : p > 0.55;
 	return (
-		<AbsoluteFill style={{background: '#000', zIndex: presentationDirection === 'entering' ? 2 : 1}}>
+		// black behind A while it closes; the incoming layer stays clear until A has closed (else it would hide A)
+		<AbsoluteFill style={{background: presentationDirection === 'exiting' || p >= 0.45 ? '#000' : 'transparent', zIndex: presentationDirection === 'entering' ? 2 : 1}}>
 			{show ? <AbsoluteFill style={{clipPath: `circle(${r.toFixed(1)}px at 50% 50%)`}}>{children}</AbsoluteFill> : null}
 		</AbsoluteFill>
 	);
@@ -305,7 +306,8 @@ const Folder: React.FC<{x: number}> = ({x}) => {
 };
 const CaseFolder: React.FC<PP> = ({children, presentationDirection, presentationProgress: p}) => {
 	if (presentationDirection === 'exiting') return <AbsoluteFill style={{opacity: p < 0.5 ? 1 : 0}}>{children}</AbsoluteFill>;
-	const x = p < 0.5 ? W * (1 - easeOutCubic(p / 0.5)) : -W * Math.pow((p - 0.5) / 0.5, 3);
+	// in from the right, off to the left; the folder is W + 60 wide (30 px past each edge), so it travels W + 60 each way
+	const x = p < 0.5 ? (W + 60) * (1 - easeOutCubic(p / 0.5)) : -(W + 60) * Math.pow((p - 0.5) / 0.5, 3);
 	return (
 		<AbsoluteFill style={{zIndex: 2}}>
 			<AbsoluteFill style={{opacity: p < 0.5 ? 0 : 1}}>{children}</AbsoluteFill>
